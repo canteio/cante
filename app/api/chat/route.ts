@@ -9,7 +9,7 @@ import {
   renderMemoryForPrompt,
 } from "@/lib/db/queries";
 import { extractMemories } from "@/lib/checks/remember";
-import { getProvider } from "@/lib/llm";
+import { getProvider, normalizeProviderChoice, PROVIDER_COOKIE } from "@/lib/llm";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -48,7 +48,13 @@ export async function POST(request: Request) {
     return Response.json({ error: "No customers. Run `npm run db:seed`." }, { status: 404 });
   }
 
-  const provider = getProvider();
+  const cookieProvider = request.headers
+    .get("cookie")
+    ?.split(";")
+    .map((part) => part.trim().split("="))
+    .find(([name]) => name === PROVIDER_COOKIE)?.[1];
+  const selectedProvider = normalizeProviderChoice(body.provider ?? cookieProvider);
+  const provider = getProvider(selectedProvider);
   const health = await provider.available();
   if (!health.ok) {
     return Response.json({ error: health.detail }, { status: 503 });
@@ -158,6 +164,7 @@ export async function POST(request: Request) {
             question,
             answer,
             existing: memoryEntries,
+            providerChoice: selectedProvider,
           }).then(() => send({ type: "memory_updated" }))
             .catch(() => {})
             .finally(() => controller.close());

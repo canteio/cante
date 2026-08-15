@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { addMemory } from "@/lib/db/queries";
-import { completeJson, getProvider } from "@/lib/llm";
+import { completeJson, getProvider, type LlmProviderChoice } from "@/lib/llm";
 import type { Memory } from "@/lib/db/schema";
 
 /**
@@ -58,9 +58,10 @@ export async function extractMemories(input: {
   question: string;
   answer: string;
   existing: Memory[];
+  providerChoice?: LlmProviderChoice;
 }): Promise<void> {
   try {
-    const provider = getProvider();
+    const provider = getProvider(input.providerChoice);
     const existingList = input.existing.length
       ? input.existing.map((m) => `  - ${m.content}`).join("\n")
       : "  (nothing yet)";

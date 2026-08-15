@@ -40,9 +40,8 @@ export class ApiProvider implements LlmProvider {
     return {
       ok: false,
       detail:
-        "The hosted API provider is intentionally not implemented yet — v1 runs " +
-        "on the local Claude Code login so it costs nothing. Unset CANTE_LLM " +
-        "(or set it to `claude-code`) to run locally.",
+        "The hosted API provider is intentionally not implemented yet. Use a local CLI " +
+        "provider until API spend is approved.",
     };
   }
 

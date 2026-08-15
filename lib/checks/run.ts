@@ -9,7 +9,7 @@ import {
   listMemories,
   renderMemoryForPrompt,
 } from "@/lib/db/queries";
-import { getProvider } from "@/lib/llm";
+import { getProvider, type LlmProviderChoice } from "@/lib/llm";
 import { judge } from "@/lib/checks/judge";
 import { fetchAllSources } from "@/lib/sources/fetch";
 import { fetchableSources } from "@/lib/sources/registry";
@@ -22,7 +22,10 @@ import { desc, and } from "drizzle-orm";
  * anything, so a run that dies mid-judgment still leaves behind an honest
  * record of what was and wasn't reachable.
  */
-export async function runCheck(customerId: string): Promise<{ runId: string }> {
+export async function runCheck(
+  customerId: string,
+  providerChoice?: LlmProviderChoice,
+): Promise<{ runId: string }> {
   const target = await getCustomerWithProfile(customerId);
   if (!target) throw new Error(`No customer/profile found for ${customerId}`);
 
@@ -32,7 +35,7 @@ export async function runCheck(customerId: string): Promise<{ runId: string }> {
     .run();
 
   try {
-    const provider = getProvider();
+    const provider = getProvider(providerChoice);
     const health = await provider.available();
     if (!health.ok) throw new Error(`LLM provider unavailable — ${health.detail}`);
 

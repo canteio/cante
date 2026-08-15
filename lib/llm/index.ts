@@ -1,24 +1,35 @@
 import { ApiProvider } from "@/lib/llm/api";
 import { ClaudeCodeProvider } from "@/lib/llm/claude-code";
+import { CodexCliProvider } from "@/lib/llm/codex-cli";
+import {
+  normalizeProviderChoice,
+  PROVIDER_COOKIE,
+  PROVIDER_OPTIONS,
+  type LlmProviderChoice,
+} from "@/lib/llm/provider-choice";
 import { LlmError, type LlmProvider } from "@/lib/llm/types";
 import type { ZodType, z } from "zod";
 
 export type { LlmProvider, CompletionRequest, CompletionResult } from "@/lib/llm/types";
 export { LlmError } from "@/lib/llm/types";
+export { PROVIDER_COOKIE, PROVIDER_OPTIONS, normalizeProviderChoice };
+export type { LlmProviderChoice };
 
 /**
  * Defaults to the local CLI. Nothing reaches the paid API unless someone
  * deliberately sets CANTE_LLM=api — an unset variable never starts spending.
  */
-export function getProvider(): LlmProvider {
-  const choice = (process.env.CANTE_LLM || "claude-code").toLowerCase();
-  switch (choice) {
+export function getProvider(choice?: string | null): LlmProvider {
+  const selected = normalizeProviderChoice(choice ?? process.env.CANTE_LLM);
+  switch (selected) {
     case "claude-code":
       return new ClaudeCodeProvider();
+    case "codex-cli":
+      return new CodexCliProvider();
     case "api":
       return new ApiProvider();
     default:
-      throw new LlmError(`Unknown CANTE_LLM value: ${choice}`, "factory");
+      throw new LlmError(`Unknown CANTE_LLM value: ${selected}`, "factory");
   }
 }
 

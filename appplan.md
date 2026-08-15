@@ -83,8 +83,10 @@ The existing Python (`fetch_sources.py`, and the judgment logic in `daily-prompt
 The plan assumed judgment would just happen inside the app; it didn't say *how*, and the honest answer is that a Next.js server can't use the Claude Code login the way the markdown pipeline did. So the model sits behind `LlmProvider` in `lib/llm/`:
 
 - **`claude-code.ts`** — spawns the local `claude` CLI headless. Works today, costs nothing, needs no key. Only works where the CLI is installed and logged in, i.e. locally.
+- **`codex-cli.ts`** — local OpenAI/Codex fallback using a signed-in Codex CLI / ChatGPT plan, also no API key. The sidebar only allows selecting it when the CLI health check passes.
 - **`api.ts`** — a deliberate stub that throws. Implement it only when the decision to pay for API usage has actually been made.
 - Selection is `CANTE_LLM`, defaulting to `claude-code`, so an unset variable can never start billing.
+- The sidebar selector persists per browser in the `cante_llm` cookie and is used by chat, checks, customer health, and post-chat memory extraction.
 
 Validation lives *above* the seam: providers return raw text, and one Zod schema parses it in `completeJson()`. That's what keeps the two from drifting into accepting different shapes.
 

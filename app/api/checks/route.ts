@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { runCheck } from "@/lib/checks/run";
 import { getDefaultCustomerId, getRunHistory } from "@/lib/db/queries";
+import { normalizeProviderChoice, PROVIDER_COOKIE } from "@/lib/llm";
 
 export const runtime = "nodejs";
 // The judgment stage shells out to the Claude Code CLI and can run for
@@ -28,7 +29,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No customers. Run `npm run db:seed`." }, { status: 404 });
     }
 
-    const { runId } = await runCheck(customerId);
+    const cookieProvider = request.headers
+      .get("cookie")
+      ?.split(";")
+      .map((part) => part.trim().split("="))
+      .find(([name]) => name === PROVIDER_COOKIE)?.[1];
+    const providerChoice = normalizeProviderChoice(body.provider ?? cookieProvider);
+
+    const { runId } = await runCheck(customerId, providerChoice);
     return NextResponse.json({ ok: true, runId });
   } catch (err) {
     // The run row is already marked failed with this message by runCheck; the

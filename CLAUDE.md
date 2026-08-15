@@ -45,7 +45,7 @@ detail page. `npm run check` is the fastest way to test without the browser.
 ## Layout
 
 ```
-lib/llm/          types.ts = the seam (+ streaming) · claude-code.ts (works) · api.ts (stub) · index.ts (factory)
+lib/llm/          types.ts = the seam (+ streaming) · claude-code.ts (works) · codex-cli.ts (local fallback) · api.ts (stub) · index.ts (factory)
 lib/sources/      registry.ts (sources as data) · fetch.ts (no AI, plain fetch+parse)
 lib/checks/       judge.ts (prompt + Zod schema) · run.ts (fetch → judge → store)
 lib/db/           schema.ts · client.ts · queries.ts
@@ -74,6 +74,12 @@ return raw text and never validate; one Zod schema parses it in
 `completeJson()`, so the two providers cannot drift into accepting different
 shapes. Switching to the API later is `lib/llm/api.ts` plus one env var — keep it
 that way.
+
+**Provider switching is local-only.** The sidebar selector writes a `cante_llm`
+cookie. `claude-code` is the working default. `codex-cli` is the intended
+OpenAI/ChatGPT fallback through a signed-in local Codex CLI, not an API key; it
+is only selectable when `codex --version` works. `api` stays visible but disabled
+until the user explicitly accepts API spend.
 
 **Streaming is optional on the seam.** `LlmProvider.stream?()` yields
 `StreamEvent`s (`tool_start` / `tool_end` / `thinking` / `text` / `done` /
@@ -160,6 +166,11 @@ the editable memory list as full-width cards, with the same add / confirm /
 delete actions. Keep this separation: memory feeds future checks, so it needs
 room to scan and verify instead of being buried in chat chrome.
 
+**LLM provider switcher lives at the bottom of the sidebar.** It shows Claude
+Code, Codex / ChatGPT, and Hosted API health. Only healthy providers can be
+selected. This exists for rate-limit fallback, but still obeys rule 1: Codex is
+via local CLI login, not OpenAI API billing.
+
 ⚠️ **Don't run `npm run build` while `npm run dev` is running** — the build
 overwrites `.next` underneath the dev server and it starts serving stale CSS with
 no error. Symptom: edits to `globals.css` silently don't appear. Fix: kill dev,
@@ -169,11 +180,11 @@ no error. Symptom: edits to `globals.css` silently don't appear. Fix: kill dev,
 
 Two separate things, both new:
 
-**Conversations** (`conversations` + `chat_messages`) — saved chats, listed in the
-chat rail, reopenable. History is read **from the database**, never trusted from
-the client. The CLI has no session of its own, so prior turns exist only because
-we put them in the prompt; before this the chat couldn't answer "what did I just
-ask?".
+**Conversations** (`conversations` + `chat_messages`) — saved chats, listed under
+Chat in the main sidebar, reopenable. History is read **from the database**,
+never trusted from the client. The CLI has no session of its own, so prior turns
+exist only because we put them in the prompt; before this the chat couldn't
+answer "what did I just ask?".
 
 **Memory** (`memories`) — durable context about the customer, scoped by
 `customer_id`. Read by the chat **and by `lib/checks/judge.ts`**, which is the

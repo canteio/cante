@@ -52,7 +52,13 @@ Two stages, kept separate because a **fetch failure** and a **bad judgment call*
 
 **2. Judge — `lib/checks/judge.ts`.** Reads the parsed entries plus the customer profile and the dedup log, and judges relevance the way a person would — not keyword matching, since most relevant regulations won't contain "PVC" or "tarpaulin" in the title. Returns a Zod-validated verdict per regulation (`flagged` / `noted` / `baseline` / `clear`) plus a ready-to-send message.
 
-The model sits behind a provider seam in `lib/llm/`. Today the only implementation shells out to the local `claude` CLI. `lib/llm/api.ts` is a deliberate stub — switching to the hosted API later is that one file plus an env var, because nothing above the interface knows which provider it got. Validation lives *above* the seam (both providers return raw text; one Zod schema parses it), so the two can't drift into accepting different shapes.
+The model sits behind a provider seam in `lib/llm/`. The working default shells
+out to the local `claude` CLI. The sidebar can also select a local Codex /
+ChatGPT CLI provider when `codex --version` is healthy. `lib/llm/api.ts` is a
+deliberate hosted-API stub — switching to paid API usage later is an explicit
+decision, not something an unset variable can trigger. Validation lives *above*
+the seam (providers return raw text; one Zod schema parses it), so they can't
+drift into accepting different shapes.
 
 Delivery is manual: open the run, copy the "ready to send" block into WhatsApp. Automating that is a deliberate fast-follow, not a v1 blocker.
 

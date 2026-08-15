@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { Brain, ListChecks, MessageSquare } from "lucide-react";
+import { cookies } from "next/headers";
 import { ChatNav } from "@/components/dashboard/chat-nav";
+import { ProviderSwitcher } from "@/components/dashboard/provider-switcher";
 import { listCustomers } from "@/lib/db/queries";
-import { getProvider } from "@/lib/llm";
+import { normalizeProviderChoice, PROVIDER_COOKIE } from "@/lib/llm";
 
 /**
  * Sidebar in Mike's shape: brand mark, nav rows, a customer block, and status
@@ -19,8 +21,7 @@ export async function Sidebar({
   activeConversationId?: string | null;
 }) {
   const customers = await listCustomers();
-  const provider = getProvider();
-  const health = await provider.available();
+  const selectedProvider = normalizeProviderChoice((await cookies()).get(PROVIDER_COOKIE)?.value);
 
   return (
     <aside className="sidebar">
@@ -68,12 +69,7 @@ export async function Sidebar({
           <Brain size={14} strokeWidth={1.75} />
           Memory
         </Link>
-        <div className="row" style={{ marginBottom: 6 }}>
-          <span className={`pill ${health.ok ? "pill-ok" : "pill-bad"}`}>{provider.name}</span>
-        </div>
-        <div style={{ fontSize: "0.6875rem", color: "var(--text-muted)", lineHeight: 1.45 }}>
-          {health.detail}
-        </div>
+        <ProviderSwitcher initialProvider={selectedProvider} />
       </div>
     </aside>
   );
