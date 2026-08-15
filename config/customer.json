@@ -1,0 +1,66 @@
+{
+  "_README": "Profile read by the judgment stage (daily-prompt-check.md). Anything marked \"confirmed\": false is an educated guess, NOT verified with the customer — the judgment stage must not present an alert as HS-code-specific while these are unconfirmed.",
+
+  "customer": {
+    "name": "MA",
+    "product": "PVC tarpaulin (terpal PVC)",
+    "city": "Surabaya",
+    "country": "Indonesia",
+    "side_of_trade": "export",
+    "language": {
+      "primary": "id-ID",
+      "alert_format": "Bahasa Indonesia, plus a one-line English gloss"
+    },
+    "contact": {
+      "name": null,
+      "role": null,
+      "whatsapp": null,
+      "confirmed": false,
+      "_todo": "Readme next step 2 — get the real compliance contact."
+    }
+  },
+
+  "hs_codes": {
+    "confirmed": false,
+    "_todo": "Readme next step 2 — get MA's actual declared HS code(s) off a real export document (PEB / invoice). Until then these are plausible candidates only, based on the product description.",
+    "candidates": [
+      {
+        "code": "3921.90",
+        "basis": "Other plates/sheets/film/foil of plastics — where PVC-coated sheet material commonly sits",
+        "confirmed": false
+      },
+      {
+        "code": "6306.12",
+        "basis": "Tarpaulins/awnings of synthetic fibres — where a woven-base coated tarpaulin can be classified instead",
+        "confirmed": false
+      },
+      {
+        "code": "3926.90",
+        "basis": "Other articles of plastics — fallback if declared as a finished plastic article",
+        "confirmed": false
+      }
+    ]
+  },
+
+  "destination_markets": {
+    "confirmed": false,
+    "countries": [],
+    "_todo": "Ask MA which countries they actually ship to. Until this is filled in, the judgment stage cannot assess destination-specific rules (trade agreements, country bans) and should not imply that it did."
+  },
+
+  "relevance_guidance": {
+    "likely_relevant": [
+      "Permendag 'Kebijakan dan Pengaturan Ekspor' and any amendment to it",
+      "New or changed export licensing, permits, or documentation (PEB, LS/surveyor, SKA/certificate of origin)",
+      "HS reclassification or tariff/duty changes touching plastics, PVC, or coated textiles (Ch. 39, Ch. 63)",
+      "Export bans, quotas, or restrictions that catch plastics or manufactured goods generally",
+      "Changes to rules for the destination markets above, once those are known"
+    ],
+    "almost_never_relevant": [
+      "Harga Patokan Ekspor (HPE) / Harga Referensi decrees — commodity reference pricing for mining, palm, agriculture and forestry. These dominate the feed by volume and do not cover PVC tarpaulin.",
+      "Daftar Merek RBD Palm Olein (branded cooking oil registers)",
+      "Single-commodity rules: kratom, coal, ferroalloy, cooking oil, horticulture, bananas/pineapple"
+    ],
+    "_note": "This is guidance for judgment, not a keyword filter. A rule in the 'almost never' list can still matter if it changes an underlying export procedure that applies to all exporters — read it, don't pattern-match it."
+  }
+}

@@ -1,0 +1,41 @@
+import { NextResponse } from "next/server";
+import { runCheck } from "@/lib/checks/run";
+import { getDefaultCustomerId, getRunHistory } from "@/lib/db/queries";
+
+export const runtime = "nodejs";
+// The judgment stage shells out to the Claude Code CLI and can run for
+// minutes. Never statically evaluate this route.
+export const dynamic = "force-dynamic";
+export const maxDuration = 800;
+
+/** GET /api/checks — run history for a customer. */
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const customerId = url.searchParams.get("customerId") ?? (await getDefaultCustomerId());
+  if (!customerId) {
+    return NextResponse.json({ error: "No customers. Run `npm run db:seed`." }, { status: 404 });
+  }
+  return NextResponse.json({ customerId, runs: await getRunHistory(customerId) });
+}
+
+/** POST /api/checks — trigger a check run. A scheduler can call this unchanged. */
+export async function POST(request: Request) {
+  let customerId: string | null = null;
+  try {
+    const body = await request.json().catch(() => ({}));
+    customerId = body.customerId ?? (await getDefaultCustomerId());
+    if (!customerId) {
+      return NextResponse.json({ error: "No customers. Run `npm run db:seed`." }, { status: 404 });
+    }
+
+    const { runId } = await runCheck(customerId);
+    return NextResponse.json({ ok: true, runId });
+  } catch (err) {
+    // The run row is already marked failed with this message by runCheck; the
+    // response says so plainly rather than returning a bare 500.
+    return NextResponse.json(
+      { ok: false, error: err instanceof Error ? err.message : String(err) },
+      { status: 500 },
+    );
+  }
+}

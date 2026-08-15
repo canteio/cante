@@ -1,0 +1,19 @@
+.env
+.DS_Store
+node_modules/
+.next/
+next-env.d.ts
+*.tsbuildinfo
+
+# Local SQLite database — regenerate with `npm run db:push && npm run db:seed`
+cante.db
+cante.db-shm
+cante.db-wal
+
+.claude/.docs-reminded
+
+# Raw source HTML — rewritten on every check run
+raw/
+
+# Reference copy of another project, kept for design reference only
+mike-main/
