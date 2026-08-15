@@ -149,6 +149,17 @@ height. Easing is Mike's own panel curve, `cubic-bezier(0.22,1,0.36,1)` / 500ms.
 The greeting is `position: absolute` above the composer so it travels with it
 without affecting layout.
 
+**Chat history lives under Chat in the main sidebar.** There is no second chat
+rail now. Conversation links route through `/chat?conversationId=...`, and the
+client chat panel adopts the selected conversation from that query param. New
+conversations dispatch `cante:conversations-updated` so the nested sidebar list
+refreshes without a full reload.
+
+**Memory is its own bottom sidebar button and main screen.** `/memory` renders
+the editable memory list as full-width cards, with the same add / confirm /
+delete actions. Keep this separation: memory feeds future checks, so it needs
+room to scan and verify instead of being buried in chat chrome.
+
 ⚠️ **Don't run `npm run build` while `npm run dev` is running** — the build
 overwrites `.next` underneath the dev server and it starts serving stale CSS with
 no error. Symptom: edits to `globals.css` silently don't appear. Fix: kill dev,
@@ -177,7 +188,7 @@ that finally fixes the unconfirmed-HS-code gap.
 - `renderMemoryForPrompt()` renders the two groups under separate headings, and
   both consumers use it, so chat and judgment can't develop different ideas
   about what counts as established.
-- Promotion to confirmed is a human click in the sidebar. Never automate it.
+- Promotion to confirmed is a human click on the Memory page. Never automate it.
 
 Extraction (`lib/checks/remember.ts`) runs **after** the answer has streamed, so
 it costs the user no latency, and swallows its own failures — a missed memory is

@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ListChecks, MessageSquare } from "lucide-react";
+import { Brain, ListChecks, MessageSquare } from "lucide-react";
+import { ChatNav } from "@/components/dashboard/chat-nav";
 import { listCustomers } from "@/lib/db/queries";
 import { getProvider } from "@/lib/llm";
 
@@ -10,7 +11,13 @@ import { getProvider } from "@/lib/llm";
  * The provider status stays here even though Mike has no equivalent — whether
  * the model is reachable is the one fact that decides if a check can run.
  */
-export async function Sidebar({ active }: { active: "checks" | "chat" }) {
+export async function Sidebar({
+  active,
+  activeConversationId = null,
+}: {
+  active: "checks" | "chat" | "memory";
+  activeConversationId?: string | null;
+}) {
   const customers = await listCustomers();
   const provider = getProvider();
   const health = await provider.available();
@@ -31,6 +38,7 @@ export async function Sidebar({ active }: { active: "checks" | "chat" }) {
           <MessageSquare size={15} strokeWidth={1.75} />
           Chat
         </Link>
+        {active === "chat" && <ChatNav activeId={activeConversationId} />}
       </nav>
 
       <div className="side-section fade-2">
@@ -56,6 +64,10 @@ export async function Sidebar({ active }: { active: "checks" | "chat" }) {
       </div>
 
       <div className="sidebar-foot fade-3">
+        <Link href="/memory" className="memory-nav" data-active={active === "memory"}>
+          <Brain size={14} strokeWidth={1.75} />
+          Memory
+        </Link>
         <div className="row" style={{ marginBottom: 6 }}>
           <span className={`pill ${health.ok ? "pill-ok" : "pill-bad"}`}>{provider.name}</span>
         </div>

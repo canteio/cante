@@ -71,12 +71,13 @@ The fetch layer reads from this table, skips sources marked blocked, and records
 The existing Python (`fetch_sources.py`, and the judgment logic in `daily-prompt-check.md`) gets ported into `lib/sources/fetch.ts` and `lib/checks/judge.ts` so everything lives in one runtime. Keep the behavior identical — especially the honest failure reporting and the "don't invent a change to seem useful" rule in the judgment step.
 
 ## UI
-- Sidebar (customer switcher — one entry now, built to hold many), main panel toggling between **Checks** (alert history) and **Chat** (Q&A).
+- Sidebar (customer switcher — one entry now, built to hold many), main panel toggling between **Checks** (alert history), **Chat** (Q&A), and **Memory** (customer facts used by chat and future checks).
 - **Superseded 2026-08-15:** the design is now copied from Mike directly, not just "inspired by" it. The warm-paper Cante palette (#F6F3EC / rust / Zilla Slab) is gone.
 - Mike's tokens: near-white neutrals (`--app-background: #f9fafb`, `--app-surface: #fdfdfe`), azure accent `rgb(0,136,255)`, `--radius: 0.625rem`, Inter for UI + EB Garamond for document-like content.
 - Its signature pieces, copied by value: the liquid-glass recipe (`rgba(255,255,255,.65)` + `blur(40px)` + an inset white top rim), the floating `rounded-[21px]` composer docked at the bottom of the chat, and the neutral-700→black gradient send button with an arrow.
 - Built in plain CSS rather than adopting Mike's Tailwind v4 + shadcn stack — same values, far smaller dependency surface.
 - A **"Run check now"** button hitting `POST /api/checks` — manual trigger, no cron yet. The API route is written so a scheduler can call the same endpoint later without changes.
+- Saved chat conversations are nested under the **Chat** nav item in the main sidebar; there is no second chat rail. Memory moved to a bottom sidebar button and full main-screen management page.
 
 ## How the model gets called (added during the build)
 The plan assumed judgment would just happen inside the app; it didn't say *how*, and the honest answer is that a Next.js server can't use the Claude Code login the way the markdown pipeline did. So the model sits behind `LlmProvider` in `lib/llm/`:

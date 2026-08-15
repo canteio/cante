@@ -12,7 +12,7 @@ import type { Memory } from "@/lib/db/schema";
  *
  * Everything it produces lands `confirmed: false`. The model is inferring from
  * conversation, and this project's whole discipline is that inferred and
- * verified must stay visibly apart. A human promotes it in the sidebar.
+ * verified must stay visibly apart. A human promotes it on the Memory page.
  */
 
 const ExtractionSchema = z.object({

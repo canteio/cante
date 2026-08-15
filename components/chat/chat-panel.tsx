@@ -2,7 +2,6 @@
 
 import { ArrowRight, Check, Globe, Search, Square } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { ChatSidebar } from "@/components/chat/chat-sidebar";
 import { Markdown } from "@/components/chat/markdown";
 
 type Activity = { id: string; name: string; detail: string; done: boolean };
@@ -16,14 +15,18 @@ type Message =
  * tool calls appear as live pills, thinking shows as a shimmer, and the answer
  * renders as Markdown as it arrives.
  */
-export function ChatPanel({ customerId }: { customerId: string | null }) {
+export function ChatPanel({
+  customerId,
+  initialConversationId,
+}: {
+  customerId: string | null;
+  initialConversationId: string | null;
+}) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [conversationId, setConversationId] = useState<string | null>(null);
-  /** Bumped to make the sidebar reload its lists. */
-  const [railKey, setRailKey] = useState(0);
 
   async function openConversation(id: string) {
     setError(null);
@@ -73,6 +76,20 @@ export function ChatPanel({ customerId }: { customerId: string | null }) {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    if (initialConversationId) {
+      void openConversation(initialConversationId);
+    } else {
+      newChat();
+    }
+  }, [initialConversationId]);
+
+  useEffect(() => {
+    const onNew = () => newChat();
+    window.addEventListener("cante:chat-new", onNew);
+    return () => window.removeEventListener("cante:chat-new", onNew);
+  }, []);
 
   /** Mutate the in-flight agent message (always the last one). */
   function patchLast(fn: (m: Extract<Message, { role: "agent" }>) => void) {
@@ -158,7 +175,10 @@ export function ChatPanel({ customerId }: { customerId: string | null }) {
             // A brand-new chat adopts the id the server created, so the next
             // turn appends instead of starting another conversation.
             setConversationId(ev.id);
-            setRailKey((k) => k + 1);
+            window.history.replaceState(null, "", `/chat?conversationId=${ev.id}`);
+            window.dispatchEvent(
+              new CustomEvent("cante:conversations-updated", { detail: { id: ev.id } }),
+            );
           } else if (ev.type === "done") {
             // Semantic end of the answer. The connection stays open a little
             // longer while memory extraction runs, so don't wait for the reader.
@@ -167,7 +187,7 @@ export function ChatPanel({ customerId }: { customerId: string | null }) {
               m.thinking = false;
             });
           } else if (ev.type === "memory_updated") {
-            setRailKey((k) => k + 1);
+            window.dispatchEvent(new Event("cante:memory-updated"));
           } else if (ev.type === "error") {
             setError(ev.message);
           }
@@ -187,15 +207,8 @@ export function ChatPanel({ customerId }: { customerId: string | null }) {
   const isEmpty = messages.length === 0 && !busy;
 
   return (
-    <>
-      <ChatSidebar
-        activeId={conversationId}
-        onOpen={openConversation}
-        onNew={newChat}
-        refreshKey={railKey}
-      />
-      <div className={`chat-page${isEmpty ? " is-empty" : ""}`}>
-        <div className="chat-scroll">
+    <div className={`chat-page${isEmpty ? " is-empty" : ""}`}>
+      <div className="chat-scroll">
         <div className="chat-inner">
           {messages.map((m, i) =>
             m.role === "user" ? (
@@ -286,8 +299,7 @@ export function ChatPanel({ customerId }: { customerId: string | null }) {
             </div>
           </div>
         </div>
-        </div>
       </div>
-    </>
+    </div>
   );
 }
