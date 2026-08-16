@@ -2,16 +2,20 @@ import { AlertTriangle, CheckCircle2, CircleSlash, ExternalLink } from "lucide-r
 import { RunButton } from "@/components/dashboard/run-button";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { getDefaultCustomerId, getRunHistory, type RunHistoryEntry } from "@/lib/db/queries";
+import { normalizeJurisdiction } from "@/lib/countries";
+import { CountryTabs } from "@/components/dashboard/country-tabs";
 
 export const dynamic = "force-dynamic";
 
-export default async function ChecksPage() {
+export default async function ChecksPage({ searchParams }: { searchParams: Promise<{ country?: string }> }) {
+  const params = await searchParams;
+  const jurisdiction = normalizeJurisdiction(params.country);
   const customerId = await getDefaultCustomerId();
-  const history = customerId ? await getRunHistory(customerId) : [];
+  const history = customerId ? await getRunHistory(customerId, 30, jurisdiction) : [];
 
   return (
     <div className="shell">
-      <Sidebar active="checks" />
+      <Sidebar active="checks" jurisdiction={jurisdiction} />
       <main className="main">
         <div className="main-scroll">
           <div className="main-inner">
@@ -20,7 +24,10 @@ export default async function ChecksPage() {
                 <h1>Checks</h1>
                 <p>Every run, and what each source actually did.</p>
               </div>
-              <RunButton customerId={customerId} />
+              <div className="page-actions">
+                <CountryTabs value={jurisdiction} />
+                <RunButton customerId={customerId} country={jurisdiction} />
+              </div>
             </div>
 
             {!customerId ? (
@@ -31,7 +38,7 @@ export default async function ChecksPage() {
             ) : history.length === 0 ? (
               <div className="empty">
                 No checks yet. Press <strong>Run check now</strong> to fetch the live
-                Kemendag sources.
+                {jurisdiction === "Indonesia" ? "Indonesian" : "United States"} sources.
               </div>
             ) : (
               history.map((entry) => <RunCard key={entry.run.id} entry={entry} />)
@@ -201,7 +208,7 @@ function RunCard({ entry }: { entry: RunHistoryEntry }) {
               {f.url && (
                 <p>
                   <a href={f.url} target="_blank" rel="noreferrer" className="mono">
-                    JDIH <ExternalLink size={11} style={{ display: "inline", marginBottom: -1 }} />
+                    Source <ExternalLink size={11} style={{ display: "inline", marginBottom: -1 }} />
                   </a>
                 </p>
               )}

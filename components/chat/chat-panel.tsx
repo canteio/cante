@@ -1,8 +1,14 @@
 "use client";
 
 import { ArrowRight, ChevronDown, Globe, Square } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Markdown } from "@/components/chat/markdown";
+import {
+  SUPPORTED_JURISDICTIONS,
+  normalizeJurisdiction,
+  type JurisdictionName,
+} from "@/lib/countries";
 
 type SearchResult = { title: string; url: string; hostname: string };
 
@@ -54,21 +60,27 @@ type Message =
 export function ChatPanel({
   customerId,
   initialConversationId,
+  initialCountry,
 }: {
   customerId: string | null;
   initialConversationId: string | null;
+  initialCountry: JurisdictionName;
 }) {
+  const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [conversationId, setConversationId] = useState<string | null>(null);
+  const [country, setCountry] = useState<JurisdictionName>(initialCountry);
+  const [countryMenuOpen, setCountryMenuOpen] = useState(false);
 
   async function openConversation(id: string) {
     setError(null);
     const res = await fetch(`/api/conversations?id=${id}`);
     if (!res.ok) return;
     const data = await res.json();
+    setCountry(normalizeJurisdiction(data.conversation?.jurisdiction));
     setConversationId(id);
     setMessages(
       (data.messages ?? []).map((m: any) =>
@@ -103,6 +115,17 @@ export function ChatPanel({
     setInput("");
   }
 
+  function chooseCountry(next: JurisdictionName) {
+    if (busy || next === country) {
+      setCountryMenuOpen(false);
+      return;
+    }
+    setCountry(next);
+    setCountryMenuOpen(false);
+    newChat();
+    router.push(`/chat?country=${encodeURIComponent(next)}`);
+  }
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -127,12 +150,13 @@ export function ChatPanel({
   }, [messages]);
 
   useEffect(() => {
+    setCountry(initialCountry);
     if (initialConversationId) {
       void openConversation(initialConversationId);
     } else {
       newChat();
     }
-  }, [initialConversationId]);
+  }, [initialConversationId, initialCountry]);
 
   useEffect(() => {
     const onNew = () => newChat();
@@ -193,7 +217,7 @@ export function ChatPanel({
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question, customerId, conversationId }),
+        body: JSON.stringify({ question, customerId, conversationId, country }),
         signal: abortController.signal,
       });
 
@@ -287,7 +311,11 @@ export function ChatPanel({
             // A brand-new chat adopts the id the server created, so the next
             // turn appends instead of starting another conversation.
             setConversationId(ev.id);
-            window.history.replaceState(null, "", `/chat?conversationId=${ev.id}`);
+            window.history.replaceState(
+              null,
+              "",
+              `/chat?country=${encodeURIComponent(country)}&conversationId=${ev.id}`,
+            );
             window.dispatchEvent(
               new CustomEvent("cante:conversations-updated", { detail: { id: ev.id } }),
             );
@@ -377,8 +405,9 @@ export function ChatPanel({
           <div className="greeting">
             <h2>What would you like to know?</h2>
             <p>
-              Grounded in stored run data, and able to check official sources on the web when
-              the answer isn&apos;t already here.
+              {country === "United States"
+                ? "Domestic, distribution, and export compliance grounded in your U.S. profile."
+                : "Indonesian rules grounded in stored runs, KBLI, HS codes, and customer memory."}
             </p>
           </div>
 
@@ -399,6 +428,42 @@ export function ChatPanel({
               />
             </div>
             <div className="composer-bar">
+              <div className="country-picker">
+                <button
+                  type="button"
+                  className="country-picker-current"
+                  aria-haspopup="menu"
+                  aria-expanded={countryMenuOpen}
+                  onClick={() => setCountryMenuOpen((open) => !open)}
+                  disabled={busy}
+                >
+                  <span className="country-code">
+                    {country === "United States" ? "US" : "ID"}
+                  </span>
+                  {country}
+                  <ChevronDown size={12} />
+                </button>
+                {countryMenuOpen && (
+                  <div className="country-picker-menu" role="menu">
+                    {SUPPORTED_JURISDICTIONS.map((option) => (
+                      <button
+                        key={option.code}
+                        type="button"
+                        role="menuitemradio"
+                        aria-checked={option.name === country}
+                        data-active={option.name === country}
+                        onClick={() => chooseCountry(option.name)}
+                      >
+                        <span className="country-code">{option.code}</span>
+                        <span>
+                          <strong>{option.name}</strong>
+                          <small>{option.description}</small>
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
               <span className="composer-hint">
                 <Globe size={11} /> Can search the web
               </span>

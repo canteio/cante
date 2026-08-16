@@ -10,6 +10,7 @@ import {
   customerProfiles,
   customers,
   findings,
+  jurisdictionProfiles,
   memories,
   sourceResults,
   sources,
@@ -18,9 +19,11 @@ import {
   type Conversation,
   type Customer,
   type CustomerProfile,
+  type JurisdictionProfile,
   type Memory,
   type MessageActivity,
 } from "@/lib/db/schema";
+import { DEFAULT_JURISDICTION, type JurisdictionName } from "@/lib/countries";
 
 export async function listCustomers(): Promise<Customer[]> {
   return db.select().from(customers).orderBy(customers.name).all();
@@ -40,6 +43,82 @@ export async function getCustomerWithProfile(
   return { customer, profile };
 }
 
+export async function getJurisdictionProfile(
+  customerId: string,
+  country: JurisdictionName,
+): Promise<JurisdictionProfile | null> {
+  return (
+    db
+      .select()
+      .from(jurisdictionProfiles)
+      .where(
+        and(
+          eq(jurisdictionProfiles.customerId, customerId),
+          eq(jurisdictionProfiles.country, country),
+        ),
+      )
+      .get() ?? null
+  );
+}
+
+export async function upsertJurisdictionProfile(
+  customerId: string,
+  country: JurisdictionName,
+  values: Partial<
+    Pick<
+      JurisdictionProfile,
+      | "legalName"
+      | "facilityAddresses"
+      | "naicsCodes"
+      | "products"
+      | "skus"
+      | "materialsChemicals"
+      | "manufacturingProcesses"
+      | "wasteStreams"
+      | "distributionStates"
+      | "labelsClaims"
+      | "htsScheduleBCodes"
+      | "exportClassifications"
+      | "exportCountries"
+      | "regulatedProductFlags"
+    >
+  >,
+): Promise<JurisdictionProfile> {
+  const existing = await getJurisdictionProfile(customerId, country);
+  const updatedAt = new Date().toISOString();
+  if (existing) {
+    db.update(jurisdictionProfiles)
+      .set({ ...values, updatedAt })
+      .where(eq(jurisdictionProfiles.id, existing.id))
+      .run();
+    return (await getJurisdictionProfile(customerId, country))!;
+  }
+
+  db.insert(jurisdictionProfiles)
+    .values({
+      id: randomUUID(),
+      customerId,
+      country,
+      legalName: values.legalName ?? null,
+      facilityAddresses: values.facilityAddresses ?? [],
+      naicsCodes: values.naicsCodes ?? [],
+      products: values.products ?? [],
+      skus: values.skus ?? [],
+      materialsChemicals: values.materialsChemicals ?? [],
+      manufacturingProcesses: values.manufacturingProcesses ?? [],
+      wasteStreams: values.wasteStreams ?? [],
+      distributionStates: values.distributionStates ?? [],
+      labelsClaims: values.labelsClaims ?? [],
+      htsScheduleBCodes: values.htsScheduleBCodes ?? [],
+      exportClassifications: values.exportClassifications ?? [],
+      exportCountries: values.exportCountries ?? [],
+      regulatedProductFlags: values.regulatedProductFlags ?? [],
+      updatedAt,
+    })
+    .run();
+  return (await getJurisdictionProfile(customerId, country))!;
+}
+
 export async function getDefaultCustomerId(): Promise<string | null> {
   const first = db.select({ id: customers.id }).from(customers).orderBy(customers.name).get();
   return first?.id ?? null;
@@ -53,13 +132,19 @@ export async function listSources() {
  * Everything the dashboard renders for one run, including per-source results —
  * a run is never shown without the evidence of which sources actually worked.
  */
-export async function getRunHistory(customerId: string, limit = 30) {
+export async function getRunHistory(
+  customerId: string,
+  limit = 30,
+  jurisdiction: JurisdictionName = DEFAULT_JURISDICTION,
+) {
   reapStaleRuns();
 
   const runs = db
     .select()
     .from(checkRuns)
-    .where(eq(checkRuns.customerId, customerId))
+    .where(
+      and(eq(checkRuns.customerId, customerId), eq(checkRuns.jurisdiction, jurisdiction)),
+    )
     .orderBy(desc(checkRuns.startedAt))
     .limit(limit)
     .all();
@@ -128,11 +213,19 @@ export function reapStaleRuns(maxAgeMs = 60 * 60 * 1000): number {
 
 /* ─── Conversations ──────────────────────────────────────────────── */
 
-export async function listConversations(customerId: string): Promise<Conversation[]> {
+export async function listConversations(
+  customerId: string,
+  jurisdiction: JurisdictionName = DEFAULT_JURISDICTION,
+): Promise<Conversation[]> {
   return db
     .select()
     .from(conversations)
-    .where(eq(conversations.customerId, customerId))
+    .where(
+      and(
+        eq(conversations.customerId, customerId),
+        eq(conversations.jurisdiction, jurisdiction),
+      ),
+    )
     .orderBy(desc(conversations.updatedAt))
     .all();
 }
@@ -151,9 +244,15 @@ export async function getConversation(
   return { conversation, messages: msgs };
 }
 
-export async function createConversation(customerId: string, title: string): Promise<string> {
+export async function createConversation(
+  customerId: string,
+  title: string,
+  jurisdiction: JurisdictionName = DEFAULT_JURISDICTION,
+): Promise<string> {
   const id = randomUUID();
-  db.insert(conversations).values({ id, customerId, title: truncateTitle(title) }).run();
+  db.insert(conversations)
+    .values({ id, customerId, jurisdiction, title: truncateTitle(title) })
+    .run();
   return id;
 }
 
@@ -185,11 +284,18 @@ function truncateTitle(text: string): string {
 
 /* ─── Memory ─────────────────────────────────────────────────────── */
 
-export async function listMemories(customerId: string): Promise<Memory[]> {
+export async function listMemories(
+  customerId: string,
+  jurisdiction?: JurisdictionName,
+): Promise<Memory[]> {
   return db
     .select()
     .from(memories)
-    .where(eq(memories.customerId, customerId))
+    .where(
+      jurisdiction
+        ? and(eq(memories.customerId, customerId), eq(memories.jurisdiction, jurisdiction))
+        : eq(memories.customerId, customerId),
+    )
     .orderBy(desc(memories.confirmed), desc(memories.createdAt))
     .all();
 }
@@ -200,6 +306,7 @@ export async function getMemory(id: string): Promise<Memory | null> {
 
 export async function addMemory(entry: {
   customerId: string;
+  jurisdiction?: JurisdictionName;
   kind: string;
   content: string;
   source?: string | null;
@@ -214,7 +321,12 @@ export async function addMemory(entry: {
   const existing = db
     .select()
     .from(memories)
-    .where(eq(memories.customerId, entry.customerId))
+    .where(
+      and(
+        eq(memories.customerId, entry.customerId),
+        eq(memories.jurisdiction, entry.jurisdiction ?? DEFAULT_JURISDICTION),
+      ),
+    )
     .all();
   const normalised = content.toLowerCase();
   if (existing.some((m) => m.content.trim().toLowerCase() === normalised)) return null;
@@ -222,6 +334,7 @@ export async function addMemory(entry: {
   const row = {
     id: randomUUID(),
     customerId: entry.customerId,
+    jurisdiction: entry.jurisdiction ?? DEFAULT_JURISDICTION,
     kind: entry.kind,
     content,
     source: entry.source ?? null,
@@ -242,11 +355,19 @@ export async function deleteMemory(id: string): Promise<void> {
 
 /* ─── Checklist ─────────────────────────────────────────────────── */
 
-export async function listChecklistItems(customerId: string): Promise<ChecklistItem[]> {
+export async function listChecklistItems(
+  customerId: string,
+  jurisdiction: JurisdictionName = DEFAULT_JURISDICTION,
+): Promise<ChecklistItem[]> {
   return db
     .select()
     .from(checklistItems)
-    .where(eq(checklistItems.customerId, customerId))
+    .where(
+      and(
+        eq(checklistItems.customerId, customerId),
+        eq(checklistItems.jurisdiction, jurisdiction),
+      ),
+    )
     .orderBy(checklistItems.category, desc(checklistItems.priority), desc(checklistItems.updatedAt))
     .all();
 }
@@ -285,7 +406,10 @@ export function renderMemoryForPrompt(entries: Memory[]): string {
 }
 
 /** Regulations already flagged in past runs — the dedup log. */
-export async function getSeenRegulations(customerId: string) {
+export async function getSeenRegulations(
+  customerId: string,
+  jurisdiction: JurisdictionName = DEFAULT_JURISDICTION,
+) {
   return db
     .select({
       regulationRef: findings.regulationRef,
@@ -295,7 +419,10 @@ export async function getSeenRegulations(customerId: string) {
       createdAt: findings.createdAt,
     })
     .from(findings)
-    .where(eq(findings.customerId, customerId))
+    .innerJoin(checkRuns, eq(findings.checkRunId, checkRuns.id))
+    .where(
+      and(eq(findings.customerId, customerId), eq(checkRuns.jurisdiction, jurisdiction)),
+    )
     .orderBy(desc(findings.createdAt))
     .all();
 }

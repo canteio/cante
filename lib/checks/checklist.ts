@@ -5,12 +5,16 @@ import {
   checklistItems,
   customerProfiles,
   customers,
+  jurisdictionProfiles,
   kbliRecords,
   memories,
   type ChecklistItem,
+  type Customer,
+  type CustomerProfile,
   type Memory,
 } from "@/lib/db/schema";
 import { extractKbliCodes, resolveHsCodes } from "@/lib/checks/facts";
+import { DEFAULT_JURISDICTION, type JurisdictionName } from "@/lib/countries";
 
 type ChecklistStatus =
   | "unknown"
@@ -19,7 +23,13 @@ type ChecklistStatus =
   | "completed"
   | "expiring"
   | "blocked"
-  | "needs_review";
+  | "needs_review"
+  | "verified"
+  | "needs_evidence"
+  | "monitored"
+  | "not_applicable"
+  | "source_failed"
+  | "requires_expert_review";
 
 type ChecklistDraft = {
   /** Stable identity — rows are matched and pruned on this, never on the title. */
@@ -42,7 +52,10 @@ type ChecklistDraft = {
  * KBLI records, and memory. This intentionally creates review tasks instead
  * of silently upgrading unconfirmed chat leads into verified compliance facts.
  */
-export async function refreshChecklistForCustomer(customerId: string): Promise<void> {
+export async function refreshChecklistForCustomer(
+  customerId: string,
+  jurisdiction: JurisdictionName = DEFAULT_JURISDICTION,
+): Promise<void> {
   const customer = db.select().from(customers).where(eq(customers.id, customerId)).get();
   const profile = db
     .select()
@@ -51,7 +64,21 @@ export async function refreshChecklistForCustomer(customerId: string): Promise<v
     .get();
   if (!customer || !profile) return;
 
-  const memoryRows = db.select().from(memories).where(eq(memories.customerId, customerId)).all();
+  if (jurisdiction === "United States") {
+    await refreshUsChecklist(customerId, customer, profile);
+    return;
+  }
+
+  const memoryRows = db
+    .select()
+    .from(memories)
+    .where(
+      and(
+        eq(memories.customerId, customerId),
+        eq(memories.jurisdiction, jurisdiction),
+      ),
+    )
+    .all();
   await rememberKbliLeads(customerId, memoryRows);
 
   const kbliRows = db.select().from(kbliRecords).where(eq(kbliRecords.customerId, customerId)).all();
@@ -259,10 +286,324 @@ export async function refreshChecklistForCustomer(customerId: string): Promise<v
   ];
 
   for (const draft of drafts) {
-    await upsertChecklistItem(customerId, draft);
+    await upsertChecklistItem(customerId, jurisdiction, draft);
   }
 
-  pruneObsoleteChecklistItems(customerId, drafts);
+  pruneObsoleteChecklistItems(customerId, jurisdiction, drafts);
+}
+
+async function refreshUsChecklist(
+  customerId: string,
+  customer: Customer,
+  baseProfile: CustomerProfile,
+): Promise<void> {
+  const jurisdiction = "United States" as const;
+  const us = db
+    .select()
+    .from(jurisdictionProfiles)
+    .where(
+      and(
+        eq(jurisdictionProfiles.customerId, customerId),
+        eq(jurisdictionProfiles.country, jurisdiction),
+      ),
+    )
+    .get();
+  const memoryRows = db
+    .select()
+    .from(memories)
+    .where(
+      and(eq(memories.customerId, customerId), eq(memories.jurisdiction, jurisdiction)),
+    )
+    .all();
+  const unconfirmedMemories = memoryRows.filter((memory) => !memory.confirmed);
+  const confirmedMemory = memoryRows.filter((memory) => memory.confirmed);
+  const remembered = (kind: string) =>
+    confirmedMemory.filter((memory) => memory.kind === kind).map((memory) => memory.content);
+  const rememberedCodes = (kind: string) =>
+    remembered(kind).map((content) => ({
+      code:
+        (kind === "naics"
+          ? content.match(/\b\d{2,6}\b/)?.[0]
+          : content.match(/\b(?:EAR99|[0-9][A-E][0-9]{3}|\d{4}(?:[.\s-]?\d{2}){1,3})\b/i)?.[0]) ??
+        content,
+      basis: `confirmed memory: ${content}`,
+      confirmed: true,
+    }));
+
+  const facts = {
+    facilities: [...(us?.facilityAddresses ?? []), ...remembered("location")],
+    naics: [...(us?.naicsCodes ?? []), ...rememberedCodes("naics")],
+    products: [
+      ...(us?.products?.length ? us.products : [baseProfile.productDescription].filter(Boolean)),
+      ...remembered("product"),
+    ],
+    skus: us?.skus ?? [],
+    materials: [...(us?.materialsChemicals ?? []), ...remembered("material")],
+    processes: [...(us?.manufacturingProcesses ?? []), ...remembered("process")],
+    waste: [...(us?.wasteStreams ?? []), ...remembered("waste")],
+    states: [...(us?.distributionStates ?? []), ...remembered("distribution_state")],
+    claims: [...(us?.labelsClaims ?? []), ...remembered("label_claim")],
+    hts: [...(us?.htsScheduleBCodes ?? []), ...rememberedCodes("hs_code")],
+    exportClasses: [
+      ...(us?.exportClassifications ?? []),
+      ...rememberedCodes("export_classification"),
+    ],
+    exportCountries: [...(us?.exportCountries ?? []), ...remembered("market")],
+    flags: [...(us?.regulatedProductFlags ?? []), ...remembered("product_flag")],
+  };
+  const codeFacts = (label: string, rows: { code: string; basis: string; confirmed: boolean }[]) =>
+    rows.map((row) => `${label} ${row.code} (${row.confirmed ? "confirmed" : "needs evidence"}): ${row.basis}`);
+  const confirmedCodes = (rows: { confirmed: boolean }[]) =>
+    rows.length > 0 && rows.every((row) => row.confirmed);
+  const hasNorthCarolinaFacility = facts.facilities.some((address) =>
+    /\b(NC|North Carolina|Charlotte|Mecklenburg)\b/i.test(address),
+  );
+  const hasExplicitNoDefenseSignal = facts.flags.some((flag) =>
+    /\b(no|not|non)[-\s]?(defen[cs]e|military|aerospace|space|itar)\b/i.test(flag),
+  );
+  const hasDefenseSignal = facts.flags.some(
+    (flag) =>
+      /\b(defen[cs]e|military|aerospace|space|itar)\b/i.test(flag) &&
+      !/\b(no|not|non)[-\s]?(defen[cs]e|military|aerospace|space|itar)\b/i.test(flag),
+  );
+  const hasConsumerProduct = facts.flags.some((flag) => /consumer product/i.test(flag));
+  const hasRegulatedProduct = facts.flags.some((flag) =>
+    /\b(food|device|drug|cosmetic|chemical|consumer product|electronics|automotive)\b/i.test(flag),
+  );
+  const hasExports = facts.exportCountries.length > 0 || facts.hts.length > 0 || facts.exportClasses.length > 0;
+
+  const drafts: ChecklistDraft[] = [
+    {
+      key: "us-naics-confirm",
+      title: "Confirm NAICS codes",
+      category: "business",
+      status: confirmedCodes(facts.naics) ? "verified" : "needs_evidence",
+      priority: "high",
+      whyApplies: "NAICS anchors industry-specific federal and state applicability, but is not sufficient by itself.",
+      linkedFacts: codeFacts("NAICS", facts.naics),
+      evidenceRequired: "Tax filing, SAM registration, Census classification, or a reviewed company activity description.",
+      sourceHealth: "manual_assisted",
+      confidence: confirmedCodes(facts.naics) ? "verified" : "lead",
+      openQuestions: facts.naics.length ? [] : ["What does each U.S. facility actually manufacture or distribute?"],
+    },
+    {
+      key: "us-facility-address",
+      title: "Confirm each facility and warehouse address",
+      category: "regional",
+      status: facts.facilities.length ? "verified" : "needs_evidence",
+      priority: "high",
+      whyApplies: "State OSHA, environmental permits, tax, zoning, fire, and local rules depend on the physical location.",
+      linkedFacts: facts.facilities,
+      evidenceRequired: "Street address and whether each site manufactures, stores, or only administers the business.",
+      sourceHealth: "manual_assisted",
+      confidence: facts.facilities.length ? "verified" : "lead",
+      openQuestions: facts.facilities.length ? [] : ["Which U.S. facilities and warehouses are in scope?"],
+    },
+    {
+      key: "us-product-category",
+      title: "Confirm product categories and regulated-product flags",
+      category: "product",
+      status: facts.products.length && facts.flags.length ? "verified" : "needs_evidence",
+      priority: "high",
+      whyApplies: "CPSC, FDA, USDA, FCC, DOT, and sector rules only apply after the actual products are classified.",
+      linkedFacts: [...facts.products, ...facts.skus.map((sku) => `SKU ${sku}`), ...facts.flags],
+      evidenceRequired: "Product catalogue, SKU list, intended users, technical specs, and regulated-category review.",
+      sourceHealth: "manual_assisted",
+      confidence: facts.flags.length ? "inferred" : "lead",
+      openQuestions: facts.flags.length ? [] : ["Are any products food, medical, chemical, electronic, automotive, or consumer goods?"],
+    },
+    {
+      key: "us-materials-sds",
+      title: "Confirm materials, chemicals, and SDS inventory",
+      category: "environment",
+      status: facts.materials.length ? "verified" : "needs_evidence",
+      priority: "high",
+      whyApplies: "Chemical identity and quantities drive OSHA HazCom, EPA TSCA, reporting, storage, and transport duties.",
+      linkedFacts: facts.materials,
+      evidenceRequired: "Current chemical inventory, supplier SDS files, annual quantities, and storage locations.",
+      sourceHealth: "manual_assisted",
+      confidence: facts.materials.length ? "inferred" : "lead",
+      openQuestions: facts.materials.length ? [] : ["Which chemicals and mixtures are used or stored, and in what quantities?"],
+    },
+    {
+      key: "us-waste-streams",
+      title: "Classify waste streams and generator status",
+      category: "environment",
+      status: facts.waste.length ? "requires_expert_review" : "needs_evidence",
+      priority: "high",
+      whyApplies: "RCRA and state hazardous-waste duties depend on actual waste composition and monthly generation volume.",
+      linkedFacts: [...facts.waste, ...facts.processes.map((process) => `Process: ${process}`)],
+      evidenceRequired: "Waste profiles, manifests, disposal records, process map, and generator-category determination.",
+      sourceHealth: "manual_assisted",
+      confidence: facts.waste.length ? "inferred" : "lead",
+      openQuestions: facts.waste.length ? ["Has a qualified person classified each waste stream?"] : ["What waste does each process generate?"],
+    },
+    {
+      key: "us-osha-applicability",
+      title: "Monitor federal OSHA and state-plan applicability",
+      category: "safety",
+      status: facts.facilities.length ? "monitored" : "needs_evidence",
+      priority: "high",
+      whyApplies: "Workplace standards and state-plan jurisdiction depend on facility location, workforce, equipment, and processes.",
+      linkedFacts: [...facts.facilities, ...facts.processes],
+      evidenceRequired: "Facility/process profile, injury logs, written programs, training records, and latest OSHA source result.",
+      sourceHealth: "working",
+      confidence: facts.facilities.length ? "inferred" : "lead",
+      openQuestions: facts.facilities.length ? [] : ["Which site and state-plan jurisdiction should OSHA monitoring cover?"],
+    },
+    {
+      key: "us-epa-tsca-rcra",
+      title: "Monitor EPA TSCA and RCRA applicability",
+      category: "environment",
+      status: facts.materials.length || facts.waste.length ? "requires_expert_review" : "needs_evidence",
+      priority: "high",
+      whyApplies: "Chemical manufacturing/import, use restrictions, reporting, and hazardous waste cannot be screened without material and waste facts.",
+      linkedFacts: [...facts.materials, ...facts.waste],
+      evidenceRequired: "Chemical inventory, supplier status, import/manufacture role, waste characterization, and CFR/source review.",
+      sourceHealth: "working",
+      confidence: facts.materials.length || facts.waste.length ? "inferred" : "lead",
+      openQuestions: ["Does the company manufacture or import any chemical substance, or only buy domestic mixtures?"],
+    },
+    {
+      key: "us-permits",
+      title: "Verify air, water, stormwater, and waste permits",
+      category: "environment",
+      status: facts.facilities.length && facts.processes.length ? "requires_expert_review" : "needs_evidence",
+      priority: "high",
+      whyApplies: "Permit thresholds are facility- and process-specific and may be federal, state, county, or municipal.",
+      linkedFacts: [...facts.facilities, ...facts.processes],
+      evidenceRequired: "Permit register, emissions and discharge data, stormwater exposure review, and regulator correspondence.",
+      sourceHealth: hasNorthCarolinaFacility ? "working" : "not_checked",
+      confidence: facts.facilities.length && facts.processes.length ? "inferred" : "lead",
+      openQuestions: hasNorthCarolinaFacility
+        ? ["Do NC DEQ or Mecklenburg Air Quality permits apply to the Charlotte-area site?"]
+        : ["Which state and local permitting agencies govern each facility?"],
+    },
+    {
+      key: "us-product-safety",
+      title: "Check product safety, testing, and certificates",
+      category: "product",
+      status: hasRegulatedProduct ? "requires_expert_review" : facts.flags.length ? "monitored" : "needs_evidence",
+      priority: "high",
+      whyApplies: "Testing, certification, recall, and reporting duties depend on product category and intended user.",
+      linkedFacts: [...facts.products, ...facts.flags],
+      evidenceRequired: "Test reports, conformity certificates, incident/complaint process, and product-category determination.",
+      sourceHealth: hasConsumerProduct ? "working" : "manual_assisted",
+      confidence: facts.flags.length ? "inferred" : "lead",
+      openQuestions: facts.flags.length ? [] : ["Which federal product-safety agency, if any, has jurisdiction?"],
+    },
+    {
+      key: "us-ftc-label-claims",
+      title: "Review labels, Made in USA, and marketing claims",
+      category: "labeling",
+      status: facts.claims.length ? "requires_expert_review" : "needs_evidence",
+      priority: "medium",
+      whyApplies: "Origin, environmental, performance, warranty, and safety claims need substantiation across labels and online sales.",
+      linkedFacts: facts.claims,
+      evidenceRequired: "Label artwork, website/product listings, origin substantiation, and claim-support files.",
+      sourceHealth: "working",
+      confidence: facts.claims.length ? "inferred" : "lead",
+      openQuestions: facts.claims.length ? [] : ["What claims appear on products, packaging, website, and sales materials?"],
+    },
+    {
+      key: "us-distribution-states",
+      title: "Monitor distribution states and state-specific rules",
+      category: "distribution",
+      status: facts.states.length ? "monitored" : "needs_evidence",
+      priority: "high",
+      whyApplies: "Sales tax, EPR, packaging, PFAS, chemical, consumer, warranty, and product rules follow where goods are sold or stored.",
+      linkedFacts: facts.states.map((state) => `Distribution: ${state}`),
+      evidenceRequired: "Current ship-to states, warehouse states, marketplace channels, tax registrations, and product/packaging profile.",
+      sourceHealth: facts.states.length ? "manual_assisted" : "not_checked",
+      confidence: facts.states.length ? "inferred" : "lead",
+      openQuestions: facts.states.length ? ["Are online marketplace and distributor sales included?"] : ["Into which states are products sold, shipped, or warehoused?"],
+    },
+    {
+      key: "us-export-hts",
+      title: "Confirm HTS and Schedule B classifications",
+      category: "export",
+      status: confirmedCodes(facts.hts) ? "verified" : "needs_evidence",
+      priority: "high",
+      whyApplies: "HTS and Schedule B drive customs treatment, AES filing, statistics, and document consistency.",
+      linkedFacts: codeFacts("HTS/Schedule B", facts.hts),
+      evidenceRequired: "Broker ruling, prior entry/export documents, product specs, and classification rationale.",
+      sourceHealth: "manual_assisted",
+      confidence: confirmedCodes(facts.hts) ? "verified" : "lead",
+      openQuestions: facts.hts.length ? [] : ["Which HTS and Schedule B codes appear on actual transactions?"],
+    },
+    {
+      key: "us-export-eccn",
+      title: "Determine ECCN or document EAR99",
+      category: "export",
+      status: confirmedCodes(facts.exportClasses) ? "verified" : "needs_evidence",
+      priority: "high",
+      whyApplies: "Export license requirements cannot be assessed without a defensible ECCN or EAR99 determination.",
+      linkedFacts: codeFacts("Export classification", facts.exportClasses),
+      evidenceRequired: "CCATS/vendor classification or documented self-classification against the CCL.",
+      sourceHealth: "working",
+      confidence: confirmedCodes(facts.exportClasses) ? "verified" : "lead",
+      openQuestions: facts.exportClasses.length ? [] : ["Is each exported item on the CCL or EAR99?"],
+    },
+    {
+      key: "us-export-aes",
+      title: "Determine AES and EEI filing requirements",
+      category: "export",
+      status: hasExports ? "requires_expert_review" : "needs_evidence",
+      priority: "high",
+      whyApplies: "AES depends on value, destination, license status, shipment structure, and specific FTR exemptions.",
+      linkedFacts: [...facts.exportCountries, ...codeFacts("HTS/Schedule B", facts.hts)],
+      evidenceRequired: "Shipment values, destinations, Schedule B, license status, and filing/exemption records.",
+      sourceHealth: "working",
+      confidence: hasExports ? "inferred" : "lead",
+      openQuestions: ["Who files EEI, and which exemption citation is used when no filing is made?"],
+    },
+    {
+      key: "us-export-ofac",
+      title: "Screen OFAC, destination, end user, and end use",
+      category: "export",
+      status: facts.exportCountries.length ? "monitored" : "needs_evidence",
+      priority: "high",
+      whyApplies: "Sanctions and restricted-party controls are transaction-specific and can change independently of product classification.",
+      linkedFacts: facts.exportCountries.map((country) => `Export destination: ${country}`),
+      evidenceRequired: "Party-screening records, ownership checks, end-use statement, destination, and escalation procedure.",
+      sourceHealth: "working",
+      confidence: facts.exportCountries.length ? "inferred" : "lead",
+      openQuestions: facts.exportCountries.length ? ["Are customers, owners, banks, freight forwarders, and end users screened?"] : ["Which countries, counterparties, and end uses are involved?"],
+    },
+    {
+      key: "us-export-itar",
+      title: "Resolve ITAR and defense-trade exposure",
+      category: "export",
+      status: hasDefenseSignal
+        ? "requires_expert_review"
+        : hasExplicitNoDefenseSignal
+          ? "not_applicable"
+          : "needs_evidence",
+      priority: hasDefenseSignal ? "high" : "medium",
+      whyApplies: "Defense articles, technical data, brokering, and defense services can trigger DDTC controls outside ordinary EAR analysis.",
+      linkedFacts: facts.flags,
+      evidenceRequired: "Product/end-use review against the USML and written jurisdiction/classification rationale.",
+      sourceHealth: "manual_assisted",
+      confidence: hasDefenseSignal ? "inferred" : hasExplicitNoDefenseSignal ? "verified" : "lead",
+      openQuestions: hasDefenseSignal ? ["Does counsel or an empowered official confirm USML jurisdiction?"] : [],
+    },
+    {
+      key: "us-memory-review",
+      title: "Review unconfirmed United States memory leads",
+      category: "memory",
+      status: unconfirmedMemories.length ? "needs_evidence" : "verified",
+      priority: unconfirmedMemories.length ? "high" : "low",
+      whyApplies: "Chat can improve the U.S. monitor only after a person verifies the facts it extracted.",
+      linkedFacts: unconfirmedMemories.map((memory) => `[${memory.kind}] ${memory.content}`),
+      evidenceRequired: "Confirm, correct, or delete each U.S.-scoped memory lead.",
+      sourceHealth: "manual_assisted",
+      confidence: unconfirmedMemories.length ? "lead" : "verified",
+      openQuestions: unconfirmedMemories.length ? [`${unconfirmedMemories.length} lead(s) need review.`] : [],
+    },
+  ];
+
+  for (const draft of drafts) await upsertChecklistItem(customerId, jurisdiction, draft);
+  pruneObsoleteChecklistItems(customerId, jurisdiction, drafts);
 }
 
 /**
@@ -274,12 +615,21 @@ export async function refreshChecklistForCustomer(customerId: string): Promise<v
  * catches renames somebody remembered to add to it. Rows a person created
  * (`origin` != system) are never touched.
  */
-function pruneObsoleteChecklistItems(customerId: string, drafts: ChecklistDraft[]): void {
+function pruneObsoleteChecklistItems(
+  customerId: string,
+  jurisdiction: JurisdictionName,
+  drafts: ChecklistDraft[],
+): void {
   const live = new Set(drafts.map((d) => d.key));
   const rows = db
     .select()
     .from(checklistItems)
-    .where(eq(checklistItems.customerId, customerId))
+    .where(
+      and(
+        eq(checklistItems.customerId, customerId),
+        eq(checklistItems.jurisdiction, jurisdiction),
+      ),
+    )
     .all();
 
   for (const row of rows) {
@@ -345,13 +695,23 @@ async function rememberKbliLeads(customerId: string, memoryRows: Memory[]): Prom
   }
 }
 
-async function upsertChecklistItem(customerId: string, draft: ChecklistDraft): Promise<void> {
+async function upsertChecklistItem(
+  customerId: string,
+  jurisdiction: JurisdictionName,
+  draft: ChecklistDraft,
+): Promise<void> {
   const now = new Date().toISOString();
   const existing =
     db
       .select()
       .from(checklistItems)
-      .where(and(eq(checklistItems.customerId, customerId), eq(checklistItems.key, draft.key)))
+      .where(
+        and(
+          eq(checklistItems.customerId, customerId),
+          eq(checklistItems.jurisdiction, jurisdiction),
+          eq(checklistItems.key, draft.key),
+        ),
+      )
       .get() ??
     // Rows created before keys existed — adopt them by title once, rather than
     // leaving a duplicate behind.
@@ -361,6 +721,7 @@ async function upsertChecklistItem(customerId: string, draft: ChecklistDraft): P
       .where(
         and(
           eq(checklistItems.customerId, customerId),
+          eq(checklistItems.jurisdiction, jurisdiction),
           eq(checklistItems.category, draft.category),
           eq(checklistItems.title, draft.title),
         ),
@@ -391,6 +752,7 @@ async function upsertChecklistItem(customerId: string, draft: ChecklistDraft): P
     .values({
       id: randomUUID(),
       customerId,
+      jurisdiction,
       category: draft.category,
       ...values,
     })
@@ -398,5 +760,7 @@ async function upsertChecklistItem(customerId: string, draft: ChecklistDraft): P
 }
 
 export function countOpenChecklistItems(items: ChecklistItem[]): number {
-  return items.filter((item) => !["completed", "not_required"].includes(item.status)).length;
+  return items.filter(
+    (item) => !["completed", "not_required", "verified", "not_applicable"].includes(item.status),
+  ).length;
 }

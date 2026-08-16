@@ -1,6 +1,10 @@
-# Cante — Indonesia Export Compliance Monitor
+# Cante — Manufacturer Compliance Monitor
 
-A daily automated check of official Indonesian government trade sources, matched against one exporter's product, that produces a plain-language alert (Bahasa Indonesia + a one-line English gloss) **only when something genuinely relevant changed**. Nothing to report is the expected outcome most days — accuracy over always having something to say.
+A country-scoped monitor of official regulatory sources, matched against one
+manufacturer's actual products and operations. Indonesia remains the deepest
+flagship pack; the United States pack keeps domestic manufacturing,
+distribution, and exports as separate coverage tracks. It alerts **only when
+something genuinely relevant changed**.
 
 First customer: **MA**, PVC tarpaulin manufacturer, Surabaya. Real, live, in progress.
 
@@ -20,7 +24,7 @@ npm run dev         # http://localhost:3000
 ```
 
 Open localhost:3000 and press **Run check now**. It fetches the monitored
-Indonesian source set, reads what it finds, and stores the result. Takes a few
+source set for the selected country, reads what it finds, and stores the result. Takes a few
 minutes — it fetches listings first, then detail pages for plausible candidates.
 
 ### Other commands
@@ -28,6 +32,7 @@ minutes — it fetches listings first, then detail pages for plausible candidate
 | Command | What it does |
 |---|---|
 | `npm run check` | Same check, from the terminal. Identical code path to the button — this is what a cron entry would call. |
+| `CANTE_COUNTRY="United States" npm run check` | Run the US source pack from the terminal. |
 | `npm run build` | Production build. |
 | `npm run db:push` | Apply `lib/db/schema.ts` to `cante.db`. |
 | `npm run db:seed` | Seed sources + customer from `config/customer.json`. |
@@ -77,7 +82,7 @@ Two properties of the source that can't be engineered away, so the judgment stag
 
 ```
 lib/llm/          types.ts (the seam) · claude-code.ts (works) · api.ts (stub) · index.ts
-lib/sources/      registry.ts (sources as data) · fetch.ts
+lib/sources/      registry.ts (sources + profile activation) · fetch.ts (JSON/RSS/HTML parsers)
 lib/checks/       judge.ts · run.ts (fetch → judge → store) · checklist.ts
 lib/db/           schema.ts · client.ts · queries.ts
 app/              page.tsx (Checks) · checklist/ · chat/ · memory/ · api/{checks,checklist,chat,customers,memories}
@@ -108,11 +113,41 @@ Perpres/Kepres, Permen/Kepmen, Kemenkeu/DJBC/DJP tax-customs, BSN/SNI, and East
 Java / Surabaya regional rules. All non-blocked source rows are attempted by the
 monitor; failures are shown as coverage caveats, not hidden.
 
+The US source set is profile-driven. EPA, OSHA, and FTC Federal Register feeds,
+core eCFR titles, and OSHA RSS form the general baseline. Recorded product flags
+activate CPSC recalls and FDA/USDA/FCC/DOT agency feeds; export facts activate
+BIS, Census/FTR, OFAC, CBP, and export eCFR; facility and distribution facts
+activate North Carolina/Charlotte sources plus official CA, NY, and TX state
+registers. Confirmed Memory facts can activate a source on the next check;
+unconfirmed chat leads cannot. Missing facts and unsupported states are appended
+to the alert as code-written coverage caveats.
+
 ---
 
 ## Status
 
 - **Working end to end locally.** Dashboard → Run check now → expanded live fetch, judgment, stored result, rendered alert. Chat Q&A grounded in stored run data also works.
+- **US mode is built at the product-foundation level.** The composer switches
+  between Indonesia and United States; histories, prompts, memories, profiles,
+  checklists, and runs remain country-scoped. The US profile captures
+  facilities, NAICS, products, materials, waste, states, labels, HTS/Schedule B,
+  ECCN/EAR99, destinations, and product flags. Its 17 checklist rows cover
+  OSHA, EPA, permits, product/label rules, distribution, AES, OFAC, EAR, and
+  ITAR triage.
+- **Deeper US source automation is source-tested.** Thirteen separate Federal
+  Register agency queries all passed. Live probes also parsed CPSC recalls (30),
+  OFAC list actions (10), NC Register issues (12), NC DEQ/Labor/Revenue and air
+  notices, and current CA/NY/TX register issues. Mecklenburg's current permit
+  page returned a validated empty listing. The empty-profile baseline fetched
+  37 deduplicated entries from seven applicable sources with zero failures.
+  General state registers are discovery surfaces, not complete EPR/PFAS/tax/
+  consumer-rule coverage.
+- **US reference run:** `2405fb73-d714-4f2d-804b-ce6c4ddfe3be` selected seven
+  general federal sources for the empty profile. All succeeded; 37 entries were
+  code-audited as 21 new verdicts, 16 exact-URL prior matches, and 0 unaccounted.
+  The final alert appended all inactive facility/state/product/export pack
+  caveats and refused to infer EAR99. The older pre-depth reference is
+  `47c65faf-1b70-4313-9a0d-153126127b8f`.
 - **Expanded Indonesia monitor verified.** An earlier full run attempted 12 non-blocked sources: Kemendag 3 views OK, Kemenkeu OK, OSS KBLI OK, and peraturan.go.id/JDIHN/BSN failed and were disclosed. It produced 8 findings, including PMK 58/2026 as `noted`.
 - **Latest run (`695357de`) is the current reference for correct output.** 12 sources registered but only 9 requests made — peraturan.go.id failed once and its 4 sibling views were recorded as not attempted, disclosed as a single line rather than four. Zero findings, which is the expected outcome most days. The alert reasoned from the human-confirmed HS codes while stating they have never been matched against a PEB or invoice, described OSS as a reachability check and not a source of rules, and disclosed one fetched entry that received no verdict and had never been seen before — a gap that would previously have passed silently as "nothing found".
 - **Checklist is now first-class.** `/checklist` shows a living compliance work queue generated from customer profile, memory, KBLI records, and source coverage. Chat-extracted or manually entered facts refresh it automatically. Current MA state creates 9 rows covering KBLI-to-rule mapping, national law, HS codes, OSS, SNI, tax/customs, regional Perda, and memory review; 7 remain open because evidence/source retrieval is still incomplete.
@@ -131,6 +166,9 @@ monitor; failures are shown as coverage caveats, not hidden.
 4. Put the check on a daily schedule — local cron calling `npm run check` is enough.
 5. Run it for real for ~14 days, delivering each alert by hand.
 6. Ask MA directly whether they'd pay $200–400/month. That answer, not more research, decides what happens next.
+7. Enter a real US pilot manufacturer's facility, NAICS, materials/SDS,
+   products, distribution states, and export evidence in the US Profile screen,
+   then run the first evidence-grounded US check.
 
 Only after that answer is yes: implement `lib/llm/api.ts`, add a key, deploy.
 

@@ -2,6 +2,8 @@
 
 import { AlertTriangle, CheckCircle2, CircleHelp, RefreshCw } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import type { JurisdictionName } from "@/lib/countries";
+import { CountryTabs } from "@/components/dashboard/country-tabs";
 
 type ChecklistItem = {
   id: string;
@@ -26,6 +28,12 @@ const STATUS_CLASS: Record<string, string> = {
   blocked: "pill-bad",
   expiring: "pill-warn",
   unknown: "pill-muted",
+  verified: "pill-ok",
+  needs_evidence: "pill-warn",
+  monitored: "pill-blue",
+  not_applicable: "pill-muted",
+  source_failed: "pill-bad",
+  requires_expert_review: "pill-warn",
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -39,16 +47,23 @@ const CATEGORY_LABELS: Record<string, string> = {
   document: "Documents",
   memory: "Memory",
   other: "Other",
+  business: "Business",
+  product: "Product",
+  environment: "Environment",
+  safety: "Workplace safety",
+  labeling: "Labels and claims",
+  distribution: "Distribution",
+  export: "Export controls",
 };
 
-export function ChecklistPanel() {
+export function ChecklistPanel({ country }: { country: JurisdictionName }) {
   const [items, setItems] = useState<ChecklistItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   async function load() {
     setLoading(true);
-    const data = await fetch("/api/checklist").then((r) => r.json());
+    const data = await fetch(`/api/checklist?country=${encodeURIComponent(country)}`).then((r) => r.json());
     setItems(data.items ?? []);
     setLoading(false);
   }
@@ -58,7 +73,7 @@ export function ChecklistPanel() {
     const data = await fetch("/api/checklist", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({}),
+      body: JSON.stringify({ country }),
     }).then((r) => r.json());
     setItems(data.items ?? []);
     setRefreshing(false);
@@ -79,12 +94,13 @@ export function ChecklistPanel() {
     const onChanged = () => void refresh();
     window.addEventListener("cante:checklist-updated", onChanged);
     return () => window.removeEventListener("cante:checklist-updated", onChanged);
-  }, []);
+  }, [country]);
 
   const counts = useMemo(() => {
-    const open = items.filter((item) => !["completed", "not_required"].includes(item.status)).length;
+    const closed = ["completed", "not_required", "verified", "not_applicable"];
+    const open = items.filter((item) => !closed.includes(item.status)).length;
     const high = items.filter(
-      (item) => item.priority === "high" && !["completed", "not_required"].includes(item.status),
+      (item) => item.priority === "high" && !closed.includes(item.status),
     ).length;
     const verified = items.filter((item) => item.confidence === "verified").length;
     return { open, high, verified };
@@ -98,10 +114,13 @@ export function ChecklistPanel() {
             <h1>Checklist</h1>
             <p>Living compliance tasks generated from customer profile, memory, and source coverage.</p>
           </div>
-          <button className="btn" onClick={refresh} disabled={refreshing}>
-            <RefreshCw size={14} className={refreshing ? "spin" : ""} />
-            Refresh
-          </button>
+          <div className="page-actions">
+            <button className="btn" onClick={refresh} disabled={refreshing}>
+              <RefreshCw size={14} className={refreshing ? "spin" : ""} />
+              Refresh
+            </button>
+            <CountryTabs value={country} />
+          </div>
         </div>
 
         <div className="checklist-summary">

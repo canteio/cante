@@ -4,6 +4,7 @@ import {
   updateChecklistItemStatus,
 } from "@/lib/db/queries";
 import { refreshChecklistForCustomer } from "@/lib/checks/checklist";
+import { normalizeJurisdiction } from "@/lib/countries";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,23 +12,25 @@ export const dynamic = "force-dynamic";
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const customerId = url.searchParams.get("customerId") ?? (await getDefaultCustomerId());
+  const jurisdiction = normalizeJurisdiction(url.searchParams.get("country"));
   if (!customerId) return Response.json({ items: [] });
 
-  let items = await listChecklistItems(customerId);
+  let items = await listChecklistItems(customerId, jurisdiction);
   if (items.length === 0) {
-    await refreshChecklistForCustomer(customerId);
-    items = await listChecklistItems(customerId);
+    await refreshChecklistForCustomer(customerId, jurisdiction);
+    items = await listChecklistItems(customerId, jurisdiction);
   }
-  return Response.json({ items });
+  return Response.json({ items, jurisdiction });
 }
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
   const customerId: string | null = body.customerId ?? (await getDefaultCustomerId());
   if (!customerId) return Response.json({ error: "No customer." }, { status: 404 });
+  const jurisdiction = normalizeJurisdiction(body.country);
 
-  await refreshChecklistForCustomer(customerId);
-  return Response.json({ items: await listChecklistItems(customerId) });
+  await refreshChecklistForCustomer(customerId, jurisdiction);
+  return Response.json({ items: await listChecklistItems(customerId, jurisdiction), jurisdiction });
 }
 
 export async function PATCH(request: Request) {

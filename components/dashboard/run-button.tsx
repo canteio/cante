@@ -3,8 +3,9 @@
 import { Loader2, Play } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import type { JurisdictionName } from "@/lib/countries";
 
-export function RunButton({ customerId }: { customerId: string | null }) {
+export function RunButton({ customerId, country }: { customerId: string | null; country: JurisdictionName }) {
   const router = useRouter();
   const [running, setRunning] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -16,7 +17,7 @@ export function RunButton({ customerId }: { customerId: string | null }) {
       const res = await fetch("/api/checks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ customerId }),
+        body: JSON.stringify({ customerId, country }),
       });
       const data = await res.json();
       if (!res.ok || !data.ok) setError(data.error ?? `Request failed (${res.status})`);
@@ -36,7 +37,7 @@ export function RunButton({ customerId }: { customerId: string | null }) {
       </button>
       {running && (
         <div style={{ fontSize: "0.6875rem", color: "var(--text-muted)", marginTop: 6 }}>
-          Fetching sources, then reading them. A few minutes.
+          Fetching {country} sources, then reading them. A few minutes.
         </div>
       )}
       {error && (

@@ -2,6 +2,8 @@
 
 import { Check, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import type { JurisdictionName } from "@/lib/countries";
+import { CountryTabs } from "@/components/dashboard/country-tabs";
 
 type Memory = {
   id: string;
@@ -16,6 +18,14 @@ type Memory = {
 const KINDS = [
   "product",
   "hs_code",
+  "naics",
+  "material",
+  "process",
+  "waste",
+  "distribution_state",
+  "label_claim",
+  "export_classification",
+  "product_flag",
   "kbli",
   "market",
   "location",
@@ -28,7 +38,7 @@ const KINDS = [
   "other",
 ];
 
-export function MemoryPanel() {
+export function MemoryPanel({ country }: { country: JurisdictionName }) {
   const [memories, setMemories] = useState<Memory[]>([]);
   const [draft, setDraft] = useState("");
   const [draftKind, setDraftKind] = useState("other");
@@ -36,7 +46,7 @@ export function MemoryPanel() {
 
   async function load() {
     setLoading(true);
-    const data = await fetch("/api/memories").then((r) => r.json());
+    const data = await fetch(`/api/memories?country=${encodeURIComponent(country)}`).then((r) => r.json());
     setMemories(data.memories ?? []);
     setLoading(false);
   }
@@ -46,7 +56,7 @@ export function MemoryPanel() {
     const onChanged = () => void load();
     window.addEventListener("cante:memory-updated", onChanged);
     return () => window.removeEventListener("cante:memory-updated", onChanged);
-  }, []);
+  }, [country]);
 
   async function addMemory() {
     const content = draft.trim();
@@ -55,7 +65,7 @@ export function MemoryPanel() {
     await fetch("/api/memories", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content, kind: draftKind }),
+      body: JSON.stringify({ content, kind: draftKind, country }),
     });
     setDraftKind("other");
     window.dispatchEvent(new Event("cante:checklist-updated"));
@@ -92,9 +102,12 @@ export function MemoryPanel() {
             <h1>Memory</h1>
             <p>Customer facts that feed both chat and future compliance checks.</p>
           </div>
-          <div className="memory-counts">
-            <span className="pill pill-ok">{confirmed} confirmed</span>
-            <span className="pill pill-warn">{unconfirmed} unconfirmed</span>
+          <div className="page-actions">
+            <div className="memory-counts">
+              <span className="pill pill-ok">{confirmed} confirmed</span>
+              <span className="pill pill-warn">{unconfirmed} unconfirmed</span>
+            </div>
+            <CountryTabs value={country} />
           </div>
         </div>
 

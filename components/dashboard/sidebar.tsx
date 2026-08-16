@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { Brain, ClipboardCheck, ListChecks, MessageSquare } from "lucide-react";
+import { Brain, Building2, ClipboardCheck, ListChecks, MessageSquare } from "lucide-react";
 import { cookies } from "next/headers";
 import { ChatNav } from "@/components/dashboard/chat-nav";
 import { ProviderSwitcher } from "@/components/dashboard/provider-switcher";
 import { listCustomers } from "@/lib/db/queries";
 import { normalizeProviderChoice, PROVIDER_COOKIE } from "@/lib/llm";
+import { DEFAULT_JURISDICTION, type JurisdictionName } from "@/lib/countries";
 
 /**
  * Sidebar in Mike's shape: brand mark, nav rows, a customer block, and status
@@ -16,12 +17,15 @@ import { normalizeProviderChoice, PROVIDER_COOKIE } from "@/lib/llm";
 export async function Sidebar({
   active,
   activeConversationId = null,
+  jurisdiction = DEFAULT_JURISDICTION,
 }: {
-  active: "checks" | "checklist" | "chat" | "memory";
+  active: "checks" | "checklist" | "chat" | "memory" | "profile";
   activeConversationId?: string | null;
+  jurisdiction?: JurisdictionName;
 }) {
   const customers = await listCustomers();
   const selectedProvider = normalizeProviderChoice((await cookies()).get(PROVIDER_COOKIE)?.value);
+  const countryQuery = `?country=${encodeURIComponent(jurisdiction)}`;
 
   return (
     <aside className="sidebar">
@@ -31,19 +35,25 @@ export async function Sidebar({
       </div>
 
       <nav className="nav fade-1">
-        <Link href="/" data-active={active === "checks"}>
+        <Link href={`/${countryQuery}`} data-active={active === "checks"}>
           <ListChecks size={15} strokeWidth={1.75} />
           Checks
         </Link>
-        <Link href="/checklist" data-active={active === "checklist"}>
+        <Link href={`/checklist${countryQuery}`} data-active={active === "checklist"}>
           <ClipboardCheck size={15} strokeWidth={1.75} />
           Checklist
         </Link>
-        <Link href="/chat" data-active={active === "chat"}>
+        <Link href={`/chat${countryQuery}`} data-active={active === "chat"}>
           <MessageSquare size={15} strokeWidth={1.75} />
           Chat
         </Link>
-        {active === "chat" && <ChatNav activeId={activeConversationId} />}
+        {active === "chat" && (
+          <ChatNav activeId={activeConversationId} jurisdiction={jurisdiction} />
+        )}
+        <Link href={`/profile${countryQuery}`} data-active={active === "profile"}>
+          <Building2 size={15} strokeWidth={1.75} />
+          Profile
+        </Link>
       </nav>
 
       <div className="side-section fade-2">
@@ -69,7 +79,11 @@ export async function Sidebar({
       </div>
 
       <div className="sidebar-foot fade-3">
-        <Link href="/memory" className="memory-nav" data-active={active === "memory"}>
+        <Link
+          href={`/memory${countryQuery}`}
+          className="memory-nav"
+          data-active={active === "memory"}
+        >
           <Brain size={14} strokeWidth={1.75} />
           Memory
         </Link>

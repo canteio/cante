@@ -40,14 +40,16 @@ being audited.
 ```bash
 npm run dev        # Next.js at localhost:3000
 npm run check      # same code path as POST /api/checks, from the terminal
+CANTE_COUNTRY="United States" npm run check  # run the US pack
 npm run db:push    # apply lib/db/schema.ts to cante.db
 npm run db:seed    # seed sources + MA from config/customer.json
 npm run build      # must stay clean
 npx tsc --noEmit   # must stay clean
 ```
 
-A full check takes several minutes: fetch, then ~28 judgments each fetching a
-detail page. `npm run check` is the fastest way to test without the browser.
+A full check takes several minutes: the profile first selects applicable source
+packs, then the judgment stage may fetch detail pages. `npm run check` is the
+fastest way to test without the browser.
 
 ---
 
@@ -55,7 +57,7 @@ detail page. `npm run check` is the fastest way to test without the browser.
 
 ```
 lib/llm/          types.ts = the seam (+ streaming) · claude-code.ts (works) · codex-cli.ts (local fallback) · api.ts (stub) · index.ts (factory)
-lib/sources/      registry.ts (sources as data) · fetch.ts (no AI, plain fetch+parse)
+lib/sources/      registry.ts (sources + profile activation as data) · fetch.ts (no AI, fetch+JSON/RSS/Cheerio parse)
 lib/checks/       judge.ts (prompt + Zod schema) · run.ts (fetch → judge → store) · checklist.ts (living obligations)
                   facts.ts (HS/KBLI tiers — the one answer to "what is established") · coverage.ts (entries in, verdicts out)
 lib/db/           schema.ts · client.ts · queries.ts
@@ -154,6 +156,19 @@ Written in **plain CSS** in `app/globals.css` — Mike runs Tailwind v4 + shadcn
 and matching the look didn't justify that dependency surface. `lucide-react` is
 the one dependency taken from it. The earlier warm-paper palette (#F6F3EC, rust,
 Zilla Slab) is gone; don't reintroduce it.
+
+**Jurisdiction switching is real state, not decoration.** The chat composer has
+a compact ID/US selector. Changing it starts a fresh country-scoped chat and
+changes the system prompt, official-source preference, stored run history,
+jurisdiction profile, memories, and checklist context together. Checks,
+Checklist, Profile, and Memory carry the same `?country=` value. Existing data
+migrated to Indonesia; US records stay separate. On mobile, the desktop rail
+collapses into a horizontal app bar.
+
+`/profile?country=United%20States` is the US truth editor: facilities, NAICS,
+products/SKUs, materials, processes, waste, distribution states, claims,
+HTS/Schedule B, ECCN/EAR99, export markets, and product flags. Saving it
+refreshes the US checklist immediately.
 
 **Chat answers are Markdown, so they get rendered as Markdown.**
 `components/chat/markdown.tsx` (`react-markdown` + `remark-gfm`) replaced
@@ -354,6 +369,30 @@ Perpres/Kepres, Permen/Kepmen, Kemenkeu/DJBC/DJP tax-customs, BSN/SNI, and East
 Java / Surabaya regional rules. All non-blocked source rows are attempted by
 `monitoredSources()`; failures become `source_results` rows and coverage caveats.
 
+### United States pack (verified 2026-08-15)
+
+| Source | Status | Note |
+|---|---|---|
+| Federal Register API | **working** | Thirteen no-key agency feeds were live-probed: EPA, OSHA, FTC, CPSC, FDA, USDA, FCC, DOT/NHTSA, BIS, Census, OFAC, CBP, and State/DDTC. Each agency gets its own result window instead of competing in one broad query. |
+| eCFR versioner API | **working** | Titles 15, 16, 21, 29, 31, 40, and 49; three latest substantive versions per title. Export and sector titles activate from profile facts. A changed section is not proof of applicability. |
+| OSHA Federal Register RSS | **working** | Official targeted feed; latest test parsed 5 entries and intentionally overlaps Federal Register. |
+| CPSC Recall API | **working** | Official API, rolling 45-day window; live probe parsed 30 recalls. Activated only for a recorded consumer-product flag. |
+| OFAC recent list actions | **working** | Official list-change page; live probe parsed 10 updates. This detects list changes but does not screen counterparties. |
+| NC OAH / DEQ / NCDOL / NCDOR | **working** | NC Register (12 issues), DEQ releases (15), open air notices (3), labor releases (10), and tax updates (11) parsed in live probes. Facility/distribution facts control activation. |
+| Mecklenburg air notices | **working, validated empty** | Local Charlotte/Mecklenburg-only adapter. The latest page had no open permit rows; a known page marker distinguishes that from parser failure. |
+| CA / NY / TX registers | **working** | Official state rulemaking registers parsed 2 / 1 / 1 current issues. Activated only when the profile or confirmed Memory names the state. |
+| FTC direct guidance page | **blocked** | The direct page rejects automation. FTC rule changes remain covered through the official Federal Register API; the page is not polled as a fake heartbeat. |
+
+`selectMonitoredSources()` is profile-driven. Confirmed Memory facts participate;
+unconfirmed chat extraction cannot activate coverage. Missing facilities,
+distribution states, product flags, or export facts produce deterministic alert
+caveats listing what was not activated. An empty profile currently polls seven
+general federal rows; the source-only verification fetched 37 deduplicated
+entries with zero failures. A fully populated synthetic Charlotte/multistate/
+export profile selected 35 rows. Only NC, CA, NY, and TX have state-register
+adapters; topic-specific EPR, PFAS, packaging, tax, consumer, and permit mapping
+is still incomplete even in those states.
+
 Things about this feed that will mislead you if forgotten:
 
 - **The listing carries a year, not a date.** Detail pages carry the real
@@ -363,8 +402,10 @@ Things about this feed that will mislead you if forgotten:
   false alert on day one.
 - **Each view shows ~10 of ~2,386 entries.** Fine for a daily poll; a multi-day gap
   lets items scroll past unseen, and the alert has to say so.
-- **`entriesParsed: 0` on a successful fetch means the parser broke**, not that it
-  was a quiet day. Treat as unchecked and disclose it.
+- **`entriesParsed: 0` on a successful fetch normally means the parser broke**,
+  not that it was a quiet day. The sole exception is a source definition with an
+  explicit `emptyStateMarker`; it is reported as a validated empty listing only
+  when that marker is present and its `emptyStateDisqualifier` is absent.
 - **Volume is not signal.** The unfiltered feed is dominated by Harga Patokan
   Ekspor decrees — commodity reference prices for mining, palm, agriculture,
   forestry. They never cover PVC tarpaulin. The `ekspor` view is where the
@@ -401,9 +442,14 @@ Multi-tenant from day one — everything keys off `customer_id`, sources key off
 country + regulation_type, so "add customer #2" or "add Vietnam" is a row, not a
 refactor. SQLite via Drizzle; the schema is portable to Postgres.
 
-`customers` · `customer_profiles` · `kbli_records` · `source_packs` · `sources`
+`customers` · `customer_profiles` · `jurisdiction_profiles` · `kbli_records` · `source_packs` · `sources`
 · `check_runs` · **`source_results`** · `findings` · `alerts` · `conversations`
 · `chat_messages` · `memories` · `checklist_items`
+
+`check_runs`, `conversations`, `memories`, and `checklist_items` carry a
+`jurisdiction`. That prevents Indonesian evidence and US evidence from being
+mixed. `jurisdiction_profiles` stores the structured operating facts needed by
+country-specific judgment and checklist generation.
 
 `source_results` is load-bearing — it's what makes a failed fetch visible in the
 UI instead of silently absent.
@@ -437,6 +483,27 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
 
 - Fetch, judgment, storage, dashboard, and chat all working locally, verified
   against the expanded live source set.
+- **United States foundation is built.** Official feeds, country-specific
+  judgment/chat grounding, structured profile, a 17-row domestic/distribution/
+  export checklist, country-scoped history/memory, and the composer nation
+  switch work locally. Empty US fields produce `needs_evidence`, not guessed
+  applicability. See `US-plan.md` for the evidence-dependent boundary.
+- **The deeper US source layer is built and source-tested.** Federal feeds are
+  agency-specific; CPSC recalls and OFAC list changes are structured entries;
+  North Carolina/Charlotte and CA/NY/TX state registers are real adapters rather
+  than heartbeats. Profile and confirmed-Memory facts activate them, and code
+  appends caveats for inactive or unsupported packs.
+- **US run `2405fb73-d714-4f2d-804b-ce6c4ddfe3be` is the current reference.**
+  The empty profile selected seven general federal sources; all succeeded and
+  produced 37 entries. Judgment accounted for every one: 21 new verdicts, 16
+  prior exact-URL matches, 0 unaccounted. The alert appended all four
+  deterministic inactive-pack caveats and made no EAR99 claim. Federal Register
+  detail pages blocked model reads, which was separately disclosed.
+- **Historical pre-depth run `47c65faf-1b70-4313-9a0d-153126127b8f`.** All
+  17 source rows succeeded; 44 regulations were fetched; 1 exact-URL-unseen
+  entry was judged, 43 matched prior URLs, and 0 were unaccounted. The alert
+  stayed in English and disclosed the empty profile, heartbeat-only portals,
+  uncovered state distribution track, and unknown export classifications.
 - Checklist is working locally at `/checklist`. `/api/checklist` refreshes rows
   from profile, memory, KBLI records, and Indonesia source-pack coverage. Current
   MA state produces 9 rows, 7 open, including KBLI-to-rule mapping and
@@ -487,8 +554,11 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
 2. Improve retrieval for peraturan.go.id/JDIHN/BSN, which are now attempted but
    failing from local plain fetch.
 3. Add region-specific East Java / Surabaya JDIH source discovery.
-4. Run for ~14 days, delivering each alert by hand.
-5. Ask MA directly about $200–400/month. That answer decides what happens next.
+4. Enter a real US pilot profile and add topic-specific state agency adapters for
+   its actual distribution states; general state registers are discovery, not
+   full EPR/PFAS/tax/product coverage.
+5. Run for ~14 days, delivering each alert by hand.
+6. Ask MA directly about $200–400/month. That answer decides what happens next.
 
 Explicitly not yet: auth, cron, deploy, WhatsApp API, billing, signup.
 

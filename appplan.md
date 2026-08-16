@@ -9,6 +9,11 @@
 > memory/profile/KBLI/source-pack coverage. See `CLAUDE.md` for current working
 > notes.
 
+> **US expansion built 2026-08-15.** Jurisdiction is now first-class execution
+> context. Indonesia and United States runs, chats, memories, profiles, and
+> checklist rows are isolated; the composer switch changes actual grounding
+> and official sources. See `US-plan.md` for implemented coverage.
+
 ## Goal
 A properly structured Next.js app at the repo root. `npm run dev` from the root just works. Multi-tenant data model from day one, even though only one customer (MA) exists right now — so adding customer #2 is a database row, not a refactor.
 
@@ -67,14 +72,17 @@ Tables, multi-tenant from the start:
 
 - **customers** — id, name, country, created_at
 - **customer_profiles** — id, customer_id, product_description, hs_codes (json), kbli_codes (json), business_type
+- **jurisdiction_profiles** — country-specific facilities, NAICS, products,
+  materials/processes/waste, distribution states, labels, HTS, ECCN/EAR99,
+  export countries, and product flags
 - **kbli_records** — first-class KBLI leads/evidence with OSS licensing metadata and confirmed/unconfirmed status
 - **source_packs** — coverage inventory by country/jurisdiction/category, including manual-assisted and untested packs that are not yet fetchable
 - **sources** — id, country, name, url, regulation_type (trade/tax/national/regional/standards), reliability_status (working/blocked/unstable), last_success_at
-- **check_runs** — id, customer_id, started_at, completed_at, status
+- **check_runs** — id, customer_id, jurisdiction, started_at, completed_at, status
 - **source_results** — id, check_run_id, source_id, success (bool), error_message, raw_content_path — *this is what makes failures honest and visible instead of silent*
 - **findings** — id, check_run_id, customer_id, regulation_ref, title, summary_id (Bahasa), summary_en, relevance (flagged/clear), source_id, created_at
 - **alerts** — id, finding_id, customer_id, delivered_at, channel (whatsapp/email/manual), delivery_status
-- **checklist_items** — living obligations/evidence gaps generated from customer facts and refreshed when memory changes; `key` gives each system row a stable identity so refresh can prune rows it no longer generates instead of carrying a hardcoded list of renamed titles
+- **checklist_items** — country-scoped living obligations/evidence gaps generated from customer facts and refreshed when memory changes; `key` gives each system row a stable identity so refresh can prune rows it no longer generates instead of carrying a hardcoded list of renamed titles
 
 Two facts the model is never allowed to decide for itself, both resolved in code before the prompt is built (`lib/checks/facts.ts`, `lib/checks/coverage.ts`): which HS/KBLI codes count as established (document > human-confirmed > lead > superseded guess), and which fetched entries actually received a verdict. Both feed coverage caveats that are written by code rather than by the model being audited.
 
@@ -89,10 +97,26 @@ Key point: everything is keyed by `customer_id`, and sources are keyed by countr
 - `peraturan.go.id` — Indonesia, national, **unstable** (UU/PP/Perpres/Permen attempts currently fail from local fetch; a per-run circuit breaker attempts the domain once and records the siblings as not attempted)
 - `jdihn.go.id`, `pesta.bsn.go.id` — Indonesia, attempted but failing from local fetch
 
-The fetch layer reads from this table through `monitoredSources()`, skips only
-sources marked blocked, and records every attempt in `source_results`. When a
-source fails, that fact surfaces in the UI and alert caveats — never silently
-reported as "checked, nothing found."
+The fetch layer reads from this table through `selectMonitoredSources()`, skips
+blocked sources, applies country-profile activation, and records every attempted
+source in `source_results`. Confirmed Memory participates in activation;
+unconfirmed chat extraction does not. The selector also writes deterministic
+caveats for missing profile gates and unsupported state packs.
+
+The US registry uses agency-specific Federal Register JSON, eCFR version-history
+JSON, OSHA RSS, the CPSC recall API, OFAC list actions, and Cheerio-backed
+official HTML adapters. The North Carolina starter pack now parses the NC
+Register, DEQ releases and air notices, NCDOL updates, NCDOR notices, and
+Charlotte/Mecklenburg air notices. Official CA, NY, and TX rulemaking registers
+activate from facility/distribution states. A page may treat zero rows as valid
+only when its source definition supplies an explicit empty-state marker and no
+configured disqualifying structure is present.
+
+This is deeper change discovery, not a complete state obligation engine. State
+registers do not replace topic-specific EPR, PFAS, packaging, tax, product,
+consumer, permit, or enforcement sources. Restricted-party screening, ECCN
+classification, AES determination, and ITAR jurisdiction remain evidence and
+expert workflows even though their official change feeds are monitored.
 
 ## Ported logic
 The existing Python (`fetch_sources.py`, and the judgment logic in `daily-prompt-check.md`) gets ported into `lib/sources/fetch.ts` and `lib/checks/judge.ts` so everything lives in one runtime. Keep the behavior identical — especially the honest failure reporting and the "don't invent a change to seem useful" rule in the judgment step.
@@ -106,6 +130,9 @@ The existing Python (`fetch_sources.py`, and the judgment logic in `daily-prompt
 - A **"Run check now"** button hitting `POST /api/checks` — manual trigger, no cron yet. The API route is written so a scheduler can call the same endpoint later without changes.
 - Saved chat conversations are nested under the **Chat** nav item in the main sidebar; there is no second chat rail. Memory moved to a bottom sidebar button and full main-screen management page.
 - Checklist is a main sidebar item next to Checks. It shows KBLI-to-rule mapping, national law, HS, OSS, SNI, tax/customs, regional, and memory-review tasks with status, priority, evidence required, source health, and open questions. Memory stays at the bottom because it is the customer fact editor, not the task queue.
+- Profile is a main sidebar item. US mode exposes the structured company truth
+  editor. Country controls on Checks, Checklist, Profile, Memory, and inside the
+  chat composer all drive the same jurisdiction value.
 
 ## How the model gets called (added during the build)
 The plan assumed judgment would just happen inside the app; it didn't say *how*, and the honest answer is that a Next.js server can't use the Claude Code login the way the markdown pipeline did. So the model sits behind `LlmProvider` in `lib/llm/`:

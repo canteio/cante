@@ -4,6 +4,7 @@ import {
   getDefaultCustomerId,
   listConversations,
 } from "@/lib/db/queries";
+import { normalizeJurisdiction } from "@/lib/countries";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -22,7 +23,11 @@ export async function GET(request: Request) {
 
   const customerId = url.searchParams.get("customerId") ?? (await getDefaultCustomerId());
   if (!customerId) return Response.json({ conversations: [] });
-  return Response.json({ conversations: await listConversations(customerId) });
+  const jurisdiction = normalizeJurisdiction(url.searchParams.get("country"));
+  return Response.json({
+    jurisdiction,
+    conversations: await listConversations(customerId, jurisdiction),
+  });
 }
 
 /** DELETE /api/conversations?id=<id> */

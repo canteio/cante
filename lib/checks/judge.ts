@@ -1,9 +1,15 @@
 import { z } from "zod";
 import { completeJson, type LlmProvider } from "@/lib/llm";
-import type { CustomerProfile, Customer, Memory } from "@/lib/db/schema";
+import type {
+  CustomerProfile,
+  Customer,
+  JurisdictionProfile,
+  Memory,
+} from "@/lib/db/schema";
 import type { FetchOutcome, FetchReport } from "@/lib/sources/fetch";
 import { renderMemoryForPrompt } from "@/lib/db/queries";
 import { renderHsCodesForPrompt, resolveHsCodes, resolveKbliCodes } from "@/lib/checks/facts";
+import type { JurisdictionName } from "@/lib/countries";
 
 /**
  * The judgment stage, ported from daily-prompt-check.md.
@@ -16,8 +22,10 @@ import { renderHsCodesForPrompt, resolveHsCodes, resolveKbliCodes } from "@/lib/
 export const JudgmentSchema = z.object({
   summaryId: z
     .string()
-    .describe("2-4 short lines of plain Bahasa Indonesia summarising today's check."),
-  summaryEn: z.string().describe("One line of English summarising the same thing."),
+    .describe("2-4 short lines in the primary language required by the system prompt."),
+  summaryEn: z
+    .string()
+    .describe("One-line English gloss; in US mode this may repeat the primary English summary."),
   coverageCaveats: z
     .array(z.string())
     .describe(
@@ -50,7 +58,10 @@ export const JudgmentSchema = z.object({
               "treat it as fresh. clear = looked at, not relevant.",
           ),
         reasoning: z.string().describe("Why this verdict, in one or two sentences."),
-        summaryId: z.string().nullable().describe("Bahasa Indonesia explanation, if flagged."),
+        summaryId: z
+          .string()
+          .nullable()
+          .describe("Primary-language explanation required by the system prompt, if flagged."),
         summaryEn: z.string().nullable().describe("One-line English gloss, if flagged."),
       }),
     )
@@ -59,7 +70,7 @@ export const JudgmentSchema = z.object({
     .string()
     .describe(
       "The ready-to-send WhatsApp message, in the tone of a real message to a business owner. " +
-        "If nothing is relevant, this says so plainly.",
+        "Use the language required by the system prompt. If nothing is relevant, say so plainly.",
     ),
 });
 
@@ -78,12 +89,32 @@ Hard rules:
 - If you are unsure whether something is new or relevant, say "worth a manual look" rather than asserting impact confidently.
 - Write Bahasa Indonesia that a business owner reads easily: casual, clear, no legal jargon, no long quotes. Paraphrase.`;
 
+const US_SYSTEM_PROMPT = `You are the judgment stage of a United States manufacturing, distribution, and export compliance monitor.
+
+Your job is to decide whether official federal, state, local, product, and trade changes plausibly affect one specific company. You are not a keyword matcher. Match rules against the company's actual facilities, NAICS, products, materials, processes, waste streams, labels, distribution states, and export profile.
+
+Accuracy matters more than having something to report. A quiet check is normal.
+
+Hard rules:
+- Never fabricate a rule, obligation, classification, permit, or change.
+- Never claim a source was checked if it failed, was skipped, or parsed zero entries.
+- Federal Register publication is not the same as an effective date. Read the detail page before claiming a new obligation is in force.
+- An eCFR section change is evidence that text changed, not proof that it applies to this company.
+- A portal heartbeat only proves the page was reachable. It is never regulation coverage.
+- Proposed rules are not current obligations. Label them clearly and only flag an action if the company should comment, prepare, or investigate now.
+- Missing company facts are coverage gaps. Do not infer NAICS, ECCN, permit status, waste streams, or distribution states.
+- Never describe an item as probably, typically, or likely EAR99. Without a documented classification, say ECCN/EAR99 is unknown.
+- If applicability requires legal, engineering, environmental, customs, or export-control judgment, use "requires expert review" language.
+- Write concise plain English for a small manufacturer. Cite the agency, document number or CFR citation, and source URL.`;
+
 export interface JudgeInput {
   customer: Customer;
   profile: CustomerProfile;
+  jurisdiction: JurisdictionName;
+  jurisdictionProfile: JurisdictionProfile | null;
   report: FetchReport;
   /** Regulations already flagged in past runs — do not re-flag these. */
-  seen: { regulationRef: string | null; title: string; relevance: string }[];
+  seen: { regulationRef: string | null; title: string; url: string | null; relevance: string }[];
   /** ISO date of the previous completed run, if any. */
   lastRunAt: string | null;
   /**
@@ -98,7 +129,7 @@ export interface JudgeInput {
 
 export async function judge(provider: LlmProvider, input: JudgeInput): Promise<Judgment> {
   const { value } = await completeJson(provider, JudgmentSchema, {
-    system: SYSTEM_PROMPT,
+    system: input.jurisdiction === "United States" ? US_SYSTEM_PROMPT : SYSTEM_PROMPT,
     prompt: buildPrompt(input),
     timeoutMs: 600_000,
   });
@@ -106,10 +137,13 @@ export async function judge(provider: LlmProvider, input: JudgeInput): Promise<J
 }
 
 export function buildPrompt(input: JudgeInput): string {
+  if (input.jurisdiction === "United States") return buildUsPrompt(input);
   const { customer, profile, report, seen, lastRunAt, memories = [] } = input;
 
   const failed = report.outcomes.filter((o) => !o.success);
-  const zeroParse = report.outcomes.filter((o) => o.success && o.entriesParsed === 0);
+  const zeroParse = report.outcomes.filter(
+    (o) => o.success && o.entriesParsed === 0 && !o.validEmpty,
+  );
   const isBootstrap = seen.length === 0;
 
   const memory = renderMemoryForPrompt(memories);
@@ -167,7 +201,7 @@ Each view shows only the newest ~10 of ~2,386 regulations. Last completed run: $
 ## Already seen in past runs — do not flag these again
 ${
   seen.length
-    ? seen.map((s) => `  - [${s.relevance}] ${s.regulationRef ?? "?"} — ${s.title}`).join("\n")
+    ? seen.map((s) => `  - [${s.relevance}] ${s.regulationRef ?? "?"} — ${s.title} — ${s.url ?? "no URL"}`).join("\n")
     : "  (nothing — the log is empty)"
 }
 ${
@@ -195,7 +229,113 @@ ${JSON.stringify(report.regulations, null, 2)}
 
 For each regulation that could plausibly matter, fetch its detail page and read the enactment date before deciding. Then return your verdicts, the coverage caveats, and a ready-to-send WhatsApp message.
 
-Return a verdict for every entry above that you did not already see in a past run — "clear" is a verdict and costs one line. An entry with no verdict is indistinguishable from one nobody looked at, and the run records it as unchecked.`;
+Return a verdict for every entry above that you did not already see in a past run — "clear" is a verdict and costs one line. Copy sourceId and url exactly from the entry; never rewrite a URL. An entry with no verdict is indistinguishable from one nobody looked at, and the run records it as unchecked.`;
+}
+
+function buildUsPrompt(input: JudgeInput): string {
+  const { customer, profile, jurisdictionProfile: us, report, seen, lastRunAt, memories = [] } = input;
+  const failed = report.outcomes.filter((o) => !o.success);
+  const zeroParse = report.outcomes.filter(
+    (o) => o.success && o.entriesParsed === 0 && !o.validEmpty,
+  );
+  const isBootstrap = seen.length === 0;
+  const memory = renderMemoryForPrompt(memories);
+  const codes = (rows: { code: string; basis: string; confirmed: boolean }[] | undefined) =>
+    rows?.length
+      ? rows.map((row) => `  - ${row.code} [${row.confirmed ? "confirmed" : "unconfirmed"}] - ${row.basis}`).join("\n")
+      : "  (none recorded)";
+  const list = (values: string[] | undefined) =>
+    values?.length ? values.map((value) => `  - ${value}`).join("\n") : "  (none recorded)";
+
+  return `# United States compliance check
+
+${memory}Customer: ${customer.name}
+Home profile: ${profile.productDescription}
+Selected jurisdiction: United States
+Legal name: ${us?.legalName ?? "not recorded"}
+
+## Facilities
+${list(us?.facilityAddresses)}
+
+## NAICS
+${codes(us?.naicsCodes)}
+
+## Products and SKUs
+${list([...(us?.products ?? []), ...(us?.skus ?? []).map((sku) => `SKU ${sku}`)])}
+
+## Materials, chemicals, processes, and waste
+Materials/chemicals:
+${list(us?.materialsChemicals)}
+Processes:
+${list(us?.manufacturingProcesses)}
+Waste streams:
+${list(us?.wasteStreams)}
+
+## Labels and claims
+${list(us?.labelsClaims)}
+
+## Distribution states
+${list(us?.distributionStates)}
+
+## Export profile
+HTS / Schedule B:
+${codes(us?.htsScheduleBCodes)}
+ECCN / EAR99:
+${codes(us?.exportClassifications)}
+Export countries:
+${list(us?.exportCountries)}
+
+## Regulated product flags
+${list(us?.regulatedProductFlags)}
+
+Missing fields above are unknowns that limit applicability analysis. Disclose material gaps.
+
+## Separate coverage tracks
+- Domestic manufacturing: OSHA, EPA/TSCA/RCRA/air/water/waste, product safety, labeling, and facility permits.
+- Distribution: state product, packaging/EPR/PFAS/chemical, tax, warehouse, hazmat, warranty, and consumer rules for the recorded distribution states.
+- Export: HTS/Schedule B, EAR/ECCN/EAR99, BIS license controls, AES/FTR, OFAC, end user/end use, CBP, and ITAR only when the product flags support it.
+
+Do not imply that one successful federal feed covers all three tracks. State and local coverage is location-specific.
+
+## Source status
+${renderSourceStatus(report.outcomes)}
+${failed.length || zeroParse.length ? "\nDisclose every failed, skipped, or zero-parse source in coverageCaveats." : ""}
+${
+  report.coverageCaveats.length
+    ? `\nProfile-driven sources not activated this run (code appends these exact caveats to the final alert; do not claim this coverage):\n${report.coverageCaveats
+        .map((caveat) => `  - ${caveat}`)
+        .join("\n")}`
+    : ""
+}
+${
+  report.heartbeats.length
+    ? `\nPortal reachability pings (NOT regulations and NOT complete change coverage):\n${report.heartbeats
+        .map((h) => `  - ${h.sourceName}: ${h.fullTitle}`)
+        .join("\n")}`
+    : ""
+}
+
+Last completed United States run: ${lastRunAt ?? "never (bootstrap run)"}.
+
+## Already seen in United States runs
+${seen.length ? seen.map((s) => `  - [${s.relevance}] ${s.regulationRef ?? "?"} - ${s.title} - ${s.url ?? "no URL"}`).join("\n") : "  (none)"}
+${isBootstrap ? "\nThis is a bootstrap run. Do not call the visible backlog new. Use baseline for older relevant material." : ""}
+
+An entry is already seen only when its exact entry URL appears above. A matching title with a different URL is not enough; judge that entry and copy its current URL exactly.
+
+## Official entries (${report.regulations.length}, deduplicated)
+
+Federal Register entries include publication context; eCFR entries describe recent text versions; OSHA RSS is a targeted duplicate view. Before flagging a binding change, fetch the detail URL and distinguish publication, effective date, proposal, and guidance.
+
+${JSON.stringify(report.regulations, null, 2)}
+
+## Output rules
+
+All output text MUST be English, including summaryId, summaryEn, coverageCaveats, reasoning, and whatsappMessage.
+
+Do not estimate how many entries were judged, already seen, or unaccounted in coverageCaveats. Code performs that audit after your response and appends the exact counts.
+
+Return one verdict for every entry not already seen. Use clear for reviewed non-applicable entries. Copy sourceId and url exactly from the entry; never rewrite a URL. The ready-to-send message must be plain English and separate domestic, distribution, and export impact when more than one track is involved. State what remains unchecked and what evidence is needed.`;
 }
 
 /**
@@ -218,9 +358,11 @@ function renderSourceStatus(outcomes: FetchOutcome[]): string {
     }
     const state = !outcome.success
       ? `FAILED (${outcome.errorMessage})`
-      : outcome.entriesParsed === 0
-        ? "SUCCEEDED BUT PARSED 0 ENTRIES — parser is broken, treat as UNCHECKED"
-        : `OK (${outcome.entriesParsed} entries)`;
+      : outcome.validEmpty
+        ? "OK (validated empty listing; 0 current entries)"
+        : outcome.entriesParsed === 0
+          ? "SUCCEEDED BUT PARSED 0 ENTRIES — parser is broken, treat as UNCHECKED"
+          : `OK (${outcome.entriesParsed} entries)`;
     lines.push(`  - ${outcome.name} [${outcome.view ?? "-"}] — ${state}`);
 
     const skipped = skippedByDomain.get(outcome.domain);

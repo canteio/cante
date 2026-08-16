@@ -7,6 +7,7 @@ import {
   setMemoryConfirmed,
 } from "@/lib/db/queries";
 import { refreshChecklistForCustomer } from "@/lib/checks/checklist";
+import { normalizeJurisdiction } from "@/lib/countries";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,6 +15,14 @@ export const dynamic = "force-dynamic";
 const KINDS = [
   "product",
   "hs_code",
+  "naics",
+  "material",
+  "process",
+  "waste",
+  "distribution_state",
+  "label_claim",
+  "export_classification",
+  "product_flag",
   "kbli",
   "market",
   "location",
@@ -30,7 +39,8 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const customerId = url.searchParams.get("customerId") ?? (await getDefaultCustomerId());
   if (!customerId) return Response.json({ memories: [] });
-  return Response.json({ memories: await listMemories(customerId) });
+  const jurisdiction = normalizeJurisdiction(url.searchParams.get("country"));
+  return Response.json({ jurisdiction, memories: await listMemories(customerId, jurisdiction) });
 }
 
 /** POST — add a memory by hand. Anything typed here is confirmed by definition:
@@ -45,8 +55,10 @@ export async function POST(request: Request) {
   if (!customerId) return Response.json({ error: "No customer." }, { status: 404 });
 
   const kind = KINDS.includes(body.kind) ? body.kind : "other";
+  const jurisdiction = normalizeJurisdiction(body.country);
   const memory = await addMemory({
     customerId,
+    jurisdiction,
     kind,
     content,
     source: body.source ?? "entered by hand",
@@ -55,7 +67,7 @@ export async function POST(request: Request) {
   });
 
   if (!memory) return Response.json({ error: "Already remembered." }, { status: 409 });
-  await refreshChecklistForCustomer(customerId);
+  await refreshChecklistForCustomer(customerId, jurisdiction);
   return Response.json({ memory });
 }
 
@@ -65,7 +77,12 @@ export async function PATCH(request: Request) {
   if (!body.id) return Response.json({ error: "No id." }, { status: 400 });
   await setMemoryConfirmed(body.id, Boolean(body.confirmed));
   const memory = await getMemory(body.id);
-  if (memory) await refreshChecklistForCustomer(memory.customerId);
+  if (memory) {
+    await refreshChecklistForCustomer(
+      memory.customerId,
+      normalizeJurisdiction(memory.jurisdiction),
+    );
+  }
   return Response.json({ ok: true });
 }
 
@@ -74,6 +91,11 @@ export async function DELETE(request: Request) {
   if (!id) return Response.json({ error: "No id." }, { status: 400 });
   const memory = await getMemory(id);
   await deleteMemory(id);
-  if (memory) await refreshChecklistForCustomer(memory.customerId);
+  if (memory) {
+    await refreshChecklistForCustomer(
+      memory.customerId,
+      normalizeJurisdiction(memory.jurisdiction),
+    );
+  }
   return Response.json({ ok: true });
 }

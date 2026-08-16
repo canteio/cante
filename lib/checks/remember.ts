@@ -3,6 +3,7 @@ import { addMemory } from "@/lib/db/queries";
 import { refreshChecklistForCustomer } from "@/lib/checks/checklist";
 import { completeJson, getProvider, type LlmProviderChoice } from "@/lib/llm";
 import type { Memory } from "@/lib/db/schema";
+import type { JurisdictionName } from "@/lib/countries";
 
 /**
  * Pulls durable facts about the customer out of a finished chat exchange.
@@ -23,6 +24,14 @@ const ExtractionSchema = z.object({
         kind: z.enum([
           "product",
           "hs_code",
+          "naics",
+          "material",
+          "process",
+          "waste",
+          "distribution_state",
+          "label_claim",
+          "export_classification",
+          "product_flag",
           "kbli",
           "market",
           "location",
@@ -47,6 +56,8 @@ const SYSTEM = `You extract durable facts about a customer from a chat exchange,
 
 Save only what would still matter in three months and would change how future checks are run or explained:
 - the customer's real HS codes, product details, destination markets
+- U.S. NAICS, facility addresses, materials/SDS, processes, waste streams, distribution states
+- labels/claims, HTS/Schedule B, ECCN/EAR99, export destinations, and regulated-product flags
 - KBLI, OSS/NIB/licensing status, SNI certificates or product-standard exposure
 - factory/legal entity location for regional Perda monitoring
 - who to contact and how
@@ -63,6 +74,7 @@ Returning an empty array is the correct and common answer. Never invent a fact t
 
 export async function extractMemories(input: {
   customerId: string;
+  jurisdiction: JurisdictionName;
   question: string;
   answer: string;
   existing: Memory[];
@@ -87,6 +99,7 @@ export async function extractMemories(input: {
     for (const m of value.memories) {
       const inserted = await addMemory({
         customerId: input.customerId,
+        jurisdiction: input.jurisdiction,
         kind: m.kind,
         content: m.content,
         source: m.source,
@@ -95,7 +108,7 @@ export async function extractMemories(input: {
       });
       if (inserted) changed = true;
     }
-    if (changed) await refreshChecklistForCustomer(input.customerId);
+    if (changed) await refreshChecklistForCustomer(input.customerId, input.jurisdiction);
   } catch {
     // Best effort by design — see the note above.
   }

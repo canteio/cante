@@ -1,5 +1,6 @@
 import { runCheck } from "../lib/checks/run";
 import { getDefaultCustomerId, getRunHistory } from "../lib/db/queries";
+import { normalizeJurisdiction } from "../lib/countries";
 
 /**
  * Same code path as POST /api/checks, minus the browser. Useful for testing
@@ -8,12 +9,13 @@ import { getDefaultCustomerId, getRunHistory } from "../lib/db/queries";
  */
 async function main() {
   const customerId = process.argv[2] ?? (await getDefaultCustomerId());
+  const jurisdiction = normalizeJurisdiction(process.argv[3] ?? process.env.CANTE_COUNTRY);
   if (!customerId) throw new Error("No customers. Run `npm run db:seed` first.");
 
-  console.log(`Running check for ${customerId}…`);
-  const { runId } = await runCheck(customerId);
+  console.log(`Running ${jurisdiction} check for ${customerId}…`);
+  const { runId } = await runCheck(customerId, undefined, jurisdiction);
 
-  const [entry] = await getRunHistory(customerId, 1);
+  const [entry] = await getRunHistory(customerId, 1, jurisdiction);
   console.log(`\nRun ${runId} — ${entry.run.status}`);
   for (const r of entry.sourceResults) {
     const state = !r.success

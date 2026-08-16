@@ -4,6 +4,7 @@ import {
   getConversation,
   getCustomerWithProfile,
   getDefaultCustomerId,
+  getJurisdictionProfile,
   getRunHistory,
   listMemories,
   renderMemoryForPrompt,
@@ -11,6 +12,7 @@ import {
 import { extractMemories } from "@/lib/checks/remember";
 import { getProvider, normalizeProviderChoice, PROVIDER_COOKIE } from "@/lib/llm";
 import type { SearchResult } from "@/lib/llm/types";
+import { normalizeJurisdiction, type JurisdictionName } from "@/lib/countries";
 
 /** One tool call, stored with the message so a reopened chat replays it. */
 type ChatActivity = {
@@ -33,7 +35,7 @@ export const maxDuration = 800;
  * confident web answer that reads like a check result is the exact failure this
  * whole product is built to avoid.
  */
-const SYSTEM_PROMPT = `You answer questions about an Indonesian export-compliance monitor for a specific exporter.
+const INDONESIA_SYSTEM_PROMPT = `You answer questions about an Indonesian export-compliance monitor for a specific exporter.
 
 You have two sources of truth, and they are not interchangeable:
 
@@ -51,6 +53,28 @@ Search behavior:
 - Don't search only when the question is purely about stored data, history, UI, memory, or what was already sent.
 
 Format your answer in Markdown: short paragraphs, **bold** for the thing that matters, bullet lists where there's more than one item, tables only for genuinely tabular facts. Keep it brief and concrete. Cite regulation numbers when you have them.`;
+
+const UNITED_STATES_SYSTEM_PROMPT = `You answer questions about United States compliance for a specific manufacturer or distributor.
+
+The selected jurisdiction is the United States. Keep domestic manufacturing, distribution, and export compliance as separate tracks.
+
+You have two sources of truth:
+
+1. **Stored Cante data below.** This is the only authority on what the monitor actually checked, which source succeeded or failed, what it found, and which customer facts are confirmed. Never dress a web result up as a stored check result.
+
+2. **The web**, via WebSearch and WebFetch. Use it for fresh outside research. Prefer primary official sources: federalregister.gov, ecfr.gov, osha.gov, epa.gov, ftc.gov, cpsc.gov, fda.gov, usda.gov, fcc.gov, transportation.gov, bis.gov, census.gov, ofac.treasury.gov, cbp.gov, state.gov, and the applicable state/local government sites.
+
+Search behavior:
+- If the user asks for current, new, latest, recent, applicable, or changed regulations, search immediately before answering.
+- Search against the facts actually recorded: facility location, NAICS, products, materials/SDS, processes, waste, labels/claims, distribution states, HTS/Schedule B, ECCN/EAR99, destinations, end users, and end use.
+- Never infer missing NAICS, ECCN, permit status, waste classification, or product category. State what evidence is missing.
+- A Federal Register proposal is not a current obligation. Publication date and effective date are different.
+- A portal page being reachable is not complete regulatory coverage.
+- For exports, screen classification, destination, parties, end use, AES/FTR, sanctions, and ITAR exposure separately.
+- For state/local rules, use the recorded facility and distribution states. Do not generalize North Carolina coverage to another state.
+- Cite the official source near every fresh claim and say explicitly when it came from web research rather than a stored run.
+
+Format in concise Markdown. Use plain English, concrete next actions, and clear uncertainty. This is compliance triage, not a legal opinion.`;
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
@@ -82,12 +106,21 @@ export async function POST(request: Request) {
     );
   }
 
+  const existingConversation = body.conversationId
+    ? await getConversation(body.conversationId)
+    : null;
+  const jurisdiction = normalizeJurisdiction(
+    existingConversation?.conversation.jurisdiction ?? body.country,
+  );
   const target = await getCustomerWithProfile(customerId);
-  const history = await getRunHistory(customerId, 10);
+  const jurisdictionProfile = await getJurisdictionProfile(customerId, jurisdiction);
+  const history = await getRunHistory(customerId, 10, jurisdiction);
 
   const context = {
     customer: target?.customer,
     profile: target?.profile,
+    jurisdiction,
+    jurisdictionProfile,
     recentRuns: history.map((h) => ({
       startedAt: h.run.startedAt,
       status: h.run.status,
@@ -115,8 +148,8 @@ export async function POST(request: Request) {
   // than being trusted from the client. A fresh CLI process has no session of
   // its own — without this the chat can't answer "what did I just ask?".
   const conversationId: string =
-    body.conversationId ?? (await createConversation(customerId, question));
-  const stored = await getConversation(conversationId);
+    body.conversationId ?? (await createConversation(customerId, question, jurisdiction));
+  const stored = existingConversation ?? (await getConversation(conversationId));
   const priorTurns = (stored?.messages ?? []).slice(-12);
 
   const transcript = priorTurns.length
@@ -125,14 +158,15 @@ export async function POST(request: Request) {
         .join("\n\n")}\n\n`
     : "";
 
-  const memoryEntries = await listMemories(customerId);
+  const memoryEntries = await listMemories(customerId, jurisdiction);
   const memoryBlock = renderMemoryForPrompt(memoryEntries);
 
   await appendMessage(conversationId, "user", question);
 
   const prompt =
-    `${memoryBlock}## Stored run data\n\n${JSON.stringify(context, null, 2)}\n\n` +
-    `${transcript}${buildSearchDirective(question)}## Question\n\n${question}`;
+    `${memoryBlock}## Selected jurisdiction\n\n${jurisdiction}\n\n` +
+    `## Stored run data\n\n${JSON.stringify(context, null, 2)}\n\n` +
+    `${transcript}${buildSearchDirective(question, jurisdiction)}## Question\n\n${question}`;
 
   const encoder = new TextEncoder();
   const stream = new ReadableStream({
@@ -165,7 +199,10 @@ export async function POST(request: Request) {
 
       try {
         for await (const event of provider.stream!({
-          system: SYSTEM_PROMPT,
+          system:
+            jurisdiction === "United States"
+              ? UNITED_STATES_SYSTEM_PROMPT
+              : INDONESIA_SYSTEM_PROMPT,
           prompt,
           tools: ["WebSearch", "WebFetch"],
           timeoutMs: 600_000,
@@ -210,6 +247,7 @@ export async function POST(request: Request) {
           // closed, so it cannot keep the composer disabled.
           void extractMemories({
             customerId,
+            jurisdiction,
             question,
             answer,
             existing: memoryEntries,
@@ -233,8 +271,20 @@ export async function POST(request: Request) {
   });
 }
 
-function buildSearchDirective(question: string): string {
+function buildSearchDirective(question: string, jurisdiction: JurisdictionName): string {
   if (!needsFreshRegulatorySearch(question)) return "";
+  if (jurisdiction === "United States") {
+    return `## Search directive for this turn
+
+This asks for fresh United States compliance research. Use WebSearch immediately. Start with official federal sources and the recorded facility/distribution states. Search the relevant track separately:
+- domestic: Federal Register/eCFR plus OSHA, EPA, FTC, CPSC, or the product-specific agency
+- distribution: official state tax, environmental, packaging/EPR/PFAS, consumer, and product-rule sources
+- export: BIS/EAR, Census/FTR/AES, OFAC, CBP, and DDTC/ITAR only when facts support it
+
+Clearly separate stored Cante coverage from web findings and disclose missing profile facts.
+
+`;
+  }
   return `## Search directive for this turn
 
 This question appears to ask for fresh regulatory discovery. Before answering, use WebSearch immediately. Prefer official Indonesian government sources and run targeted searches for:
@@ -257,5 +307,6 @@ function needsFreshRegulatorySearch(question: string): boolean {
   const wantsRegulations =
     /\b(new|latest|recent|current|today|now|find|search|check|look up)\b/.test(q) ||
     /\b(regulations?|rules?|peraturan|permendag|ekspor|export|compliance)\b/.test(q);
-  return hasHsCode && wantsRegulations;
+  const broadComplianceRequest = /\b(applicable|changed|updates?|requirements?|monitor|compliance)\b/.test(q);
+  return wantsRegulations && (hasHsCode || broadComplianceRequest);
 }

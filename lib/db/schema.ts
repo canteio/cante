@@ -52,6 +52,68 @@ export const customerProfiles = sqliteTable("customer_profiles", {
     .notNull(),
 });
 
+/**
+ * Country-specific operating facts. A customer can be incorporated in one
+ * country while manufacturing, distributing, or exporting under another
+ * jurisdiction, so these facts cannot live on `customers.country`.
+ */
+export const jurisdictionProfiles = sqliteTable("jurisdiction_profiles", {
+  id: text("id").primaryKey(),
+  customerId: text("customer_id")
+    .notNull()
+    .references(() => customers.id),
+  country: text("country").notNull(),
+  legalName: text("legal_name"),
+  facilityAddresses: text("facility_addresses", { mode: "json" })
+    .$type<string[]>()
+    .notNull()
+    .default([]),
+  naicsCodes: text("naics_codes", { mode: "json" })
+    .$type<ClassificationCode[]>()
+    .notNull()
+    .default([]),
+  products: text("products", { mode: "json" }).$type<string[]>().notNull().default([]),
+  skus: text("skus", { mode: "json" }).$type<string[]>().notNull().default([]),
+  materialsChemicals: text("materials_chemicals", { mode: "json" })
+    .$type<string[]>()
+    .notNull()
+    .default([]),
+  manufacturingProcesses: text("manufacturing_processes", { mode: "json" })
+    .$type<string[]>()
+    .notNull()
+    .default([]),
+  wasteStreams: text("waste_streams", { mode: "json" })
+    .$type<string[]>()
+    .notNull()
+    .default([]),
+  distributionStates: text("distribution_states", { mode: "json" })
+    .$type<string[]>()
+    .notNull()
+    .default([]),
+  labelsClaims: text("labels_claims", { mode: "json" })
+    .$type<string[]>()
+    .notNull()
+    .default([]),
+  htsScheduleBCodes: text("hts_schedule_b_codes", { mode: "json" })
+    .$type<ClassificationCode[]>()
+    .notNull()
+    .default([]),
+  exportClassifications: text("export_classifications", { mode: "json" })
+    .$type<ClassificationCode[]>()
+    .notNull()
+    .default([]),
+  exportCountries: text("export_countries", { mode: "json" })
+    .$type<string[]>()
+    .notNull()
+    .default([]),
+  regulatedProductFlags: text("regulated_product_flags", { mode: "json" })
+    .$type<string[]>()
+    .notNull()
+    .default([]),
+  createdAt: text("created_at").notNull().default(now),
+  updatedAt: text("updated_at").notNull().default(now),
+});
+
 export const kbliRecords = sqliteTable("kbli_records", {
   id: text("id").primaryKey(),
   customerId: text("customer_id")
@@ -116,6 +178,7 @@ export const checkRuns = sqliteTable("check_runs", {
   customerId: text("customer_id")
     .notNull()
     .references(() => customers.id),
+  jurisdiction: text("jurisdiction").notNull().default("Indonesia"),
   startedAt: text("started_at").notNull().default(now),
   completedAt: text("completed_at"),
   /** running | complete | failed */
@@ -196,6 +259,7 @@ export const conversations = sqliteTable("conversations", {
   customerId: text("customer_id")
     .notNull()
     .references(() => customers.id),
+  jurisdiction: text("jurisdiction").notNull().default("Indonesia"),
   title: text("title").notNull().default("New chat"),
   createdAt: text("created_at").notNull().default(now),
   updatedAt: text("updated_at").notNull().default(now),
@@ -235,6 +299,7 @@ export const memories = sqliteTable("memories", {
   customerId: text("customer_id")
     .notNull()
     .references(() => customers.id),
+  jurisdiction: text("jurisdiction").notNull().default("Indonesia"),
   /** product | hs_code | market | contact | operational | preference | other */
   kind: text("kind").notNull().default("other"),
   content: text("content").notNull(),
@@ -251,6 +316,7 @@ export const checklistItems = sqliteTable("checklist_items", {
   customerId: text("customer_id")
     .notNull()
     .references(() => customers.id),
+  jurisdiction: text("jurisdiction").notNull().default("Indonesia"),
   /**
    * Stable identity for system-generated rows, so a row can be reworded without
    * orphaning the old one. Matching on the title meant every rename left a
@@ -295,6 +361,7 @@ export type MessageActivity = {
 };
 
 export type HsCode = { code: string; basis: string; confirmed: boolean };
+export type ClassificationCode = { code: string; basis: string; confirmed: boolean };
 export type RelevanceGuidance = {
   likelyRelevant: string[];
   almostNeverRelevant: string[];
@@ -310,6 +377,7 @@ export type ChecklistItem = typeof checklistItems.$inferSelect;
 export type SourcePack = typeof sourcePacks.$inferSelect;
 export type Customer = typeof customers.$inferSelect;
 export type CustomerProfile = typeof customerProfiles.$inferSelect;
+export type JurisdictionProfile = typeof jurisdictionProfiles.$inferSelect;
 export type Source = typeof sources.$inferSelect;
 export type CheckRun = typeof checkRuns.$inferSelect;
 export type SourceResult = typeof sourceResults.$inferSelect;

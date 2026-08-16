@@ -1,5 +1,15 @@
 # Indonesia Export Compliance Monitor — MVP Plan
 
+> **Scope update 2026-08-15:** the app is now multi-jurisdiction. Indonesia
+> remains the flagship, and the United States foundation in `US-plan.md` is
+> implemented: country-scoped profile/run/chat/memory/checklist records,
+> profile-driven official federal feeds, structured CPSC/OFAC updates, working
+> North Carolina/Charlotte adapters, CA/NY/TX register adapters, a 17-row US
+> checklist, and a nation selector in the chat composer. Confirmed Memory can
+> activate new packs; missing facts create coverage caveats. Topic-specific
+> state obligation engines remain incomplete. No hosted API, billing, cron, or
+> automatic delivery was added.
+
 ## Goal
 A daily automated check that watches Indonesian government trade sources for changes affecting a specific exporter's products, and sends a plain-language WhatsApp alert when something relevant changes. First real customer: MA (PVC tarpaulin manufacturer, Surabaya, Indonesia).
 

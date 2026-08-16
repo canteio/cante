@@ -2,7 +2,13 @@ import { randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { db } from "../lib/db/client";
-import { customerProfiles, customers, sourcePacks, sources } from "../lib/db/schema";
+import {
+  customerProfiles,
+  customers,
+  jurisdictionProfiles,
+  sourcePacks,
+  sources,
+} from "../lib/db/schema";
 import { SOURCE_REGISTRY } from "../lib/sources/registry";
 
 const INDONESIA_SOURCE_PACKS = [
@@ -89,6 +95,40 @@ const INDONESIA_SOURCE_PACKS = [
   },
 ];
 
+const US_SOURCE_PACKS = [
+  ["us-federal-register", "national", "Federal Register manufacturing rules", "national_law", "automated"],
+  ["us-ecfr", "national", "eCFR current rule changes", "national_law", "automated"],
+  ["us-osha", "federal/state-plan", "OSHA workplace safety", "safety", "automated"],
+  ["us-epa", "federal", "EPA TSCA, RCRA, air, water, and reporting", "environment", "automated"],
+  ["us-ftc", "federal", "FTC labels, claims, and Made in USA", "labeling", "automated"],
+  ["us-cpsc", "federal", "CPSC product safety and certificates", "product", "automated"],
+  ["us-sector-products", "federal", "FDA, USDA, FCC, and DOT product-rule changes", "product", "automated"],
+  ["us-nc-osh", "North Carolina", "North Carolina OSH", "regional", "automated"],
+  ["us-nc-deq", "North Carolina", "North Carolina environmental and air notices", "regional", "automated"],
+  ["us-mecklenburg-air", "Mecklenburg County", "Mecklenburg County air permit notices", "regional", "automated"],
+  ["us-nc-tax", "North Carolina", "NCDOR tax notices and law-change guidance", "tax", "automated"],
+  ["us-ca-register", "California", "California Regulatory Notice Register", "distribution", "automated"],
+  ["us-ny-register", "New York", "New York State Register", "distribution", "automated"],
+  ["us-tx-register", "Texas", "Texas Register", "distribution", "automated"],
+  ["us-distribution", "distribution states", "State tax, EPR, PFAS, packaging, consumer, and product rules", "distribution", "manual_assisted"],
+  ["us-bis-ear", "federal", "BIS EAR, CCL, ECCN, and license controls", "export", "automated"],
+  ["us-census-aes", "federal", "Census FTR, AES, and EEI", "export", "automated"],
+  ["us-ofac", "federal", "OFAC sanctions and party controls", "export", "automated"],
+  ["us-ddtc-itar", "federal", "DDTC and ITAR exposure", "export", "manual_assisted"],
+  ["us-cbp", "federal", "CBP customs and export enforcement", "export", "automated"],
+].map(([id, jurisdiction, name, category, status]) => ({
+  id,
+  country: "United States",
+  jurisdiction,
+  name,
+  category,
+  status,
+  notes:
+    status === "automated"
+      ? "Backed by an official change feed or monitored official source; applicability still depends on customer facts."
+      : "Coverage is represented in the checklist but requires location/product-specific official research or evidence.",
+}));
+
 /**
  * Seeds MA and the Indonesian source list.
  *
@@ -129,7 +169,7 @@ async function main() {
   }
   console.log(`Seeded ${SOURCE_REGISTRY.length} sources.`);
 
-  for (const pack of INDONESIA_SOURCE_PACKS) {
+  for (const pack of [...INDONESIA_SOURCE_PACKS, ...US_SOURCE_PACKS]) {
     db.insert(sourcePacks)
       .values(pack)
       .onConflictDoUpdate({
@@ -146,10 +186,13 @@ async function main() {
       })
       .run();
   }
-  console.log(`Seeded ${INDONESIA_SOURCE_PACKS.length} Indonesia source packs.`);
+  console.log(
+    `Seeded ${INDONESIA_SOURCE_PACKS.length} Indonesia and ${US_SOURCE_PACKS.length} United States source packs.`,
+  );
 
   const existing = db.select().from(customers).all();
   if (existing.length > 0) {
+    ensureUsProfiles(existing.map((customer) => customer.id));
     console.log(`Customers already present (${existing.map((c) => c.name).join(", ")}) — skipping.`);
     return;
   }
@@ -185,12 +228,30 @@ async function main() {
     })
     .run();
 
+  ensureUsProfiles([customerId]);
+
   console.log(`Seeded customer ${c.name} (${customerId}).`);
   console.log(
     config.hs_codes.confirmed
       ? "HS codes marked confirmed."
       : "HS codes carried over as UNCONFIRMED — the judgment stage will disclose this.",
   );
+}
+
+function ensureUsProfiles(customerIds: string[]): void {
+  const existing = new Set(
+    db
+      .select({ customerId: jurisdictionProfiles.customerId, country: jurisdictionProfiles.country })
+      .from(jurisdictionProfiles)
+      .all()
+      .map((row) => `${row.customerId}:${row.country}`),
+  );
+  for (const customerId of customerIds) {
+    if (existing.has(`${customerId}:United States`)) continue;
+    db.insert(jurisdictionProfiles)
+      .values({ id: randomUUID(), customerId, country: "United States" })
+      .run();
+  }
 }
 
 main().catch((err) => {

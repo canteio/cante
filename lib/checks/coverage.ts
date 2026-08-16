@@ -32,6 +32,7 @@ export function auditVerdictCoverage(
   regulations: RegulationEntry[],
   judgedUrls: (string | null)[],
   seenUrls: (string | null)[],
+  language: "id" | "en" = "id",
 ): VerdictCoverage {
   const judged = new Set(judgedUrls.map(key).filter(Boolean));
   const seen = new Set(seenUrls.map(key).filter(Boolean));
@@ -48,17 +49,30 @@ export function auditVerdictCoverage(
   }
 
   const caveats: string[] = [];
+  caveats.push(
+    language === "en"
+      ? `Coverage audit: ${regulations.length} fetched entries; ${judgedCount} received a verdict ` +
+          `this run; ${seenCount} matched an earlier exact URL; ${unaccounted.length} remain unaccounted.`
+      : `Audit cakupan: ${regulations.length} entri diambil; ${judgedCount} mendapat penilaian ` +
+          `run ini; ${seenCount} cocok dengan URL persis dari run sebelumnya; ${unaccounted.length} belum terhitung.`,
+  );
   if (unaccounted.length > 0) {
     const examples = unaccounted
       .slice(0, 5)
       .map((e) => e.label || e.fullTitle.slice(0, 60))
       .join("; ");
     caveats.push(
-      `${unaccounted.length} dari ${regulations.length} entri yang berhasil diambil tidak ` +
-        `mendapat penilaian pada pengecekan ini dan juga belum pernah muncul di run sebelumnya — ` +
-        `anggap belum diperiksa, bukan "tidak ada yang relevan"` +
-        (examples ? `: ${examples}` : "") +
-        (unaccounted.length > 5 ? ", dan lainnya." : "."),
+      language === "en"
+        ? `${unaccounted.length} of ${regulations.length} fetched entries received no verdict ` +
+            `in this run and have no exact-URL match in earlier runs. Treat them as unchecked, ` +
+            `not as "nothing relevant"` +
+            (examples ? `: ${examples}` : "") +
+            (unaccounted.length > 5 ? ", and others." : ".")
+        : `${unaccounted.length} dari ${regulations.length} entri yang berhasil diambil tidak ` +
+            `mendapat penilaian pada pengecekan ini dan juga belum pernah muncul di run sebelumnya — ` +
+            `anggap belum diperiksa, bukan "tidak ada yang relevan"` +
+            (examples ? `: ${examples}` : "") +
+            (unaccounted.length > 5 ? ", dan lainnya." : "."),
     );
   }
 

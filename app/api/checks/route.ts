@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { runCheck } from "@/lib/checks/run";
 import { getDefaultCustomerId, getRunHistory } from "@/lib/db/queries";
 import { normalizeProviderChoice, PROVIDER_COOKIE } from "@/lib/llm";
+import { normalizeJurisdiction } from "@/lib/countries";
 
 export const runtime = "nodejs";
 // The judgment stage shells out to the Claude Code CLI and can run for
@@ -13,10 +14,15 @@ export const maxDuration = 800;
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const customerId = url.searchParams.get("customerId") ?? (await getDefaultCustomerId());
+  const jurisdiction = normalizeJurisdiction(url.searchParams.get("country"));
   if (!customerId) {
     return NextResponse.json({ error: "No customers. Run `npm run db:seed`." }, { status: 404 });
   }
-  return NextResponse.json({ customerId, runs: await getRunHistory(customerId) });
+  return NextResponse.json({
+    customerId,
+    jurisdiction,
+    runs: await getRunHistory(customerId, 30, jurisdiction),
+  });
 }
 
 /** POST /api/checks — trigger a check run. A scheduler can call this unchanged. */
@@ -35,9 +41,10 @@ export async function POST(request: Request) {
       .map((part) => part.trim().split("="))
       .find(([name]) => name === PROVIDER_COOKIE)?.[1];
     const providerChoice = normalizeProviderChoice(body.provider ?? cookieProvider);
+    const jurisdiction = normalizeJurisdiction(body.country);
 
-    const { runId } = await runCheck(customerId, providerChoice);
-    return NextResponse.json({ ok: true, runId });
+    const { runId } = await runCheck(customerId, providerChoice, jurisdiction);
+    return NextResponse.json({ ok: true, runId, jurisdiction });
   } catch (err) {
     // The run row is already marked failed with this message by runCheck; the
     // response says so plainly rather than returning a bare 500.
