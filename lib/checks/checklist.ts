@@ -10,6 +10,7 @@ import {
   type ChecklistItem,
   type Memory,
 } from "@/lib/db/schema";
+import { extractKbliCodes, resolveHsCodes } from "@/lib/checks/facts";
 
 type ChecklistStatus =
   | "unknown"
@@ -21,6 +22,8 @@ type ChecklistStatus =
   | "needs_review";
 
 type ChecklistDraft = {
+  /** Stable identity — rows are matched and pruned on this, never on the title. */
+  key: string;
   title: string;
   category: string;
   status: ChecklistStatus;
@@ -33,8 +36,6 @@ type ChecklistDraft = {
   openQuestions: string[];
   origin?: string;
 };
-
-const kbliCodeRe = /\b\d{5}\b/g;
 
 /**
  * Rebuilds the customer's living compliance checklist from profile data,
@@ -50,22 +51,23 @@ export async function refreshChecklistForCustomer(customerId: string): Promise<v
     .get();
   if (!customer || !profile) return;
 
-  deleteObsoleteChecklistItems(customerId);
-
   const memoryRows = db.select().from(memories).where(eq(memories.customerId, customerId)).all();
   await rememberKbliLeads(customerId, memoryRows);
 
   const kbliRows = db.select().from(kbliRecords).where(eq(kbliRecords.customerId, customerId)).all();
-  const confirmedMemories = memoryRows.filter((m) => m.confirmed);
   const unconfirmedMemories = memoryRows.filter((m) => !m.confirmed);
   const confirmedKbli = kbliRows.filter((k) => k.confirmed || k.status === "confirmed");
   const unconfirmedKbli = kbliRows.filter((k) => !k.confirmed && k.status !== "confirmed");
   const profileKbli = profile.kbliCodes ?? [];
-  const confirmedHs =
-    profile.hsCodesConfirmed || confirmedMemories.some((m) => m.kind === "hs_code");
+  // Same three tiers the judgment stage uses. "A person confirmed it in Memory"
+  // is not "it came off a PEB", and this row exists precisely to chase the
+  // second one — so only a document closes it.
+  const hs = resolveHsCodes(profile, memoryRows);
   const hsLeads = [
-    ...profile.hsCodes.filter((h) => !h.confirmed).map((h) => `HS ${h.code}: ${h.basis}`),
-    ...unconfirmedMemories.filter((m) => m.kind === "hs_code").map((m) => m.content),
+    ...hs.leads.map((h) => `HS ${h.code} (unconfirmed lead): ${h.basis}`),
+    ...hs.guesses.map(
+      (h) => `HS ${h.code} (${hs.guessesSuperseded ? "superseded guess" : "guess"}): ${h.basis}`,
+    ),
   ];
   const products = [
     profile.productDescription,
@@ -80,6 +82,7 @@ export async function refreshChecklistForCustomer(customerId: string): Promise<v
 
   const drafts: ChecklistDraft[] = [
     {
+      key: "kbli-confirm",
       title: "Confirm real KBLI from OSS/NIB",
       category: "kbli",
       status:
@@ -104,22 +107,31 @@ export async function refreshChecklistForCustomer(customerId: string): Promise<v
           : ["Which KBLI codes are printed on the current OSS/NIB?"],
     },
     {
+      key: "trade-hs-confirm",
       title: "Confirm HS codes from PEB or invoice",
       category: "trade",
-      status: confirmedHs ? "completed" : "needs_review",
+      status: hs.documentVerified ? "completed" : "needs_review",
       priority: "high",
       whyApplies:
-        "HS codes decide which export, tariff, customs, and standards changes are relevant. Guessed HS codes must stay visibly unconfirmed.",
+        "HS codes decide which export, tariff, customs, and standards changes are relevant. Codes confirmed in Memory are the working set, but only an export document closes this row.",
       linkedFacts: [
-        ...profile.hsCodes.map((h) => `HS ${h.code}: ${h.basis}${h.confirmed ? " (confirmed)" : " (unconfirmed)"}`),
+        ...hs.document.map((h) => `HS ${h.code} (document-verified): ${h.basis}`),
+        ...hs.human.map((h) => `HS ${h.code} (human-confirmed in Memory): ${h.basis}`),
         ...hsLeads,
       ],
       evidenceRequired: "PEB, commercial invoice, packing list, or broker confirmation showing the actual shipped HS code.",
       sourceHealth: "manual_assisted",
-      confidence: confirmedHs ? "verified" : "lead",
-      openQuestions: confirmedHs ? [] : ["Which HS code appears on the last real export document?"],
+      confidence: hs.documentVerified ? "verified" : hs.human.length > 0 ? "inferred" : "lead",
+      openQuestions: hs.documentVerified
+        ? []
+        : hs.human.length > 0
+          ? [
+              `Do the confirmed codes (${hs.human.map((h) => h.code).join(", ")}) match the last PEB or invoice?`,
+            ]
+          : ["Which HS code appears on the last real export document?"],
     },
     {
+      key: "oss-licensing",
       title: "Check OSS licensing requirements for each KBLI",
       category: "oss",
       status: confirmedKbli.length > 0 || profileKbli.length > 0 ? "required" : "needs_review",
@@ -139,6 +151,7 @@ export async function refreshChecklistForCustomer(customerId: string): Promise<v
           : ["Confirm KBLI first, then map OSS obligations."],
     },
     {
+      key: "kbli-rule-mapping",
       title: "Map KBLI against Indonesian rule families",
       category: "kbli",
       status: confirmedKbli.length > 0 || profileKbli.length > 0 ? "required" : "needs_review",
@@ -159,6 +172,7 @@ export async function refreshChecklistForCustomer(customerId: string): Promise<v
           : ["Confirm KBLI first; complete Indonesian rule mapping cannot be claimed without it."],
     },
     {
+      key: "national-monitoring",
       title: "Monitor UU, PP, Perpres/Kepres, and Permen/Kepmen",
       category: "national",
       status: "required",
@@ -181,6 +195,7 @@ export async function refreshChecklistForCustomer(customerId: string): Promise<v
       ],
     },
     {
+      key: "sni-screen",
       title: "Screen mandatory SNI exposure",
       category: "sni",
       status: products.length > 0 ? "needs_review" : "unknown",
@@ -194,6 +209,7 @@ export async function refreshChecklistForCustomer(customerId: string): Promise<v
       openQuestions: ["Is PVC tarpaulin sold under any mandatory SNI category or sector technical rule?"],
     },
     {
+      key: "tax-customs-monitor",
       title: "Monitor Kemenkeu, DJBC, and DJP tax-customs changes",
       category: "tax_customs",
       status: "needs_review",
@@ -210,6 +226,7 @@ export async function refreshChecklistForCustomer(customerId: string): Promise<v
       openQuestions: ["Does the customer use any bonded-zone, KITE, VAT, or customs facility?"],
     },
     {
+      key: "regional-perda",
       title: "Monitor regional Perda and Perkada by factory location",
       category: "regional",
       status: locationFacts.length > 0 ? "completed" : "needs_review",
@@ -223,6 +240,7 @@ export async function refreshChecklistForCustomer(customerId: string): Promise<v
       openQuestions: locationFacts.length > 0 ? [] : ["What city/regency and province should regional monitoring cover?"],
     },
     {
+      key: "memory-review",
       title: "Review unconfirmed memory leads",
       category: "memory",
       status: unconfirmedMemories.length > 0 ? "needs_review" : "completed",
@@ -243,14 +261,31 @@ export async function refreshChecklistForCustomer(customerId: string): Promise<v
   for (const draft of drafts) {
     await upsertChecklistItem(customerId, draft);
   }
+
+  pruneObsoleteChecklistItems(customerId, drafts);
 }
 
-function deleteObsoleteChecklistItems(customerId: string): void {
-  const obsoleteTitles = ["Add regional Perda and Perkada monitoring location"];
-  for (const title of obsoleteTitles) {
-    db.delete(checklistItems)
-      .where(and(eq(checklistItems.customerId, customerId), eq(checklistItems.title, title)))
-      .run();
+/**
+ * Drop system rows this refresh no longer generates.
+ *
+ * Keys make this self-maintaining: a reworded row keeps its key and is
+ * updated, a removed row disappears on the next refresh. The previous approach
+ * was a hardcoded list of old titles to delete, which only grows and only ever
+ * catches renames somebody remembered to add to it. Rows a person created
+ * (`origin` != system) are never touched.
+ */
+function pruneObsoleteChecklistItems(customerId: string, drafts: ChecklistDraft[]): void {
+  const live = new Set(drafts.map((d) => d.key));
+  const rows = db
+    .select()
+    .from(checklistItems)
+    .where(eq(checklistItems.customerId, customerId))
+    .all();
+
+  for (const row of rows) {
+    if (row.origin !== "system") continue;
+    if (row.key && live.has(row.key)) continue;
+    db.delete(checklistItems).where(eq(checklistItems.id, row.id)).run();
   }
 }
 
@@ -260,7 +295,7 @@ async function rememberKbliLeads(customerId: string, memoryRows: Memory[]): Prom
 
   for (const memory of memoryRows) {
     if (memory.kind !== "kbli" && !/\b(kbli|oss|nib)\b/i.test(memory.content)) continue;
-    const codes = memory.content.match(kbliCodeRe) ?? [];
+    const codes = extractKbliCodes(memory.content);
     for (const code of codes) {
       const existingRow = existingByCode.get(code);
       if (existingRow) {
@@ -312,19 +347,29 @@ async function rememberKbliLeads(customerId: string, memoryRows: Memory[]): Prom
 
 async function upsertChecklistItem(customerId: string, draft: ChecklistDraft): Promise<void> {
   const now = new Date().toISOString();
-  const existing = db
-    .select()
-    .from(checklistItems)
-    .where(
-      and(
-        eq(checklistItems.customerId, customerId),
-        eq(checklistItems.category, draft.category),
-        eq(checklistItems.title, draft.title),
-      ),
-    )
-    .get();
+  const existing =
+    db
+      .select()
+      .from(checklistItems)
+      .where(and(eq(checklistItems.customerId, customerId), eq(checklistItems.key, draft.key)))
+      .get() ??
+    // Rows created before keys existed — adopt them by title once, rather than
+    // leaving a duplicate behind.
+    db
+      .select()
+      .from(checklistItems)
+      .where(
+        and(
+          eq(checklistItems.customerId, customerId),
+          eq(checklistItems.category, draft.category),
+          eq(checklistItems.title, draft.title),
+        ),
+      )
+      .get();
 
   const values = {
+    key: draft.key,
+    title: draft.title,
     status: draft.status,
     priority: draft.priority,
     whyApplies: draft.whyApplies,
@@ -346,7 +391,6 @@ async function upsertChecklistItem(customerId: string, draft: ChecklistDraft): P
     .values({
       id: randomUUID(),
       customerId,
-      title: draft.title,
       category: draft.category,
       ...values,
     })

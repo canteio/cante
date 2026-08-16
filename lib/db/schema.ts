@@ -209,13 +209,12 @@ export const chatMessages = sqliteTable("chat_messages", {
   /** user | agent */
   role: text("role").notNull(),
   content: text("content").notNull(),
-  /** Tool calls made while producing this message, for replay in the UI. */
-  activity: text("activity", { mode: "json" })
-    .$type<
-      { name: string; detail: string; url?: string; hostname?: string; hostnames?: string[] }[]
-    >()
-    .notNull()
-    .default([]),
+  /**
+   * Tool calls made while producing this message, for replay in the UI.
+   * `results` holds the links a search actually returned, so a reopened
+   * conversation shows the same sources it showed live.
+   */
+  activity: text("activity", { mode: "json" }).$type<MessageActivity[]>().notNull().default([]),
   createdAt: text("created_at").notNull().default(now),
 });
 
@@ -252,6 +251,12 @@ export const checklistItems = sqliteTable("checklist_items", {
   customerId: text("customer_id")
     .notNull()
     .references(() => customers.id),
+  /**
+   * Stable identity for system-generated rows, so a row can be reworded without
+   * orphaning the old one. Matching on the title meant every rename left a
+   * duplicate behind and needed a hardcoded delete-by-old-title list.
+   */
+  key: text("key"),
   title: text("title").notNull(),
   /** kbli | national | oss | sni | tax_customs | trade | regional | document | memory | other */
   category: text("category").notNull().default("other"),
@@ -279,6 +284,15 @@ export const checklistItems = sqliteTable("checklist_items", {
   createdAt: text("created_at").notNull().default(now),
   updatedAt: text("updated_at").notNull().default(now),
 });
+
+export type MessageActivity = {
+  id?: string;
+  name: string;
+  detail: string;
+  url?: string;
+  hostname?: string;
+  results?: { title: string; url: string; hostname: string }[];
+};
 
 export type HsCode = { code: string; basis: string; confirmed: boolean };
 export type RelevanceGuidance = {

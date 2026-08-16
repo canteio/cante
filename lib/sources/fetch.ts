@@ -52,12 +52,25 @@ export interface FetchOutcome {
   contentLength: number;
   entriesParsed: number;
   parseWarning: string | null;
+  /**
+   * Not attempted, because an earlier source on the same domain already failed
+   * at the connection level this run. Still a failed source — recorded, never
+   * hidden — but distinguishable from one that was actually tried.
+   */
+  skipped: boolean;
 }
 
 export interface FetchReport {
   runAt: string;
   outcomes: FetchOutcome[];
   regulations: RegulationEntry[];
+  /**
+   * Liveness pings (e.g. "the OSS KBLI portal answered"), kept out of
+   * `regulations` so they can't be judged as if they were rules. They used to
+   * land in the findings table as a `baseline` regulation, which is a portal
+   * heartbeat wearing a regulation's clothes.
+   */
+  heartbeats: RegulationEntry[];
 }
 
 /**
@@ -69,31 +82,55 @@ const ENTRY_RE =
 
 const LABEL_RE = /^([\w./-]+)\s+Tahun\s+(\d{4})$/i;
 
+/** Connection-level failures — the whole domain is down, not just one path. */
+function isDomainFailure(message: string | null): boolean {
+  if (!message) return false;
+  return /fetch failed|abort|timeout|timed out|ENOTFOUND|ECONNREFUSED|ECONNRESET|EAI_AGAIN|socket/i.test(
+    message,
+  );
+}
+
 export async function fetchAllSources(
   sources: SourceDefinition[],
   rawDir: string,
 ): Promise<FetchReport> {
   const outcomes: FetchOutcome[] = [];
   const all: RegulationEntry[] = [];
+  const heartbeats: RegulationEntry[] = [];
+  // One dead domain used to cost five identical 12s timeouts and five identical
+  // caveat lines. Fail it once, record the rest honestly as skipped.
+  const deadDomains = new Map<string, string>();
 
   for (const source of sources) {
+    const deadReason = deadDomains.get(source.domain);
+    if (deadReason) {
+      outcomes.push({
+        ...emptyOutcome(source),
+        errorMessage: `Not attempted — ${source.domain} already failed this run (${deadReason})`,
+        skipped: true,
+      });
+      continue;
+    }
+
     const { outcome, entries } = await fetchSource(source, rawDir);
     outcomes.push(outcome);
-    all.push(...entries);
+    if (!outcome.success && isDomainFailure(outcome.errorMessage)) {
+      deadDomains.set(source.domain, outcome.errorMessage!);
+    }
+    if (source.heartbeat) heartbeats.push(...entries);
+    else all.push(...entries);
   }
 
   return {
     runAt: new Date().toISOString(),
     outcomes,
     regulations: mergeEntries(all),
+    heartbeats,
   };
 }
 
-async function fetchSource(
-  source: SourceDefinition,
-  rawDir: string,
-): Promise<{ outcome: FetchOutcome; entries: RegulationEntry[] }> {
-  const outcome: FetchOutcome = {
+function emptyOutcome(source: SourceDefinition): FetchOutcome {
+  return {
     sourceId: source.id,
     name: source.name,
     domain: source.domain,
@@ -106,7 +143,15 @@ async function fetchSource(
     contentLength: 0,
     entriesParsed: 0,
     parseWarning: null,
+    skipped: false,
   };
+}
+
+async function fetchSource(
+  source: SourceDefinition,
+  rawDir: string,
+): Promise<{ outcome: FetchOutcome; entries: RegulationEntry[] }> {
+  const outcome = emptyOutcome(source);
 
   try {
     const controller = new AbortController();
@@ -262,7 +307,7 @@ function parseAnchorRegulations(
 
     const text = cleanText(match[2]);
     const candidate = text || titleFromSlug(url);
-    if (!looksLikeRegulation(candidate, url)) continue;
+    if (!looksLikeRegulation(candidate)) continue;
 
     const { label, number, year } = labelFromText(candidate, url);
     seen.add(url);
@@ -351,11 +396,37 @@ function absolutizeUrl(href: string, base: string): string {
   }
 }
 
-function looksLikeRegulation(text: string, url: string): boolean {
-  const haystack = `${text} ${url}`;
-  return /\b(undang[-\s]?undang|uu|peraturan|pp|perpres|keppres|kepres|permen|pmk|kmk|per-?\d|sni|oss|kbli)\b/i.test(
-    haystack,
-  );
+/** Site chrome that satisfies any keyword test but is never a regulation. */
+const NAVIGATION_TEXT_RE =
+  /^(beranda|home|login|masuk|daftar|register|kontak|contact|tentang|about|profil|profile|bantuan|help|faq|pencarian|cari|search|selengkapnya|lihat semua|read more|next|prev|previous|berikutnya|sebelumnya|\d+)$/i;
+
+/**
+ * A citable regulation, not merely a page that mentions one.
+ *
+ * The previous version tested `${text} ${url}` against a word list containing
+ * bare `uu`, `pp`, `oss` and `kbli` — and the URL *is* peraturan.go.id/pp, so
+ * every anchor on the page passed, nav and footer included. It only ever looked
+ * harmless because the fetch always failed; the first successful fetch would
+ * have produced 30 junk entries, each costing a detail-page read and a
+ * judgment. So: match the link text only, and require both a regulation word
+ * and a number or year, which is what makes a rule citable at all.
+ */
+function looksLikeRegulation(text: string): boolean {
+  const candidate = text.trim();
+  if (candidate.length < 10) return false;
+  if (NAVIGATION_TEXT_RE.test(candidate)) return false;
+
+  const hasRegulationWord =
+    /\b(undang[-\s]?undang|peraturan pemerintah|peraturan presiden|keputusan presiden|peraturan menteri|keputusan menteri|peraturan daerah|peraturan|perpres|keppres|kepres|permen|kepmen|perda|perkada|pmk|kmk)\b/i.test(
+      candidate,
+    ) || /\bSNI\b/.test(candidate);
+
+  const hasCitation =
+    /\b(nomor|no\.?)\s*[\w./-]*\d/i.test(candidate) ||
+    /\btahun\s+(19|20)\d{2}\b/i.test(candidate) ||
+    /\b(PMK|KMK|SNI)[\s-]*[\w./-]*\d/i.test(candidate);
+
+  return hasRegulationWord && hasCitation;
 }
 
 function labelFromText(text: string, url: string): {

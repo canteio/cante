@@ -43,11 +43,26 @@ export default async function ChecksPage() {
   );
 }
 
+/** Recorded as a failure, but never actually tried — see fetchAllSources. */
+function isSkipped(errorMessage: string | null): boolean {
+  return Boolean(errorMessage?.startsWith("Not attempted —"));
+}
+
 function RunCard({ entry }: { entry: RunHistoryEntry }) {
   const { run, sourceResults, findings, alert } = entry;
   const flagged = findings.filter((f) => f.relevance === "flagged");
   const noted = findings.filter((f) => f.relevance === "noted");
   const broken = sourceResults.filter((r) => !r.success || r.entriesParsed === 0);
+  // A dead domain is one fact, not five. Views skipped because a sibling on the
+  // same domain already failed are still shown as unchecked in the source list,
+  // but the coverage gap says it once.
+  const attempted = broken.filter((r) => !isSkipped(r.errorMessage));
+  const skippedByDomain = new Map<string, typeof broken>();
+  for (const r of broken) {
+    if (!isSkipped(r.errorMessage)) continue;
+    const key = r.domain ?? r.sourceId;
+    skippedByDomain.set(key, [...(skippedByDomain.get(key) ?? []), r]);
+  }
 
   return (
     <div className="card">
@@ -87,13 +102,24 @@ function RunCard({ entry }: { entry: RunHistoryEntry }) {
       </div>
       <div>
         {sourceResults.map((r) => {
-          const state = !r.success ? "failed" : r.entriesParsed === 0 ? "zero" : "ok";
+          const state = !r.success
+            ? isSkipped(r.errorMessage)
+              ? "skipped"
+              : "failed"
+            : r.entriesParsed === 0
+              ? "zero"
+              : "ok";
           return (
             <div key={r.id} className="source-line">
               <span className="row" style={{ gap: 7 }}>
                 {state === "ok" && <CheckCircle2 size={13} color="var(--ok)" />}
                 {state === "zero" && <AlertTriangle size={13} color="var(--warn)" />}
-                {state === "failed" && <CircleSlash size={13} color="var(--danger)" />}
+                {(state === "failed" || state === "skipped") && (
+                  <CircleSlash
+                    size={13}
+                    color={state === "failed" ? "var(--danger)" : "var(--text-faint)"}
+                  />
+                )}
                 {r.sourceName ?? r.sourceId}
                 {r.view && (
                   <span className="mono" style={{ color: "var(--text-faint)" }}>
@@ -109,14 +135,18 @@ function RunCard({ entry }: { entry: RunHistoryEntry }) {
                       ? "var(--text-muted)"
                       : state === "zero"
                         ? "var(--warn)"
-                        : "var(--danger)",
+                        : state === "skipped"
+                          ? "var(--text-faint)"
+                          : "var(--danger)",
                 }}
               >
                 {state === "ok"
                   ? `${r.entriesParsed} entries`
                   : state === "zero"
                     ? "parsed 0 — unchecked"
-                    : "failed"}
+                    : state === "skipped"
+                      ? "not attempted — unchecked"
+                      : "failed"}
               </span>
             </div>
           );
@@ -127,9 +157,15 @@ function RunCard({ entry }: { entry: RunHistoryEntry }) {
         <div className="callout callout-warn">
           <strong>Coverage gap</strong>
           <ul>
-            {broken.map((r) => (
+            {attempted.map((r) => (
               <li key={r.id}>
                 {r.sourceName ?? r.sourceId} — {r.errorMessage ?? r.parseWarning}
+              </li>
+            ))}
+            {[...skippedByDomain].map(([domain, rows]) => (
+              <li key={domain}>
+                {domain} — {rows.length} further view{rows.length > 1 ? "s" : ""} not attempted
+                after the first failure, also unchecked
               </li>
             ))}
           </ul>

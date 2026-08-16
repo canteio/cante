@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, lt } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import {
   alerts,
@@ -19,6 +19,7 @@ import {
   type Customer,
   type CustomerProfile,
   type Memory,
+  type MessageActivity,
 } from "@/lib/db/schema";
 
 export async function listCustomers(): Promise<Customer[]> {
@@ -53,6 +54,8 @@ export async function listSources() {
  * a run is never shown without the evidence of which sources actually worked.
  */
 export async function getRunHistory(customerId: string, limit = 30) {
+  reapStaleRuns();
+
   const runs = db
     .select()
     .from(checkRuns)
@@ -93,6 +96,36 @@ export async function getRunHistory(customerId: string, limit = 30) {
 
 export type RunHistoryEntry = Awaited<ReturnType<typeof getRunHistory>>[number];
 
+/**
+ * A run only leaves "running" from inside its own process, so a killed
+ * `npm run check` — or a dev-server restart mid-check — strands the row and
+ * the dashboard shows a check that never finishes. Nothing can still be
+ * running after an hour: a full check takes minutes.
+ */
+export function reapStaleRuns(maxAgeMs = 60 * 60 * 1000): number {
+  const cutoff = new Date(Date.now() - maxAgeMs).toISOString();
+  const stale = db
+    .select({ id: checkRuns.id })
+    .from(checkRuns)
+    .where(and(eq(checkRuns.status, "running"), lt(checkRuns.startedAt, cutoff)))
+    .all();
+
+  for (const run of stale) {
+    db.update(checkRuns)
+      .set({
+        status: "failed",
+        completedAt: new Date().toISOString(),
+        errorMessage:
+          "Interrupted — the process exited before the run completed. Its source results " +
+          "are still accurate; its judgment never ran.",
+      })
+      .where(eq(checkRuns.id, run.id))
+      .run();
+  }
+
+  return stale.length;
+}
+
 /* ─── Conversations ──────────────────────────────────────────────── */
 
 export async function listConversations(customerId: string): Promise<Conversation[]> {
@@ -128,13 +161,7 @@ export async function appendMessage(
   conversationId: string,
   role: "user" | "agent",
   content: string,
-  activity: {
-    name: string;
-    detail: string;
-    url?: string;
-    hostname?: string;
-    hostnames?: string[];
-  }[] = [],
+  activity: MessageActivity[] = [],
 ): Promise<void> {
   db.insert(chatMessages)
     .values({ id: randomUUID(), conversationId, role, content, activity })

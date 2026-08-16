@@ -31,6 +31,12 @@ export interface SourceDefinition {
   reliabilityStatus: ReliabilityStatus;
   parser?: SourceParser;
   timeoutMs?: number;
+  /**
+   * This source proves a portal is reachable; it does not publish regulations
+   * we can judge. Its entries are reported as source health, never merged into
+   * the regulation list — a liveness ping is not a rule.
+   */
+  heartbeat?: boolean;
   /** Listing view key, used to weight relevance during judgment. */
   view?: string;
   rawFilename?: string;
@@ -229,7 +235,10 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     view: "oss-kbli",
     rawFilename: "oss-kbli.html",
     timeoutMs: 12_000,
-    notes: "KBLI/OSS portal heartbeat. Specific KBLI obligation mapping still depends on confirmed KBLI codes and detail lookups.",
+    heartbeat: true,
+    notes:
+      "KBLI/OSS portal heartbeat — reachability only, reported as source health rather than " +
+      "as a regulation. Specific KBLI obligation mapping still depends on confirmed KBLI codes.",
   },
 ];
 

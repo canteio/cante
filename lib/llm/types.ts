@@ -35,6 +35,13 @@ export interface StreamRequest extends CompletionRequest {
   tools?: string[];
 }
 
+/** A real result the model got back from a search — title and URL as returned. */
+export interface SearchResult {
+  title: string;
+  url: string;
+  hostname: string;
+}
+
 export type StreamEvent =
   /** The model started a tool call. `detail` is a short human-readable summary. */
   | {
@@ -44,11 +51,21 @@ export type StreamEvent =
       detail: string;
       url?: string;
       hostname?: string;
-      hostnames?: string[];
     }
-  | { type: "tool_end"; id: string }
-  /** A safe, user-visible reasoning part or progress summary. */
-  | { type: "thinking"; text?: string; source?: "model" | "provider" | "system" }
+  /** The tool returned. `results` carries what a search actually found. */
+  | { type: "tool_end"; id: string; results?: SearchResult[] }
+  /**
+   * A thinking block opened.
+   *
+   * Note what this does NOT carry: thinking *text*. The Claude Code CLI emits
+   * thinking blocks whose `thinking` field is an empty string — the reasoning
+   * content is not exposed, only a signature and a running token estimate.
+   * So the UI may say the model is thinking and for how long, and must not
+   * invent what it is thinking about.
+   */
+  | { type: "thinking_start" }
+  | { type: "thinking"; tokens?: number; text?: string }
+  | { type: "thinking_end"; tokens?: number }
   /** A chunk of the answer. Concatenate in arrival order. */
   | { type: "text"; text: string }
   | { type: "done" }

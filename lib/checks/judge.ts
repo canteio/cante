@@ -1,7 +1,9 @@
 import { z } from "zod";
 import { completeJson, type LlmProvider } from "@/lib/llm";
-import type { CustomerProfile, Customer } from "@/lib/db/schema";
-import type { FetchReport } from "@/lib/sources/fetch";
+import type { CustomerProfile, Customer, Memory } from "@/lib/db/schema";
+import type { FetchOutcome, FetchReport } from "@/lib/sources/fetch";
+import { renderMemoryForPrompt } from "@/lib/db/queries";
+import { renderHsCodesForPrompt, resolveHsCodes, resolveKbliCodes } from "@/lib/checks/facts";
 
 /**
  * The judgment stage, ported from daily-prompt-check.md.
@@ -85,12 +87,13 @@ export interface JudgeInput {
   /** ISO date of the previous completed run, if any. */
   lastRunAt: string | null;
   /**
-   * Durable customer context accumulated since the profile was written,
-   * pre-rendered with confirmed and unconfirmed kept apart. This is the point
-   * of having memory at all: what the chat learns should sharpen tomorrow's
-   * check, not just sit in a sidebar.
+   * Durable customer context accumulated since the profile was written. Passed
+   * as rows rather than pre-rendered text so this stage can also resolve the
+   * HS and KBLI facts from it — memory that only decorates the prompt changes
+   * nothing about the product; memory that decides which codes are in force
+   * changes every alert.
    */
-  memory?: string;
+  memories?: Memory[];
 }
 
 export async function judge(provider: LlmProvider, input: JudgeInput): Promise<Judgment> {
@@ -103,24 +106,23 @@ export async function judge(provider: LlmProvider, input: JudgeInput): Promise<J
 }
 
 export function buildPrompt(input: JudgeInput): string {
-  const { customer, profile, report, seen, lastRunAt, memory } = input;
+  const { customer, profile, report, seen, lastRunAt, memories = [] } = input;
 
   const failed = report.outcomes.filter((o) => !o.success);
   const zeroParse = report.outcomes.filter((o) => o.success && o.entriesParsed === 0);
   const isBootstrap = seen.length === 0;
 
-  const hsCodeLines = profile.hsCodes
-    .map((c) => `  - ${c.code} — ${c.basis}${c.confirmed ? "" : " (UNCONFIRMED)"}`)
-    .join("\n");
+  const memory = renderMemoryForPrompt(memories);
+  const hsCodes = resolveHsCodes(profile, memories);
+  const kbli = resolveKbliCodes(profile, memories);
 
   return `# Today's check
 
-${memory ?? ""}Customer: ${customer.name} — ${profile.productDescription}
+${memory}Customer: ${customer.name} — ${profile.productDescription}
 Location: ${customer.city ?? "?"}, ${customer.country}
 Side of trade: ${profile.sideOfTrade}
 
-## HS codes ${profile.hsCodesConfirmed ? "(confirmed)" : "(NOT CONFIRMED — these are educated guesses, never verified against a real export document)"}
-${hsCodeLines || "  (none recorded)"}
+${renderHsCodesForPrompt(hsCodes)}
 
 ## Destination markets ${profile.destinationsConfirmed ? "(confirmed)" : "(NOT CONFIRMED)"}
 ${
@@ -139,19 +141,18 @@ Almost never relevant:
 ${profile.relevanceGuidance.almostNeverRelevant.map((g) => `  - ${g}`).join("\n")}
 
 ## Source status — read this before anything else
-${report.outcomes
-  .map((o) => {
-    const state = !o.success
-      ? `FAILED (${o.errorMessage})`
-      : o.entriesParsed === 0
-        ? "SUCCEEDED BUT PARSED 0 ENTRIES — parser is broken, treat as UNCHECKED"
-        : `OK (${o.entriesParsed} entries)`;
-    return `  - ${o.name} [${o.view ?? "-"}] — ${state}`;
-  })
-  .join("\n")}
+${renderSourceStatus(report.outcomes)}
 ${
   failed.length || zeroParse.length
-    ? `\nYou MUST disclose the above in coverageCaveats. Do not imply full coverage.`
+    ? `\nYou MUST disclose the above in coverageCaveats. Do not imply full coverage. ` +
+      `A source listed as SKIPPED was not checked either — it is a failure, not a pass.`
+    : ""
+}
+${
+  report.heartbeats.length
+    ? `\nPortal reachability pings (NOT regulations — never report one as a rule, a change, or a finding):\n${report.heartbeats
+        .map((h) => `  - ${h.sourceName}: ${h.fullTitle}`)
+        .join("\n")}`
     : ""
 }
 
@@ -187,26 +188,90 @@ Each regulation entry includes sourceId, sourceName, domain, and regulationType.
 Copy sourceId into every finding you return so the stored finding points to the
 actual source. Do not collapse everything into Kemendag.
 
-## KBLI mapping pass
-
-If confirmed KBLI codes are present in the customer profile or confirmed memory,
-map them against official Indonesian rules before finalising coverage:
-- Search/fetch OSS KBLI pages for the code to identify risk, licensing, PB UMKU,
-  and sector ministry obligations.
-- Search/fetch official national-law sources for that KBLI/product context:
-  peraturan.go.id, JDIHN, relevant ministry JDIH, Kemenkeu/DJBC/DJP, Kemendag,
-  and BSN/SNI.
-- Treat UU, PP, Perpres/Kepres, Permen/Kepmen, Perda/Perkada, tax/customs, OSS,
-  and SNI as separate coverage families.
-
-If KBLI is missing or only unconfirmed, say in coverageCaveats that complete KBLI
-mapping is not possible yet and use the unconfirmed KBLI only as a lead. Do not
-claim "all applicable Indonesian rules" are mapped until a confirmed KBLI exists
-and the relevant source families succeeded.
-
+${renderKbliSection(kbli)}
 ${JSON.stringify(report.regulations, null, 2)}
 
 ## What to do
 
-For each regulation that could plausibly matter, fetch its detail page and read the enactment date before deciding. Then return your verdicts, the coverage caveats, and a ready-to-send WhatsApp message.`;
+For each regulation that could plausibly matter, fetch its detail page and read the enactment date before deciding. Then return your verdicts, the coverage caveats, and a ready-to-send WhatsApp message.
+
+Return a verdict for every entry above that you did not already see in a past run — "clear" is a verdict and costs one line. An entry with no verdict is indistinguishable from one nobody looked at, and the run records it as unchecked.`;
+}
+
+/**
+ * Source status, grouped by domain.
+ *
+ * A dead domain is one fact, not five. Listing peraturan.go.id's five views as
+ * five separate failures trained the reader to skim the very section rule 2
+ * depends on, so the skipped siblings collapse into one line.
+ */
+function renderSourceStatus(outcomes: FetchOutcome[]): string {
+  const lines: string[] = [];
+  const skippedByDomain = new Map<string, FetchOutcome[]>();
+
+  for (const outcome of outcomes) {
+    if (outcome.skipped) {
+      const group = skippedByDomain.get(outcome.domain) ?? [];
+      group.push(outcome);
+      skippedByDomain.set(outcome.domain, group);
+      continue;
+    }
+    const state = !outcome.success
+      ? `FAILED (${outcome.errorMessage})`
+      : outcome.entriesParsed === 0
+        ? "SUCCEEDED BUT PARSED 0 ENTRIES — parser is broken, treat as UNCHECKED"
+        : `OK (${outcome.entriesParsed} entries)`;
+    lines.push(`  - ${outcome.name} [${outcome.view ?? "-"}] — ${state}`);
+
+    const skipped = skippedByDomain.get(outcome.domain);
+    if (!outcome.success && skipped?.length) {
+      lines.push(
+        `    ...plus ${skipped.length} more view(s) on ${outcome.domain} not attempted for the ` +
+          `same reason (${skipped.map((s) => s.view ?? s.sourceId).join(", ")}) — also UNCHECKED`,
+      );
+      skippedByDomain.delete(outcome.domain);
+    }
+  }
+
+  // Anything whose failing sibling was already printed above is folded in; the
+  // rest still gets a line of its own rather than vanishing.
+  for (const [domain, group] of skippedByDomain) {
+    lines.push(
+      `  - ${domain} — ${group.length} view(s) NOT ATTEMPTED (${group[0].errorMessage}) — UNCHECKED`,
+    );
+  }
+
+  return lines.join("\n");
+}
+
+/**
+ * The KBLI pass only earns its prompt space once a KBLI exists. Rendering the
+ * full mapping instructions against an empty code list spent tokens on every
+ * run to say nothing.
+ */
+function renderKbliSection(kbli: { confirmed: string[]; leads: string[] }): string {
+  if (kbli.confirmed.length === 0) {
+    return `## KBLI
+
+No confirmed KBLI code. ${
+      kbli.leads.length
+        ? `Unconfirmed leads only: ${kbli.leads.join(", ")} — use as a lead, never as a mapped fact. `
+        : ""
+    }Say in coverageCaveats that KBLI-based licensing and sector-rule mapping cannot be done yet, and never claim "all applicable Indonesian rules" are covered.
+`;
+  }
+
+  return `## KBLI mapping pass
+
+Confirmed KBLI: ${kbli.confirmed.join(", ")}${
+    kbli.leads.length ? ` (unconfirmed leads, treat as leads only: ${kbli.leads.join(", ")})` : ""
+  }
+
+Map these against official Indonesian rules before finalising coverage:
+- OSS KBLI pages for the code: risk level, licensing, PB UMKU, sector ministry obligations.
+- Official national-law sources for that KBLI/product context: peraturan.go.id, JDIHN, the
+  relevant ministry JDIH, Kemenkeu/DJBC/DJP, Kemendag, and BSN/SNI.
+- Treat UU, PP, Perpres/Kepres, Permen/Kepmen, Perda/Perkada, tax/customs, OSS and SNI as
+  separate coverage families, and only claim the ones whose sources actually succeeded today.
+`;
 }

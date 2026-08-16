@@ -74,7 +74,9 @@ Tables, multi-tenant from the start:
 - **source_results** — id, check_run_id, source_id, success (bool), error_message, raw_content_path — *this is what makes failures honest and visible instead of silent*
 - **findings** — id, check_run_id, customer_id, regulation_ref, title, summary_id (Bahasa), summary_en, relevance (flagged/clear), source_id, created_at
 - **alerts** — id, finding_id, customer_id, delivered_at, channel (whatsapp/email/manual), delivery_status
-- **checklist_items** — living obligations/evidence gaps generated from customer facts and refreshed when memory changes
+- **checklist_items** — living obligations/evidence gaps generated from customer facts and refreshed when memory changes; `key` gives each system row a stable identity so refresh can prune rows it no longer generates instead of carrying a hardcoded list of renamed titles
+
+Two facts the model is never allowed to decide for itself, both resolved in code before the prompt is built (`lib/checks/facts.ts`, `lib/checks/coverage.ts`): which HS/KBLI codes count as established (document > human-confirmed > lead > superseded guess), and which fetched entries actually received a verdict. Both feed coverage caveats that are written by code rather than by the model being audited.
 
 Key point: everything is keyed by `customer_id`, and sources are keyed by country + regulation_type. That's what makes "add Vietnam" or "add tax regulations" a data change, not a code change.
 
@@ -84,7 +86,7 @@ Key point: everything is keyed by `customer_id`, and sources are keyed by countr
 - `jdih.kemenkeu.go.id/home` — Indonesia, customs/tax, **working**
 - `oss.go.id/id/kbli` — Indonesia, licensing/KBLI, **working heartbeat**
 - `peraturan.bpk.go.id` — Indonesia, national, **blocked** (bot detection, confirmed)
-- `peraturan.go.id` — Indonesia, national, **unstable** (UU/PP/Perpres/Permen attempts currently fail from local fetch)
+- `peraturan.go.id` — Indonesia, national, **unstable** (UU/PP/Perpres/Permen attempts currently fail from local fetch; a per-run circuit breaker attempts the domain once and records the siblings as not attempted)
 - `jdihn.go.id`, `pesta.bsn.go.id` — Indonesia, attempted but failing from local fetch
 
 The fetch layer reads from this table through `monitoredSources()`, skips only

@@ -35,7 +35,7 @@ JDIHN, and BSN failed from local fetch and were disclosed as coverage gaps.
 
 **Do not build all five at once.** Sequence:
 1. Get MA's real KBLI code from their OSS/NIB registration first — it's the filter everything else runs through.
-2. Confirm real HS codes from PEB/invoice and promote the corresponding Memory rows.
+2. Confirm real HS codes from PEB/invoice. The four codes confirmed in Memory (6306.19.90, 3920.43.90, 3921.12.00, 3918.90.99) are now the working set and have superseded the seed-time guesses, but `hsCodesConfirmed` stays false and the checklist row stays open until a document backs them.
 3. Improve retrieval for peraturan.go.id/JDIHN/BSN so national-law and SNI coverage stops failing from plain local fetch.
 4. Add Perda (regional) source discovery for East Java / Surabaya — fragmented by province/city, no single source, and MA is specifically in Surabaya/East Java.
 5. Once KBLI and HS evidence are confirmed, tighten the judgment prompt from "leads" to "verified KBLI-to-rule mapping."

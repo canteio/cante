@@ -7,10 +7,11 @@ import {
   getCustomerWithProfile,
   getSeenRegulations,
   listMemories,
-  renderMemoryForPrompt,
+  reapStaleRuns,
 } from "@/lib/db/queries";
 import { getProvider, type LlmProviderChoice } from "@/lib/llm";
 import { judge } from "@/lib/checks/judge";
+import { auditVerdictCoverage } from "@/lib/checks/coverage";
 import { fetchAllSources } from "@/lib/sources/fetch";
 import { monitoredSources } from "@/lib/sources/registry";
 import { desc, and } from "drizzle-orm";
@@ -28,6 +29,10 @@ export async function runCheck(
 ): Promise<{ runId: string }> {
   const target = await getCustomerWithProfile(customerId);
   if (!target) throw new Error(`No customer/profile found for ${customerId}`);
+
+  // A killed process leaves its run row saying "running" forever, and the
+  // dashboard shows a check that looks like it is still working.
+  reapStaleRuns();
 
   const runId = randomUUID();
   db.insert(checkRuns)
@@ -90,10 +95,21 @@ export async function runCheck(
         relevance: s.relevance,
       })),
       lastRunAt: previousRun?.completedAt ?? null,
-      memory: renderMemoryForPrompt(await listMemories(customerId)),
+      memories: await listMemories(customerId),
     });
 
     // --- Store -------------------------------------------------------------
+    // Entries in, verdicts out. Anything fetched but never judged, and never
+    // seen before, is unchecked — and has to say so in the alert.
+    const coverage = auditVerdictCoverage(
+      report.regulations,
+      judgment.findings.map((f) => f.url),
+      seen.map((s) => s.url),
+    );
+    console.log(
+      `[coverage] ${coverage.totalEntries} entries — ${coverage.judged} judged, ` +
+        `${coverage.alreadySeen} already seen, ${coverage.unaccounted.length} unaccounted`,
+    );
     for (const finding of judgment.findings) {
       db.insert(findings)
         .values({
@@ -113,11 +129,10 @@ export async function runCheck(
         .run();
     }
 
+    const caveats = [...judgment.coverageCaveats, ...coverage.caveats];
     const body = [
       judgment.whatsappMessage,
-      judgment.coverageCaveats.length
-        ? `\n---\nCatatan cakupan:\n${judgment.coverageCaveats.map((c) => `- ${c}`).join("\n")}`
-        : "",
+      caveats.length ? `\n---\nCatatan cakupan:\n${caveats.map((c) => `- ${c}`).join("\n")}` : "",
     ]
       .join("")
       .trim();

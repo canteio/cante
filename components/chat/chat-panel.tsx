@@ -1,42 +1,55 @@
 "use client";
 
-import { ArrowRight, Check, ChevronRight, Globe, Search, Sparkles, Square } from "lucide-react";
+import { ArrowRight, ChevronDown, Globe, Square } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Markdown } from "@/components/chat/markdown";
 
-type Activity = {
-  id: string;
-  name: string;
-  detail: string;
-  done: boolean;
-  url?: string;
-  hostname?: string;
-  hostnames?: string[];
-};
+type SearchResult = { title: string; url: string; hostname: string };
 
-type Thought = {
-  id: string;
-  text: string;
-  elapsed: number;
-};
+/**
+ * One entry in the message timeline, in the order it actually happened.
+ *
+ * Everything here is reported by the provider. There is deliberately no
+ * "phase" field and no summary text the client made up: the previous version
+ * showed invented labels ("Preparing", "Searching web") and a preflight model
+ * call that wrote reasoning prose before the real answer had begun. Both were
+ * theatre. What the CLI genuinely reports is: a thinking block is open and how
+ * many tokens it has spent, which tool is running with which input, what that
+ * tool returned, and the answer text token by token.
+ */
+type TimelineItem =
+  | {
+      kind: "thinking";
+      id: string;
+      tokens: number;
+      startedAt: number;
+      endedAt: number | null;
+    }
+  | {
+      kind: "tool";
+      id: string;
+      name: string;
+      detail: string;
+      url?: string;
+      hostname?: string;
+      results?: SearchResult[];
+      done: boolean;
+    };
 
 type Message =
   | { role: "user"; text: string }
   | {
       role: "agent";
       text: string;
-      activity: Activity[];
-      thoughts: Thought[];
-      thinking: boolean;
+      timeline: TimelineItem[];
       streaming: boolean;
       startedAt: number | null;
-      phase: string;
     };
 
 /**
  * Streams the answer over SSE so the model's work is visible while it happens:
- * tool calls appear as live pills, thinking shows as a shimmer, and the answer
- * renders as Markdown as it arrives.
+ * a live thinking block, tool calls with the favicons of the pages actually
+ * returned, and the answer rendering token by token as Markdown.
  */
 export function ChatPanel({
   customerId,
@@ -64,31 +77,20 @@ export function ChatPanel({
           : {
               role: "agent",
               text: m.content,
-              thoughts: [],
-              activity: (m.activity ?? []).map(
-                (
-                  a: {
-                    name: string;
-                    detail: string;
-                    url?: string;
-                    hostname?: string;
-                    hostnames?: string[];
-                  },
-                  i: number,
-                ) => ({
-                  id: `${m.id}-${i}`,
+              timeline: (m.activity ?? []).map(
+                (a: Omit<Extract<TimelineItem, { kind: "tool" }>, "kind" | "done">, i: number) => ({
+                  kind: "tool" as const,
+                  id: a.id ?? `${m.id}-${i}`,
                   name: a.name,
                   detail: a.detail,
                   url: a.url,
                   hostname: a.hostname,
-                  hostnames: a.hostnames,
+                  results: a.results,
                   done: true,
                 }),
               ),
-              thinking: false,
               streaming: false,
               startedAt: null,
-              phase: "Complete",
             },
       ),
     );
@@ -117,9 +119,10 @@ export function ChatPanel({
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Drives the live second counters. Only ticks while something is streaming.
   useEffect(() => {
     if (!messages.some((m) => m.role === "agent" && m.streaming)) return;
-    const timer = window.setInterval(() => setNow(Date.now()), 1000);
+    const timer = window.setInterval(() => setNow(Date.now()), 250);
     return () => window.clearInterval(timer);
   }, [messages]);
 
@@ -143,11 +146,21 @@ export function ChatPanel({
       const next = [...prev];
       const last = next[next.length - 1];
       if (last?.role !== "agent") return prev;
-      const copy = { ...last, activity: [...last.activity], thoughts: [...last.thoughts] };
+      const copy = { ...last, timeline: [...last.timeline] };
       fn(copy);
       next[next.length - 1] = copy;
       return next;
     });
+  }
+
+  function closeOpenItems(m: Extract<Message, { role: "agent" }>) {
+    m.timeline = m.timeline.map((item) =>
+      item.kind === "thinking" && item.endedAt === null
+        ? { ...item, endedAt: Date.now() }
+        : item.kind === "tool" && !item.done
+          ? { ...item, done: true }
+          : item,
+    );
   }
 
   function stop() {
@@ -155,8 +168,7 @@ export function ChatPanel({
     abortRef.current = null;
     patchLast((m) => {
       m.streaming = false;
-      m.thinking = false;
-      m.phase = "Stopped";
+      closeOpenItems(m);
     });
     setBusy(false);
   }
@@ -174,16 +186,7 @@ export function ChatPanel({
     setMessages((m) => [
       ...m,
       { role: "user", text: question },
-      {
-        role: "agent",
-        text: "",
-        activity: [],
-        thoughts: [],
-        thinking: true,
-        streaming: true,
-        startedAt: Date.now(),
-        phase: "Preparing",
-      },
+      { role: "agent", text: "", timeline: [], streaming: true, startedAt: Date.now() },
     ]);
 
     try {
@@ -225,43 +228,60 @@ export function ChatPanel({
 
           if (ev.type === "text") {
             patchLast((m) => {
+              // The first token means every earlier step has finished. Only
+              // settle the timeline once, not on every delta.
+              if (!m.text) closeOpenItems(m);
               m.text += ev.text;
-              m.thinking = false;
-              m.phase = "Writing answer";
+            });
+          } else if (ev.type === "thinking_start") {
+            patchLast((m) => {
+              m.timeline.push({
+                kind: "thinking",
+                id: `think-${m.timeline.length}`,
+                tokens: 0,
+                startedAt: Date.now(),
+                endedAt: null,
+              });
             });
           } else if (ev.type === "thinking") {
             patchLast((m) => {
-              if (!m.text) m.thinking = true;
-              if (typeof ev.text === "string" && ev.text.trim()) {
-                const text = ev.text.trim();
-                if (m.thoughts[m.thoughts.length - 1]?.text !== text) {
-                  m.thoughts.push({
-                    id: `${Date.now()}-${m.thoughts.length}`,
-                    text,
-                    elapsed: elapsedSeconds(m.startedAt, Date.now()),
-                  });
-                }
+              const open = [...m.timeline]
+                .reverse()
+                .find((i) => i.kind === "thinking" && i.endedAt === null);
+              if (open && open.kind === "thinking" && typeof ev.tokens === "number") {
+                m.timeline = m.timeline.map((i) =>
+                  i === open ? { ...i, tokens: ev.tokens } : i,
+                );
               }
-              m.phase = m.activity.some((a) => !a.done) ? "Reading sources" : "Reasoning";
+            });
+          } else if (ev.type === "thinking_end") {
+            patchLast((m) => {
+              m.timeline = m.timeline.map((i) =>
+                i.kind === "thinking" && i.endedAt === null
+                  ? { ...i, endedAt: Date.now(), tokens: ev.tokens ?? i.tokens }
+                  : i,
+              );
             });
           } else if (ev.type === "tool_start") {
             patchLast((m) => {
-              m.thinking = false;
-              m.phase = ev.name === "WebFetch" ? "Reading source" : "Searching web";
-              m.activity.push({
+              closeOpenItems(m);
+              m.timeline.push({
+                kind: "tool",
                 id: ev.id,
                 name: ev.name,
                 detail: ev.detail,
                 url: ev.url,
                 hostname: ev.hostname,
-                hostnames: ev.hostnames,
                 done: false,
               });
             });
           } else if (ev.type === "tool_end") {
             patchLast((m) => {
-              m.activity = m.activity.map((a) => (a.id === ev.id ? { ...a, done: true } : a));
-              m.phase = m.activity.some((a) => !a.done) ? "Reading sources" : "Reasoning";
+              m.timeline = m.timeline.map((i) =>
+                i.kind === "tool" && i.id === ev.id
+                  ? { ...i, done: true, results: ev.results ?? i.results }
+                  : i,
+              );
             });
           } else if (ev.type === "conversation") {
             // A brand-new chat adopts the id the server created, so the next
@@ -274,8 +294,7 @@ export function ChatPanel({
           } else if (ev.type === "done") {
             patchLast((m) => {
               m.streaming = false;
-              m.thinking = false;
-              m.phase = "Complete";
+              closeOpenItems(m);
             });
             setBusy(false);
           } else if (ev.type === "memory_updated") {
@@ -292,8 +311,7 @@ export function ChatPanel({
       abortRef.current = null;
       patchLast((m) => {
         m.streaming = false;
-        m.thinking = false;
-        if (m.phase !== "Complete") m.phase = "Stopped";
+        closeOpenItems(m);
       });
       setBusy(false);
     }
@@ -312,50 +330,31 @@ export function ChatPanel({
               </div>
             ) : (
               <div key={i} className="msg-agent">
-                {(m.streaming || m.activity.length > 0 || m.thoughts.length > 0) && (
-                  <div className="activity-wrap">
-                    {m.streaming && (
-                      <RunStatus
-                        phase={m.phase}
-                        elapsed={elapsedSeconds(m.startedAt, now)}
-                        activity={m.activity}
-                      />
+                {(m.timeline.length > 0 || (m.streaming && !m.text)) && (
+                  <div className="timeline">
+                    {m.timeline.map((item, index) =>
+                      item.kind === "thinking" ? (
+                        <ThinkingBlock
+                          key={item.id}
+                          item={item}
+                          now={now}
+                          connected={index < m.timeline.length - 1}
+                        />
+                      ) : (
+                        <ToolBlock
+                          key={item.id}
+                          item={item}
+                          connected={index < m.timeline.length - 1}
+                        />
+                      ),
                     )}
-                    {m.thoughts.length > 0 && <ThinkingLog thoughts={m.thoughts} />}
-                    {m.activity.length > 0 && (
-                      <div className="activity">
-                        {m.activity.map((a) => (
-                          <span
-                            key={a.id}
-                            className={`act-pill${a.done ? " is-done" : ""}`}
-                            data-tool={a.name}
-                          >
-                            <ToolIcon activity={a} />
-                            <span className="act-copy">
-                              <span className="act-verb">
-                                {a.done
-                                  ? a.name === "WebFetch"
-                                    ? "Read"
-                                    : "Searched"
-                                  : a.name === "WebFetch"
-                                    ? "Reading"
-                                    : "Searching"}
-                              </span>
-                              <span className="act-label">{a.detail}</span>
-                            </span>
-                          </span>
-                        ))}
-                      </div>
+                    {m.streaming && !m.text && m.timeline.every(isSettled) && (
+                      <TimelineRow streaming>
+                        <span className="tl-verb">Working</span>
+                        <span className="tl-elapsed">{seconds(m.startedAt, now)}</span>
+                      </TimelineRow>
                     )}
                   </div>
-                )}
-
-                {m.thinking && !m.text && m.thoughts.length === 0 && (
-                  <ThinkingIndicator
-                    elapsed={elapsedSeconds(m.startedAt, now)}
-                    phase={m.phase}
-                    latestThought={m.thoughts[m.thoughts.length - 1]?.text}
-                  />
                 )}
 
                 {m.text && (
@@ -378,8 +377,8 @@ export function ChatPanel({
           <div className="greeting">
             <h2>What would you like to know?</h2>
             <p>
-              Grounded in stored run data, and able to check official sources on the
-              web when the answer isn&apos;t already here.
+              Grounded in stored run data, and able to check official sources on the web when
+              the answer isn&apos;t already here.
             </p>
           </div>
 
@@ -424,108 +423,148 @@ export function ChatPanel({
   );
 }
 
-function elapsedSeconds(startedAt: number | null, now: number) {
-  if (!startedAt) return 0;
-  return Math.max(0, Math.floor((now - startedAt) / 1000));
+function isSettled(item: TimelineItem): boolean {
+  return item.kind === "thinking" ? item.endedAt !== null : item.done;
 }
 
-function RunStatus({
-  phase,
-  elapsed,
-  activity,
+function seconds(from: number | null, to: number): string {
+  if (!from) return "0s";
+  return `${Math.max(0, (to - from) / 1000).toFixed(1)}s`;
+}
+
+/** The dot-and-connector rail every timeline entry hangs off. */
+function TimelineRow({
+  streaming,
+  connected,
+  children,
 }: {
-  phase: string;
-  elapsed: number;
-  activity: Activity[];
+  streaming?: boolean;
+  connected?: boolean;
+  children: React.ReactNode;
 }) {
-  const active = activity.find((item) => !item.done);
   return (
-    <div className="run-status">
-      <span className="run-status-dot" />
-      <span>{active ? `${phase}: ${active.detail}` : phase}</span>
-      <time>{elapsed}s</time>
+    <div className="tl-row">
+      <span className="tl-rail">
+        {streaming ? <span className="tl-spinner" /> : <span className="tl-dot" />}
+        {connected && <span className="tl-connector" />}
+      </span>
+      <div className="tl-body">{children}</div>
     </div>
   );
 }
 
-function ThinkingLog({ thoughts }: { thoughts: Thought[] }) {
+/**
+ * The model is thinking — which is all the CLI actually tells us.
+ *
+ * It reports that a thinking block is open and a running token estimate, but
+ * the thinking text itself comes through empty, so there is nothing to
+ * display and nothing legitimate to substitute for it. Duration and token
+ * count are real; a paragraph of invented "reasoning" would not be.
+ */
+function ThinkingBlock({
+  item,
+  now,
+  connected,
+}: {
+  item: Extract<TimelineItem, { kind: "thinking" }>;
+  now: number;
+  connected: boolean;
+}) {
+  const running = item.endedAt === null;
+  const elapsed = seconds(item.startedAt, item.endedAt ?? now);
+
   return (
-    <div className="thinking-log">
-      <div className="thinking-log-head">
-        <ChevronRight size={12} />
-        <span>Reasoning</span>
-      </div>
-      <div className="thinking-log-lines">
-        {thoughts.slice(-5).map((thought) => (
-          <div key={thought.id} className="thinking-line">
-            <time>{thought.elapsed}s</time>
-            <span>{thought.text}</span>
-          </div>
-        ))}
-      </div>
-    </div>
+    <TimelineRow streaming={running} connected={connected}>
+      <span className={`tl-verb${running ? " is-live" : ""}`}>
+        {running ? "Thinking" : "Thought"}
+      </span>
+      <span className="tl-elapsed">
+        {elapsed}
+        {item.tokens > 0 && <span className="tl-tokens"> · {item.tokens} tokens</span>}
+      </span>
+    </TimelineRow>
   );
 }
 
-function ToolIcon({ activity }: { activity: Activity }) {
-  if (activity.name === "WebSearch") {
-    const hosts = activity.hostnames?.length
-      ? activity.hostnames
-      : ["jdih.kemendag.go.id", "peraturan.bpk.go.id", "jdih.kemenkeu.go.id"];
-    return (
-      <span className="search-favicon-stack">
-        {hosts.slice(0, 3).map((host) => (
-          <img
-            key={host}
-            src={`https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=32`}
-            alt=""
-          />
-        ))}
-      </span>
-    );
-  }
+function ToolBlock({
+  item,
+  connected,
+}: {
+  item: Extract<TimelineItem, { kind: "tool" }>;
+  connected: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const isSearch = item.name === "WebSearch";
+  const results = item.results ?? [];
+  const verb = isSearch
+    ? item.done
+      ? "Searched"
+      : "Searching"
+    : item.done
+      ? "Read"
+      : "Reading";
 
-  if (activity.name === "WebFetch" && activity.hostname) {
-    return (
-      <span className="favicon-orbit">
-        <img
-          src={`https://www.google.com/s2/favicons?domain=${encodeURIComponent(
-            activity.hostname,
-          )}&sz=32`}
-          alt=""
-        />
-      </span>
-    );
-  }
+  // Favicons come from the pages the search actually returned. While the
+  // search is still running there are none yet — so none are shown.
+  const hosts = [...new Set(results.map((r) => r.hostname))].slice(0, 4);
 
-  if (activity.done) return <Check size={12} />;
-  if (activity.name === "WebFetch") return <Globe size={12} className="spin-slow" />;
-  return <Search size={12} className="scan-icon" />;
+  return (
+    <TimelineRow streaming={!item.done} connected={connected}>
+      <span className="tl-line">
+        <span className={`tl-verb${item.done ? "" : " is-live"}`}>{verb}</span>
+        {item.hostname && <Favicon host={item.hostname} />}
+        {item.url ? (
+          <a className="tl-target" href={item.url} target="_blank" rel="noreferrer noopener">
+            {item.detail}
+          </a>
+        ) : (
+          <span className="tl-target">
+            {isSearch ? `“${item.detail}”` : item.detail}
+            {!item.done && "…"}
+          </span>
+        )}
+        {hosts.length > 0 && (
+          <button
+            type="button"
+            className="tl-sources"
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? "Hide sources" : "Show sources"}
+          >
+            <span className="favicon-stack">
+              {hosts.map((host) => (
+                <Favicon key={host} host={host} />
+              ))}
+            </span>
+            <span className="tl-count">{results.length}</span>
+            <ChevronDown size={10} className={open ? "" : "is-collapsed"} />
+          </button>
+        )}
+      </span>
+
+      {open && results.length > 0 && (
+        <ul className="tl-results">
+          {results.map((result) => (
+            <li key={result.url}>
+              <Favicon host={result.hostname} />
+              <a href={result.url} target="_blank" rel="noreferrer noopener">
+                {result.title}
+              </a>
+              <span className="tl-host">{result.hostname}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </TimelineRow>
+  );
 }
 
-function ThinkingIndicator({
-  elapsed,
-  phase,
-  latestThought,
-}: {
-  elapsed: number;
-  phase: string;
-  latestThought?: string;
-}) {
+function Favicon({ host }: { host: string }) {
   return (
-    <div className="thinking-card">
-      <div className="thinking-orb">
-        <Sparkles size={13} />
-      </div>
-      <div className="thinking-copy">
-        <span>{phase}</span>
-        <small>{latestThought ?? "Checking stored runs, memory, and official web sources"} · {elapsed}s</small>
-      </div>
-      <div className="thinking-dots" aria-hidden="true">
-        <span />
-        <span />
-        <span />
-      </div>
-    </div>
+    <img
+      className="favicon"
+      src={`https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64`}
+      alt=""
+      loading="lazy"
+    />
   );
 }

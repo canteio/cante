@@ -8,6 +8,7 @@ import {
   type CompletionRequest,
   type CompletionResult,
   type LlmProvider,
+  type SearchResult,
   type StreamEvent,
   type StreamRequest,
 } from "@/lib/llm/types";
@@ -68,17 +69,22 @@ async function* readLines(stream: NodeJS.ReadableStream): AsyncIterable<string> 
 /** Plumbing the user shouldn't see in the activity timeline. */
 const HIDDEN_TOOLS = new Set(["ToolSearch"]);
 
-/** Turn a raw tool call into something readable in the UI. */
+/**
+ * Turn a raw tool call into something readable in the UI.
+ *
+ * Note what is absent: a hardcoded list of official hostnames. This used to
+ * return `["jdih.kemendag.go.id", "peraturan.bpk.go.id", "jdih.kemenkeu.go.id"]`
+ * for every WebSearch, so the UI rendered three government favicons regardless
+ * of what was searched or what came back. Real favicons come from
+ * `parseSearchResults()` once the search actually returns.
+ */
 function describeTool(
   name: string,
   input: Record<string, unknown>,
-): { detail: string; url?: string; hostname?: string; hostnames?: string[] } {
+): { detail: string; url?: string; hostname?: string } {
   switch (name) {
     case "WebSearch":
-      return {
-        detail: String(input.query ?? "official sources"),
-        hostnames: ["jdih.kemendag.go.id", "peraturan.bpk.go.id", "jdih.kemenkeu.go.id"],
-      };
+      return { detail: String(input.query ?? "the web") };
     case "WebFetch": {
       const url = String(input.url ?? "");
       try {
@@ -93,12 +99,72 @@ function describeTool(
   }
 }
 
-function extractThinkingText(block: Record<string, unknown>): string | null {
-  for (const key of ["thinking", "reasoning", "text", "summary"]) {
-    const value = block[key];
-    if (typeof value === "string" && value.trim()) return value.trim();
+/** Flatten a tool_result payload, which is either a string or content blocks. */
+function toolResultText(content: unknown): string {
+  if (typeof content === "string") return content;
+  if (Array.isArray(content)) {
+    return content
+      .map((block) =>
+        typeof block === "string"
+          ? block
+          : typeof (block as Record<string, unknown>)?.text === "string"
+            ? ((block as Record<string, unknown>).text as string)
+            : "",
+      )
+      .join("\n");
   }
-  return null;
+  return "";
+}
+
+/**
+ * The real links a WebSearch returned.
+ *
+ * The CLI formats results as `Links: [{"title":…,"url":…}, …]` inside the
+ * tool_result text. These are the actual pages the model saw, which is what
+ * the UI shows favicons for — anything else would be decoration.
+ */
+function parseSearchResults(content: unknown): SearchResult[] {
+  const text = toolResultText(content);
+  const start = text.indexOf("Links: [");
+  if (start === -1) return [];
+
+  const open = text.indexOf("[", start);
+  let depth = 0;
+  let end = -1;
+  for (let i = open; i < text.length; i += 1) {
+    if (text[i] === "[") depth += 1;
+    else if (text[i] === "]") {
+      depth -= 1;
+      if (depth === 0) {
+        end = i;
+        break;
+      }
+    }
+  }
+  if (end === -1) return [];
+
+  try {
+    const parsed = JSON.parse(text.slice(open, end + 1));
+    if (!Array.isArray(parsed)) return [];
+    const results: SearchResult[] = [];
+    const seen = new Set<string>();
+    for (const item of parsed) {
+      const url = String(item?.url ?? "");
+      if (!url) continue;
+      let hostname: string;
+      try {
+        hostname = new URL(url).hostname;
+      } catch {
+        continue;
+      }
+      if (seen.has(url)) continue;
+      seen.add(url);
+      results.push({ title: String(item?.title ?? hostname), url, hostname });
+    }
+    return results;
+  } catch {
+    return [];
+  }
 }
 
 /**
@@ -176,6 +242,15 @@ export class ClaudeCodeProvider implements LlmProvider {
    * messages carrying text/thinking/tool_use blocks, `user` messages carrying
    * tool_results, and a final `result`. Anything unrecognised is ignored rather
    * than surfaced — new event types shouldn't break the UI.
+   *
+   * `--include-partial-messages` adds `stream_event` lines carrying the raw
+   * Anthropic streaming deltas. That is what makes the answer arrive token by
+   * token instead of appearing all at once when a block completes, and it is
+   * also the only way to see a thinking block *while* it is open. Verified
+   * against the live CLI: `text_delta` carries real text, and `thinking_delta`
+   * carries `estimated_tokens` but an **empty** `thinking` string — the
+   * reasoning content itself is not exposed, so nothing downstream may pretend
+   * to render it.
    */
   async *stream(req: StreamRequest): AsyncIterable<StreamEvent> {
     const args = [
@@ -186,6 +261,7 @@ export class ClaudeCodeProvider implements LlmProvider {
       "--output-format",
       "stream-json",
       "--verbose",
+      "--include-partial-messages",
       "--disallowedTools",
       ...DENIED_TOOLS,
     ];
@@ -219,6 +295,8 @@ export class ClaudeCodeProvider implements LlmProvider {
     // pill when its work finishes.
     const openTools = new Set<string>();
     let sawText = false;
+    let thinkingOpen = false;
+    let thinkingTokens = 0;
 
     try {
       for await (const line of readLines(child.stdout)) {
@@ -229,15 +307,49 @@ export class ClaudeCodeProvider implements LlmProvider {
           continue;
         }
 
+        // Deltas first: this is the live channel. Completed `assistant` blocks
+        // repeat the same text afterwards, so text is taken from here only.
+        if (event.type === "stream_event") {
+          const inner = event.event ?? {};
+
+          if (inner.type === "content_block_start") {
+            if (inner.content_block?.type === "thinking") {
+              thinkingOpen = true;
+              thinkingTokens = 0;
+              yield { type: "thinking_start" };
+            }
+            continue;
+          }
+
+          if (inner.type === "content_block_delta") {
+            const delta = inner.delta ?? {};
+            if (delta.type === "text_delta" && delta.text) {
+              sawText = true;
+              yield { type: "text", text: delta.text };
+            } else if (delta.type === "thinking_delta") {
+              if (typeof delta.estimated_tokens === "number") {
+                thinkingTokens = delta.estimated_tokens;
+              }
+              // `delta.thinking` is empty in practice; pass it through if a
+              // future CLI ever fills it in, rather than inventing a summary.
+              const text = typeof delta.thinking === "string" ? delta.thinking : "";
+              yield text
+                ? { type: "thinking", tokens: thinkingTokens, text }
+                : { type: "thinking", tokens: thinkingTokens };
+            }
+            continue;
+          }
+
+          if (inner.type === "content_block_stop" && thinkingOpen) {
+            thinkingOpen = false;
+            yield { type: "thinking_end", tokens: thinkingTokens };
+          }
+          continue;
+        }
+
         if (event.type === "assistant") {
           for (const block of event.message?.content ?? []) {
-            if (block.type === "text" && block.text) {
-              sawText = true;
-              yield { type: "text", text: block.text };
-            } else if (block.type === "thinking") {
-              const text = extractThinkingText(block);
-              if (text) yield { type: "thinking", text };
-            } else if (block.type === "tool_use") {
+            if (block.type === "tool_use") {
               if (HIDDEN_TOOLS.has(block.name)) continue;
               openTools.add(block.id);
               const tool = describeTool(block.name, block.input ?? {});
@@ -253,7 +365,10 @@ export class ClaudeCodeProvider implements LlmProvider {
           for (const block of event.message?.content ?? []) {
             if (block.type === "tool_result" && openTools.has(block.tool_use_id)) {
               openTools.delete(block.tool_use_id);
-              yield { type: "tool_end", id: block.tool_use_id };
+              const results = parseSearchResults(block.content);
+              yield results.length
+                ? { type: "tool_end", id: block.tool_use_id, results }
+                : { type: "tool_end", id: block.tool_use_id };
             }
           }
         } else if (event.type === "result") {
@@ -269,6 +384,7 @@ export class ClaudeCodeProvider implements LlmProvider {
 
       // Close anything still open — a killed process leaves pills spinning.
       for (const id of openTools) yield { type: "tool_end", id };
+      if (thinkingOpen) yield { type: "thinking_end", tokens: thinkingTokens };
 
       if (aborted) return;
 

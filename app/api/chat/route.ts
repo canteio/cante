@@ -10,7 +10,17 @@ import {
 } from "@/lib/db/queries";
 import { extractMemories } from "@/lib/checks/remember";
 import { getProvider, normalizeProviderChoice, PROVIDER_COOKIE } from "@/lib/llm";
-import type { LlmProvider } from "@/lib/llm/types";
+import type { SearchResult } from "@/lib/llm/types";
+
+/** One tool call, stored with the message so a reopened chat replays it. */
+type ChatActivity = {
+  id: string;
+  name: string;
+  detail: string;
+  url?: string;
+  hostname?: string;
+  results?: SearchResult[];
+};
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -39,11 +49,6 @@ Search behavior:
 - Keep the search pass tight unless the user asks for exhaustive research: usually 2 targeted WebSearch calls and at most 2-3 WebFetch reads are enough before answering with caveats.
 - Use stored run data to say what the monitor has actually checked. Use web results to add current outside context. Label those separately.
 - Don't search only when the question is purely about stored data, history, UI, memory, or what was already sent.
-
-Visible reasoning:
-- Start every response with a short user-facing reasoning block wrapped exactly in <visible_reasoning>...</visible_reasoning>.
-- This is not hidden chain-of-thought. Keep it concise: 2-4 lines explaining what you are checking, what you need to verify, and whether you will use stored data, web search, or both.
-- After the closing tag, write the normal Markdown answer. Do not mention the tags.
 
 Format your answer in Markdown: short paragraphs, **bold** for the thing that matters, bullet lists where there's more than one item, tables only for genuinely tabular facts. Keep it brief and concrete. Cite regulation numbers when you have them.`;
 
@@ -153,24 +158,10 @@ export async function POST(request: Request) {
       // Tell the client which conversation this is, so a brand-new chat can
       // adopt the id and subsequent turns append to it.
       send({ type: "conversation", id: conversationId });
-      for (const line of await buildVisibleReasoning({
-        provider,
-        question,
-        usesFreshSearch: needsFreshRegulatorySearch(question),
-        signal: request.signal,
-      }).catch(() => [])) {
-        send({ type: "thinking", text: line, source: "model" });
-      }
 
       let answer = "";
-      const visibleReasoning = createVisibleReasoningParser(send);
-      const activity: {
-        name: string;
-        detail: string;
-        url?: string;
-        hostname?: string;
-        hostnames?: string[];
-      }[] = [];
+      const activity: ChatActivity[] = [];
+      const activityById = new Map<string, ChatActivity>();
 
       try {
         for await (const event of provider.stream!({
@@ -181,29 +172,31 @@ export async function POST(request: Request) {
           signal: request.signal,
         })) {
           if (event.type === "text") {
-            for (const text of visibleReasoning.push(event.text)) {
-              answer += text;
-              send({ type: "text", text });
-            }
+            answer += event.text;
+            send(event);
             continue;
           }
           if (event.type === "tool_start") {
-            activity.push({
+            const item: ChatActivity = {
+              id: event.id,
               name: event.name,
               detail: event.detail,
               url: event.url,
               hostname: event.hostname,
-              hostnames: event.hostnames,
-            });
+            };
+            activity.push(item);
+            activityById.set(event.id, item);
+          }
+          if (event.type === "tool_end" && event.results?.length) {
+            // Store what the search actually returned, so reopening the
+            // conversation shows the same links rather than a bare pill.
+            const item = activityById.get(event.id);
+            if (item) item.results = event.results;
           }
           if (event.type === "done") {
             continue;
           }
           send(event);
-        }
-        for (const text of visibleReasoning.flush()) {
-          answer += text;
-          send({ type: "text", text });
         }
       } catch (err) {
         send({ type: "error", message: err instanceof Error ? err.message : String(err) });
@@ -240,30 +233,6 @@ export async function POST(request: Request) {
   });
 }
 
-async function buildVisibleReasoning({
-  provider,
-  question,
-  usesFreshSearch,
-  signal,
-}: {
-  provider: LlmProvider;
-  question: string;
-  usesFreshSearch: boolean;
-  signal: AbortSignal;
-}): Promise<string[]> {
-  const result = await provider.complete({
-    system:
-      "Write the visible reasoning panel for a chat UI. Do not answer the user's question. Do not use tools. Do not browse. Return only 2-4 short first-person lines, no bullets, no markdown, no tags.",
-    prompt:
-      `User question: ${question}\n\n` +
-      `Will the main answer use fresh web search? ${usesFreshSearch ? "yes" : "only if needed"}\n\n` +
-      "Write what you are about to check and why, in plain language.",
-    timeoutMs: 30_000,
-    signal,
-  });
-  return normalizeReasoningLines(result.text);
-}
-
 function buildSearchDirective(question: string): string {
   if (!needsFreshRegulatorySearch(question)) return "";
   return `## Search directive for this turn
@@ -289,82 +258,4 @@ function needsFreshRegulatorySearch(question: string): boolean {
     /\b(new|latest|recent|current|today|now|find|search|check|look up)\b/.test(q) ||
     /\b(regulations?|rules?|peraturan|permendag|ekspor|export|compliance)\b/.test(q);
   return hasHsCode && wantsRegulations;
-}
-
-function createVisibleReasoningParser(send: (data: unknown) => void) {
-  let buffer = "";
-  let inReasoning = false;
-  let done = false;
-
-  const startRe = /<visible_reasoning>|<reasoning>/i;
-  const endRe = /<\/visible_reasoning>|<\/reasoning>/i;
-
-  const emitReasoning = (raw: string) => {
-    for (const line of raw
-      .split(/\r?\n/)
-      .map((item) => item.replace(/^\s*[-*]\s*/, "").trim())
-      .filter(Boolean)) {
-      send({ type: "thinking", text: line, source: "model" });
-    }
-  };
-
-  return {
-    push(chunk: string): string[] {
-      if (done) return [chunk];
-
-      buffer += chunk;
-      const output: string[] = [];
-
-      if (!inReasoning) {
-        const start = buffer.search(startRe);
-        if (start === -1) {
-          // Hold a small prefix while waiting for the model's visible-reasoning
-          // tag. If it ignores the instruction, do not swallow the answer.
-          if (buffer.length > 4096) {
-            done = true;
-            output.push(buffer);
-            buffer = "";
-          }
-          return output;
-        }
-
-        const match = buffer.slice(start).match(startRe);
-        if (!match) return output;
-        const before = buffer.slice(0, start);
-        if (before.trim()) output.push(before);
-        buffer = buffer.slice(start + match[0].length);
-        inReasoning = true;
-      }
-
-      const end = buffer.search(endRe);
-      if (end === -1) return output;
-
-      const match = buffer.slice(end).match(endRe);
-      if (!match) return output;
-      emitReasoning(buffer.slice(0, end));
-      output.push(buffer.slice(end + match[0].length));
-      buffer = "";
-      inReasoning = false;
-      done = true;
-      return output;
-    },
-
-    flush(): string[] {
-      if (!buffer) return [];
-      const rest = buffer;
-      buffer = "";
-      done = true;
-      return [rest];
-    },
-  };
-}
-
-function normalizeReasoningLines(raw: string): string[] {
-  return raw
-    .replace(/<\/?visible_reasoning>/gi, "")
-    .replace(/<\/?reasoning>/gi, "")
-    .split(/\r?\n/)
-    .map((item) => item.replace(/^\s*[-*]\s*/, "").trim())
-    .filter(Boolean)
-    .slice(0, 4);
 }
