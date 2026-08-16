@@ -10,6 +10,12 @@
 > state obligation engines remain incomplete. No hosted API, billing, cron, or
 > automatic delivery was added.
 
+> **Source-correctness update 2026-08-16:** eCFR monitoring now resumes from the
+> last completed run, paginates without a hidden cap, versions repeat section
+> amendments by date, handles appendices, and separates amendment dates from
+> legal effective dates. First-run history is a disclosed seven-day bootstrap,
+> not a claim of historical coverage.
+
 ## Goal
 A daily automated check that watches Indonesian government trade sources for changes affecting a specific exporter's products, and sends a plain-language WhatsApp alert when something relevant changes. First real customer: MA (PVC tarpaulin manufacturer, Surabaya, Indonesia).
 

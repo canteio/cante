@@ -37,6 +37,30 @@ export interface RegulationEntry {
   /** Complete, lowercased, reconstructed from the detail-URL slug. */
   fullTitle: string;
   url: string;
+  /**
+   * Where the judgment stage should read the full text, when that is not the
+   * same place a human should click. Federal Register HTML pages are ~100KB
+   * and intermittently bot-blocked (they 302 to unblock.federalregister.gov);
+   * `raw_text_url` is the same document as ~7KB of plain text through the
+   * documented API. `url` stays the human-facing link.
+   */
+  textUrl?: string;
+  /**
+   * Dates carried by the source itself, already structured. The whole reason
+   * Indonesian judgment fetches a detail page is that its listing has no real
+   * date — the Federal Register API returns them in the listing, so that fetch
+   * is unnecessary rather than merely blocked.
+   */
+  effectiveOn?: string | null;
+  /** eCFR's last amendment date. This is not a legal effective date. */
+  amendedOn?: string | null;
+  commentsCloseOn?: string | null;
+  /** The source's own prose about dates, e.g. "Comments due August 27, 2026". */
+  datesNote?: string | null;
+  /** "Rule" / "Proposed Rule" / "Notice" — a duty and a proposal differ. */
+  documentType?: string | null;
+  /** The agency's own one-line description of what the document does. */
+  action?: string | null;
   foundInViews: string[];
 }
 
@@ -166,12 +190,10 @@ async function fetchSource(
     const timer = setTimeout(() => controller.abort(), source.timeoutMs ?? TIMEOUT_MS);
     let html: string;
     try {
-      const res = await fetch(source.url, {
-        headers: { ...HEADERS, ...source.requestHeaders },
-        signal: controller.signal,
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
-      html = await res.text();
+      html =
+        source.parser === "ecfr-versions-json"
+          ? await fetchAllEcfrPages(source, controller.signal)
+          : await fetchText(source.url, source, controller.signal);
     } finally {
       clearTimeout(timer);
     }
@@ -204,6 +226,53 @@ async function fetchSource(
     outcome.errorMessage = err instanceof Error ? err.message : String(err);
     return { outcome, entries: [] };
   }
+}
+
+async function fetchText(
+  url: string,
+  source: SourceDefinition,
+  signal: AbortSignal,
+): Promise<string> {
+  const res = await fetch(url, {
+    headers: { ...HEADERS, ...source.requestHeaders },
+    signal,
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+  return res.text();
+}
+
+/** Fetch every eCFR result page or fail the source; a partial page set is unchecked. */
+async function fetchAllEcfrPages(
+  source: SourceDefinition,
+  signal: AbortSignal,
+): Promise<string> {
+  const firstText = await fetchText(source.url, source, signal);
+  const first = JSON.parse(firstText) as {
+    content_versions?: unknown[];
+    meta?: { total_pages?: string | number };
+  };
+  if (!Array.isArray(first.content_versions)) {
+    throw new Error("eCFR payload did not contain content_versions");
+  }
+
+  const totalPages = Number(first.meta?.total_pages ?? 1);
+  if (!Number.isInteger(totalPages) || totalPages < 1) {
+    throw new Error(`eCFR returned an invalid page count: ${String(first.meta?.total_pages)}`);
+  }
+
+  const contentVersions = [...first.content_versions];
+  for (let page = 2; page <= totalPages; page += 1) {
+    const pageUrl = new URL(source.url);
+    pageUrl.searchParams.set("page", String(page));
+    const pageText = await fetchText(pageUrl.toString(), source, signal);
+    const payload = JSON.parse(pageText) as { content_versions?: unknown[] };
+    if (!Array.isArray(payload.content_versions)) {
+      throw new Error(`eCFR page ${page} did not contain content_versions`);
+    }
+    contentVersions.push(...payload.content_versions);
+  }
+
+  return JSON.stringify({ ...first, content_versions: contentVersions });
 }
 
 export function parseEntries(html: string, source: SourceDefinition): RegulationEntry[] {
@@ -437,16 +506,35 @@ function extractDate(value: string): string {
   return `${named[3]}-${String(month).padStart(2, "0")}-${named[2].padStart(2, "0")}`;
 }
 
+/**
+ * Federal Register listings, via the documented no-key API.
+ *
+ * The dates arrive with the listing. This is the one place the US side is
+ * structurally better off than the Indonesian one: Kemendag's listing carries
+ * a year and nothing else, so judgment has to fetch a detail page to learn
+ * when a rule was enacted. The Federal Register returns `effective_on`,
+ * `comments_close_on`, `dates` and `type` as fields, so the same rule — never
+ * assert recency from a listing alone — is satisfied with zero extra fetches.
+ *
+ * These fields are only present because `federalRegister()` asks for them via
+ * `fields[]`. Without that the API returns a short default set, this parser
+ * silently read `undefined` for every date, and every US alert had to disclose
+ * that effective dates were unverified.
+ */
 function parseFederalRegisterJson(json: string, source: SourceDefinition): RegulationEntry[] {
   const payload = JSON.parse(json) as {
     results?: Array<{
       title?: string;
       type?: string;
+      action?: string | null;
       abstract?: string | null;
+      dates?: string | null;
       document_number?: string;
       html_url?: string;
+      raw_text_url?: string | null;
       publication_date?: string;
       effective_on?: string | null;
+      comments_close_on?: string | null;
       citation?: string | null;
       agencies?: Array<{ name?: string }>;
     }>;
@@ -456,7 +544,10 @@ function parseFederalRegisterJson(json: string, source: SourceDefinition): Regul
     if (!item.title || !item.html_url || !item.document_number) return [];
     const agency = item.agencies?.map((a) => a.name).filter(Boolean).join(", ");
     const date = item.publication_date ?? "date unknown";
-    const effective = item.effective_on ? ` Effective ${item.effective_on}.` : "";
+    const effective = item.effective_on
+      ? ` Effective ${item.effective_on}.`
+      : " No effective date published.";
+    const comments = item.comments_close_on ? ` Comments close ${item.comments_close_on}.` : "";
     return [
       buildEntry(source, {
         label: item.citation ?? `${item.document_number} (${item.type ?? "Document"})`,
@@ -464,10 +555,17 @@ function parseFederalRegisterJson(json: string, source: SourceDefinition): Regul
         year: yearFromText(date),
         listingTitle: item.title,
         fullTitle:
-          `${item.title}. Published ${date}.${effective}` +
+          `[${item.type ?? "Document"}] ${item.title}. Published ${date}.${effective}${comments}` +
           `${agency ? ` Agency: ${agency}.` : ""}` +
+          `${item.action ? ` Action: ${item.action}` : ""}` +
           `${item.abstract ? ` ${item.abstract}` : ""}`,
         url: item.html_url,
+        textUrl: item.raw_text_url ?? undefined,
+        effectiveOn: item.effective_on ?? null,
+        commentsCloseOn: item.comments_close_on ?? null,
+        datesNote: item.dates ?? null,
+        documentType: item.type ?? null,
+        action: item.action ?? null,
       }),
     ];
   });
@@ -488,37 +586,44 @@ function parseEcfrVersionsJson(json: string, source: SourceDefinition): Regulati
       type?: string;
     }>;
   };
-  const latestByIdentifier = new Map<string, NonNullable<typeof payload.content_versions>[number]>();
+  const versions = new Map<string, NonNullable<typeof payload.content_versions>[number]>();
 
   for (const item of payload.content_versions ?? []) {
     if (!item.identifier || !item.title || item.substantive === false) continue;
-    const key = `${item.type ?? "section"}:${item.identifier}`;
-    const existing = latestByIdentifier.get(key);
     const itemDate = item.amendment_date ?? item.date ?? item.issue_date ?? "";
-    const existingDate = existing?.amendment_date ?? existing?.date ?? existing?.issue_date ?? "";
-    if (!existing || itemDate > existingDate) latestByIdentifier.set(key, item);
+    const key = `${item.type ?? "section"}:${item.identifier}:${itemDate}`;
+    if (!versions.has(key)) versions.set(key, item);
   }
 
-  return [...latestByIdentifier.values()]
+  return [...versions.values()]
     .sort((a, b) =>
       (b.amendment_date ?? b.date ?? b.issue_date ?? "").localeCompare(
         a.amendment_date ?? a.date ?? a.issue_date ?? "",
       ),
     )
-    .slice(0, 3)
     .map((item) => {
       const date = item.amendment_date ?? item.date ?? item.issue_date ?? "date unknown";
       const type = item.type ?? "section";
-      const pathType = type === "section" ? "section" : type === "part" ? "part" : "section";
-      const url = `https://www.ecfr.gov/current/title-${item.title}/${pathType}-${item.identifier}`;
+      const pathType = type === "appendix" ? "appendix" : "section";
+      const citationUrl = new URL(
+        `/current/title-${item.title}/${pathType}-${item.identifier}`,
+        "https://www.ecfr.gov",
+      ).toString();
+      const identityDate = /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : "date-unknown";
+      const url = `${citationUrl}#cante-amendment-${identityDate}`;
       const status = item.removed ? "Removed" : "Changed";
       return buildEntry(source, {
         label: `${item.title} CFR ${item.identifier}`,
         number: item.identifier ?? null,
         year: yearFromText(date),
         listingTitle: item.name ?? `${item.title} CFR ${item.identifier}`,
-        fullTitle: `${status} ${date}: ${item.name ?? `${item.title} CFR ${item.identifier}`}`,
+        fullTitle:
+          `${status} ${date}: ${item.name ?? `${item.title} CFR ${item.identifier}`}. ` +
+          `This is the codified text as amended, not a proposal. The amendment date is not proof of the rule's legal effective date.`,
         url,
+        effectiveOn: null,
+        amendedOn: /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : null,
+        documentType: item.removed ? "Removed CFR text" : "Amended CFR text",
       });
     });
 }
@@ -701,6 +806,13 @@ function buildEntry(
     listingTitle: string;
     fullTitle: string;
     url: string;
+    textUrl?: string;
+    effectiveOn?: string | null;
+    amendedOn?: string | null;
+    commentsCloseOn?: string | null;
+    datesNote?: string | null;
+    documentType?: string | null;
+    action?: string | null;
   },
 ): RegulationEntry {
   return {
@@ -715,6 +827,17 @@ function buildEntry(
     truncated: entry.listingTitle.endsWith("…") || entry.listingTitle.endsWith("..."),
     fullTitle: entry.fullTitle,
     url: entry.url,
+    ...(Object.hasOwn(entry, "textUrl") ? { textUrl: entry.textUrl } : {}),
+    ...(Object.hasOwn(entry, "effectiveOn") ? { effectiveOn: entry.effectiveOn ?? null } : {}),
+    ...(Object.hasOwn(entry, "amendedOn") ? { amendedOn: entry.amendedOn ?? null } : {}),
+    ...(Object.hasOwn(entry, "commentsCloseOn")
+      ? { commentsCloseOn: entry.commentsCloseOn ?? null }
+      : {}),
+    ...(Object.hasOwn(entry, "datesNote") ? { datesNote: entry.datesNote ?? null } : {}),
+    ...(Object.hasOwn(entry, "documentType")
+      ? { documentType: entry.documentType ?? null }
+      : {}),
+    ...(Object.hasOwn(entry, "action") ? { action: entry.action ?? null } : {}),
     foundInViews: [source.view ?? source.id],
   };
 }

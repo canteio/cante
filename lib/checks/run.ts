@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import path from "node:path";
-import { eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import {
   alerts,
@@ -27,7 +27,6 @@ import {
   selectMonitoredSources,
   type SourceSelectionProfile,
 } from "@/lib/sources/registry";
-import { desc, and } from "drizzle-orm";
 import { DEFAULT_JURISDICTION, type JurisdictionName } from "@/lib/countries";
 
 /**
@@ -63,9 +62,22 @@ export async function runCheck(
     const rawDir = path.join(process.cwd(), "raw");
     const jurisdictionProfile = await getJurisdictionProfile(customerId, jurisdiction);
     const memoryRows = await listMemories(customerId, jurisdiction);
+    const previousRun = db
+      .select({ completedAt: checkRuns.completedAt })
+      .from(checkRuns)
+      .where(
+        and(
+          eq(checkRuns.customerId, customerId),
+          eq(checkRuns.jurisdiction, jurisdiction),
+          eq(checkRuns.status, "complete"),
+        ),
+      )
+      .orderBy(desc(checkRuns.completedAt))
+      .get();
     const selection = selectMonitoredSources(
       jurisdiction,
       sourceProfileWithConfirmedMemory(jurisdictionProfile, memoryRows),
+      { lastCompletedAt: previousRun?.completedAt ?? null },
     );
     const monitored = selection.sources;
     if (monitored.length === 0) {
@@ -102,19 +114,6 @@ export async function runCheck(
 
     // --- Judgment stage ----------------------------------------------------
     const seen = await getSeenRegulations(customerId, jurisdiction);
-    const previousRun = db
-      .select({ completedAt: checkRuns.completedAt })
-      .from(checkRuns)
-      .where(
-        and(
-          eq(checkRuns.customerId, customerId),
-          eq(checkRuns.jurisdiction, jurisdiction),
-          eq(checkRuns.status, "complete"),
-        ),
-      )
-      .orderBy(desc(checkRuns.completedAt))
-      .get();
-
     const judgment = await judge(provider, {
       customer: target.customer,
       profile: target.profile,

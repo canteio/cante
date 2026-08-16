@@ -112,6 +112,13 @@ activate from facility/distribution states. A page may treat zero rows as valid
 only when its source definition supplies an explicit empty-state marker and no
 configured disqualifying structure is present.
 
+eCFR selection is run-aware: the source window starts inclusively on the last
+completed run's UTC date, while a first run uses a disclosed seven-day bootstrap
+window. The fetcher follows every API page and fails the source on a partial page
+set. A dated URL fragment is the monitoring identity, so repeat amendments to a
+stable CFR citation are not suppressed as already seen. `amendedOn` never stands
+in for a legal effective date.
+
 This is deeper change discovery, not a complete state obligation engine. State
 registers do not replace topic-specific EPR, PFAS, packaging, tax, product,
 consumer, permit, or enforcement sources. Restricted-party screening, ECCN

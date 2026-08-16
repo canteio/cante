@@ -43,6 +43,7 @@ npm run check      # same code path as POST /api/checks, from the terminal
 CANTE_COUNTRY="United States" npm run check  # run the US pack
 npm run db:push    # apply lib/db/schema.ts to cante.db
 npm run db:seed    # seed sources + MA from config/customer.json
+npm test           # focused source-window/parser regression tests
 npm run build      # must stay clean
 npx tsc --noEmit   # must stay clean
 ```
@@ -58,6 +59,7 @@ fastest way to test without the browser.
 ```
 lib/llm/          types.ts = the seam (+ streaming) · claude-code.ts (works) · codex-cli.ts (local fallback) · api.ts (stub) · index.ts (factory)
 lib/sources/      registry.ts (sources + profile activation as data) · fetch.ts (no AI, fetch+JSON/RSS/Cheerio parse)
+                  *.test.ts (incremental windows, pagination, source-field contracts)
 lib/checks/       judge.ts (prompt + Zod schema) · run.ts (fetch → judge → store) · checklist.ts (living obligations)
                   facts.ts (HS/KBLI tiers — the one answer to "what is established") · coverage.ts (entries in, verdicts out)
 lib/db/           schema.ts · client.ts · queries.ts
@@ -369,12 +371,12 @@ Perpres/Kepres, Permen/Kepmen, Kemenkeu/DJBC/DJP tax-customs, BSN/SNI, and East
 Java / Surabaya regional rules. All non-blocked source rows are attempted by
 `monitoredSources()`; failures become `source_results` rows and coverage caveats.
 
-### United States pack (verified 2026-08-15)
+### United States pack (verified 2026-08-16)
 
 | Source | Status | Note |
 |---|---|---|
-| Federal Register API | **working** | Thirteen no-key agency feeds were live-probed: EPA, OSHA, FTC, CPSC, FDA, USDA, FCC, DOT/NHTSA, BIS, Census, OFAC, CBP, and State/DDTC. Each agency gets its own result window instead of competing in one broad query. |
-| eCFR versioner API | **working** | Titles 15, 16, 21, 29, 31, 40, and 49; three latest substantive versions per title. Export and sector titles activate from profile facts. A changed section is not proof of applicability. |
+| Federal Register API | **working** | Thirteen no-key agency feeds were live-probed: EPA, OSHA, FTC, CPSC, FDA, USDA, FCC, DOT/NHTSA, BIS, Census, OFAC, CBP, and State/DDTC. Each agency gets its own result window instead of competing in one broad query. Queried with an explicit `fields[]` list — see below, this is load-bearing. |
+| eCFR versioner API | **working** | Titles 15, 16, 21, 29, 31, 40, and 49. Each run resumes inclusively from the last completed run; a first run uses a disclosed seven-day bootstrap window. Every API page and every substantive dated amendment is retained. Export and sector titles activate from profile facts. |
 | OSHA Federal Register RSS | **working** | Official targeted feed; latest test parsed 5 entries and intentionally overlaps Federal Register. |
 | CPSC Recall API | **working** | Official API, rolling 45-day window; live probe parsed 30 recalls. Activated only for a recorded consumer-product flag. |
 | OFAC recent list actions | **working** | Official list-change page; live probe parsed 10 updates. This detects list changes but does not screen counterparties. |
@@ -433,6 +435,62 @@ Things about this feed that will mislead you if forgotten:
   every anchor including nav and footer passed. It looked harmless only because
   that fetch always fails; the first success would have produced 30 junk entries,
   each costing a detail-page read and a judgment.
+
+### ⚠️ Both US APIs must be asked for what you need
+
+Two defaults quietly gutted the US side. Neither failed; both returned 200 and
+looked healthy.
+
+**Federal Register — `fields[]` is not optional.** Without it the API returns a
+short default set carrying **no dates at all**. `parseFederalRegisterJson()` was
+already reading `effective_on` and `abstract`, so it read `undefined` every run,
+and every US alert had to disclose that effective dates and comment deadlines
+were unverified. `FR_FIELDS` in `registry.ts` now requests `effective_on`,
+`comments_close_on`, `dates`, `type`, `action`, `abstract`, `citation` and
+`raw_text_url`. Measured before and after on the same feeds: **0 of 16 entries
+carried a date, then 16 of 16.**
+
+This is the one place the US side beats the Indonesian one. Kemendag's listing
+carries a year and nothing else, so judgment must fetch a detail page per
+candidate to learn an enactment date. The Federal Register returns the dates
+*in the listing*, so "never assert recency from a listing alone" is satisfied
+with zero extra fetches.
+
+**Never fetch a Federal Register HTML page.** It is ~100KB and intermittently
+302s to `unblock.federalregister.gov` — it did exactly that mid-run, which is
+what put "detail pages blocked" in an earlier alert. `raw_text_url` is the same
+document as ~7KB of plain text through the documented API, and entries carry it
+as `textUrl`. `url` stays the human-facing citation link; the judgment prompt is
+told to fetch `textUrl` only when the structured fields leave a real question.
+
+**eCFR — the unfiltered endpoint returns the *oldest* versions.** Asking for
+Title 29 with no parameters gives 268KB of section versions beginning in
+**2017**. `runCheck()` therefore reads the previous completed run before source
+selection, and `issue_date[gte]` resumes from that run's UTC date. The boundary
+is deliberately inclusive because the API has day precision; duplicates are
+removed by versioned identity. A first run starts seven days back and appends a
+code-written caveat that older amendments were not historically audited.
+
+There is no parser cap. `fetchAllEcfrPages()` follows `meta.total_pages`; if any
+page fails or is malformed, the whole source fails rather than presenting a
+partial page set as checked. An empty `content_versions` array is the one valid
+quiet result for these sources and is protected by an explicit empty-state
+marker. This matters because an incremental daily window commonly contains no
+changes.
+
+Each identity is the human eCFR citation plus
+`#cante-amendment-YYYY-MM-DD`. The fragment makes a later amendment to the same
+section new to exact-URL dedup without breaking the citation. Do not collapse to
+one row per section: live data included the same section on multiple amendment
+dates. API `appendix` rows use `/appendix-`, not `/section-`; the latter returns
+404/406. Live verification parsed all 17 Title 15 changes since 23 July 2026,
+and its generated Supplement No. 5 appendix URL resolved to the official page
+with HTTP 200.
+
+`amendedOn` is the eCFR amendment date. It is **not** a legal effective date;
+`effectiveOn` remains explicitly `null` unless a separate official source
+establishes one. Federal Register nullable date/action fields are also preserved
+as explicit nulls so absence and parser omission cannot look the same.
 
 ---
 
@@ -493,12 +551,18 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
   North Carolina/Charlotte and CA/NY/TX state registers are real adapters rather
   than heartbeats. Profile and confirmed-Memory facts activate them, and code
   appends caveats for inactive or unsupported packs.
+- **The eCFR monitor is incremental and version-safe.** It paginates without a
+  hidden entry cap, resumes from the last completed run, gives repeated section
+  amendments distinct identities, resolves appendix citations, and keeps
+  amendment dates separate from effective dates. Six focused regression tests
+  plus a live Title 15 probe passed on 16 Aug 2026.
 - **US run `2405fb73-d714-4f2d-804b-ce6c4ddfe3be` is the current reference.**
   The empty profile selected seven general federal sources; all succeeded and
   produced 37 entries. Judgment accounted for every one: 21 new verdicts, 16
   prior exact-URL matches, 0 unaccounted. The alert appended all four
   deterministic inactive-pack caveats and made no EAR99 claim. Federal Register
-  detail pages blocked model reads, which was separately disclosed.
+  detail pages blocked model reads, which was separately disclosed. That gap is
+  now closed — see the Federal Register field notes above.
 - **Historical pre-depth run `47c65faf-1b70-4313-9a0d-153126127b8f`.** All
   17 source rows succeeded; 44 regulations were fetched; 1 exact-URL-unseen
   entry was judged, 43 matched prior URLs, and 0 were unaccounted. The alert

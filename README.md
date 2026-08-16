@@ -33,6 +33,7 @@ minutes — it fetches listings first, then detail pages for plausible candidate
 |---|---|
 | `npm run check` | Same check, from the terminal. Identical code path to the button — this is what a cron entry would call. |
 | `CANTE_COUNTRY="United States" npm run check` | Run the US source pack from the terminal. |
+| `npm test` | Run focused source-window, pagination, and parser regression tests. |
 | `npm run build` | Production build. |
 | `npm run db:push` | Apply `lib/db/schema.ts` to `cante.db`. |
 | `npm run db:seed` | Seed sources + customer from `config/customer.json`. |
@@ -112,6 +113,23 @@ fetch rows. Seeded packs now cover Kemendag trade, KBLI/OSS, UU, PP,
 Perpres/Kepres, Permen/Kepmen, Kemenkeu/DJBC/DJP tax-customs, BSN/SNI, and East
 Java / Surabaya regional rules. All non-blocked source rows are attempted by the
 monitor; failures are shown as coverage caveats, not hidden.
+
+Both US APIs are queried through their documented interfaces
+(`federalregister.gov/developers/documentation/api/v1`,
+`ecfr.gov/developers/documentation/api/v1`), and both need to be asked for what
+you want. The Federal Register returns no dates unless `fields[]` names them —
+before that was fixed, 0 of 16 entries carried a date and every US alert had to
+say effective dates were unverified; now 16 of 16 do. The eCFR versioner returns
+the *oldest* section versions unless windowed with `issue_date[gte]`, so Title 29
+previously reported 2017 sections as recent changes. Cante now resumes
+inclusively from the last completed run, fetches every API page, and retains
+every substantive dated amendment without a hidden cap. A first run uses a
+disclosed seven-day bootstrap window. Version fragments make a later amendment
+to the same section detectable, appendix links use the correct route, and
+`amendedOn` is kept separate from the unknown legal effective date. Federal
+Register HTML pages are never fetched — they are ~100KB and
+intermittently redirect to an access-block page — the API's plain-text
+`raw_text_url` is used instead.
 
 The US source set is profile-driven. EPA, OSHA, and FTC Federal Register feeds,
 core eCFR titles, and OSHA RSS form the general baseline. Recorded product flags

@@ -57,6 +57,13 @@ export interface SourceSelection {
   coverageCaveats: string[];
 }
 
+export interface SourceSelectionOptions {
+  /** Inclusive lower bound for incremental eCFR queries. */
+  lastCompletedAt?: string | null;
+  /** Injectable clock for deterministic selection tests. */
+  now?: Date;
+}
+
 export interface SourceDefinition {
   id: string;
   country: string;
@@ -96,6 +103,35 @@ export interface SourceDefinition {
 
 const LISTING_URL = "https://jdih.kemendag.go.id/peraturan";
 
+/**
+ * Fields the Federal Register API returns only when asked.
+ *
+ * Documented at federalregister.gov/developers/documentation/api/v1. Without
+ * `fields[]` the API answers with a short default set that carries **no
+ * dates**, so the parser read `undefined` for `effective_on` every run and
+ * every US alert had to disclose that effective dates were unverified. Asking
+ * for them costs nothing and removes the caveat.
+ *
+ * `raw_text_url` matters just as much: it is the same document as ~7KB of
+ * plain text, where the HTML page is ~100KB and intermittently 302s to
+ * unblock.federalregister.gov when fetched by a bot.
+ */
+const FR_FIELDS = [
+  "document_number",
+  "title",
+  "type",
+  "action",
+  "abstract",
+  "dates",
+  "effective_on",
+  "comments_close_on",
+  "publication_date",
+  "citation",
+  "agencies",
+  "html_url",
+  "raw_text_url",
+];
+
 function federalRegister(agencies: string[], view: string): string {
   const params = new URLSearchParams({
     per_page: view === "us-export" ? "10" : "8",
@@ -105,11 +141,37 @@ function federalRegister(agencies: string[], view: string): string {
   params.append("conditions[type][]", "RULE");
   params.append("conditions[type][]", "PRORULE");
   if (view === "us-export") params.append("conditions[type][]", "NOTICE");
+  for (const field of FR_FIELDS) params.append("fields[]", field);
   return `https://www.federalregister.gov/api/v1/documents.json?${params.toString()}`;
 }
 
-function ecfrTitle(title: number): string {
-  return `https://www.ecfr.gov/api/versioner/v1/versions/title-${title}.json`;
+/** A first run starts near today; it is a monitor bootstrap, not a historical audit. */
+const ECFR_BOOTSTRAP_LOOKBACK_DAYS = 7;
+
+/**
+ * eCFR amendments for a title, windowed from the last completed check.
+ *
+ * The unfiltered endpoint returns the *oldest* 1,000 section versions — for
+ * Title 29 that is a 268KB page beginning in 2017, from which the parser could
+ * only ever surface years-old sections and call them changes. The documented
+ * `issue_date[gte]` parameter turns the same call into "what changed since the
+ * monitor last completed". The boundary is inclusive because the API has day,
+ * not timestamp, precision; versioned entry identities remove the overlap.
+ */
+function ecfrTitle(title: number, since = ecfrWindowStart()): string {
+  const params = new URLSearchParams({ "issue_date[gte]": since });
+  return `https://www.ecfr.gov/api/versioner/v1/versions/title-${title}.json?${params.toString()}`;
+}
+
+function ecfrWindowStart(options: SourceSelectionOptions = {}): string {
+  if (options.lastCompletedAt) {
+    const completed = new Date(options.lastCompletedAt);
+    if (!Number.isNaN(completed.getTime())) return completed.toISOString().slice(0, 10);
+  }
+
+  const since = new Date(options.now ?? new Date());
+  since.setUTCDate(since.getUTCDate() - ECFR_BOOTSTRAP_LOOKBACK_DAYS);
+  return since.toISOString().slice(0, 10);
 }
 
 function cpscRecentRecalls(): string {
@@ -409,8 +471,10 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     view: `ecfr-${view}`,
     rawFilename: `us-ecfr-title-${title}.json`,
     timeoutMs: 25_000,
+    emptyStateMarker: '"content_versions":[]',
     activation: profileGate ? { profileGate: profileGate as UsProfileGate } : undefined,
-    notes: "Official eCFR version history; parser keeps the latest substantive section changes.",
+    notes:
+      "Official eCFR version history; incrementally fetches every substantive section and appendix amendment since the last completed run.",
   })),
   {
     id: "us-osha-federal-register",
@@ -646,6 +710,7 @@ const STATE_ALIASES: Record<NonNullable<SourceActivation["state"]>, string[]> = 
 export function selectMonitoredSources(
   country = "Indonesia",
   profile?: SourceSelectionProfile | null,
+  options: SourceSelectionOptions = {},
 ): SourceSelection {
   const candidates = SOURCE_REGISTRY.filter(
     (source) => source.country === country && source.reliabilityStatus !== "blocked",
@@ -654,7 +719,7 @@ export function selectMonitoredSources(
 
   const active = candidates
     .filter((source) => sourceIsActive(source, profile))
-    .map(refreshDynamicUrl);
+    .map((source) => refreshDynamicUrl(source, options));
   const coverageCaveats: string[] = [];
   const facilities = profile?.facilityAddresses ?? [];
   const distribution = profile?.distributionStates ?? [];
@@ -690,12 +755,30 @@ export function selectMonitoredSources(
       "BIS, Census/FTR, OFAC, CBP, and export eCFR feeds were not activated because no U.S. export classification, code, or destination is recorded.",
     );
   }
+  if (!options.lastCompletedAt && active.some((source) => source.parser === "ecfr-versions-json")) {
+    coverageCaveats.push(
+      `eCFR bootstrap coverage begins ${ecfrWindowStart(options)}. Earlier amendments were not historically audited by this monitor.`,
+    );
+  }
 
   return { sources: active, coverageCaveats };
 }
 
-function refreshDynamicUrl(source: SourceDefinition): SourceDefinition {
+function refreshDynamicUrl(
+  source: SourceDefinition,
+  options: SourceSelectionOptions = {},
+): SourceDefinition {
   if (source.id === "us-cpsc-recalls") return { ...source, url: cpscRecentRecalls() };
+  // The eCFR window is relative to today, so it has to be recomputed per run —
+  // the registry is built once at module load and a long-lived server would
+  // otherwise keep asking for a window that ages with the process.
+  const ecfrTitleMatch = source.id.match(/^us-ecfr-title-(\d+)$/);
+  if (ecfrTitleMatch) {
+    return {
+      ...source,
+      url: ecfrTitle(Number(ecfrTitleMatch[1]), ecfrWindowStart(options)),
+    };
+  }
   if (source.id === "us-ca-register") {
     return { ...source, url: currentCaliforniaRegisterMonth() };
   }

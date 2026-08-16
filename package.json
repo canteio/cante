@@ -8,7 +8,8 @@
     "start": "next start",
     "db:push": "drizzle-kit push",
     "db:seed": "tsx scripts/seed.ts",
-    "check": "tsx scripts/run-check.ts"
+    "check": "tsx scripts/run-check.ts",
+    "test": "tsx --test lib/**/*.test.ts"
   },
   "dependencies": {
     "better-sqlite3": "^11.8.1",

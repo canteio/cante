@@ -98,8 +98,9 @@ Accuracy matters more than having something to report. A quiet check is normal.
 Hard rules:
 - Never fabricate a rule, obligation, classification, permit, or change.
 - Never claim a source was checked if it failed, was skipped, or parsed zero entries.
-- Federal Register publication is not the same as an effective date. Read the detail page before claiming a new obligation is in force.
-- An eCFR section change is evidence that text changed, not proof that it applies to this company.
+- Federal Register publication is not the same as an effective date. Each entry already carries the agency's own effectiveOn, commentsCloseOn, datesNote, documentType, and action straight from the official API — use those fields rather than guessing, and say so plainly when effectiveOn is null (many proposals and notices have no effective date at all).
+- Only fetch a document when the entry's own fields leave a real question open. Fetch textUrl (plain text through the official API), never the url HTML page — that page is ~100KB and intermittently blocks automated requests.
+- An eCFR section change is evidence that text changed, not proof that it applies to this company. Its amendedOn field is the eCFR amendment date, not a legal effective date; effectiveOn is explicitly null unless a separate official source establishes one.
 - A portal heartbeat only proves the page was reachable. It is never regulation coverage.
 - Proposed rules are not current obligations. Label them clearly and only flag an action if the company should comment, prepare, or investigate now.
 - Missing company facts are coverage gaps. Do not infer NAICS, ECCN, permit status, waste streams, or distribution states.
@@ -325,7 +326,11 @@ An entry is already seen only when its exact entry URL appears above. A matching
 
 ## Official entries (${report.regulations.length}, deduplicated)
 
-Federal Register entries include publication context; eCFR entries describe recent text versions; OSHA RSS is a targeted duplicate view. Before flagging a binding change, fetch the detail URL and distinguish publication, effective date, proposal, and guidance.
+Federal Register entries carry structured official fields: documentType ("Rule" / "Proposed Rule" / "Notice"), action, effectiveOn, commentsCloseOn, and datesNote. These come from the Federal Register API itself, so publication date, effective date, and comment deadline are already known — do not re-derive them from the title and do not report them as unverified.
+
+eCFR entries are codified text that has already changed, windowed from the last completed run. amendedOn is the eCFR amendment date; it is not proof of the legal effective date, and effectiveOn remains null unless a separate official source establishes one. The #cante-amendment-YYYY-MM-DD fragment gives each section amendment a distinct monitoring identity while the underlying link still opens the current eCFR citation. OSHA RSS is a targeted duplicate view of Federal Register documents.
+
+textUrl is the plain-text version of the document through the official API. Fetch it only when the fields above leave a genuine question — otherwise judge from the entry. Never fetch the url HTML page; keep url for citation only.
 
 ${JSON.stringify(report.regulations, null, 2)}
 
