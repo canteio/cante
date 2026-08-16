@@ -76,11 +76,11 @@ Two properties of the source that can't be engineered away, so the judgment stag
 ```
 lib/llm/          types.ts (the seam) · claude-code.ts (works) · api.ts (stub) · index.ts
 lib/sources/      registry.ts (sources as data) · fetch.ts
-lib/checks/       judge.ts · run.ts (fetch → judge → store)
+lib/checks/       judge.ts · run.ts (fetch → judge → store) · checklist.ts
 lib/db/           schema.ts · client.ts · queries.ts
-app/              page.tsx (Checks) · chat/ · api/{checks,chat,customers}
-components/       dashboard/ · chat/ (SSE reader + Markdown rendering)
-scripts/          seed.ts · run-check.ts
+app/              page.tsx (Checks) · checklist/ · chat/ · memory/ · api/{checks,checklist,chat,customers,memories}
+components/       dashboard/ · checklist/ · memory/ · chat/
+scripts/          seed.ts (sources + Indonesia source packs + MA) · run-check.ts
 config/           customer.json — read at seed time only
 ```
 
@@ -97,12 +97,20 @@ Multi-tenant from day one: everything keys off `customer_id`, sources key off co
 - **peraturan.go.id** — unstable ("website under maintenance"). Bonus, not core.
 - **jdihn.go.id**, **jdih.kemenkeu.go.id** — in the registry as `untested`, not polled.
 
+The wider Indonesia monitor is tracked in `source_packs`, separate from daily
+fetch rows. Seeded packs now cover Kemendag trade (`automated`), KBLI/OSS
+(`manual_assisted`), national law (`untested`), Kemenkeu/DJBC/DJP tax-customs
+(`untested`), BSN/SNI (`untested`), and East Java / Surabaya regional rules
+(`manual_assisted`). That inventory is visible through the checklist logic, but
+only the working Kemendag source rows are polled automatically today.
+
 ---
 
 ## Status
 
 - **Working end to end locally.** Dashboard → Run check now → live fetch, judgment, stored result, rendered alert. Chat Q&A grounded in stored run data also works.
-- **Chat now streams and can search the web.** Answers arrive token by token over SSE with tool calls shown as they happen, and the model may call `WebSearch` / `WebFetch` for outside context — what a regulation actually says, background on an HS code. The two sources of truth are kept explicitly separate in the prompt: stored run data is the only authority on what the monitor checked, and web findings must be attributed to their source. "The 14 Aug run flagged X" and "Kemendag's site says X" have to read differently — a web answer dressed up as a check result is the exact failure this product exists to avoid. Still no API spend: it's the same local `claude` CLI behind the same seam.
+- **Checklist is now first-class.** `/checklist` shows a living compliance work queue generated from customer profile, memory, KBLI records, and source coverage. Chat-extracted or manually entered facts refresh it automatically. Current MA seed creates 7 rows covering KBLI, HS codes, OSS, SNI, tax/customs, regional Perda, and memory review; 5 remain open because evidence is still missing.
+- **Chat now streams and can search the web.** Answers arrive token by token over SSE with live tool activity shown as it happens: elapsed seconds, phase labels, a visible thinking log, search scan pills with official-source favicons, web-read favicons, and an animated thinking card. The stream closes as soon as the answer is saved, while memory extraction runs in the background so the composer is not stuck waiting. HS-code questions asking for new/latest regulation discovery get an explicit search directive to hit official Indonesian sources immediately. The model may call `WebSearch` / `WebFetch` for outside context — what a regulation actually says, background on an HS code. The two sources of truth are kept explicitly separate in the prompt: stored run data is the only authority on what the monitor checked, and web findings must be attributed to their source. "The 14 Aug run flagged X" and "Kemendag's site says X" have to read differently — a web answer dressed up as a check result is the exact failure this product exists to avoid. Still no API spend: it's the same local CLI provider behind the same seam.
 - First real judgment run: 28 findings — 1 `noted`, 1 `baseline`, 26 `clear`. It fetched Permendag 12/2026's detail page, read the real enactment date, and declined to flag it. The day-one false alert the design exists to prevent, prevented in practice rather than in theory.
 - The alert disclosed the unconfirmed HS codes, unknown destination markets, the ~10-of-2,386 window, and the bootstrap caveat without being prompted per-run.
 - **MA's HS codes and destination markets are still unconfirmed placeholders** — `hsCodesConfirmed: false` in the database, so no alert can present them as verified.
@@ -111,10 +119,11 @@ Multi-tenant from day one: everything keys off `customer_id`, sources key off co
 
 ## Next
 
-1. Get MA's actual HS code(s), destination markets, and compliance contact; flip `hsCodesConfirmed` once they come off a real export document (PEB / invoice).
-2. Put the check on a daily schedule — local cron calling `npm run check` is enough.
-3. Run it for real for ~14 days, delivering each alert by hand.
-4. Ask MA directly whether they'd pay $200–400/month. That answer, not more research, decides what happens next.
+1. Get MA's actual KBLI from OSS/NIB, actual HS code(s), destination markets, and compliance contact; confirm those facts once they come off real evidence (PEB / invoice / OSS).
+2. Prove Kemenkeu/DJBC/DJP and BSN/SNI fetchers before marking those source packs automated.
+3. Put the check on a daily schedule — local cron calling `npm run check` is enough.
+4. Run it for real for ~14 days, delivering each alert by hand.
+5. Ask MA directly whether they'd pay $200–400/month. That answer, not more research, decides what happens next.
 
 Only after that answer is yes: implement `lib/llm/api.ts`, add a key, deploy.
 

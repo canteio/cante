@@ -17,7 +17,8 @@
     "paths": { "@/*": ["./*"] }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  // mike-main is a downloaded reference copy of another project, not ours —
-  // without this, tsc and `next build` try to compile its whole backend.
-  "exclude": ["node_modules", "mike-main"]
+  // mike-main and uigen-claude are downloaded reference copies of other
+  // projects, not ours — without this, tsc and `next build` try to compile
+  // their whole backends.
+  "exclude": ["node_modules", "mike-main", "uigen-claude"]
 }

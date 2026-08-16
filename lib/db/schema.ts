@@ -52,6 +52,30 @@ export const customerProfiles = sqliteTable("customer_profiles", {
     .notNull(),
 });
 
+export const kbliRecords = sqliteTable("kbli_records", {
+  id: text("id").primaryKey(),
+  customerId: text("customer_id")
+    .notNull()
+    .references(() => customers.id),
+  code: text("code").notNull(),
+  version: text("version").notNull().default("unknown"),
+  title: text("title"),
+  riskLevel: text("risk_level"),
+  ossLicenseType: text("oss_license_type"),
+  requiredCertificates: text("required_certificates", { mode: "json" })
+    .$type<string[]>()
+    .notNull()
+    .default([]),
+  sectorMinistry: text("sector_ministry"),
+  source: text("source"),
+  /** confirmed | unconfirmed | needs_review | obsolete */
+  status: text("status").notNull().default("unconfirmed"),
+  confirmed: integer("confirmed", { mode: "boolean" }).notNull().default(false),
+  lastCheckedAt: text("last_checked_at"),
+  createdAt: text("created_at").notNull().default(now),
+  updatedAt: text("updated_at").notNull().default(now),
+});
+
 export const sources = sqliteTable("sources", {
   id: text("id").primaryKey(),
   country: text("country").notNull(),
@@ -66,6 +90,25 @@ export const sources = sqliteTable("sources", {
   view: text("view"),
   notes: text("notes"),
   lastSuccessAt: text("last_success_at"),
+});
+
+/**
+ * Product coverage map, separate from fetchable source rows. A pack can exist
+ * before it is automated; that is how the UI can show "manual-assisted" or
+ * "untested" without claiming a daily check ran there.
+ */
+export const sourcePacks = sqliteTable("source_packs", {
+  id: text("id").primaryKey(),
+  country: text("country").notNull(),
+  jurisdiction: text("jurisdiction").notNull().default("national"),
+  name: text("name").notNull(),
+  /** kbli | oss | sni | tax_customs | trade | national_law | regional */
+  category: text("category").notNull(),
+  /** automated | manual_assisted | untested | blocked | planned */
+  status: text("status").notNull().default("planned"),
+  notes: text("notes"),
+  createdAt: text("created_at").notNull().default(now),
+  updatedAt: text("updated_at").notNull().default(now),
 });
 
 export const checkRuns = sqliteTable("check_runs", {
@@ -168,7 +211,9 @@ export const chatMessages = sqliteTable("chat_messages", {
   content: text("content").notNull(),
   /** Tool calls made while producing this message, for replay in the UI. */
   activity: text("activity", { mode: "json" })
-    .$type<{ name: string; detail: string }[]>()
+    .$type<
+      { name: string; detail: string; url?: string; hostname?: string; hostnames?: string[] }[]
+    >()
     .notNull()
     .default([]),
   createdAt: text("created_at").notNull().default(now),
@@ -202,16 +247,53 @@ export const memories = sqliteTable("memories", {
   createdAt: text("created_at").notNull().default(now),
 });
 
+export const checklistItems = sqliteTable("checklist_items", {
+  id: text("id").primaryKey(),
+  customerId: text("customer_id")
+    .notNull()
+    .references(() => customers.id),
+  title: text("title").notNull(),
+  /** kbli | oss | sni | tax_customs | trade | regional | document | memory | other */
+  category: text("category").notNull().default("other"),
+  /** unknown | required | not_required | completed | expiring | blocked | needs_review */
+  status: text("status").notNull().default("unknown"),
+  /** low | medium | high */
+  priority: text("priority").notNull().default("medium"),
+  whyApplies: text("why_applies"),
+  linkedFacts: text("linked_facts", { mode: "json" }).$type<string[]>().notNull().default([]),
+  linkedRules: text("linked_rules", { mode: "json" })
+    .$type<ChecklistRule[]>()
+    .notNull()
+    .default([]),
+  evidenceRequired: text("evidence_required"),
+  owner: text("owner").notNull().default("user"),
+  dueAt: text("due_at"),
+  lastCheckedAt: text("last_checked_at"),
+  /** working | manual_assisted | untested | not_checked | failed | blocked */
+  sourceHealth: text("source_health").notNull().default("not_checked"),
+  /** verified | lead | inferred */
+  confidence: text("confidence").notNull().default("lead"),
+  openQuestions: text("open_questions", { mode: "json" }).$type<string[]>().notNull().default([]),
+  /** system | memory | manual | run */
+  origin: text("origin").notNull().default("system"),
+  createdAt: text("created_at").notNull().default(now),
+  updatedAt: text("updated_at").notNull().default(now),
+});
+
 export type HsCode = { code: string; basis: string; confirmed: boolean };
 export type RelevanceGuidance = {
   likelyRelevant: string[];
   almostNeverRelevant: string[];
   note?: string;
 };
+export type ChecklistRule = { ref: string; title?: string; url?: string };
 
 export type Conversation = typeof conversations.$inferSelect;
 export type ChatMessage = typeof chatMessages.$inferSelect;
 export type Memory = typeof memories.$inferSelect;
+export type KbliRecord = typeof kbliRecords.$inferSelect;
+export type ChecklistItem = typeof checklistItems.$inferSelect;
+export type SourcePack = typeof sourcePacks.$inferSelect;
 export type Customer = typeof customers.$inferSelect;
 export type CustomerProfile = typeof customerProfiles.$inferSelect;
 export type Source = typeof sources.$inferSelect;

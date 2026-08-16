@@ -37,10 +37,18 @@ export interface StreamRequest extends CompletionRequest {
 
 export type StreamEvent =
   /** The model started a tool call. `detail` is a short human-readable summary. */
-  | { type: "tool_start"; id: string; name: string; detail: string }
+  | {
+      type: "tool_start";
+      id: string;
+      name: string;
+      detail: string;
+      url?: string;
+      hostname?: string;
+      hostnames?: string[];
+    }
   | { type: "tool_end"; id: string }
-  /** The model is reasoning. Carries no content — it's a progress signal. */
-  | { type: "thinking" }
+  /** A safe, user-visible reasoning part or progress summary. */
+  | { type: "thinking"; text?: string; source?: "model" | "provider" | "system" }
   /** A chunk of the answer. Concatenate in arrival order. */
   | { type: "text"; text: string }
   | { type: "done" }
@@ -59,6 +67,8 @@ export interface CompletionRequest {
   schema?: ZodType;
   /** Rough ceiling on how long the model may work, in ms. */
   timeoutMs?: number;
+  /** Abort signal from the caller, used to terminate CLI-backed streams. */
+  signal?: AbortSignal;
 }
 
 export interface CompletionResult {

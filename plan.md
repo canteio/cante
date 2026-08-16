@@ -20,12 +20,24 @@ OUT (do not build yet):
 ## Expanded scope — MA's actual request
 MA has asked for this to also track regulatory change tied to their KBLI code (Indonesia's business classification code, separate from HS codes — determines which licenses/regulations apply to them) across the Indonesian regulation hierarchy: UU (laws), PP (government regulations), Kepres (presidential decisions), Perda (regional regulations), and tax regulations.
 
+See `indonesia-monitor-roadmap.md` for the updated product version of this
+scope. The Indonesia monitor should become a KBLI/OSS/SNI/tax/customs/legal
+hierarchy monitor with a living compliance checklist that updates when chat
+memory changes, not just an HS-code export feed.
+
+First slice built 2026-08-16: `kbli_records`, `source_packs`, and
+`checklist_items` now exist; `/checklist` shows the living work queue; memory
+add / confirm / delete and chat memory extraction refresh the checklist. This is
+not full source automation yet. OSS, SNI, national law, tax/customs, and regional
+coverage stay marked manual-assisted or untested until fetchers are proven.
+
 **Do not build all five at once.** Sequence:
 1. Get MA's real KBLI code from their OSS/NIB registration first — it's the filter everything else runs through.
-2. Add UU + PP tracking (national, centrally published, highest impact).
-3. Add Kepres tracking.
-4. Add tax/perpajakan tracking (DJP).
-5. Add Perda (regional) last — fragmented by province/city, no single source, and MA is specifically in Surabaya/East Java, so this needs region-specific sources found separately. Lowest priority.
+2. Confirm real HS codes from PEB/invoice and promote the corresponding Memory rows.
+3. Prove Kemenkeu/DJBC/DJP and BSN/SNI source fetchers before marking those packs automated.
+4. Add UU + PP tracking (national, centrally published, highest impact).
+5. Add Kepres tracking.
+6. Add Perda (regional) last — fragmented by province/city, no single source, and MA is specifically in Surabaya/East Java, so this needs region-specific sources found separately. Lowest priority.
 
 ## Data sources to check
 Prefer these official sources — they're free, public, and don't need an account:

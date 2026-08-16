@@ -65,7 +65,7 @@ export class CodexCliProvider implements LlmProvider {
     ];
 
     try {
-      const text = await this.run(args, req.timeoutMs ?? 300_000);
+      const text = await this.run(args, req.timeoutMs ?? 300_000, req.signal);
       return { text, provider: this.name, durationMs: Date.now() - started };
     } catch (err) {
       throw new LlmError(
@@ -78,16 +78,17 @@ export class CodexCliProvider implements LlmProvider {
 
   async *stream(req: StreamRequest): AsyncIterable<StreamEvent> {
     try {
-      yield { type: "thinking" };
       const result = await this.complete(req);
+      if (req.signal?.aborted) return;
       yield { type: "text", text: result.text };
       yield { type: "done" };
     } catch (err) {
+      if (req.signal?.aborted) return;
       yield { type: "error", message: err instanceof Error ? err.message : String(err) };
     }
   }
 
-  private run(args: string[], timeoutMs: number): Promise<string> {
+  private run(args: string[], timeoutMs: number, signal?: AbortSignal): Promise<string> {
     return new Promise((resolve, reject) => {
       const child = spawn(this.bin, args, {
         stdio: ["pipe", "pipe", "pipe"],
@@ -98,6 +99,13 @@ export class CodexCliProvider implements LlmProvider {
       let stdout = "";
       let stderr = "";
       let settled = false;
+      const abort = () => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        child.kill("SIGKILL");
+        reject(new DOMException("Aborted", "AbortError"));
+      };
 
       const timer = setTimeout(() => {
         if (settled) return;
@@ -105,6 +113,8 @@ export class CodexCliProvider implements LlmProvider {
         child.kill("SIGKILL");
         reject(new Error(`timed out after ${Math.round(timeoutMs / 1000)}s`));
       }, timeoutMs);
+      signal?.addEventListener("abort", abort, { once: true });
+      if (signal?.aborted) abort();
 
       child.stdout.on("data", (d) => (stdout += d.toString()));
       child.stderr.on("data", (d) => (stderr += d.toString()));
@@ -113,6 +123,7 @@ export class CodexCliProvider implements LlmProvider {
         if (settled) return;
         settled = true;
         clearTimeout(timer);
+        signal?.removeEventListener("abort", abort);
         reject(err);
       });
 
@@ -120,6 +131,7 @@ export class CodexCliProvider implements LlmProvider {
         if (settled) return;
         settled = true;
         clearTimeout(timer);
+        signal?.removeEventListener("abort", abort);
         if (code === 0) resolve(stdout);
         else reject(new Error(`exit ${code}: ${stderr.trim() || stdout.trim() || "no output"}`));
       });

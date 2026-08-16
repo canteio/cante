@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Brain, ListChecks, MessageSquare } from "lucide-react";
+import { Brain, ClipboardCheck, ListChecks, MessageSquare } from "lucide-react";
 import { cookies } from "next/headers";
 import { ChatNav } from "@/components/dashboard/chat-nav";
 import { ProviderSwitcher } from "@/components/dashboard/provider-switcher";
@@ -17,7 +17,7 @@ export async function Sidebar({
   active,
   activeConversationId = null,
 }: {
-  active: "checks" | "chat" | "memory";
+  active: "checks" | "checklist" | "chat" | "memory";
   activeConversationId?: string | null;
 }) {
   const customers = await listCustomers();
@@ -34,6 +34,10 @@ export async function Sidebar({
         <Link href="/" data-active={active === "checks"}>
           <ListChecks size={15} strokeWidth={1.75} />
           Checks
+        </Link>
+        <Link href="/checklist" data-active={active === "checklist"}>
+          <ClipboardCheck size={15} strokeWidth={1.75} />
+          Checklist
         </Link>
         <Link href="/chat" data-active={active === "chat"}>
           <MessageSquare size={15} strokeWidth={1.75} />

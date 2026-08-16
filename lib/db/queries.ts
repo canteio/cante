@@ -5,6 +5,7 @@ import {
   alerts,
   chatMessages,
   checkRuns,
+  checklistItems,
   conversations,
   customerProfiles,
   customers,
@@ -12,6 +13,7 @@ import {
   memories,
   sourceResults,
   sources,
+  type ChecklistItem,
   type ChatMessage,
   type Conversation,
   type Customer,
@@ -126,7 +128,13 @@ export async function appendMessage(
   conversationId: string,
   role: "user" | "agent",
   content: string,
-  activity: { name: string; detail: string }[] = [],
+  activity: {
+    name: string;
+    detail: string;
+    url?: string;
+    hostname?: string;
+    hostnames?: string[];
+  }[] = [],
 ): Promise<void> {
   db.insert(chatMessages)
     .values({ id: randomUUID(), conversationId, role, content, activity })
@@ -157,6 +165,10 @@ export async function listMemories(customerId: string): Promise<Memory[]> {
     .where(eq(memories.customerId, customerId))
     .orderBy(desc(memories.confirmed), desc(memories.createdAt))
     .all();
+}
+
+export async function getMemory(id: string): Promise<Memory | null> {
+  return db.select().from(memories).where(eq(memories.id, id)).get() ?? null;
 }
 
 export async function addMemory(entry: {
@@ -199,6 +211,24 @@ export async function setMemoryConfirmed(id: string, confirmed: boolean): Promis
 
 export async function deleteMemory(id: string): Promise<void> {
   db.delete(memories).where(eq(memories.id, id)).run();
+}
+
+/* ─── Checklist ─────────────────────────────────────────────────── */
+
+export async function listChecklistItems(customerId: string): Promise<ChecklistItem[]> {
+  return db
+    .select()
+    .from(checklistItems)
+    .where(eq(checklistItems.customerId, customerId))
+    .orderBy(checklistItems.category, desc(checklistItems.priority), desc(checklistItems.updatedAt))
+    .all();
+}
+
+export async function updateChecklistItemStatus(id: string, status: string): Promise<void> {
+  db.update(checklistItems)
+    .set({ status, updatedAt: new Date().toISOString() })
+    .where(eq(checklistItems.id, id))
+    .run();
 }
 
 /**

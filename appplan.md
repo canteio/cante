@@ -4,12 +4,25 @@
 > implemented as specified, with one addition the plan didn't cover: the model
 > runs behind a provider seam (`lib/llm/`) so the local Claude Code CLI and a
 > future hosted API are interchangeable. The definition of done at the bottom
-> is met. See `CLAUDE.md` for current working notes.
+> is met. As of 2026-08-16, the first Indonesia flagship slice is also built:
+> a living checklist generated from memory/profile/KBLI/source-pack coverage.
+> See `CLAUDE.md` for current working notes.
 
 ## Goal
 A properly structured Next.js app at the repo root. `npm run dev` from the root just works. Multi-tenant data model from day one, even though only one customer (MA) exists right now — so adding customer #2 is a database row, not a refactor.
 
 Local-only for now: no GitHub push, no deploy, no cron. But the structure should be deploy-ready when that decision comes.
+
+## Commercial expansion note
+
+See `competitive-roadmap.md` for the post-MVP competitive roadmap. The near-term
+commercial direction is global-by-design, not Indonesia-only or US-only: Cante
+should become a Telegram-first trade compliance watcher for manufacturers,
+organized around product codes, trade lanes, country/source packs, evidence
+trails, and broker collaboration. The Indonesia monitor remains the first
+working wedge, not the entire category. It should also be the deepest flagship
+pack: see `indonesia-monitor-roadmap.md` for KBLI, OSS, SNI, tax/customs,
+national-law, Perda, and living-checklist requirements.
 
 ## Root structure
 ```
@@ -17,9 +30,11 @@ Local-only for now: no GitHub push, no deploy, no cron. But the structure should
   app/
     (dashboard)/
       page.tsx          <- alert history view
+      checklist/page.tsx <- living compliance checklist
       chat/page.tsx     <- Q&A chatbox
     api/
       checks/route.ts   <- POST: trigger a check run; GET: list check history
+      checklist/route.ts <- GET/POST/PATCH checklist rows
       chat/route.ts     <- POST: Q&A grounded in stored regulation data
       customers/route.ts
   components/
@@ -37,6 +52,7 @@ Local-only for now: no GitHub push, no deploy, no cron. But the structure should
     checks/
       run.ts            <- orchestrates: fetch -> judge -> store
       judge.ts          <- relevance judgment against a customer profile
+      checklist.ts      <- refresh living checklist from memory/profile/source packs
   scripts/
     seed.ts             <- seed MA + Indonesian source list
   drizzle/              <- migrations
@@ -50,11 +66,14 @@ Tables, multi-tenant from the start:
 
 - **customers** — id, name, country, created_at
 - **customer_profiles** — id, customer_id, product_description, hs_codes (json), kbli_codes (json), business_type
+- **kbli_records** — first-class KBLI leads/evidence with OSS licensing metadata and confirmed/unconfirmed status
+- **source_packs** — coverage inventory by country/jurisdiction/category, including manual-assisted and untested packs that are not yet fetchable
 - **sources** — id, country, name, url, regulation_type (trade/tax/national/regional/standards), reliability_status (working/blocked/unstable), last_success_at
 - **check_runs** — id, customer_id, started_at, completed_at, status
 - **source_results** — id, check_run_id, source_id, success (bool), error_message, raw_content_path — *this is what makes failures honest and visible instead of silent*
 - **findings** — id, check_run_id, customer_id, regulation_ref, title, summary_id (Bahasa), summary_en, relevance (flagged/clear), source_id, created_at
 - **alerts** — id, finding_id, customer_id, delivered_at, channel (whatsapp/email/manual), delivery_status
+- **checklist_items** — living obligations/evidence gaps generated from customer facts and refreshed when memory changes
 
 Key point: everything is keyed by `customer_id`, and sources are keyed by country + regulation_type. That's what makes "add Vietnam" or "add tax regulations" a data change, not a code change.
 
@@ -78,6 +97,7 @@ The existing Python (`fetch_sources.py`, and the judgment logic in `daily-prompt
 - Built in plain CSS rather than adopting Mike's Tailwind v4 + shadcn stack — same values, far smaller dependency surface.
 - A **"Run check now"** button hitting `POST /api/checks` — manual trigger, no cron yet. The API route is written so a scheduler can call the same endpoint later without changes.
 - Saved chat conversations are nested under the **Chat** nav item in the main sidebar; there is no second chat rail. Memory moved to a bottom sidebar button and full main-screen management page.
+- Checklist is a main sidebar item next to Checks. It shows KBLI, HS, OSS, SNI, tax/customs, regional, and memory-review tasks with status, priority, evidence required, source health, and open questions. Memory stays at the bottom because it is the customer fact editor, not the task queue.
 
 ## How the model gets called (added during the build)
 The plan assumed judgment would just happen inside the app; it didn't say *how*, and the honest answer is that a Next.js server can't use the Claude Code login the way the markdown pipeline did. So the model sits behind `LlmProvider` in `lib/llm/`:

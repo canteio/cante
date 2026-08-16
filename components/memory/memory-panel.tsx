@@ -13,7 +13,20 @@ type Memory = {
   createdAt: string;
 };
 
-const KINDS = ["product", "hs_code", "market", "contact", "operational", "preference", "other"];
+const KINDS = [
+  "product",
+  "hs_code",
+  "kbli",
+  "market",
+  "location",
+  "license",
+  "sni",
+  "tax",
+  "contact",
+  "operational",
+  "preference",
+  "other",
+];
 
 export function MemoryPanel() {
   const [memories, setMemories] = useState<Memory[]>([]);
@@ -45,6 +58,7 @@ export function MemoryPanel() {
       body: JSON.stringify({ content, kind: draftKind }),
     });
     setDraftKind("other");
+    window.dispatchEvent(new Event("cante:checklist-updated"));
     await load();
   }
 
@@ -57,12 +71,14 @@ export function MemoryPanel() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: memory.id, confirmed: !memory.confirmed }),
     });
+    window.dispatchEvent(new Event("cante:checklist-updated"));
     await load();
   }
 
   async function removeMemory(id: string) {
     setMemories((prev) => prev.filter((m) => m.id !== id));
     await fetch(`/api/memories?id=${id}`, { method: "DELETE" });
+    window.dispatchEvent(new Event("cante:checklist-updated"));
   }
 
   const confirmed = memories.filter((m) => m.confirmed).length;

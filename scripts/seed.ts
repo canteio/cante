@@ -2,8 +2,65 @@ import { randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { db } from "../lib/db/client";
-import { customerProfiles, customers, sources } from "../lib/db/schema";
+import { customerProfiles, customers, sourcePacks, sources } from "../lib/db/schema";
 import { SOURCE_REGISTRY } from "../lib/sources/registry";
+
+const INDONESIA_SOURCE_PACKS = [
+  {
+    id: "id-trade-kemendag",
+    country: "Indonesia",
+    jurisdiction: "national",
+    name: "Kemendag trade and export regulation",
+    category: "trade",
+    status: "automated",
+    notes: "Backed by the current JDIH Kemendag fetcher across semua, ekspor, and perizinan views.",
+  },
+  {
+    id: "id-kbli-oss",
+    country: "Indonesia",
+    jurisdiction: "national",
+    name: "KBLI and OSS business licensing",
+    category: "oss",
+    status: "manual_assisted",
+    notes: "Requires NIB/OSS evidence first. Automation starts only after a source path is verified.",
+  },
+  {
+    id: "id-national-law",
+    country: "Indonesia",
+    jurisdiction: "national",
+    name: "UU, PP, Perpres/Kepres, Permen, Kepmen",
+    category: "national_law",
+    status: "untested",
+    notes: "Covers national legal change beyond Kemendag. BPK is useful manually but bot-blocked.",
+  },
+  {
+    id: "id-tax-customs",
+    country: "Indonesia",
+    jurisdiction: "national",
+    name: "Kemenkeu, DJBC, and DJP tax-customs",
+    category: "tax_customs",
+    status: "untested",
+    notes: "Needed for PMK, customs, duty, VAT, and exporter facility changes.",
+  },
+  {
+    id: "id-sni-bsn",
+    country: "Indonesia",
+    jurisdiction: "national",
+    name: "BSN and mandatory SNI exposure",
+    category: "sni",
+    status: "untested",
+    notes: "Product-specific standards screening, not a title keyword feed.",
+  },
+  {
+    id: "id-regional-east-java-surabaya",
+    country: "Indonesia",
+    jurisdiction: "East Java / Surabaya",
+    name: "Perda and Perkada for factory location",
+    category: "regional",
+    status: "manual_assisted",
+    notes: "Initial customer is Surabaya. Broaden by customer factory/legal entity location.",
+  },
+];
 
 /**
  * Seeds MA and the Indonesian source list.
@@ -42,6 +99,25 @@ async function main() {
       .run();
   }
   console.log(`Seeded ${SOURCE_REGISTRY.length} sources.`);
+
+  for (const pack of INDONESIA_SOURCE_PACKS) {
+    db.insert(sourcePacks)
+      .values(pack)
+      .onConflictDoUpdate({
+        target: sourcePacks.id,
+        set: {
+          country: pack.country,
+          jurisdiction: pack.jurisdiction,
+          name: pack.name,
+          category: pack.category,
+          status: pack.status,
+          notes: pack.notes,
+          updatedAt: new Date().toISOString(),
+        },
+      })
+      .run();
+  }
+  console.log(`Seeded ${INDONESIA_SOURCE_PACKS.length} Indonesia source packs.`);
 
   const existing = db.select().from(customers).all();
   if (existing.length > 0) {

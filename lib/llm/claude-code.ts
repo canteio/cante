@@ -69,21 +69,36 @@ async function* readLines(stream: NodeJS.ReadableStream): AsyncIterable<string> 
 const HIDDEN_TOOLS = new Set(["ToolSearch"]);
 
 /** Turn a raw tool call into something readable in the UI. */
-function describeTool(name: string, input: Record<string, unknown>): string {
+function describeTool(
+  name: string,
+  input: Record<string, unknown>,
+): { detail: string; url?: string; hostname?: string; hostnames?: string[] } {
   switch (name) {
     case "WebSearch":
-      return String(input.query ?? "the web");
+      return {
+        detail: String(input.query ?? "official sources"),
+        hostnames: ["jdih.kemendag.go.id", "peraturan.bpk.go.id", "jdih.kemenkeu.go.id"],
+      };
     case "WebFetch": {
       const url = String(input.url ?? "");
       try {
-        return new URL(url).hostname;
+        const parsed = new URL(url);
+        return { detail: parsed.hostname, url, hostname: parsed.hostname };
       } catch {
-        return url;
+        return { detail: url };
       }
     }
     default:
-      return name;
+      return { detail: name };
   }
+}
+
+function extractThinkingText(block: Record<string, unknown>): string | null {
+  for (const key of ["thinking", "reasoning", "text", "summary"]) {
+    const value = block[key];
+    if (typeof value === "string" && value.trim()) return value.trim();
+  }
+  return null;
 }
 
 /**
@@ -142,7 +157,7 @@ export class ClaudeCodeProvider implements LlmProvider {
     ];
 
     try {
-      const text = await this.run(args, undefined, req.timeoutMs ?? 300_000);
+      const text = await this.run(args, undefined, req.timeoutMs ?? 300_000, req.signal);
       return { text, provider: this.name, durationMs: Date.now() - started };
     } catch (err) {
       throw new LlmError(
@@ -189,6 +204,13 @@ export class ClaudeCodeProvider implements LlmProvider {
 
     const timeoutMs = req.timeoutMs ?? 600_000;
     const timer = setTimeout(() => child.kill("SIGKILL"), timeoutMs);
+    let aborted = req.signal?.aborted ?? false;
+    const abort = () => {
+      aborted = true;
+      child.kill("SIGKILL");
+    };
+    req.signal?.addEventListener("abort", abort, { once: true });
+    if (aborted) child.kill("SIGKILL");
 
     let stderr = "";
     child.stderr.on("data", (d) => (stderr += d.toString()));
@@ -213,15 +235,17 @@ export class ClaudeCodeProvider implements LlmProvider {
               sawText = true;
               yield { type: "text", text: block.text };
             } else if (block.type === "thinking") {
-              yield { type: "thinking" };
+              const text = extractThinkingText(block);
+              if (text) yield { type: "thinking", text };
             } else if (block.type === "tool_use") {
               if (HIDDEN_TOOLS.has(block.name)) continue;
               openTools.add(block.id);
+              const tool = describeTool(block.name, block.input ?? {});
               yield {
                 type: "tool_start",
                 id: block.id,
                 name: block.name,
-                detail: describeTool(block.name, block.input ?? {}),
+                ...tool,
               };
             }
           }
@@ -246,6 +270,8 @@ export class ClaudeCodeProvider implements LlmProvider {
       // Close anything still open — a killed process leaves pills spinning.
       for (const id of openTools) yield { type: "tool_end", id };
 
+      if (aborted) return;
+
       const code: number | null = child.exitCode;
       if (code !== 0 && !sawText) {
         yield { type: "error", message: stderr.trim() || `claude exited with code ${code}` };
@@ -255,11 +281,17 @@ export class ClaudeCodeProvider implements LlmProvider {
       yield { type: "done" };
     } finally {
       clearTimeout(timer);
+      req.signal?.removeEventListener("abort", abort);
       if (child.exitCode === null) child.kill("SIGKILL");
     }
   }
 
-  private run(args: string[], input: string | undefined, timeoutMs: number): Promise<string> {
+  private run(
+    args: string[],
+    input: string | undefined,
+    timeoutMs: number,
+    signal?: AbortSignal,
+  ): Promise<string> {
     return new Promise((resolve, reject) => {
       const child = spawn(this.bin, args, {
         stdio: ["pipe", "pipe", "pipe"],
@@ -277,6 +309,15 @@ export class ClaudeCodeProvider implements LlmProvider {
         child.kill("SIGKILL");
         reject(new Error(`timed out after ${Math.round(timeoutMs / 1000)}s`));
       }, timeoutMs);
+      const abort = () => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        child.kill("SIGKILL");
+        reject(new DOMException("Aborted", "AbortError"));
+      };
+      signal?.addEventListener("abort", abort, { once: true });
+      if (signal?.aborted) abort();
 
       child.stdout.on("data", (d) => (stdout += d.toString()));
       child.stderr.on("data", (d) => (stderr += d.toString()));
@@ -285,6 +326,7 @@ export class ClaudeCodeProvider implements LlmProvider {
         if (settled) return;
         settled = true;
         clearTimeout(timer);
+        signal?.removeEventListener("abort", abort);
         reject(err);
       });
 
@@ -292,6 +334,7 @@ export class ClaudeCodeProvider implements LlmProvider {
         if (settled) return;
         settled = true;
         clearTimeout(timer);
+        signal?.removeEventListener("abort", abort);
         if (code === 0) resolve(stdout);
         else reject(new Error(`exit ${code}: ${stderr.trim() || stdout.trim() || "no output"}`));
       });

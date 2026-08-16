@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { addMemory } from "@/lib/db/queries";
+import { refreshChecklistForCustomer } from "@/lib/checks/checklist";
 import { completeJson, getProvider, type LlmProviderChoice } from "@/lib/llm";
 import type { Memory } from "@/lib/db/schema";
 
@@ -22,7 +23,12 @@ const ExtractionSchema = z.object({
         kind: z.enum([
           "product",
           "hs_code",
+          "kbli",
           "market",
+          "location",
+          "license",
+          "sni",
+          "tax",
           "contact",
           "operational",
           "preference",
@@ -41,6 +47,8 @@ const SYSTEM = `You extract durable facts about a customer from a chat exchange,
 
 Save only what would still matter in three months and would change how future checks are run or explained:
 - the customer's real HS codes, product details, destination markets
+- KBLI, OSS/NIB/licensing status, SNI certificates or product-standard exposure
+- factory/legal entity location for regional Perda monitoring
 - who to contact and how
 - how they operate (shipping terms, certifications, licences, their broker)
 - standing preferences about how they want to be told things
@@ -75,8 +83,9 @@ export async function extractMemories(input: {
       timeoutMs: 120_000,
     });
 
+    let changed = false;
     for (const m of value.memories) {
-      await addMemory({
+      const inserted = await addMemory({
         customerId: input.customerId,
         kind: m.kind,
         content: m.content,
@@ -84,7 +93,9 @@ export async function extractMemories(input: {
         origin: "chat",
         confirmed: false,
       });
+      if (inserted) changed = true;
     }
+    if (changed) await refreshChecklistForCustomer(input.customerId);
   } catch {
     // Best effort by design — see the note above.
   }

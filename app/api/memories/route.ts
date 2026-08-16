@@ -2,14 +2,29 @@ import {
   addMemory,
   deleteMemory,
   getDefaultCustomerId,
+  getMemory,
   listMemories,
   setMemoryConfirmed,
 } from "@/lib/db/queries";
+import { refreshChecklistForCustomer } from "@/lib/checks/checklist";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const KINDS = ["product", "hs_code", "market", "contact", "operational", "preference", "other"];
+const KINDS = [
+  "product",
+  "hs_code",
+  "kbli",
+  "market",
+  "location",
+  "license",
+  "sni",
+  "tax",
+  "contact",
+  "operational",
+  "preference",
+  "other",
+];
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -40,6 +55,7 @@ export async function POST(request: Request) {
   });
 
   if (!memory) return Response.json({ error: "Already remembered." }, { status: 409 });
+  await refreshChecklistForCustomer(customerId);
   return Response.json({ memory });
 }
 
@@ -48,12 +64,16 @@ export async function PATCH(request: Request) {
   const body = await request.json().catch(() => ({}));
   if (!body.id) return Response.json({ error: "No id." }, { status: 400 });
   await setMemoryConfirmed(body.id, Boolean(body.confirmed));
+  const memory = await getMemory(body.id);
+  if (memory) await refreshChecklistForCustomer(memory.customerId);
   return Response.json({ ok: true });
 }
 
 export async function DELETE(request: Request) {
   const id = new URL(request.url).searchParams.get("id");
   if (!id) return Response.json({ error: "No id." }, { status: 400 });
+  const memory = await getMemory(id);
   await deleteMemory(id);
+  if (memory) await refreshChecklistForCustomer(memory.customerId);
   return Response.json({ ok: true });
 }

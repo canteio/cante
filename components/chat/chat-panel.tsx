@@ -1,14 +1,37 @@
 "use client";
 
-import { ArrowRight, Check, Globe, Search, Square } from "lucide-react";
+import { ArrowRight, Check, ChevronRight, Globe, Search, Sparkles, Square } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Markdown } from "@/components/chat/markdown";
 
-type Activity = { id: string; name: string; detail: string; done: boolean };
+type Activity = {
+  id: string;
+  name: string;
+  detail: string;
+  done: boolean;
+  url?: string;
+  hostname?: string;
+  hostnames?: string[];
+};
+
+type Thought = {
+  id: string;
+  text: string;
+  elapsed: number;
+};
 
 type Message =
   | { role: "user"; text: string }
-  | { role: "agent"; text: string; activity: Activity[]; thinking: boolean; streaming: boolean };
+  | {
+      role: "agent";
+      text: string;
+      activity: Activity[];
+      thoughts: Thought[];
+      thinking: boolean;
+      streaming: boolean;
+      startedAt: number | null;
+      phase: string;
+    };
 
 /**
  * Streams the answer over SSE so the model's work is visible while it happens:
@@ -41,16 +64,31 @@ export function ChatPanel({
           : {
               role: "agent",
               text: m.content,
+              thoughts: [],
               activity: (m.activity ?? []).map(
-                (a: { name: string; detail: string }, i: number) => ({
+                (
+                  a: {
+                    name: string;
+                    detail: string;
+                    url?: string;
+                    hostname?: string;
+                    hostnames?: string[];
+                  },
+                  i: number,
+                ) => ({
                   id: `${m.id}-${i}`,
                   name: a.name,
                   detail: a.detail,
+                  url: a.url,
+                  hostname: a.hostname,
+                  hostnames: a.hostnames,
                   done: true,
                 }),
               ),
               thinking: false,
               streaming: false,
+              startedAt: null,
+              phase: "Complete",
             },
       ),
     );
@@ -65,6 +103,8 @@ export function ChatPanel({
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
     const el = textareaRef.current;
@@ -75,6 +115,12 @@ export function ChatPanel({
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  useEffect(() => {
+    if (!messages.some((m) => m.role === "agent" && m.streaming)) return;
+    const timer = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(timer);
   }, [messages]);
 
   useEffect(() => {
@@ -97,16 +143,30 @@ export function ChatPanel({
       const next = [...prev];
       const last = next[next.length - 1];
       if (last?.role !== "agent") return prev;
-      const copy = { ...last, activity: [...last.activity] };
+      const copy = { ...last, activity: [...last.activity], thoughts: [...last.thoughts] };
       fn(copy);
       next[next.length - 1] = copy;
       return next;
     });
   }
 
+  function stop() {
+    abortRef.current?.abort();
+    abortRef.current = null;
+    patchLast((m) => {
+      m.streaming = false;
+      m.thinking = false;
+      m.phase = "Stopped";
+    });
+    setBusy(false);
+  }
+
   async function send() {
     const question = input.trim();
     if (!question || busy) return;
+
+    const abortController = new AbortController();
+    abortRef.current = abortController;
 
     setInput("");
     setBusy(true);
@@ -114,7 +174,16 @@ export function ChatPanel({
     setMessages((m) => [
       ...m,
       { role: "user", text: question },
-      { role: "agent", text: "", activity: [], thinking: true, streaming: true },
+      {
+        role: "agent",
+        text: "",
+        activity: [],
+        thoughts: [],
+        thinking: true,
+        streaming: true,
+        startedAt: Date.now(),
+        phase: "Preparing",
+      },
     ]);
 
     try {
@@ -122,6 +191,7 @@ export function ChatPanel({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question, customerId, conversationId }),
+        signal: abortController.signal,
       });
 
       if (!res.ok || !res.body) {
@@ -157,19 +227,41 @@ export function ChatPanel({
             patchLast((m) => {
               m.text += ev.text;
               m.thinking = false;
+              m.phase = "Writing answer";
             });
           } else if (ev.type === "thinking") {
             patchLast((m) => {
               if (!m.text) m.thinking = true;
+              if (typeof ev.text === "string" && ev.text.trim()) {
+                const text = ev.text.trim();
+                if (m.thoughts[m.thoughts.length - 1]?.text !== text) {
+                  m.thoughts.push({
+                    id: `${Date.now()}-${m.thoughts.length}`,
+                    text,
+                    elapsed: elapsedSeconds(m.startedAt, Date.now()),
+                  });
+                }
+              }
+              m.phase = m.activity.some((a) => !a.done) ? "Reading sources" : "Reasoning";
             });
           } else if (ev.type === "tool_start") {
             patchLast((m) => {
               m.thinking = false;
-              m.activity.push({ id: ev.id, name: ev.name, detail: ev.detail, done: false });
+              m.phase = ev.name === "WebFetch" ? "Reading source" : "Searching web";
+              m.activity.push({
+                id: ev.id,
+                name: ev.name,
+                detail: ev.detail,
+                url: ev.url,
+                hostname: ev.hostname,
+                hostnames: ev.hostnames,
+                done: false,
+              });
             });
           } else if (ev.type === "tool_end") {
             patchLast((m) => {
               m.activity = m.activity.map((a) => (a.id === ev.id ? { ...a, done: true } : a));
+              m.phase = m.activity.some((a) => !a.done) ? "Reading sources" : "Reasoning";
             });
           } else if (ev.type === "conversation") {
             // A brand-new chat adopts the id the server created, so the next
@@ -180,12 +272,12 @@ export function ChatPanel({
               new CustomEvent("cante:conversations-updated", { detail: { id: ev.id } }),
             );
           } else if (ev.type === "done") {
-            // Semantic end of the answer. The connection stays open a little
-            // longer while memory extraction runs, so don't wait for the reader.
             patchLast((m) => {
               m.streaming = false;
               m.thinking = false;
+              m.phase = "Complete";
             });
+            setBusy(false);
           } else if (ev.type === "memory_updated") {
             window.dispatchEvent(new Event("cante:memory-updated"));
           } else if (ev.type === "error") {
@@ -194,11 +286,14 @@ export function ChatPanel({
         }
       }
     } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") return;
       setError(err instanceof Error ? err.message : String(err));
     } finally {
+      abortRef.current = null;
       patchLast((m) => {
         m.streaming = false;
         m.thinking = false;
+        if (m.phase !== "Complete") m.phase = "Stopped";
       });
       setBusy(false);
     }
@@ -217,26 +312,51 @@ export function ChatPanel({
               </div>
             ) : (
               <div key={i} className="msg-agent">
-                {m.activity.length > 0 && (
-                  <div className="activity">
-                    {m.activity.map((a) => (
-                      <span key={a.id} className={`act-pill${a.done ? " is-done" : ""}`}>
-                        {a.done ? (
-                          <Check size={12} />
-                        ) : a.name === "WebFetch" ? (
-                          <Globe size={12} className="spin-slow" />
-                        ) : (
-                          <Search size={12} className="pulse" />
-                        )}
-                        <span className="act-label">
-                          {a.name === "WebFetch" ? "Read" : "Searched"} {a.detail}
-                        </span>
-                      </span>
-                    ))}
+                {(m.streaming || m.activity.length > 0 || m.thoughts.length > 0) && (
+                  <div className="activity-wrap">
+                    {m.streaming && (
+                      <RunStatus
+                        phase={m.phase}
+                        elapsed={elapsedSeconds(m.startedAt, now)}
+                        activity={m.activity}
+                      />
+                    )}
+                    {m.thoughts.length > 0 && <ThinkingLog thoughts={m.thoughts} />}
+                    {m.activity.length > 0 && (
+                      <div className="activity">
+                        {m.activity.map((a) => (
+                          <span
+                            key={a.id}
+                            className={`act-pill${a.done ? " is-done" : ""}`}
+                            data-tool={a.name}
+                          >
+                            <ToolIcon activity={a} />
+                            <span className="act-copy">
+                              <span className="act-verb">
+                                {a.done
+                                  ? a.name === "WebFetch"
+                                    ? "Read"
+                                    : "Searched"
+                                  : a.name === "WebFetch"
+                                    ? "Reading"
+                                    : "Searching"}
+                              </span>
+                              <span className="act-label">{a.detail}</span>
+                            </span>
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
 
-                {m.thinking && !m.text && <div className="shimmer">Thinking…</div>}
+                {m.thinking && !m.text && m.thoughts.length === 0 && (
+                  <ThinkingIndicator
+                    elapsed={elapsedSeconds(m.startedAt, now)}
+                    phase={m.phase}
+                    latestThought={m.thoughts[m.thoughts.length - 1]?.text}
+                  />
+                )}
 
                 {m.text && (
                   <>
@@ -286,9 +406,9 @@ export function ChatPanel({
               <button
                 type="button"
                 className="icon-btn"
-                aria-label={busy ? "Waiting for response" : "Send message"}
-                onClick={send}
-                disabled={busy || !input.trim()}
+                aria-label={busy ? "Stop response" : "Send message"}
+                onClick={busy ? stop : send}
+                disabled={!busy && !input.trim()}
               >
                 {busy ? (
                   <Square size={14} fill="currentColor" strokeWidth={0} />
@@ -299,6 +419,112 @@ export function ChatPanel({
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function elapsedSeconds(startedAt: number | null, now: number) {
+  if (!startedAt) return 0;
+  return Math.max(0, Math.floor((now - startedAt) / 1000));
+}
+
+function RunStatus({
+  phase,
+  elapsed,
+  activity,
+}: {
+  phase: string;
+  elapsed: number;
+  activity: Activity[];
+}) {
+  const active = activity.find((item) => !item.done);
+  return (
+    <div className="run-status">
+      <span className="run-status-dot" />
+      <span>{active ? `${phase}: ${active.detail}` : phase}</span>
+      <time>{elapsed}s</time>
+    </div>
+  );
+}
+
+function ThinkingLog({ thoughts }: { thoughts: Thought[] }) {
+  return (
+    <div className="thinking-log">
+      <div className="thinking-log-head">
+        <ChevronRight size={12} />
+        <span>Reasoning</span>
+      </div>
+      <div className="thinking-log-lines">
+        {thoughts.slice(-5).map((thought) => (
+          <div key={thought.id} className="thinking-line">
+            <time>{thought.elapsed}s</time>
+            <span>{thought.text}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ToolIcon({ activity }: { activity: Activity }) {
+  if (activity.name === "WebSearch") {
+    const hosts = activity.hostnames?.length
+      ? activity.hostnames
+      : ["jdih.kemendag.go.id", "peraturan.bpk.go.id", "jdih.kemenkeu.go.id"];
+    return (
+      <span className="search-favicon-stack">
+        {hosts.slice(0, 3).map((host) => (
+          <img
+            key={host}
+            src={`https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=32`}
+            alt=""
+          />
+        ))}
+      </span>
+    );
+  }
+
+  if (activity.name === "WebFetch" && activity.hostname) {
+    return (
+      <span className="favicon-orbit">
+        <img
+          src={`https://www.google.com/s2/favicons?domain=${encodeURIComponent(
+            activity.hostname,
+          )}&sz=32`}
+          alt=""
+        />
+      </span>
+    );
+  }
+
+  if (activity.done) return <Check size={12} />;
+  if (activity.name === "WebFetch") return <Globe size={12} className="spin-slow" />;
+  return <Search size={12} className="scan-icon" />;
+}
+
+function ThinkingIndicator({
+  elapsed,
+  phase,
+  latestThought,
+}: {
+  elapsed: number;
+  phase: string;
+  latestThought?: string;
+}) {
+  return (
+    <div className="thinking-card">
+      <div className="thinking-orb">
+        <Sparkles size={13} />
+      </div>
+      <div className="thinking-copy">
+        <span>{phase}</span>
+        <small>{latestThought ?? "Checking stored runs, memory, and official web sources"} · {elapsed}s</small>
+      </div>
+      <div className="thinking-dots" aria-hidden="true">
+        <span />
+        <span />
+        <span />
       </div>
     </div>
   );

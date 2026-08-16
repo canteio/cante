@@ -47,13 +47,15 @@ detail page. `npm run check` is the fastest way to test without the browser.
 ```
 lib/llm/          types.ts = the seam (+ streaming) · claude-code.ts (works) · codex-cli.ts (local fallback) · api.ts (stub) · index.ts (factory)
 lib/sources/      registry.ts (sources as data) · fetch.ts (no AI, plain fetch+parse)
-lib/checks/       judge.ts (prompt + Zod schema) · run.ts (fetch → judge → store)
+lib/checks/       judge.ts (prompt + Zod schema) · run.ts (fetch → judge → store) · checklist.ts (living obligations)
 lib/db/           schema.ts · client.ts · queries.ts
-app/              page.tsx (Checks) · chat/ · api/{checks,chat,customers}
-components/       dashboard/ · chat/ (chat-panel.tsx reads the SSE stream · markdown.tsx renders answers)
-scripts/          seed.ts · run-check.ts
+app/              page.tsx (Checks) · checklist/ · chat/ · memory/ · api/{checks,checklist,chat,customers,memories}
+components/       dashboard/ · checklist/ · memory/ · chat/ (chat-panel.tsx reads the SSE stream · markdown.tsx renders answers)
+scripts/          seed.ts (sources + source packs + MA) · run-check.ts
 mike-main/        reference copy of another project — design source, gitignored,
                   excluded in tsconfig (else `next build` compiles its backend)
+uigen-claude/     reference copy used for chat streaming/thinking UI patterns,
+                  excluded in tsconfig for the same reason
 config/           customer.json — read only at seed time now
 raw/              source HTML, rewritten every run (gitignored, write-only debug trail)
 cante.db          the SQLite file (gitignored)
@@ -83,9 +85,13 @@ until the user explicitly accepts API spend.
 
 **Streaming is optional on the seam.** `LlmProvider.stream?()` yields
 `StreamEvent`s (`tool_start` / `tool_end` / `thinking` / `text` / `done` /
-`error`) so the chat can show tool calls instead of a spinner. It is optional on
-purpose: a provider without it still works through `complete()`. Callers must
-handle absence — `app/api/chat/route.ts` returns **501** rather than pretending.
+`error`) so the chat can show tool calls instead of a spinner. `tool_start`
+may carry `url` / `hostname` so the UI can render source favicons for web reads.
+`StreamRequest.signal` is passed through to CLI-backed providers so the Stop
+button kills the child process, not just the browser reader.
+It is optional on purpose: a provider without it still works through
+`complete()`. Callers must handle absence — `app/api/chat/route.ts` returns
+**501** rather than pretending.
 `StreamRequest.tools` names the tools the model may use for that call; the
 Claude Code provider passes them to `--allowedTools` **plus `ToolSearch`**,
 which is how the CLI loads deferred tools like `WebSearch` (without it the
@@ -155,6 +161,39 @@ height. Easing is Mike's own panel curve, `cubic-bezier(0.22,1,0.36,1)` / 500ms.
 The greeting is `position: absolute` above the composer so it travels with it
 without affecting layout.
 
+**Chat responsiveness matters.** The SSE stream now closes as soon as the answer
+is saved and sends `done` before background memory extraction starts. Do not make
+the composer wait for `extractMemories()` again; that made chat feel slower than
+Claude/ChatGPT even though the answer was already visible. While a response is
+running, the UI shows a live phase label (Preparing / Searching web / Reading
+source / Reasoning / Writing answer), elapsed seconds, and a visible thinking
+log. The log is model-written: the chat prompt requires a short
+`<visible_reasoning>...</visible_reasoning>` block, the route strips that block
+out of the final answer, and the client renders it as the Reasoning part
+(`uigen-claude` style). Because Claude Code may choose tool calls before text,
+the route also makes one short preflight `complete()` call to generate the
+visible Reasoning lines before the streamed answer/search begins. If a provider
+emits a real thinking/reasoning block, pass its text through; do not replace it
+with canned status copy. The log stays on the message after completion/stop; do
+not hide it just because streaming ended. The square composer button is an
+actual abort control while streaming; do not disable it again.
+
+**Tool activity should feel live.** Web searches render as animated scan pills
+with official-source favicon stacks; web fetches render the target site's
+favicon using the streamed hostname. Favicons remain visible after completion,
+while active sweep/orbit animations stop once the tool is done. The thinking
+state is a compact animated card plus the visible thinking log, not a static
+"Thinking..." string.
+
+**Fresh-regulation questions should search immediately.** In chat, if the user
+provides HS codes and asks for new/latest/current regulation discovery, the route
+injects a per-turn search directive telling the model to WebSearch official
+Indonesian government sources first. That directive also caps the first pass to
+roughly two targeted searches and two or three source reads unless the user asks
+for exhaustive research; answer with caveats instead of silently researching
+forever. Stored run data remains the authority on what Cante already checked;
+web findings must be labelled as web context.
+
 **Chat history lives under Chat in the main sidebar.** There is no second chat
 rail now. Conversation links route through `/chat?conversationId=...`, and the
 client chat panel adopts the selected conversation from that query param. New
@@ -165,6 +204,13 @@ refreshes without a full reload.
 the editable memory list as full-width cards, with the same add / confirm /
 delete actions. Keep this separation: memory feeds future checks, so it needs
 room to scan and verify instead of being buried in chat chrome.
+
+**Checklist is its own main screen.** `/checklist` renders the living compliance
+checklist generated from customer profile, memory, KBLI records, and source-pack
+coverage. It is intentionally operational: KBLI, HS code, OSS, SNI, tax/customs,
+regional Perda, and memory-review rows with status, priority, evidence, and open
+questions. It can mark a row complete or back to review, but the refresh logic
+will continue to surface unverified facts as `needs_review`.
 
 **LLM provider switcher lives at the bottom of the sidebar.** It shows Claude
 Code, Codex / ChatGPT, and Hosted API health. Only healthy providers can be
@@ -201,10 +247,15 @@ that finally fixes the unconfirmed-HS-code gap.
   about what counts as established.
 - Promotion to confirmed is a human click on the Memory page. Never automate it.
 
-Extraction (`lib/checks/remember.ts`) runs **after** the answer has streamed, so
-it costs the user no latency, and swallows its own failures — a missed memory is
-a small loss, a broken chat is not. It is told that an empty result is the
-correct and common answer.
+Extraction (`lib/checks/remember.ts`) runs **after** the answer has streamed and
+after the SSE response has closed, so it costs the user no latency and cannot
+keep the composer disabled. It now extracts KBLI, OSS/NIB/licensing, SNI, tax,
+and location facts in addition to HS/product/market/contact facts. When it saves
+anything new, it calls `refreshChecklistForCustomer()` so the checklist updates
+from chat memory. Manual memory add / confirm / unconfirm / delete does the same
+through `/api/memories`. It swallows its own failures — a missed memory is a
+small loss, a broken chat is not. It is told that an empty result is the correct
+and common answer.
 
 Verified end to end: told the chat a real HS code in one conversation, then asked
 from a **fresh** conversation — it recalled it and volunteered "an unverified
@@ -219,6 +270,12 @@ used the guessed codes.
 | `peraturan.bpk.go.id` | **blocked** | Confirmed bot detection. Manual lookups only, never automated. |
 | `peraturan.go.id` | **unstable** | Its own homepage says "Website dalam perbaikan". |
 | `jdihn.go.id`, `jdih.kemenkeu.go.id` | untested | In the registry, not polled. |
+
+`source_packs` is the broader coverage inventory, not a claim of automation.
+Seeded Indonesia packs now include Kemendag trade (`automated`), KBLI/OSS
+(`manual_assisted`), national law (`untested`), Kemenkeu/DJBC/DJP tax-customs
+(`untested`), BSN/SNI (`untested`), and East Java / Surabaya regional rules
+(`manual_assisted`). Only the working Kemendag `sources` rows are polled today.
 
 Things about this feed that will mislead you if forgotten:
 
@@ -246,11 +303,18 @@ Multi-tenant from day one — everything keys off `customer_id`, sources key off
 country + regulation_type, so "add customer #2" or "add Vietnam" is a row, not a
 refactor. SQLite via Drizzle; the schema is portable to Postgres.
 
-`customers` · `customer_profiles` · `sources` · `check_runs` · **`source_results`**
-· `findings` · `alerts`
+`customers` · `customer_profiles` · `kbli_records` · `source_packs` · `sources`
+· `check_runs` · **`source_results`** · `findings` · `alerts` · `conversations`
+· `chat_messages` · `memories` · `checklist_items`
 
 `source_results` is load-bearing — it's what makes a failed fetch visible in the
 UI instead of silently absent.
+
+`checklist_items` is also load-bearing now. It is the living work queue that
+turns customer facts into obligations and evidence gaps. A chat-extracted KBLI or
+HS code becomes an unconfirmed lead and a review task; it does not become
+verified monitoring coverage until a human confirms the underlying memory or
+enters evidence.
 
 Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) ·
 `baseline` (pre-existing backlog, recorded so tomorrow doesn't treat it as fresh)
@@ -262,6 +326,10 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
 
 - Fetch, judgment, storage, dashboard, and chat all working locally, verified
   against the live Kemendag source.
+- Checklist is working locally at `/checklist`. `/api/checklist` refreshes rows
+  from profile, memory, KBLI records, and Indonesia source-pack coverage. Current
+  MA seed produced 7 rows, 5 open, which is correct because KBLI/HS/SNI/tax
+  coverage still needs evidence.
 - **Chat can reach the internet** — it streams over SSE and may call `WebSearch`
   and `WebFetch`. This makes the grounding rules in the chat system prompt load
   bearing, not decorative: stored run data is the only authority on what the
@@ -282,9 +350,12 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
 
 ## Next
 
-1. Get MA's real HS code(s), destination markets, compliance contact.
-2. Run for ~14 days, delivering each alert by hand.
-3. Ask MA directly about $200–400/month. That answer decides what happens next.
+1. Get MA's real KBLI from OSS/NIB and real HS code(s) from PEB/invoice;
+   confirm those Memory rows so Checklist can move from leads to verified facts.
+2. Add proven fetchers for Kemenkeu/DJBC/DJP and BSN/SNI before claiming those
+   packs are automated.
+3. Run for ~14 days, delivering each alert by hand.
+4. Ask MA directly about $200–400/month. That answer decides what happens next.
 
 Explicitly not yet: auth, cron, deploy, WhatsApp API, billing, signup.
 

@@ -10,6 +10,7 @@ import {
 } from "@/lib/db/queries";
 import { extractMemories } from "@/lib/checks/remember";
 import { getProvider, normalizeProviderChoice, PROVIDER_COOKIE } from "@/lib/llm";
+import type { LlmProvider } from "@/lib/llm/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -32,7 +33,17 @@ You have two sources of truth, and they are not interchangeable:
 
 **Always make clear which is which.** "The 14 Aug run flagged X" and "according to Kemendag's site, X says Y" are different claims and must read differently. When you use the web, name the source. Never present a web finding as something the monitor detected.
 
-Don't search when the question is purely about stored data — it's slower and adds nothing.
+Search behavior:
+- If the user asks for current/new/latest/recent regulations, asks you to "find" or "check" regulations, or provides HS codes and asks what changed, use WebSearch immediately before answering. Do not wait to see if stored runs are enough.
+- For HS-code regulatory checks, run targeted searches against official domains first. Start with JDIH Kemendag and use queries that include the HS code, "ekspor", "Permendag", and the product/category. If results point to a relevant regulation page, WebFetch it.
+- Keep the search pass tight unless the user asks for exhaustive research: usually 2 targeted WebSearch calls and at most 2-3 WebFetch reads are enough before answering with caveats.
+- Use stored run data to say what the monitor has actually checked. Use web results to add current outside context. Label those separately.
+- Don't search only when the question is purely about stored data, history, UI, memory, or what was already sent.
+
+Visible reasoning:
+- Start every response with a short user-facing reasoning block wrapped exactly in <visible_reasoning>...</visible_reasoning>.
+- This is not hidden chain-of-thought. Keep it concise: 2-4 lines explaining what you are checking, what you need to verify, and whether you will use stored data, web search, or both.
+- After the closing tag, write the normal Markdown answer. Do not mention the tags.
 
 Format your answer in Markdown: short paragraphs, **bold** for the thing that matters, bullet lists where there's more than one item, tables only for genuinely tabular facts. Keep it brief and concrete. Cite regulation numbers when you have them.`;
 
@@ -116,15 +127,22 @@ export async function POST(request: Request) {
 
   const prompt =
     `${memoryBlock}## Stored run data\n\n${JSON.stringify(context, null, 2)}\n\n` +
-    `${transcript}## Question\n\n${question}`;
+    `${transcript}${buildSearchDirective(question)}## Question\n\n${question}`;
 
   const encoder = new TextEncoder();
   const stream = new ReadableStream({
     async start(controller) {
+      let clientGone = request.signal.aborted;
+      const onAbort = () => {
+        clientGone = true;
+      };
+      request.signal.addEventListener("abort", onAbort, { once: true });
+
       // Defensive: the client can disconnect mid-stream (closed tab, navigation),
       // after which enqueue throws. That must not take down the extraction that
       // follows.
       const send = (data: unknown) => {
+        if (clientGone) return;
         try {
           controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
         } catch {
@@ -135,9 +153,24 @@ export async function POST(request: Request) {
       // Tell the client which conversation this is, so a brand-new chat can
       // adopt the id and subsequent turns append to it.
       send({ type: "conversation", id: conversationId });
+      for (const line of await buildVisibleReasoning({
+        provider,
+        question,
+        usesFreshSearch: needsFreshRegulatorySearch(question),
+        signal: request.signal,
+      }).catch(() => [])) {
+        send({ type: "thinking", text: line, source: "model" });
+      }
 
       let answer = "";
-      const activity: { name: string; detail: string }[] = [];
+      const visibleReasoning = createVisibleReasoningParser(send);
+      const activity: {
+        name: string;
+        detail: string;
+        url?: string;
+        hostname?: string;
+        hostnames?: string[];
+      }[] = [];
 
       try {
         for await (const event of provider.stream!({
@@ -145,30 +178,51 @@ export async function POST(request: Request) {
           prompt,
           tools: ["WebSearch", "WebFetch"],
           timeoutMs: 600_000,
+          signal: request.signal,
         })) {
-          if (event.type === "text") answer += event.text;
+          if (event.type === "text") {
+            for (const text of visibleReasoning.push(event.text)) {
+              answer += text;
+              send({ type: "text", text });
+            }
+            continue;
+          }
           if (event.type === "tool_start") {
-            activity.push({ name: event.name, detail: event.detail });
+            activity.push({
+              name: event.name,
+              detail: event.detail,
+              url: event.url,
+              hostname: event.hostname,
+              hostnames: event.hostnames,
+            });
+          }
+          if (event.type === "done") {
+            continue;
           }
           send(event);
+        }
+        for (const text of visibleReasoning.flush()) {
+          answer += text;
+          send({ type: "text", text });
         }
       } catch (err) {
         send({ type: "error", message: err instanceof Error ? err.message : String(err) });
       } finally {
-        if (answer.trim()) {
+        request.signal.removeEventListener("abort", onAbort);
+        if (answer.trim() && !clientGone) {
           await appendMessage(conversationId, "agent", answer, activity);
-          // Extraction happens after the answer is already on screen, so it
-          // costs the user nothing. Deliberately not awaited.
+          send({ type: "done" });
+          controller.close();
+          // Extraction happens after the answer is stored and the stream is
+          // closed, so it cannot keep the composer disabled.
           void extractMemories({
             customerId,
             question,
             answer,
             existing: memoryEntries,
             providerChoice: selectedProvider,
-          }).then(() => send({ type: "memory_updated" }))
-            .catch(() => {})
-            .finally(() => controller.close());
-        } else {
+          }).catch(() => {});
+        } else if (!clientGone) {
           controller.close();
         }
       }
@@ -184,4 +238,133 @@ export async function POST(request: Request) {
       "X-Accel-Buffering": "no",
     },
   });
+}
+
+async function buildVisibleReasoning({
+  provider,
+  question,
+  usesFreshSearch,
+  signal,
+}: {
+  provider: LlmProvider;
+  question: string;
+  usesFreshSearch: boolean;
+  signal: AbortSignal;
+}): Promise<string[]> {
+  const result = await provider.complete({
+    system:
+      "Write the visible reasoning panel for a chat UI. Do not answer the user's question. Do not use tools. Do not browse. Return only 2-4 short first-person lines, no bullets, no markdown, no tags.",
+    prompt:
+      `User question: ${question}\n\n` +
+      `Will the main answer use fresh web search? ${usesFreshSearch ? "yes" : "only if needed"}\n\n` +
+      "Write what you are about to check and why, in plain language.",
+    timeoutMs: 30_000,
+    signal,
+  });
+  return normalizeReasoningLines(result.text);
+}
+
+function buildSearchDirective(question: string): string {
+  if (!needsFreshRegulatorySearch(question)) return "";
+  return `## Search directive for this turn
+
+This question appears to ask for fresh regulatory discovery. Before answering, use WebSearch immediately. Prefer official Indonesian government sources and run targeted searches for:
+- the provided HS code(s), if any
+- "Permendag", "ekspor", and the product/category
+- jdih.kemendag.go.id first, then other official sources if needed
+
+Use a tight first-pass budget: about 2 targeted WebSearch calls and at most 2-3 WebFetch reads, unless the user explicitly asks for exhaustive research. If coverage is incomplete, say that plainly instead of continuing to search indefinitely.
+
+After searching, clearly separate:
+- what Cante's stored monitor runs have actually checked
+- what you found on the web in this chat turn
+
+`;
+}
+
+function needsFreshRegulatorySearch(question: string): boolean {
+  const q = question.toLowerCase();
+  const hasHsCode = /\b\d{4}(?:[.\s-]?\d{2}){1,2}\b/.test(q) || /\bhs\s*codes?\b/.test(q);
+  const wantsRegulations =
+    /\b(new|latest|recent|current|today|now|find|search|check|look up)\b/.test(q) ||
+    /\b(regulations?|rules?|peraturan|permendag|ekspor|export|compliance)\b/.test(q);
+  return hasHsCode && wantsRegulations;
+}
+
+function createVisibleReasoningParser(send: (data: unknown) => void) {
+  let buffer = "";
+  let inReasoning = false;
+  let done = false;
+
+  const startRe = /<visible_reasoning>|<reasoning>/i;
+  const endRe = /<\/visible_reasoning>|<\/reasoning>/i;
+
+  const emitReasoning = (raw: string) => {
+    for (const line of raw
+      .split(/\r?\n/)
+      .map((item) => item.replace(/^\s*[-*]\s*/, "").trim())
+      .filter(Boolean)) {
+      send({ type: "thinking", text: line, source: "model" });
+    }
+  };
+
+  return {
+    push(chunk: string): string[] {
+      if (done) return [chunk];
+
+      buffer += chunk;
+      const output: string[] = [];
+
+      if (!inReasoning) {
+        const start = buffer.search(startRe);
+        if (start === -1) {
+          // Hold a small prefix while waiting for the model's visible-reasoning
+          // tag. If it ignores the instruction, do not swallow the answer.
+          if (buffer.length > 4096) {
+            done = true;
+            output.push(buffer);
+            buffer = "";
+          }
+          return output;
+        }
+
+        const match = buffer.slice(start).match(startRe);
+        if (!match) return output;
+        const before = buffer.slice(0, start);
+        if (before.trim()) output.push(before);
+        buffer = buffer.slice(start + match[0].length);
+        inReasoning = true;
+      }
+
+      const end = buffer.search(endRe);
+      if (end === -1) return output;
+
+      const match = buffer.slice(end).match(endRe);
+      if (!match) return output;
+      emitReasoning(buffer.slice(0, end));
+      output.push(buffer.slice(end + match[0].length));
+      buffer = "";
+      inReasoning = false;
+      done = true;
+      return output;
+    },
+
+    flush(): string[] {
+      if (!buffer) return [];
+      const rest = buffer;
+      buffer = "";
+      done = true;
+      return [rest];
+    },
+  };
+}
+
+function normalizeReasoningLines(raw: string): string[] {
+  return raw
+    .replace(/<\/?visible_reasoning>/gi, "")
+    .replace(/<\/?reasoning>/gi, "")
+    .split(/\r?\n/)
+    .map((item) => item.replace(/^\s*[-*]\s*/, "").trim())
+    .filter(Boolean)
+    .slice(0, 4);
 }
