@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { eq } from "drizzle-orm";
 import { db } from "../lib/db/client";
 import {
   customerProfiles,
@@ -27,8 +28,9 @@ const INDONESIA_SOURCE_PACKS = [
     jurisdiction: "national",
     name: "KBLI and OSS business licensing",
     category: "oss",
-    status: "automated",
-    notes: "OSS KBLI portal is monitored; specific obligation mapping requires confirmed KBLI evidence.",
+    status: "manual_assisted",
+    notes:
+      "The OSS KBLI catalogue-version API is automated, but company licensing status, risk level, and PB-UMKU applicability require confirmed KBLI/NIB evidence.",
   },
   {
     id: "id-national-uu",
@@ -37,7 +39,7 @@ const INDONESIA_SOURCE_PACKS = [
     name: "Undang-Undang (UU)",
     category: "national_law",
     status: "automated",
-    notes: "peraturan.go.id UU surface is monitored; BPK remains manual because it is bot-blocked.",
+    notes: "JDIH Setneg JSON exhaustively polls the current and prior year; BPK remains manual because it is bot-blocked.",
   },
   {
     id: "id-national-pp",
@@ -46,7 +48,7 @@ const INDONESIA_SOURCE_PACKS = [
     name: "Peraturan Pemerintah (PP)",
     category: "national_law",
     status: "automated",
-    notes: "peraturan.go.id PP surface is monitored and failures are recorded as coverage caveats.",
+    notes: "JDIH Setneg JSON exhaustively polls the current and prior year with legal dates and official PDFs.",
   },
   {
     id: "id-national-perpres-kepres",
@@ -55,7 +57,7 @@ const INDONESIA_SOURCE_PACKS = [
     name: "Perpres / Kepres",
     category: "national_law",
     status: "automated",
-    notes: "peraturan.go.id Perpres surface is monitored; Kepres-class items are treated as presidential-rule coverage.",
+    notes: "JDIH Setneg JSON covers Perpres and Keppres with pagination, legal dates, status, and official PDFs.",
   },
   {
     id: "id-national-permen-kepmen",
@@ -63,8 +65,18 @@ const INDONESIA_SOURCE_PACKS = [
     jurisdiction: "national",
     name: "Permen / Kepmen",
     category: "national_law",
+    status: "manual_assisted",
+    notes:
+      "No reliable central all-ministry feed exists. Verified ministry JDIH adapters are automated and additional ministries must be selected from customer facts.",
+  },
+  {
+    id: "id-national-perpu-inpres",
+    country: "Indonesia",
+    jurisdiction: "national",
+    name: "Perpu and Inpres",
+    category: "national_law",
     status: "automated",
-    notes: "peraturan.go.id Permen surface plus ministry JDIH entries are monitored where reachable.",
+    notes: "JDIH Setneg JSON covers Perpu and Inpres for the current and prior year.",
   },
   {
     id: "id-tax-customs",
@@ -73,7 +85,7 @@ const INDONESIA_SOURCE_PACKS = [
     name: "Kemenkeu, DJBC, and DJP tax-customs",
     category: "tax_customs",
     status: "automated",
-    notes: "JDIH Kemenkeu homepage is monitored for PMK/customs/duty/tax-administration changes.",
+    notes: "JDIH Kemenkeu, DJBC, and DJP sources monitor PMK, customs, duty, tariff, excise, and tax-administration changes.",
   },
   {
     id: "id-sni-bsn",
@@ -81,8 +93,8 @@ const INDONESIA_SOURCE_PACKS = [
     jurisdiction: "national",
     name: "BSN and mandatory SNI exposure",
     category: "sni",
-    status: "automated",
-    notes: "BSN PESTA product catalogue is monitored; mandatory applicability still needs product-specific judgment.",
+    status: "manual_assisted",
+    notes: "BSN PESTA catalogue changes are automated; mandatory applicability still needs product and sector-rule evidence.",
   },
   {
     id: "id-regional-east-java-surabaya",
@@ -91,7 +103,25 @@ const INDONESIA_SOURCE_PACKS = [
     name: "Perda and Perkada for factory location",
     category: "regional",
     status: "manual_assisted",
-    notes: "Initial customer is Surabaya. Regional JDIH discovery remains location-specific and manual-assisted until source paths are proven.",
+    notes: "Surabaya JDIH and DLH are automated by location; East Java provincial JDIH remains manual-assisted because Cloudflare blocks unattended requests.",
+  },
+  {
+    id: "id-environment-klh",
+    country: "Indonesia",
+    jurisdiction: "national / Surabaya",
+    name: "Environmental rules and public document notices",
+    category: "environment",
+    status: "automated",
+    notes: "KLH/BPLH legal JSON plus location-activated Surabaya DLH AMDAL, UKL-UPL, DELH, and DPLH notices.",
+  },
+  {
+    id: "id-labor-kemnaker",
+    country: "Indonesia",
+    jurisdiction: "national",
+    name: "Labor and occupational safety rules",
+    category: "labor_safety",
+    status: "automated",
+    notes: "JDIH Kemnaker newest-upload listing is monitored with stated legal dates preserved.",
   },
 ];
 
@@ -168,6 +198,9 @@ async function main() {
       .run();
   }
   console.log(`Seeded ${SOURCE_REGISTRY.length} sources.`);
+
+  // Superseded by the instrument-specific Setneg and Permen/Kepmen packs.
+  db.delete(sourcePacks).where(eq(sourcePacks.id, "id-national-law")).run();
 
   for (const pack of [...INDONESIA_SOURCE_PACKS, ...US_SOURCE_PACKS]) {
     db.insert(sourcePacks)

@@ -112,6 +112,15 @@ checklist.
 
 ## Source Packs For Indonesia
 
+### Implemented 2026-08-16
+
+Cante now automates Kemendag, the Setneg national hierarchy, Kemenkeu, DJBC,
+DJP, KLH/BPLH, Kemnaker, OSS catalogue health, BSN/SNI catalogue changes,
+Surabaya city regulations, and Surabaya environmental notices. Full source
+inventories are fingerprinted; after bootstrap only new or changed documents
+enter judgment. See `indonesia-source-coverage.md` for verified counts and the
+remaining gaps.
+
 ### P0: Existing Working Trade Source
 
 - JDIH Kemendag regulation list
@@ -128,20 +137,21 @@ Use for:
 
 ### P0: National Legal Hierarchy
 
-Use `peraturan.go.id` and JDIH sources for:
+Use the working Setneg JSON API and ministry JDIH sources for:
 
 - UU
 - Perppu
 - PP
 - Perpres
 - Kepres, where available
-- ministerial regulations
+- ministerial regulations, where the relevant ministry has a verified adapter
 
 Monitor for terms connected to the company's KBLI, products, industry, licensing,
 tax, customs, export/import, and regional operations.
 
-Important: do not assume the national source is always reachable. Record source
-health separately from relevance.
+Setneg covers UU, Perpu, PP, Perpres, Keppres, and Inpres. There is no verified
+central all-ministry feed for Permen/Kepmen. Record that gap separately from
+source health and add ministry feeds based on confirmed customer facts.
 
 ### P0: OSS / KBLI / Licensing
 
@@ -193,8 +203,9 @@ Perda is hard but important. Model it by location:
 - city/regency
 - industrial estate if relevant
 
-Start with the customer's actual operating location. For MA, that means
-Surabaya / East Java before all of Indonesia.
+Start with the customer's actual operating location. Surabaya city regulations
+and DLH notices are automated for MA. East Java provincial JDIH currently
+blocks unattended requests and remains a disclosed manual-assisted gap.
 
 Source types:
 
@@ -204,12 +215,12 @@ Source types:
 - environmental/industrial permits
 - warehouse/factory local requirements
 
-### P2: Sector Ministry Packs
+### P2: Additional Sector Ministry Packs
 
 Add only when the customer's KBLI requires it:
 
 - Kemenperin
-- KLHK / environmental
+- additional KLH/BPLH environmental sources beyond the working national adapter
 - BPOM for food/cosmetics/health products
 - Kominfo for telecom/electronics
 - ESDM for energy/mining
@@ -313,16 +324,19 @@ Tindakan: minta PPJK cek apakah aturan ini menyentuh HS 5903.10 / 6306.19.90.
 
 ## Build Sequence
 
-1. Promote KBLI into first-class schema.
-2. Add checklist table and checklist item statuses.
-3. Add memory-to-checklist refresh after chat extraction.
-4. Add OSS/KBLI source pack as manual-assisted first.
-5. Add Kemenkeu/DJBC source pack.
-6. Add BSN/SNI source pack.
-7. Add Perda source pack for Surabaya/East Java.
-8. Add UI page for checklist.
-9. Add Telegram alert when checklist changes.
-10. Add document upload for OSS/NIB/PEB/invoice/SNI certificate.
+1. Completed: promote KBLI into first-class schema.
+2. Completed: add checklist storage, statuses, and the Checklist screen.
+3. Completed: refresh checklist after profile and memory changes.
+4. Completed: automate the working national, trade, tax/customs, environment,
+   labor, catalogue, and Surabaya sources.
+5. Completed: add a full-inventory fingerprint ledger and new/changed-only
+   judgment.
+6. Get evidence-backed KBLI, HS, permit, destination, and SNI facts for MA.
+7. Add the ministry-specific Permen/Kepmen feeds those facts activate.
+8. Find structured East Java and INSW/lartas routes without hiding failures.
+9. Add document upload for OSS/NIB/PEB/invoice/SNI certificates.
+10. Add scheduling and Telegram delivery after the monitor has run reliably for
+    the pilot.
 
 ## Sources Reviewed
 
@@ -332,5 +346,12 @@ Tindakan: minta PPJK cek apakah aturan ini menyentuh HS 5903.10 / 6306.19.90.
 - JDIH Kemendag: https://jdih.kemendag.go.id/
 - JDIH Kemendag regulation list: https://jdih.kemendag.go.id/peraturan
 - JDIH Kemenkeu: https://jdih.kemenkeu.go.id/
+- JDIH Setneg: https://jdih.setneg.go.id/
+- DJBC regulations: https://peraturan.beacukai.go.id/
+- DJP regulations: https://www.pajak.go.id/peraturan
+- JDIH KLH/BPLH: https://jdih.kemenlh.go.id/
+- JDIH Kemnaker: https://jdih.kemnaker.go.id/
+- JDIH Surabaya: https://jdih.surabaya.go.id/
+- DLH Surabaya: https://lh.surabaya.go.id/
 - BSN SNI catalogue: https://pesta.bsn.go.id/
 - BSN SNI product catalogue: https://pesta.bsn.go.id/produk

@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 /**
  * Multi-tenant from day one, even though only MA exists.
@@ -164,7 +164,7 @@ export const sourcePacks = sqliteTable("source_packs", {
   country: text("country").notNull(),
   jurisdiction: text("jurisdiction").notNull().default("national"),
   name: text("name").notNull(),
-  /** kbli | oss | sni | tax_customs | trade | national_law | regional */
+  /** kbli | oss | sni | tax_customs | trade | national_law | regional | environment | labor_safety */
   category: text("category").notNull(),
   /** automated | manual_assisted | untested | blocked | planned */
   status: text("status").notNull().default("planned"),
@@ -209,6 +209,37 @@ export const sourceResults = sqliteTable("source_results", {
   rawContentPath: text("raw_content_path"),
   fetchedAt: text("fetched_at").notNull().default(now),
 });
+
+/**
+ * Per-customer source inventory fingerprints. Complete catalogues can be
+ * fetched on every run while only new/changed records enter model judgment.
+ */
+export const sourceDocuments = sqliteTable(
+  "source_documents",
+  {
+    id: text("id").primaryKey(),
+    customerId: text("customer_id")
+      .notNull()
+      .references(() => customers.id),
+    jurisdiction: text("jurisdiction").notNull().default("Indonesia"),
+    sourceId: text("source_id")
+      .notNull()
+      .references(() => sources.id),
+    identity: text("identity").notNull(),
+    contentHash: text("content_hash").notNull(),
+    firstSeenAt: text("first_seen_at").notNull().default(now),
+    lastSeenAt: text("last_seen_at").notNull().default(now),
+    lastChangedAt: text("last_changed_at").notNull().default(now),
+  },
+  (table) => ({
+    customerSourceIdentity: uniqueIndex("source_documents_customer_source_identity_unique").on(
+      table.customerId,
+      table.jurisdiction,
+      table.sourceId,
+      table.identity,
+    ),
+  }),
+);
 
 export const findings = sqliteTable("findings", {
   id: text("id").primaryKey(),
@@ -381,5 +412,6 @@ export type JurisdictionProfile = typeof jurisdictionProfiles.$inferSelect;
 export type Source = typeof sources.$inferSelect;
 export type CheckRun = typeof checkRuns.$inferSelect;
 export type SourceResult = typeof sourceResults.$inferSelect;
+export type SourceDocument = typeof sourceDocuments.$inferSelect;
 export type Finding = typeof findings.$inferSelect;
 export type Alert = typeof alerts.$inferSelect;

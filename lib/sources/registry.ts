@@ -10,7 +10,14 @@ export type SourceParser =
   | "peraturan-go-id"
   | "kemenkeu-home"
   | "bsn-pesta"
-  | "oss-kbli"
+  | "oss-kbli-versions-json"
+  | "setneg-json"
+  | "klh-json"
+  | "kemnaker"
+  | "djbc-home"
+  | "djp-list"
+  | "surabaya-regulations-json"
+  | "surabaya-dlh-json"
   | "federal-register-json"
   | "ecfr-versions-json"
   | "cpsc-recalls-json"
@@ -39,6 +46,8 @@ export interface SourceActivation {
   stateScope?: "facility" | "distribution" | "either";
   /** Location-specific source, matched conservatively against facility text. */
   facilityTerms?: string[];
+  /** Generic location match for country packs outside the US state model. */
+  locationTerms?: string[];
 }
 
 export interface SourceSelectionProfile {
@@ -62,6 +71,8 @@ export interface SourceSelectionOptions {
   lastCompletedAt?: string | null;
   /** Injectable clock for deterministic selection tests. */
   now?: Date;
+  /** Customer/facility locations used to activate regional source adapters. */
+  locations?: string[];
 }
 
 export interface SourceDefinition {
@@ -82,6 +93,12 @@ export interface SourceDefinition {
   reliabilityStatus: ReliabilityStatus;
   parser?: SourceParser;
   timeoutMs?: number;
+  /** Retry transient transport/server failures; parse failures are never retried or hidden. */
+  maxAttempts?: number;
+  /** Rolling discovery window for sources whose endpoint returns a full archive. */
+  lookbackDays?: number;
+  /** Computed per selection from lookbackDays; parser-facing, not persisted. */
+  windowStart?: string;
   /**
    * This source proves a portal is reachable; it does not publish regulations
    * we can judge. Its entries are reported as source health, never merged into
@@ -261,12 +278,12 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     domain: "peraturan.go.id",
     url: "https://peraturan.go.id/",
     regulationType: "national",
-    reliabilityStatus: "unstable",
+    reliabilityStatus: "blocked",
     parser: "peraturan-go-id",
     view: "national-home",
     rawFilename: "peraturan-go-id-home.html",
     timeoutMs: 12_000,
-    notes: "Its own homepage says 'Website dalam perbaikan'. Bonus source; expect it to fail.",
+    notes: "Unreachable from the monitor; replaced for UU/Perpu/PP/Perpres/Keppres/Inpres by JDIH Setneg JSON.",
   },
   {
     id: "peraturan-go-id-uu",
@@ -275,7 +292,7 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     domain: "peraturan.go.id",
     url: "https://peraturan.go.id/uu",
     regulationType: "national",
-    reliabilityStatus: "unstable",
+    reliabilityStatus: "blocked",
     parser: "peraturan-go-id",
     view: "uu",
     rawFilename: "peraturan-go-id-uu.html",
@@ -289,7 +306,7 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     domain: "peraturan.go.id",
     url: "https://peraturan.go.id/pp",
     regulationType: "national",
-    reliabilityStatus: "unstable",
+    reliabilityStatus: "blocked",
     parser: "peraturan-go-id",
     view: "pp",
     rawFilename: "peraturan-go-id-pp.html",
@@ -303,7 +320,7 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     domain: "peraturan.go.id",
     url: "https://peraturan.go.id/perpres",
     regulationType: "national",
-    reliabilityStatus: "unstable",
+    reliabilityStatus: "blocked",
     parser: "peraturan-go-id",
     view: "perpres",
     rawFilename: "peraturan-go-id-perpres.html",
@@ -317,7 +334,7 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     domain: "peraturan.go.id",
     url: "https://peraturan.go.id/permen",
     regulationType: "national",
-    reliabilityStatus: "unstable",
+    reliabilityStatus: "blocked",
     parser: "peraturan-go-id",
     view: "permen",
     rawFilename: "peraturan-go-id-permen.html",
@@ -331,12 +348,12 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     domain: "jdihn.go.id",
     url: "https://jdihn.go.id/",
     regulationType: "national",
-    reliabilityStatus: "untested",
+    reliabilityStatus: "blocked",
     parser: "generic-regulation",
     view: "jdihn",
     rawFilename: "jdihn.html",
     timeoutMs: 12_000,
-    notes: "Fallback search across every ministry's JDIH. Not yet confirmed reachable.",
+    notes: "Production portal times out and the development portal has no working DNS; member integration feeds are decentralized rather than a public central read API.",
   },
   {
     id: "kemenkeu-jdih",
@@ -359,29 +376,164 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     domain: "pesta.bsn.go.id",
     url: "https://pesta.bsn.go.id/produk",
     regulationType: "standards",
-    reliabilityStatus: "untested",
+    reliabilityStatus: "working",
     parser: "bsn-pesta",
     view: "sni-products",
     rawFilename: "bsn-pesta-produk.html",
-    timeoutMs: 12_000,
-    notes: "SNI catalogue surface. Product-specific mandatory status still needs detail/source validation.",
+    timeoutMs: 15_000,
+    maxAttempts: 2,
+    notes:
+      "Live-tested server-rendered SNI catalogue; one retry absorbs transient transport/server failures. " +
+      "Product-specific mandatory status still needs detail/source validation.",
   },
   {
     id: "oss-kbli",
     country: "Indonesia",
-    name: "OSS — KBLI and business licensing portal",
-    domain: "oss.go.id",
-    url: "https://oss.go.id/id/kbli",
+    name: "OSS — KBLI catalogue versions API",
+    domain: "gw.oss.go.id",
+    url: "https://gw.oss.go.id/v2/portal/kbli/version?lang=id",
     regulationType: "licensing",
     reliabilityStatus: "working",
-    parser: "oss-kbli",
+    parser: "oss-kbli-versions-json",
     view: "oss-kbli",
-    rawFilename: "oss-kbli.html",
+    rawFilename: "oss-kbli-versions.json",
     timeoutMs: 12_000,
     heartbeat: true,
+    requestHeaders: { Accept: "application/json" },
     notes:
-      "KBLI/OSS portal heartbeat — reachability only, reported as source health rather than " +
-      "as a regulation. Specific KBLI obligation mapping still depends on confirmed KBLI codes.",
+      "No-auth JSON gateway used by the official OSS KBLI frontend. It proves catalogue " +
+      "availability and reports published KBLI versions, but is not a documented licensing-status API. " +
+      "Specific obligation mapping still depends on confirmed KBLI codes.",
+  },
+  {
+    id: "setneg-national",
+    country: "Indonesia",
+    name: "JDIH Setneg — UU, Perpu, PP, Perpres, Keppres and Inpres",
+    domain: "jdih.setneg.go.id",
+    url: "https://jdih.setneg.go.id/api/hukumproduk/produkhukum",
+    regulationType: "national",
+    reliabilityStatus: "working",
+    parser: "setneg-json",
+    view: "setneg-national",
+    rawFilename: "setneg-national.json",
+    timeoutMs: 45_000,
+    requestHeaders: { Accept: "application/json", "Content-Type": "application/json" },
+    notes:
+      "No-auth frontend JSON API. Polls every page for the current and prior year across UU, Perpu, PP, Perpres, Keppres, and Inpres; it does not cover nationwide Permen/Kepmen.",
+  },
+  {
+    id: "klh-regulations",
+    country: "Indonesia",
+    name: "JDIH KLH/BPLH — environmental regulations",
+    domain: "jdih.kemenlh.go.id",
+    url: "https://jdih.kemenlh.go.id/admin/api/dokumen-hukum/terbaru?limit=30",
+    regulationType: "national",
+    reliabilityStatus: "working",
+    parser: "klh-json",
+    view: "environment",
+    rawFilename: "klh-regulations.json",
+    timeoutMs: 20_000,
+    maxAttempts: 2,
+    requestHeaders: { Accept: "application/json" },
+    notes:
+      "Official no-auth JSON carrying stable IDs, upload/update timestamps, legal dates, status, and full-text PDFs. Upload time is not treated as enactment time.",
+  },
+  {
+    id: "kemnaker-regulations",
+    country: "Indonesia",
+    name: "JDIH Kemnaker — labor and occupational safety rules",
+    domain: "jdih.kemnaker.go.id",
+    url: "https://jdih.kemnaker.go.id/peraturan?sort=terbaru",
+    regulationType: "national",
+    reliabilityStatus: "working",
+    parser: "kemnaker",
+    view: "labor-safety",
+    rawFilename: "kemnaker-regulations.html",
+    timeoutMs: 20_000,
+    maxAttempts: 2,
+    notes: "Official newest-upload listing. List order is upload chronology, never evidence of legal recency.",
+  },
+  {
+    id: "djbc-regulations",
+    country: "Indonesia",
+    name: "DJBC — customs and excise regulation directory",
+    domain: "peraturan.beacukai.go.id",
+    url: "https://peraturan.beacukai.go.id/",
+    regulationType: "customs",
+    reliabilityStatus: "working",
+    parser: "djbc-home",
+    view: "customs",
+    rawFilename: "djbc-regulations.html",
+    timeoutMs: 20_000,
+    maxAttempts: 2,
+    notes:
+      "Official newly-added directory spanning PMK, KMK, DJBC, Kemendag and Kemenperin instruments. The site says its archive is incomplete, so it supplements rather than replaces issuer JDIHs.",
+  },
+  {
+    id: "djp-regulations",
+    country: "Indonesia",
+    name: "DJP — tax regulation directory",
+    domain: "www.pajak.go.id",
+    url: "https://www.pajak.go.id/id/peraturan",
+    regulationType: "tax",
+    reliabilityStatus: "working",
+    parser: "djp-list",
+    view: "tax",
+    rawFilename: "djp-regulations.html",
+    timeoutMs: 20_000,
+    maxAttempts: 2,
+    notes: "Official tax directory carrying number, subject, issuer/type, legal date, status, and detail URL.",
+  },
+  {
+    id: "surabaya-regulations",
+    country: "Indonesia",
+    name: "JDIH Surabaya — Perda, Perwali, Kepwali and local rules",
+    domain: "jdih.surabaya.go.id",
+    url: "https://jdih.surabaya.go.id/peraturan/ajax",
+    regulationType: "regional",
+    reliabilityStatus: "working",
+    parser: "surabaya-regulations-json",
+    view: "surabaya-regional",
+    rawFilename: "surabaya-regulations.json",
+    timeoutMs: 30_000,
+    maxAttempts: 2,
+    requestHeaders: { Accept: "application/json" },
+    activation: { locationTerms: ["Surabaya"] },
+    notes:
+      "Official no-auth JSON. Polls every page for the current and prior year; detail pages and stable download routes provide promulgation metadata and full text.",
+  },
+  {
+    id: "surabaya-dlh-notices",
+    country: "Indonesia",
+    name: "DLH Surabaya — AMDAL, UKL-UPL, DELH and DPLH notices",
+    domain: "lh.surabaya.go.id",
+    url: "https://lh.surabaya.go.id/weblh/data-pengumuman-dokumen",
+    regulationType: "regional",
+    reliabilityStatus: "working",
+    parser: "surabaya-dlh-json",
+    view: "surabaya-environment",
+    rawFilename: "surabaya-dlh-notices.json",
+    timeoutMs: 20_000,
+    maxAttempts: 2,
+    lookbackDays: 45,
+    requestHeaders: { Accept: "application/json" },
+    activation: { locationTerms: ["Surabaya"] },
+    notes:
+      "Official environmental-document notice feed. These are facility/project notices, not generally applicable regulations.",
+  },
+  {
+    id: "east-java-regulations",
+    country: "Indonesia",
+    name: "JDIH East Java — provincial rules",
+    domain: "jdih.jatimprov.go.id",
+    url: "https://jdih.jatimprov.go.id/peraturan-terbaru",
+    regulationType: "regional",
+    reliabilityStatus: "blocked",
+    parser: "generic-regulation",
+    view: "east-java-regional",
+    activation: { locationTerms: ["East Java", "Jawa Timur", "Surabaya"] },
+    notes:
+      "Official catalogue works interactively but Cloudflare blocks unattended fetches. Provincial Perda, Pergub, Kepgub, instructions, and circulars remain manual-assisted.",
   },
   ...[
     ["epa", "EPA", ["environmental-protection-agency"], "national", undefined],
@@ -715,10 +867,35 @@ export function selectMonitoredSources(
   const candidates = SOURCE_REGISTRY.filter(
     (source) => source.country === country && source.reliabilityStatus !== "blocked",
   );
+  if (country === "Indonesia") {
+    const active = candidates
+      .filter((source) => sourceIsActive(source, profile, options))
+      .map((source) => refreshDynamicUrl(source, options));
+    const coverageCaveats = [
+      "JDIH Setneg mengotomatiskan UU, Perpu, PP, Perpres, Keppres, dan Inpres, tetapi belum ada sumber pusat yang andal untuk seluruh Permen/Kepmen. Cante memantau sumber kementerian yang sudah terverifikasi; kementerian lain tetap perlu pemeriksaan manual.",
+      "JDIH Provinsi Jawa Timur memblokir permintaan otomatis. Perda, Pergub, Kepgub, instruksi, dan surat edaran tingkat provinsi tetap perlu pemeriksaan manual meskipun sumber Kota Surabaya berhasil.",
+      "API OSS hanya membuktikan katalog KBLI tersedia; status NIB perusahaan, tingkat risiko, perizinan, dan kewajiban PB-UMKU memerlukan bukti OSS yang sudah dikonfirmasi.",
+      "BSN PESTA adalah katalog SNI, bukan bukti bahwa suatu standar wajib untuk produk ini. Status wajib harus dibuktikan dari peraturan teknis yang berlaku.",
+      "Penemuan pengumuman dokumen lingkungan DLH Surabaya memakai jendela 45 hari. Pengumuman yang lebih lama belum diaudit secara historis oleh monitor ini.",
+    ];
+    if (
+      SOURCE_REGISTRY.some(
+        (source) =>
+          source.country === country &&
+          source.activation?.locationTerms?.length &&
+          !sourceIsActive(source, profile, options),
+      )
+    ) {
+      coverageCaveats.push(
+        "Sumber provinsi/kota yang spesifik lokasi tidak diaktifkan karena lokasi yang tercatat belum cocok dengan adapter regional yang tersedia.",
+      );
+    }
+    return { sources: active, coverageCaveats };
+  }
   if (country !== "United States") return { sources: candidates, coverageCaveats: [] };
 
   const active = candidates
-    .filter((source) => sourceIsActive(source, profile))
+    .filter((source) => sourceIsActive(source, profile, options))
     .map((source) => refreshDynamicUrl(source, options));
   const coverageCaveats: string[] = [];
   const facilities = profile?.facilityAddresses ?? [];
@@ -768,6 +945,11 @@ function refreshDynamicUrl(
   source: SourceDefinition,
   options: SourceSelectionOptions = {},
 ): SourceDefinition {
+  if (source.lookbackDays) {
+    const since = new Date(options.now ?? new Date());
+    since.setUTCDate(since.getUTCDate() - source.lookbackDays);
+    return { ...source, windowStart: since.toISOString().slice(0, 10) };
+  }
   if (source.id === "us-cpsc-recalls") return { ...source, url: cpscRecentRecalls() };
   // The eCFR window is relative to today, so it has to be recomputed per run —
   // the registry is built once at module load and a long-lived server would
@@ -788,6 +970,7 @@ function refreshDynamicUrl(
 function sourceIsActive(
   source: SourceDefinition,
   profile?: SourceSelectionProfile | null,
+  options: SourceSelectionOptions = {},
 ): boolean {
   const activation = source.activation;
   if (!activation) return true;
@@ -812,6 +995,18 @@ function sourceIsActive(
     )
   ) {
     return false;
+  }
+  if (activation.locationTerms) {
+    const locations = [...(options.locations ?? []), ...(profile?.facilityAddresses ?? [])];
+    if (
+      !locations.some((location) =>
+        activation.locationTerms!.some((term) =>
+          new RegExp(`\\b${escapeRegExp(term)}\\b`, "i").test(location),
+        ),
+      )
+    ) {
+      return false;
+    }
   }
   return true;
 }

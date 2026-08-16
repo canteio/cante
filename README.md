@@ -56,7 +56,7 @@ CLAUDE_BIN=/path/to/claude npm run dev
 
 Two stages, kept separate because a **fetch failure** and a **bad judgment call** are different problems and were getting silently conflated:
 
-**1. Fetch — `lib/sources/fetch.ts`.** Plain fetching and parsing, no AI. Pulls three listing views with browser headers and a 25s timeout, saves the raw HTML, and parses each page into structured entries — recovering the full title from each detail-URL slug, because the listing truncates titles exactly where the useful part is. Writes one `source_results` row per source per run: success, error, entries parsed, parse warning.
+**1. Fetch — `lib/sources/fetch.ts`.** Plain fetching and parsing, no AI. Reads official JSON, HTML, and RSS sources, follows configured pagination, and writes one `source_results` row per source per run: success, error, entries parsed, and parse warning. Indonesia's full fetched inventory is fingerprinted in `source_documents`, so later checks judge only new or changed documents instead of repeatedly judging the same backlog.
 
 **2. Judge — `lib/checks/judge.ts`.** Reads the parsed entries plus the customer profile and the dedup log, and judges relevance the way a person would — not keyword matching, since most relevant regulations won't contain "PVC" or "tarpaulin" in the title. Returns a Zod-validated verdict per regulation (`flagged` / `noted` / `baseline` / `clear`) plus a ready-to-send message.
 
@@ -94,25 +94,38 @@ config/           customer.json — read at seed time only
 
 Multi-tenant from day one: everything keys off `customer_id`, sources key off country + regulation type. Adding customer #2 or a second country is a row, not a refactor. SQLite via Drizzle, portable to Postgres if deploy ever happens.
 
+On the first Indonesia inventory, Cante judges at most ten unseen documents per
+source and records older documents as historical baseline. Subsequent runs still
+fetch and fingerprint the full configured inventory, but send only new or
+changed records to the model. A document changed at the same URL is re-evaluated.
+
 ---
 
 ## Data sources (tested directly, not assumed)
 
 - **jdih.kemendag.go.id/peraturan** — reliable and fetchable. Kemendag's own regulation list, the primary source. Fetched in three views: unfiltered newest-first, plus `Tematik: Ekspor` and `Tematik: Perizinan`. The Ekspor filter matters — it surfaces the "Kebijakan dan Pengaturan Ekspor" Permendag rules that don't appear in the unfiltered top 10 at all.
+- **jdih.setneg.go.id/api/hukumproduk** — official no-auth JSON API. Cante exhausts every page for the current and prior year across UU, Perpu, PP, Perpres, Keppres, and Inpres. The latest source-only probe parsed 263 records.
 - **jdih.kemenkeu.go.id/home** — reliable in the latest run. Monitored for PMK, customs, duty, tariff, and tax-administration entries.
-- **oss.go.id/id/kbli** — reachable as an OSS/KBLI portal heartbeat. It is now marked `heartbeat: true`, so it reports as source health rather than being judged as a regulation — it used to be stored as a `baseline` finding, which is a liveness ping wearing a regulation's clothes. Complete KBLI obligation mapping still needs a confirmed KBLI code from OSS/NIB.
+- **peraturan.beacukai.go.id and pajak.go.id/peraturan** — official DJBC and DJP listings for customs and tax changes.
+- **jdih.kemenlh.go.id and jdih.kemnaker.go.id** — official environment and labor/OHS regulation sources. The latest probes parsed 30 and 15 records.
+- **gw.oss.go.id/v2/portal/kbli/version** — the no-auth JSON gateway used by the official OSS frontend. Cante reads the published KBLI versions from this small response and keeps it as `heartbeat: true`, so it reports source health rather than being judged as a regulation. The gateway is live but not a documented public contract, and it does not prove a company's licensing status. Complete obligation mapping still needs a confirmed KBLI code from OSS/NIB.
+- **jdih.surabaya.go.id/peraturan/ajax** — official no-auth city regulation JSON, fully paginated for the current and prior year. The latest probe parsed 123 records.
+- **lh.surabaya.go.id/weblh/data-pengumuman-dokumen** — official Surabaya environmental notices, monitored in a rolling 45-day window. The latest probe parsed 13 records.
 - **Caveat on HPE:** the unfiltered feed is dominated by Harga Patokan Ekspor decrees — commodity reference prices for mining, palm, agriculture and forestry. They never cover PVC tarpaulin. Volume here is not signal.
 - **Official Kemendag newsletter** ("Berlangganan Newsletter JDIH Kemendag") — signed up. The government pushing updates directly is more reliable than scraping anything.
 - **peraturan.bpk.go.id** — confirmed blocks bots. In the registry as `blocked`; never fetched automatically. Still the deepest archive for manual lookups.
-- **peraturan.go.id** — unstable. Five views (homepage, UU, PP, Perpres, Permen) are registered, but only the first is attempted per run: once a domain fails at the connection level, its siblings are recorded as `Not attempted` without a second request. Still counted as unchecked, just stated once instead of five times.
-- **jdihn.go.id** — attempted and recorded; latest local fetch failed.
-- **pesta.bsn.go.id/produk** — attempted for SNI catalogue coverage; latest local fetch failed.
+- **peraturan.go.id and jdihn.go.id** — disabled from daily fetching because their public services are not dependable. Setneg now covers six national instrument types. JDIHN's ILDIS convention can expose member feeds such as `/feed/document.json`, but each agency's adoption and quality must be verified separately.
+- **East Java JDIH** — the public site works interactively but Cloudflare blocks unattended collection. The provincial layer remains a disclosed manual gap; Surabaya city coverage is automated.
+- **pesta.bsn.go.id/produk** — working server-rendered SNI catalogue. A live probe parsed 19 entries. There is no discovered public read API, so Cante retains the HTML adapter and retries one transient connection, timeout, rate-limit, or server failure.
 
 The wider Indonesia monitor is tracked in `source_packs`, separate from daily
 fetch rows. Seeded packs now cover Kemendag trade, KBLI/OSS, UU, PP,
 Perpres/Kepres, Permen/Kepmen, Kemenkeu/DJBC/DJP tax-customs, BSN/SNI, and East
 Java / Surabaya regional rules. All non-blocked source rows are attempted by the
 monitor; failures are shown as coverage caveats, not hidden.
+
+The exact tested boundary, gaps, and expansion leads are recorded in
+`indonesia-source-coverage.md`.
 
 Both US APIs are queried through their documented interfaces
 (`federalregister.gov/developers/documentation/api/v1`,
@@ -166,9 +179,8 @@ to the alert as code-written coverage caveats.
   The final alert appended all inactive facility/state/product/export pack
   caveats and refused to infer EAR99. The older pre-depth reference is
   `47c65faf-1b70-4313-9a0d-153126127b8f`.
-- **Expanded Indonesia monitor verified.** An earlier full run attempted 12 non-blocked sources: Kemendag 3 views OK, Kemenkeu OK, OSS KBLI OK, and peraturan.go.id/JDIHN/BSN failed and were disclosed. It produced 8 findings, including PMK 58/2026 as `noted`.
-- **Latest run (`695357de`) is the current reference for correct output.** 12 sources registered but only 9 requests made — peraturan.go.id failed once and its 4 sibling views were recorded as not attempted, disclosed as a single line rather than four. Zero findings, which is the expected outcome most days. The alert reasoned from the human-confirmed HS codes while stating they have never been matched against a PEB or invoice, described OSS as a reachability check and not a source of rules, and disclosed one fetched entry that received no verdict and had never been seen before — a gap that would previously have passed silently as "nothing found".
-- **Checklist is now first-class.** `/checklist` shows a living compliance work queue generated from customer profile, memory, KBLI records, and source coverage. Chat-extracted or manually entered facts refresh it automatically. Current MA state creates 9 rows covering KBLI-to-rule mapping, national law, HS codes, OSS, SNI, tax/customs, regional Perda, and memory review; 7 remain open because evidence/source retrieval is still incomplete.
+- **Indonesia full-inventory automation is verified.** The seven new adapters fetched 459 official records without a failure. Full run `282f54b9` fetched 513 records across 13 active sources, judged 76 bootstrap documents, and stored 403 older records as baseline. Immediate repeat run `6c05be50` fetched the same 513 records, detected zero new or changed records, made zero judgment calls, and produced zero findings. This is the current reference behavior.
+- **The checklist is first-class.** `/checklist` shows a living compliance work queue generated from customer profile, memory, KBLI records, and source coverage. Chat-extracted or manually entered facts refresh it automatically. Current MA state creates 11 rows, including environment and labor/OHS; Surabaya city automation and the blocked East Java provincial layer are represented separately.
 - **Chat now streams and can search the web.** Answers arrive token by token over SSE (`--include-partial-messages`), with a timeline of what actually happened: the searches run with their real queries, the favicons of the pages those searches actually returned, an expandable list of those sources, and a thinking block showing real duration and token count. What it deliberately does *not* show is invented reasoning prose — the CLI emits thinking blocks with empty text, so there is nothing real to display and the UI says how long it thought rather than pretending to know what about. An earlier version faked all three: a second model call wrote "reasoning" before the answer began, the answer had to open with a `<visible_reasoning>` block that was stripped back out, and every search animated the same three hardcoded government favicons regardless of what it found. The stream closes as soon as the answer is saved, while memory extraction runs in the background so the composer is not stuck waiting. HS-code questions asking for new/latest regulation discovery get an explicit search directive to hit official Indonesian sources immediately. The model may call `WebSearch` / `WebFetch` for outside context — what a regulation actually says, background on an HS code. The two sources of truth are kept explicitly separate in the prompt: stored run data is the only authority on what the monitor checked, and web findings must be attributed to their source. "The 14 Aug run flagged X" and "Kemendag's site says X" have to read differently — a web answer dressed up as a check result is the exact failure this product exists to avoid. Still no API spend: it's the same local CLI provider behind the same seam.
 - First real judgment run: 28 findings — 1 `noted`, 1 `baseline`, 26 `clear`. It fetched Permendag 12/2026's detail page, read the real enactment date, and declined to flag it. The day-one false alert the design exists to prevent, prevented in practice rather than in theory.
 - The alert disclosed the unconfirmed HS codes, unknown destination markets, the ~10-of-2,386 window, and the bootstrap caveat without being prompted per-run.
@@ -179,8 +191,8 @@ to the alert as code-written coverage caveats.
 ## Next
 
 1. Get MA's actual KBLI from OSS/NIB, actual HS code(s), destination markets, and compliance contact; confirm those facts once they come off real evidence (PEB / invoice / OSS).
-2. Improve retrieval for peraturan.go.id/JDIHN/BSN, which are now attempted but failing from local plain fetch. The anchor parser is already tightened for the day they work.
-3. Add East Java / Surabaya regional JDIH source discovery.
+2. Add ministry-specific Permen/Kepmen adapters selected by MA's confirmed KBLI, products, permits, and markets; no dependable all-ministry feed exists.
+3. Find a structured East Java provincial route and verify an official INSW/lartas integration. Surabaya city rules and environmental notices are already automated.
 4. Put the check on a daily schedule — local cron calling `npm run check` is enough.
 5. Run it for real for ~14 days, delivering each alert by hand.
 6. Ask MA directly whether they'd pay $200–400/month. That answer, not more research, decides what happens next.

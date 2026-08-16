@@ -21,6 +21,7 @@ import {
 import { getProvider, type LlmProviderChoice } from "@/lib/llm";
 import { judge } from "@/lib/checks/judge";
 import { auditVerdictCoverage } from "@/lib/checks/coverage";
+import { selectSourceChanges } from "@/lib/checks/source-changes";
 import { refreshChecklistForCustomer } from "@/lib/checks/checklist";
 import { fetchAllSources } from "@/lib/sources/fetch";
 import {
@@ -77,7 +78,13 @@ export async function runCheck(
     const selection = selectMonitoredSources(
       jurisdiction,
       sourceProfileWithConfirmedMemory(jurisdictionProfile, memoryRows),
-      { lastCompletedAt: previousRun?.completedAt ?? null },
+      {
+        lastCompletedAt: previousRun?.completedAt ?? null,
+        locations:
+          jurisdiction === "Indonesia"
+            ? [target.customer.city, target.customer.country].filter((value): value is string => Boolean(value))
+            : [],
+      },
     );
     const monitored = selection.sources;
     if (monitored.length === 0) {
@@ -112,8 +119,23 @@ export async function runCheck(
       throw new Error("Every source failed — there is nothing for the judgment stage to read.");
     }
 
-    // --- Judgment stage ----------------------------------------------------
     const seen = await getSeenRegulations(customerId, jurisdiction);
+    if (jurisdiction === "Indonesia") {
+      const fetchedInventoryCount = report.regulations.length;
+      const changes = selectSourceChanges(
+        customerId,
+        jurisdiction,
+        report.regulations,
+        seen.map((entry) => entry.url),
+      );
+      report.regulations = changes.regulations;
+      report.coverageCaveats.push(...changes.caveats);
+      report.coverageCaveats.push(
+        `Inventaris sumber membuat sidik jari untuk ${fetchedInventoryCount} catatan yang berhasil diambil; ${changes.newCount} baru ditemukan setelah baseline, ${changes.changedCount} berubah sejak inventaris sebelumnya, ${changes.baselinedCount} menjadi baseline historis pada run pertama, dan ${changes.regulations.length} masuk tahap penilaian.`,
+      );
+    }
+
+    // --- Judgment stage ----------------------------------------------------
     const judgment = await judge(provider, {
       customer: target.customer,
       profile: target.profile,

@@ -186,17 +186,7 @@ async function fetchSource(
   const outcome = emptyOutcome(source);
 
   try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), source.timeoutMs ?? TIMEOUT_MS);
-    let html: string;
-    try {
-      html =
-        source.parser === "ecfr-versions-json"
-          ? await fetchAllEcfrPages(source, controller.signal)
-          : await fetchText(source.url, source, controller.signal);
-    } finally {
-      clearTimeout(timer);
-    }
+    const html = await fetchSourceContent(source);
 
     await mkdir(rawDir, { recursive: true });
     const rawPath = source.rawFilename ? path.join(rawDir, source.rawFilename) : null;
@@ -228,17 +218,155 @@ async function fetchSource(
   }
 }
 
+async function fetchSourceContent(source: SourceDefinition): Promise<string> {
+  const maxAttempts = Math.max(1, source.maxAttempts ?? 1);
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), source.timeoutMs ?? TIMEOUT_MS);
+    try {
+      if (source.parser === "ecfr-versions-json") {
+        return await fetchAllEcfrPages(source, controller.signal);
+      }
+      if (source.parser === "setneg-json") {
+        return await fetchAllSetnegPages(source, controller.signal);
+      }
+      if (source.parser === "surabaya-regulations-json") {
+        return await fetchAllSurabayaPages(source, controller.signal);
+      }
+      return await fetchText(source.url, source, controller.signal);
+    } catch (error) {
+      lastError = error;
+      const message = error instanceof Error ? error.message : String(error);
+      if (attempt === maxAttempts || !isRetryableFetchFailure(message)) throw error;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  throw lastError;
+}
+
+function isRetryableFetchFailure(message: string): boolean {
+  return isDomainFailure(message) || /HTTP (?:429|5\d\d)\b/i.test(message);
+}
+
 async function fetchText(
   url: string,
   source: SourceDefinition,
   signal: AbortSignal,
+  init: RequestInit = {},
 ): Promise<string> {
   const res = await fetch(url, {
-    headers: { ...HEADERS, ...source.requestHeaders },
+    ...init,
+    headers: { ...HEADERS, ...source.requestHeaders, ...(init.headers ?? {}) },
     signal,
   });
   if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
   return res.text();
+}
+
+const SETNEG_TYPES = ["UU", "PERPU", "PP", "PERPRES", "KEPPRES", "INPRES"] as const;
+const SETNEG_PAGE_SIZE = 100;
+
+/** Poll complete current/prior-year national instrument sets or fail the source. */
+async function fetchAllSetnegPages(
+  source: SourceDefinition,
+  signal: AbortSignal,
+): Promise<string> {
+  const currentYear = new Date().getUTCFullYear();
+  const data: unknown[] = [];
+  const queries: Array<{ type: string; year: number; count: number }> = [];
+
+  for (const year of [currentYear, currentYear - 1]) {
+    for (const type of SETNEG_TYPES) {
+      let start = 0;
+      let total = 0;
+      do {
+        const body = JSON.stringify({
+          tentang: "",
+          p_lihan: "semua",
+          jns: [type],
+          thn: [String(year)],
+          status: "",
+          terx: "All",
+          sortOrder: "desc",
+          length: SETNEG_PAGE_SIZE,
+          start,
+        });
+        const text = await fetchText(source.url, source, signal, {
+          method: "POST",
+          body,
+          headers: { "Content-Type": "application/json" },
+        });
+        const payload = JSON.parse(text) as { data?: unknown[]; jml?: number | string };
+        if (!Array.isArray(payload.data)) {
+          throw new Error(`Setneg ${type} ${year} payload did not contain data`);
+        }
+        total = Number(payload.jml ?? payload.data.length);
+        if (!Number.isInteger(total) || total < 0) {
+          throw new Error(`Setneg ${type} ${year} returned invalid count ${String(payload.jml)}`);
+        }
+        data.push(...payload.data);
+        start += payload.data.length;
+        if (payload.data.length === 0 && start < total) {
+          throw new Error(`Setneg ${type} ${year} pagination stopped at ${start} of ${total}`);
+        }
+      } while (start < total);
+      queries.push({ type, year, count: total });
+    }
+  }
+
+  return JSON.stringify({ data, queries });
+}
+
+/** Surabaya's XHR is paginated; current and prior years catch delayed uploads. */
+async function fetchAllSurabayaPages(
+  source: SourceDefinition,
+  signal: AbortSignal,
+): Promise<string> {
+  const currentYear = new Date().getUTCFullYear();
+  const data: unknown[] = [];
+  const queries: Array<{ year: number; count: number }> = [];
+
+  for (const year of [currentYear, currentYear - 1]) {
+    let page = 1;
+    let totalPages = 1;
+    let total = 0;
+    do {
+      const url = new URL(source.url);
+      for (const [key, value] of Object.entries({
+        judul: "",
+        jenis: "",
+        nomor: "",
+        tahun: String(year),
+        sort: "terbaru",
+        page: String(page),
+      })) {
+        url.searchParams.set(key, value);
+      }
+      const text = await fetchText(url.toString(), source, signal);
+      const payload = JSON.parse(text) as {
+        data?: unknown[];
+        total?: number | string;
+        totalPage?: number | string;
+      };
+      if (!Array.isArray(payload.data)) {
+        throw new Error(`Surabaya ${year} page ${page} payload did not contain data`);
+      }
+      total = Number(payload.total ?? payload.data.length);
+      totalPages = Number(payload.totalPage ?? 1);
+      if (!Number.isInteger(totalPages) || totalPages < 1 || !Number.isInteger(total) || total < 0) {
+        throw new Error(`Surabaya ${year} returned invalid pagination metadata`);
+      }
+      data.push(...payload.data);
+      page += 1;
+    } while (page <= totalPages);
+    queries.push({ year, count: total });
+  }
+
+  return JSON.stringify({ data, queries });
 }
 
 /** Fetch every eCFR result page or fail the source; a partial page set is unchecked. */
@@ -283,8 +411,22 @@ export function parseEntries(html: string, source: SourceDefinition): Regulation
       return parseKemenkeuHome(html, source);
     case "bsn-pesta":
       return parseBsnPesta(html, source);
-    case "oss-kbli":
-      return parseOssKbliHeartbeat(html, source);
+    case "oss-kbli-versions-json":
+      return parseOssKbliVersionsJson(html, source);
+    case "setneg-json":
+      return parseSetnegJson(html, source);
+    case "klh-json":
+      return parseKlhJson(html, source);
+    case "kemnaker":
+      return parseKemnaker(html, source);
+    case "djbc-home":
+      return parseDjbcHome(html, source);
+    case "djp-list":
+      return parseDjpList(html, source);
+    case "surabaya-regulations-json":
+      return parseSurabayaRegulationsJson(html, source);
+    case "surabaya-dlh-json":
+      return parseSurabayaDlhJson(html, source);
     case "federal-register-json":
       return parseFederalRegisterJson(html, source);
     case "ecfr-versions-json":
@@ -742,23 +884,291 @@ function parseBsnPesta(html: string, source: SourceDefinition): RegulationEntry[
   return entries;
 }
 
-function parseOssKbliHeartbeat(html: string, source: SourceDefinition): RegulationEntry[] {
-  const title =
-    cleanText(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? "") ||
-    "OSS KBLI and business licensing portal";
-  if (!/\bKBLI\b/i.test(html)) return [];
+function parseOssKbliVersionsJson(json: string, source: SourceDefinition): RegulationEntry[] {
+  const payload = JSON.parse(json) as {
+    success?: boolean;
+    code?: number;
+    data?: Array<{ id?: string; version?: string }>;
+  };
+  if (payload.success !== true || !Array.isArray(payload.data)) {
+    throw new Error("OSS KBLI version payload did not contain a successful data array");
+  }
+
+  const versions = payload.data
+    .map((item) => item.version?.trim())
+    .filter((version): version is string => Boolean(version));
+  if (versions.length === 0) return [];
+  const years = versions.map(Number).filter(Number.isFinite);
+  const latestYear = years.length > 0 ? Math.max(...years) : null;
 
   return [
     buildEntry(source, {
-      label: "OSS KBLI",
+      label: "OSS KBLI catalogue",
       number: null,
-      year: yearFromText(title),
-      listingTitle: title,
+      year: latestYear,
+      listingTitle: `Published KBLI versions: ${versions.join(", ")}`,
       fullTitle:
-        "OSS KBLI portal reachable; use confirmed KBLI codes to map risk, licensing, PB UMKU, and sector obligations.",
-      url: source.url,
+        `Official OSS KBLI gateway reachable. Published catalogue versions: ${versions.join(", ")}. ` +
+        "This confirms catalogue availability, not a company's license status or complete obligation coverage.",
+      url: "https://oss.go.id/id/kbli",
     }),
   ];
+}
+
+function parseSetnegJson(json: string, source: SourceDefinition): RegulationEntry[] {
+  const payload = JSON.parse(json) as {
+    data?: Array<{
+      idperaturan?: string;
+      no_peraturan?: string;
+      tahun?: string;
+      tentang?: string;
+      jns?: string;
+      nama_jenis?: string;
+      files?: string;
+      tgl_di?: string | null;
+      diundangkan?: string | null;
+      status_hukum?: string | null;
+    }>;
+  };
+  if (!Array.isArray(payload.data)) throw new Error("Setneg payload did not contain data");
+
+  return payload.data.flatMap((item) => {
+    if (!item.idperaturan || !item.no_peraturan || !item.tahun || !item.tentang) return [];
+    const kind = item.nama_jenis ?? item.jns ?? "Peraturan";
+    const label = `${kind} Nomor ${item.no_peraturan} Tahun ${item.tahun}`;
+    const signed = item.tgl_di?.slice(0, 10) ?? null;
+    const promulgated = item.diundangkan?.slice(0, 10) ?? null;
+    const pdf = new URL("/api/hukumproduk/pdf", source.url);
+    pdf.searchParams.set("l", "uploads");
+    pdf.searchParams.set("fl", item.idperaturan);
+    if (item.files) pdf.searchParams.set("f", item.files);
+    const url = item.files ? pdf.toString() : "https://jdih.setneg.go.id/";
+
+    return [
+      buildEntry(source, {
+        label,
+        number: item.no_peraturan,
+        year: Number(item.tahun) || null,
+        listingTitle: `${label} tentang ${item.tentang}`,
+        fullTitle:
+          `${label} tentang ${item.tentang}.` +
+          `${signed ? ` Ditetapkan ${signed}.` : ""}` +
+          `${promulgated ? ` Diundangkan ${promulgated}.` : ""}` +
+          `${item.status_hukum ? ` Status hukum: ${item.status_hukum}.` : ""}`,
+        url,
+        textUrl: item.files ? url : undefined,
+        effectiveOn: null,
+        documentType: kind,
+      }),
+    ];
+  });
+}
+
+function parseKlhJson(json: string, source: SourceDefinition): RegulationEntry[] {
+  const payload = JSON.parse(json) as {
+    data?: Array<{
+      id?: number;
+      title?: string;
+      description?: string;
+      lampiran_url?: string;
+      created_at?: string;
+      updated_at?: string;
+      dynamic_fields?: Record<string, string | undefined>;
+    }>;
+  };
+  if (!Array.isArray(payload.data)) throw new Error("KLH payload did not contain data");
+
+  return payload.data.flatMap((item) => {
+    if (!item.id || !item.title || !item.lampiran_url) return [];
+    const fields = item.dynamic_fields ?? {};
+    const number = fields.no_peraturan ?? null;
+    const enacted = fields.tanggal_penetapan;
+    const promulgated = fields.tanggal_pengundangan;
+    const kind = fields.jenis ?? fields.singkatan ?? "Dokumen hukum lingkungan";
+    return [
+      buildEntry(source, {
+        label: fields.singkatan && number ? `${fields.singkatan} ${number}` : item.title,
+        number,
+        year: yearFromText(item.title),
+        listingTitle: `${item.title}${item.description ? ` - ${item.description}` : ""}`,
+        fullTitle:
+          `${item.title}${item.description ? ` ${item.description}.` : "."}` +
+          `${enacted ? ` Ditetapkan ${enacted}.` : ""}` +
+          `${promulgated ? ` Diundangkan ${promulgated}.` : ""}` +
+          `${fields.status_peraturan ? ` Status: ${fields.status_peraturan}.` : ""}` +
+          `${fields.sumber ? ` Sumber: ${fields.sumber}.` : ""}` +
+          `${item.created_at ? ` Diunggah ${item.created_at.slice(0, 10)}.` : ""}` +
+          `${item.updated_at ? ` Metadata diperbarui ${item.updated_at.slice(0, 10)}.` : ""}`,
+        url: item.lampiran_url,
+        textUrl: item.lampiran_url,
+        effectiveOn: null,
+        documentType: kind,
+      }),
+    ];
+  });
+}
+
+function parseKemnaker(html: string, source: SourceDefinition): RegulationEntry[] {
+  const $ = load(html);
+  const entries: RegulationEntry[] = [];
+  const seen = new Set<string>();
+  $(".result-card").each((_, element) => {
+    if (entries.length >= MAX_GENERIC_ENTRIES) return;
+    const card = $(element);
+    const anchor = card.find("a[href*='/peraturan/detail/']").first();
+    const title = cleanText(anchor.html() ?? "");
+    const url = absolutizeUrl(anchor.attr("href") ?? "", source.url);
+    if (!title || !url || seen.has(url)) return;
+    const context = cleanText(card.html() ?? "");
+    const metadata = labelFromText(title, url);
+    seen.add(url);
+    entries.push(
+      buildEntry(source, {
+        ...metadata,
+        listingTitle: title,
+        fullTitle: `${context}. Listing order is upload chronology; use the stated legal dates, not its position, for recency.`,
+        url,
+      }),
+    );
+  });
+  return entries;
+}
+
+function parseDjbcHome(html: string, source: SourceDefinition): RegulationEntry[] {
+  const $ = load(html);
+  const entries: RegulationEntry[] = [];
+  const heading = $("*")
+    .filter((_, element) => cleanText($(element).html() ?? "") === "PERATURAN BARU DITAMBAHKAN ...")
+    .first();
+  const list = heading.parent().parent().find("ol li");
+  list.each((_, element) => {
+    if (entries.length >= MAX_GENERIC_ENTRIES) return;
+    const row = $(element);
+    const anchor = row.find("a[href]").first();
+    const label = cleanText(anchor.html() ?? "");
+    const url = absolutizeUrl(anchor.attr("href") ?? "", source.url);
+    if (!label || !url) return;
+    const context = cleanText(row.html() ?? "");
+    const metadata = labelFromText(label, url);
+    const displayedYear = metadata.year;
+    const urlYear = yearFromText(url);
+    const currentYear = new Date().getUTCFullYear();
+    const malformedYear = displayedYear !== null && displayedYear > currentYear + 1;
+    entries.push(
+      buildEntry(source, {
+        ...metadata,
+        year: malformedYear ? urlYear : displayedYear,
+        listingTitle: context,
+        fullTitle:
+          `${context}.` +
+          `${malformedYear ? ` The directory displays an implausible year (${displayedYear}); verify against the issuing authority before relying on it.` : ""}`,
+        url,
+      }),
+    );
+  });
+  return entries;
+}
+
+function parseDjpList(html: string, source: SourceDefinition): RegulationEntry[] {
+  const $ = load(html);
+  const entries: RegulationEntry[] = [];
+  $(".peraturan-content").each((_, element) => {
+    if (entries.length >= MAX_GENERIC_ENTRIES) return;
+    const row = $(element);
+    const anchor = row.find("a[href*='/peraturan/']").first();
+    const label = cleanText(anchor.html() ?? "");
+    const url = absolutizeUrl(anchor.attr("href") ?? "", source.url);
+    if (!label || !url) return;
+    const context = cleanText(row.html() ?? "");
+    const metadata = labelFromText(label, url);
+    entries.push(
+      buildEntry(source, {
+        ...metadata,
+        year: metadata.year ?? yearFromText(context),
+        listingTitle: context,
+        fullTitle: context,
+        url,
+      }),
+    );
+  });
+  return entries;
+}
+
+function parseSurabayaRegulationsJson(
+  json: string,
+  source: SourceDefinition,
+): RegulationEntry[] {
+  const payload = JSON.parse(json) as {
+    data?: Array<{
+      id?: string;
+      dok_tipe_full?: string;
+      dok_no?: string;
+      dok_tahun?: string;
+      dok_judul?: string;
+      status?: string;
+      penetapan_tgl?: string | null;
+    }>;
+  };
+  if (!Array.isArray(payload.data)) throw new Error("Surabaya payload did not contain data");
+  return payload.data.flatMap((item) => {
+    if (!item.id || !item.dok_tipe_full || !item.dok_no || !item.dok_judul) return [];
+    const url = `https://jdih.surabaya.go.id/peraturan/${encodeURIComponent(item.id)}`;
+    const year = Number(item.dok_tahun) || yearFromText(item.penetapan_tgl ?? "");
+    return [
+      buildEntry(source, {
+        label: `${item.dok_tipe_full} Nomor ${item.dok_no}`,
+        number: item.dok_no,
+        year,
+        listingTitle: item.dok_judul,
+        fullTitle:
+          `${item.dok_tipe_full} Nomor ${item.dok_no}${year ? ` Tahun ${year}` : ""} tentang ${item.dok_judul}.` +
+          `${item.penetapan_tgl ? ` Ditetapkan ${item.penetapan_tgl}.` : ""}` +
+          `${item.status ? ` Status katalog: ${item.status}.` : ""}`,
+        url,
+        textUrl: `https://jdih.surabaya.go.id/peraturan/download/${encodeURIComponent(item.id)}`,
+        effectiveOn: null,
+        documentType: item.dok_tipe_full,
+      }),
+    ];
+  });
+}
+
+function parseSurabayaDlhJson(json: string, source: SourceDefinition): RegulationEntry[] {
+  const payload = JSON.parse(json) as {
+    data?: Array<{
+      nama_jenis?: string;
+      jenis_pengumuman?: string;
+      tgl_mohon?: string;
+      file?: string;
+      created_at?: string;
+    }>;
+  };
+  if (!Array.isArray(payload.data)) throw new Error("Surabaya DLH payload did not contain data");
+  const windowStart = source.windowStart ?? "0000-00-00";
+  return payload.data
+    .filter((item) => (item.created_at?.slice(0, 10) ?? "") >= windowStart)
+    .sort((a, b) => (b.created_at ?? "").localeCompare(a.created_at ?? ""))
+    .flatMap((item) => {
+      if (!item.nama_jenis || !item.jenis_pengumuman || !item.file) return [];
+      const posted = item.created_at?.slice(0, 10) ?? null;
+      const url = `https://lh.surabaya.go.id/fileupload/${item.file.replace(/^\/+/, "")}`;
+      return [
+        buildEntry(source, {
+          label: `${item.jenis_pengumuman} Surabaya${posted ? ` ${posted}` : ""}`,
+          number: null,
+          year: yearFromText(posted ?? item.tgl_mohon ?? ""),
+          listingTitle: item.nama_jenis,
+          fullTitle:
+            `${item.jenis_pengumuman} environmental-document notice: ${item.nama_jenis}.` +
+            `${item.tgl_mohon ? ` Application date ${item.tgl_mohon}.` : ""}` +
+            `${posted ? ` Posted ${posted}.` : ""}` +
+            " This is a project/facility notice, not a generally applicable regulation.",
+          url,
+          textUrl: url,
+          documentType: `${item.jenis_pengumuman} notice`,
+        }),
+      ];
+    });
 }
 
 function parseAnchorRegulations(

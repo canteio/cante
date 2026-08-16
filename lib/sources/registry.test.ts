@@ -30,3 +30,27 @@ test("first eCFR run uses and discloses a seven-day bootstrap window", () => {
     ),
   );
 });
+
+test("Surabaya sources activate only for a matching Indonesian location", () => {
+  const local = selectMonitoredSources("Indonesia", null, {
+    now: new Date("2026-08-16T12:00:00.000Z"),
+    locations: ["Surabaya, Indonesia"],
+  });
+  const elsewhere = selectMonitoredSources("Indonesia", null, {
+    now: new Date("2026-08-16T12:00:00.000Z"),
+    locations: ["Jakarta, Indonesia"],
+  });
+
+  assert.ok(local.sources.some((source) => source.id === "surabaya-regulations"));
+  assert.ok(local.sources.some((source) => source.id === "surabaya-dlh-notices"));
+  assert.ok(!elsewhere.sources.some((source) => source.id === "surabaya-regulations"));
+  assert.ok(
+    elsewhere.coverageCaveats.some((caveat) =>
+      caveat.includes("belum cocok dengan adapter regional"),
+    ),
+  );
+  assert.equal(
+    local.sources.find((source) => source.id === "surabaya-dlh-notices")?.windowStart,
+    "2026-07-02",
+  );
+});

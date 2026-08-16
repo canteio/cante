@@ -44,34 +44,43 @@ memory changes, not just an HS-code export feed.
 Expanded slice built 2026-08-16: `kbli_records`, `source_packs`, and
 `checklist_items` now exist; `/checklist` shows the living work queue; memory
 add / confirm / delete and chat memory extraction refresh the checklist.
-`npm run check` now attempts every non-blocked Indonesia source row, including
-Kemendag, peraturan.go.id UU/PP/Perpres/Permen, JDIHN, Kemenkeu, BSN/SNI, and
-OSS KBLI. Verified run: Kemendag/Kemenkeu/OSS succeeded; peraturan.go.id,
-JDIHN, and BSN failed from local fetch and were disclosed as coverage gaps.
+`npm run check` now selects every applicable non-blocked Indonesia source:
+Kemendag, Setneg's national hierarchy, Kemenkeu, DJBC, DJP, KLH/BPLH, Kemnaker,
+OSS, BSN/SNI, Surabaya JDIH, and Surabaya DLH. Full inventories are fingerprinted
+in `source_documents`; only new or changed documents enter daily judgment.
+Verified run `282f54b9` fetched 513 records across 13 active sources, and
+immediate repeat run `6c05be50` found zero changes and made zero judgment
+calls. Nationwide all-ministry Permen/Kepmen, East Java province, private OSS
+status, mandatory-SNI applicability, and INSW/lartas remain explicit gaps.
 
 **Do not build all five at once.** Sequence:
 1. Get MA's real KBLI code from their OSS/NIB registration first — it's the filter everything else runs through.
 2. Confirm real HS codes from PEB/invoice. The four codes confirmed in Memory (6306.19.90, 3920.43.90, 3921.12.00, 3918.90.99) are now the working set and have superseded the seed-time guesses, but `hsCodesConfirmed` stays false and the checklist row stays open until a document backs them.
-3. Improve retrieval for peraturan.go.id/JDIHN/BSN so national-law and SNI coverage stops failing from plain local fetch.
-4. Add Perda (regional) source discovery for East Java / Surabaya — fragmented by province/city, no single source, and MA is specifically in Surabaya/East Java.
+3. Add ministry-specific Permen/Kepmen feeds selected by confirmed KBLI, product, permit, and market facts; JDIHN member feeds are candidates, not assumed coverage.
+4. Find a structured East Java provincial source and official INSW/lartas route. Surabaya city rules and environmental notices are already automated.
 5. Once KBLI and HS evidence are confirmed, tighten the judgment prompt from "leads" to "verified KBLI-to-rule mapping."
 
 ## Data sources to check
 Prefer these official sources — they're free, public, and don't need an account:
 
-1. **peraturan.go.id** — national feed of newly enacted regulations across all ministries. Shows "diundangkan X minggu yang lalu" (enacted X weeks ago), so it works as a general "what's new in Indonesian law" page. Good first stop for catching anything recent regardless of which ministry issued it.
-2. **jdih.kemendag.go.id/peraturan** — every Ministry of Trade (Kemendag) regulation: Permendag export policy changes, and the monthly Keputusan Menteri Perdagangan on Harga Patokan Ekspor (HPE, export benchmark prices). This is the single most important source for MA.
-3. **peraturan.bpk.go.id** — the deepest searchable archive of Indonesian law (UU, PP, Perpres, Permen), filterable by ministry/year/topic, free PDF downloads. Best for looking up a regulation's full text or its history once you know it exists.
-4. **jdihn.go.id** — the national legal database network that ties every ministry's JDIH (legal documentation) site together; useful as a fallback search if something isn't showing up on the Kemendag site directly.
-5. Bea Cukai (customs/DJBC) regulations and tariff/PMK notices — check via the Ministry of Finance's JDIH (jdih.kemenkeu.go.id) for customs duty and tariff changes specifically.
+1. **jdih.setneg.go.id/api/hukumproduk** — national UU, Perpu, PP, Perpres, Keppres, and Inpres through a working no-auth JSON API.
+2. **jdih.kemendag.go.id/peraturan** — every Ministry of Trade (Kemendag) regulation: Permendag export policy changes, and the monthly Keputusan Menteri Perdagangan on Harga Patokan Ekspor (HPE, export benchmark prices).
+3. **JDIH Kemenkeu, DJBC, and DJP** — finance, customs, tariff, and tax changes.
+4. **JDIH KLH/BPLH and Kemnaker** — environment and labor/OHS changes.
+5. **OSS and BSN** — public KBLI/SNI catalogue discovery, with private licensing status and mandatory applicability kept as evidence gaps.
+6. **Surabaya JDIH and DLH** — city regulations and environmental notices for MA's operating location.
 
-Use web search grounded to these five sources specifically — don't broaden to "all Indonesian regulations," and don't rely on general web search alone without pointing it at these official domains, since that's how things get missed or mixed up with unofficial summaries.
+Use official adapters for repeat monitoring and grounded web/manual lookup for
+blocked archives or document interpretation. The exact boundary is in
+`indonesia-source-coverage.md`.
 
 ## Important: scraping reliability, tested directly
 - **peraturan.bpk.go.id actively blocks automated requests (bot detection, confirmed).** Do not rely on this as a daily-fetch source. Use it only for occasional manual lookups of a regulation's full text once you already know it exists.
-- **peraturan.go.id is currently unstable** (its own homepage says "Website dalam perbaikan" — under maintenance). Treat it as a bonus source, not core — expect it to fail sometimes and don't let that break the daily check.
+- **peraturan.go.id and central JDIHN are disabled from daily automation.** Setneg replaces six national instrument types; no central reliable feed covers every ministry's Permen/Kepmen.
 - **jdih.kemendag.go.id is reliable and reachable** — this is the most important source for MA anyway, since it's Kemendag's own regulation list including HPE decrees.
-- **Do not write a custom scraper with raw urllib/requests and no headers** — that's what's getting blocked. Have Claude Code use its own built-in web search and fetch tools for the daily check instead of hand-rolled scraping code; those are far more resilient against bot detection than a bare `urlopen` call.
+- **A structured official endpoint is preferred over browser scraping.** Every
+  paginated adapter must fail honestly if a page is missing, rather than silently
+  treating partial inventory as complete.
 - **Bonus channel found on the Kemendag JDIH site:** an official email newsletter ("Berlangganan Newsletter JDIH Kemendag") that sends new regulations straight to an inbox, plus an official WhatsApp contact (wa.me/+6287711995515). Signing up for the newsletter is worth doing in parallel — it's the government pushing updates directly, which is more reliable than scraping anything.
 
 ## Architecture — no API keys for v1

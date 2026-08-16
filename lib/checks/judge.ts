@@ -85,7 +85,7 @@ Accuracy matters more than having something to report. Nothing-to-report is the 
 Hard rules:
 - Never fabricate a regulation or a change that is not clearly in the source material.
 - Never claim a source was checked if it failed or parsed zero entries.
-- Never assert something is new or recent on the strength of the listing alone. The listing carries a year, not a date. Before flagging anything as a change, fetch its detail page and read the enactment date under "Tanggal Penetapan / Pengundangan".
+- Never assert something is new or recent without an authoritative legal or publication date. Kemendag listings carry only a year; use their detail page. Other entries may carry structured dates from the official source; preserve the distinction between legal dates, upload dates, and notice-posting dates.
 - If you are unsure whether something is new or relevant, say "worth a manual look" rather than asserting impact confidently.
 - Write Bahasa Indonesia that a business owner reads easily: casual, clear, no legal jargon, no long quotes. Paraphrase.`;
 
@@ -191,7 +191,7 @@ ${
     : ""
 }
 
-Each view shows only the newest ~10 of ~2,386 regulations. Last completed run: ${
+Each Kemendag listing view shows only the newest ~10 of ~2,386 regulations. Other source windows are described in the code-written coverage notes. Last completed run: ${
     lastRunAt ?? "never (this is the first run)"
   }. ${
     lastRunAt

@@ -80,6 +80,7 @@ Tables, multi-tenant from the start:
 - **sources** — id, country, name, url, regulation_type (trade/tax/national/regional/standards), reliability_status (working/blocked/unstable), last_success_at
 - **check_runs** — id, customer_id, jurisdiction, started_at, completed_at, status
 - **source_results** — id, check_run_id, source_id, success (bool), error_message, raw_content_path — *this is what makes failures honest and visible instead of silent*
+- **source_documents** — per-customer document identity, content hash, first/last seen, and last changed timestamps; keeps full source inventories while only new/changed documents enter daily judgment
 - **findings** — id, check_run_id, customer_id, regulation_ref, title, summary_id (Bahasa), summary_en, relevance (flagged/clear), source_id, created_at
 - **alerts** — id, finding_id, customer_id, delivered_at, channel (whatsapp/email/manual), delivery_status
 - **checklist_items** — country-scoped living obligations/evidence gaps generated from customer facts and refreshed when memory changes; `key` gives each system row a stable identity so refresh can prune rows it no longer generates instead of carrying a hardcoded list of renamed titles
@@ -91,17 +92,31 @@ Key point: everything is keyed by `customer_id`, and sources are keyed by countr
 ## Source registry
 `lib/sources/registry.ts` defines sources as data, not hardcoded logic — each with country, regulation type, URL, parser, timeout, and known reliability status. Seed it with what's already been tested:
 - `jdih.kemendag.go.id` — Indonesia, trade, **working**
+- `jdih.setneg.go.id/api/hukumproduk` — Indonesia, national hierarchy, **working no-auth JSON** with full pagination for current/prior-year UU, Perpu, PP, Perpres, Keppres, and Inpres
 - `jdih.kemenkeu.go.id/home` — Indonesia, customs/tax, **working**
-- `oss.go.id/id/kbli` — Indonesia, licensing/KBLI, **working heartbeat**
+- `peraturan.beacukai.go.id` and `pajak.go.id/peraturan` — Indonesia, customs/tax, **working official HTML**
+- `jdih.kemenlh.go.id` — Indonesia, environment, **working no-auth JSON**
+- `jdih.kemnaker.go.id` — Indonesia, labor/OHS, **working official HTML**
+- `gw.oss.go.id/v2/portal/kbli/version` — Indonesia, licensing/KBLI, **working no-auth JSON heartbeat** used by the official frontend; observable but not a documented public contract
+- `jdih.surabaya.go.id/peraturan/ajax` — Surabaya regional rules, **working no-auth JSON** with full current/prior-year pagination
+- `lh.surabaya.go.id/weblh/data-pengumuman-dokumen` — Surabaya environmental notices, **working JSON** with a rolling 45-day window
 - `peraturan.bpk.go.id` — Indonesia, national, **blocked** (bot detection, confirmed)
-- `peraturan.go.id` — Indonesia, national, **unstable** (UU/PP/Perpres/Permen attempts currently fail from local fetch; a per-run circuit breaker attempts the domain once and records the siblings as not attempted)
-- `jdihn.go.id`, `pesta.bsn.go.id` — Indonesia, attempted but failing from local fetch
+- `peraturan.go.id` and central `jdihn.go.id` — Indonesia, **blocked/disabled** after repeated failures; Setneg replaces six national types, while ministry/member JDIH feeds must be added individually
+- East Java provincial JDIH — **blocked for unattended fetches** by Cloudflare; retained as a disclosed manual gap
+- `pesta.bsn.go.id` — Indonesia, **working HTML catalogue**; 19 entries parsed live and one targeted transient-failure retry enabled
 
 The fetch layer reads from this table through `selectMonitoredSources()`, skips
 blocked sources, applies country-profile activation, and records every attempted
 source in `source_results`. Confirmed Memory participates in activation;
 unconfirmed chat extraction does not. The selector also writes deterministic
-caveats for missing profile gates and unsupported state packs.
+caveats for missing profile gates, unsupported state packs, the central
+Permen/Kepmen gap, and blocked provincial coverage.
+
+Indonesia's paginated adapters fetch a full configured inventory. The
+`source_documents` ledger fingerprints every record; bootstrap judgment is
+capped at ten unseen documents per source and later runs judge only new or
+changed content. This was verified with a 513-record run followed by an
+immediate repeat with zero changes and zero model judgment entries.
 
 The US registry uses agency-specific Federal Register JSON, eCFR version-history
 JSON, OSHA RSS, the CPSC recall API, OFAC list actions, and Cheerio-backed

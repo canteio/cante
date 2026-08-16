@@ -358,18 +358,37 @@ used the guessed codes.
 | Source | Status | Note |
 |---|---|---|
 | `jdih.kemendag.go.id` | **working** | Polled in three views: `semua`, `ekspor`, `perizinan`. |
+| `jdih.setneg.go.id/api/hukumproduk` | **working** | No-auth JSON API. Cante exhausts every page for the current and prior year across UU, Perpu, PP, Perpres, Keppres, and Inpres. Latest source-only probe parsed 263 records. |
 | `jdih.kemenkeu.go.id/home` | **working** | Polled for PMK/customs/duty/tax entries; latest smoke test parsed 7 entries. |
-| `oss.go.id/id/kbli` | **working** | Polled as an OSS/KBLI portal heartbeat. Specific KBLI mapping still requires confirmed KBLI codes. |
+| `peraturan.beacukai.go.id` | **working** | Official DJBC newly-added regulation listing; latest probe parsed 10 records. A malformed displayed year is corrected only when the official URL carries the coherent year, with a parse caveat. |
+| `pajak.go.id/peraturan` | **working** | Official DJP regulation listing; latest probe parsed 5 records. |
+| `jdih.kemenlh.go.id` | **working** | No-auth JSON API with legal dates and official PDFs; latest probe parsed 30 records. |
+| `jdih.kemnaker.go.id` | **working** | Official latest-regulation HTML listing; latest probe parsed 15 records. |
+| `gw.oss.go.id/v2/portal/kbli/version` | **working** | No-auth JSON gateway used by the official OSS frontend. Reports published KBLI catalogue versions as a heartbeat; specific KBLI mapping still requires confirmed codes. |
+| `jdih.surabaya.go.id/peraturan/ajax` | **working** | No-auth JSON listing. Cante exhausts current/prior-year pagination; latest probe parsed 123 records. Activated for Surabaya operations. |
+| `lh.surabaya.go.id/weblh/data-pengumuman-dokumen` | **working** | Official AMDAL/UKL-UPL/DELH/DPLH notices in a rolling 45-day window; latest probe parsed 13 records. |
 | `peraturan.bpk.go.id` | **blocked** | Confirmed bot detection. Manual lookups only, never automated. |
-| `peraturan.go.id` | **unstable** | UU, PP, Perpres, Permen, and homepage monitor attempts are recorded; latest local fetch failed. |
-| `jdihn.go.id` | **unstable/untested** | Monitor attempt is recorded; latest local fetch failed. |
-| `pesta.bsn.go.id/produk` | **unstable/untested** | SNI catalogue monitor attempt is recorded; latest local fetch failed. |
+| `peraturan.go.id` | **blocked** | Public service remains unreliable. Superseded for six national instrument types by Setneg; it is not retried on daily runs. |
+| `jdihn.go.id` | **blocked** | The old central host times out and the replacement is not a dependable public document API. Member ILDIS feeds remain an expansion route. |
+| East Java JDIH | **blocked** | Works interactively but Cloudflare rejects unattended fetches. Disclosed as a manual regional gap. |
+| `pesta.bsn.go.id/produk` | **working** | Live probe parsed 19 SNI records. Server-rendered HTML, not a public API; one retry handles transient transport/server failures. |
+
+API research on 16 Aug 2026 found usable official read endpoints at Setneg,
+KLH/BPLH, OSS, Surabaya JDIH, and Surabaya DLH. Setneg replaces the failed
+national portal for six instrument types, but no reliable central feed covers
+all nationwide Permen and Kepmen. JDIHN/ILDIS documents a decentralized member
+feed convention, commonly `/feed/document.json`; adoption and quality vary, so
+member feeds must be verified one agency at a time. OSS remains a catalogue
+heartbeat rather than evidence of a company's private licensing status.
 
 `source_packs` is the broader coverage inventory, not a claim of automation.
-Seeded Indonesia packs now include Kemendag trade, KBLI/OSS, UU, PP,
-Perpres/Kepres, Permen/Kepmen, Kemenkeu/DJBC/DJP tax-customs, BSN/SNI, and East
-Java / Surabaya regional rules. All non-blocked source rows are attempted by
-`monitoredSources()`; failures become `source_results` rows and coverage caveats.
+Seeded Indonesia packs include Kemendag trade, KBLI/OSS, the Setneg national
+hierarchy, Permen/Kepmen, tax/customs, BSN/SNI, environment, labor/OHS, and East
+Java/Surabaya regional rules. Location activates regional rows. All selected
+non-blocked sources are attempted by `selectMonitoredSources()`; failures become
+`source_results` rows and coverage caveats. See `indonesia-source-coverage.md`
+for the exact automation boundary. `db:seed` also removes the superseded
+`id-national-law` aggregate pack while leaving user-created packs alone.
 
 ### United States pack (verified 2026-08-16)
 
@@ -422,6 +441,9 @@ Things about this feed that will mislead you if forgotten:
   reader to skim the section rule 2 depends on. Skipped is still **unchecked**,
   never a pass — the prompt, the alert and the dashboard all say so, they just
   say it once per domain.
+- **Retries are narrow and source-owned.** `maxAttempts` retries only connection,
+  timeout, HTTP 429, and HTTP 5xx failures. BSN PESTA uses two attempts. Parser
+  errors and zero-row warnings are never retried into a false success.
 - **A heartbeat is not a regulation.** Sources marked `heartbeat: true` (OSS
   KBLI) prove a portal answered; their entries go to `report.heartbeats`, not
   `report.regulations`. The OSS ping used to be stored as a `baseline` finding —
@@ -501,7 +523,7 @@ country + regulation_type, so "add customer #2" or "add Vietnam" is a row, not a
 refactor. SQLite via Drizzle; the schema is portable to Postgres.
 
 `customers` · `customer_profiles` · `jurisdiction_profiles` · `kbli_records` · `source_packs` · `sources`
-· `check_runs` · **`source_results`** · `findings` · `alerts` · `conversations`
+· `check_runs` · **`source_results`** · **`source_documents`** · `findings` · `alerts` · `conversations`
 · `chat_messages` · `memories` · `checklist_items`
 
 `check_runs`, `conversations`, `memories`, and `checklist_items` carry a
@@ -511,6 +533,13 @@ country-specific judgment and checklist generation.
 
 `source_results` is load-bearing — it's what makes a failed fetch visible in the
 UI instead of silently absent.
+
+`source_documents` is the per-customer inventory ledger. Every successfully
+fetched Indonesia document is fingerprinted even when it is not sent to the
+model. The first inventory judges at most ten unseen records per source and
+baselines older history; later runs judge only new or changed fingerprints.
+This gives paginated sources full discovery coverage without repeatedly spending
+minutes judging the same backlog.
 
 `checklist_items` is also load-bearing now. It is the living work queue that
 turns customer facts into obligations and evidence gaps. A chat-extracted KBLI or
@@ -554,8 +583,8 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
 - **The eCFR monitor is incremental and version-safe.** It paginates without a
   hidden entry cap, resumes from the last completed run, gives repeated section
   amendments distinct identities, resolves appendix citations, and keeps
-  amendment dates separate from effective dates. Six focused regression tests
-  plus a live Title 15 probe passed on 16 Aug 2026.
+  amendment dates separate from effective dates. The eight-test focused source
+  regression suite plus a live Title 15 probe passed on 16 Aug 2026.
 - **US run `2405fb73-d714-4f2d-804b-ce6c4ddfe3be` is the current reference.**
   The empty profile selected seven general federal sources; all succeeded and
   produced 37 entries. Judgment accounted for every one: 21 new verdicts, 16
@@ -570,14 +599,26 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
   uncovered state distribution track, and unknown export classifications.
 - Checklist is working locally at `/checklist`. `/api/checklist` refreshes rows
   from profile, memory, KBLI records, and Indonesia source-pack coverage. Current
-  MA state produces 9 rows, 7 open, including KBLI-to-rule mapping and
-  national-law monitoring.
+  MA state produces 11 rows, including environment and labor/OHS. Surabaya
+  city automation is distinguished from the blocked East Java provincial gap.
+- **Indonesia full-inventory automation is verified.** Source-only probes parsed
+  459 records from the seven new adapters with zero failures. Full run
+  `282f54b9-6a60-4bda-849f-f14c93440707` fetched 513 records across 13 active
+  sources, judged 76 bootstrap documents, and stored 403 older documents as
+  baseline. Immediate repeat run
+  `6c05be50-b142-47f3-80b5-ba9300895d3d` fetched the same 513 records, detected
+  zero new or changed documents, made zero judgment calls, and produced zero
+  findings. This is the current Indonesia reference behavior.
 - Expanded run verified: `npm run check` completed as run
   `fc108a73-d887-40d8-a17d-d45eaf741229`. It attempted 12 non-blocked sources:
   Kemendag 3 views OK, Kemenkeu OK with 7 entries, OSS KBLI OK with 1 heartbeat
   entry, and peraturan.go.id/JDIHN/BSN failed and were disclosed. It produced 8
   findings: PMK 58/2026 as `noted`, six PMK entries as `clear`, and OSS KBLI as
   `baseline`.
+- **Indonesia source recovery probe (16 Aug):** BSN PESTA succeeded with 19 SNI
+  entries and OSS's no-auth JSON gateway succeeded with a KBLI catalogue
+  heartbeat listing versions 2020 and 2025. Focused parser/retry tests and
+  `npx tsc --noEmit` pass. Historical failed source rows remain unchanged.
 - **Run `695357de-f968-4da3-b66a-dcb60890ec85` (15 Aug) verified all of the
   above at once**, and is the reference for what correct output looks like now:
   - 12 sources registered, **9 requests made** — peraturan.go.id failed once and
@@ -615,9 +656,10 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
 
 1. Get MA's real KBLI from OSS/NIB and real HS code(s) from PEB/invoice;
    confirm those Memory rows so Checklist can move from leads to verified facts.
-2. Improve retrieval for peraturan.go.id/JDIHN/BSN, which are now attempted but
-   failing from local plain fetch.
-3. Add region-specific East Java / Surabaya JDIH source discovery.
+2. Add ministry-specific Permen/Kepmen feeds based on MA's confirmed KBLI,
+   products, permits, and markets; there is no reliable all-ministry central feed.
+3. Find a structured East Java provincial route and add verified INSW/lartas
+   discovery. Surabaya city regulations and environmental notices are automated.
 4. Enter a real US pilot profile and add topic-specific state agency adapters for
    its actual distribution states; general state registers are discovery, not
    full EPR/PFAS/tax/product coverage.

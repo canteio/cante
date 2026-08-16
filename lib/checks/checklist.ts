@@ -213,8 +213,8 @@ export async function refreshChecklistForCustomer(
         ...kbliRows.map((k) => `KBLI ${k.code}`),
       ],
       evidenceRequired:
-        "Successful source results from peraturan.go.id/JDIHN or relevant official JDIH pages for UU, PP, Perpres/Kepres, and Permen/Kepmen.",
-      sourceHealth: "not_checked",
+        "Successful JDIH Setneg results for the national hierarchy plus relevant ministry JDIH evidence for Permen/Kepmen.",
+      sourceHealth: "manual_assisted",
       confidence: "inferred",
       openQuestions: [
         "Which ministry JDIH is authoritative for the confirmed KBLI sector?",
@@ -231,7 +231,7 @@ export async function refreshChecklistForCustomer(
         "BSN/SNI obligations are product-specific, and should be checked from the actual product description plus HS code.",
       linkedFacts: products,
       evidenceRequired: "Product specs, SKUs, SNI certificate if any, and a BSN/SNI lookup result.",
-      sourceHealth: "not_checked",
+      sourceHealth: "working",
       confidence: "lead",
       openQuestions: ["Is PVC tarpaulin sold under any mandatory SNI category or sector technical rule?"],
     },
@@ -248,15 +248,47 @@ export async function refreshChecklistForCustomer(
         ...profile.destinationMarkets.map((market) => `Destination: ${market}`),
       ],
       evidenceRequired: "PMK/DJBC/DJP source check, broker notes, and any current facility status.",
-      sourceHealth: "not_checked",
+      sourceHealth: "working",
       confidence: "lead",
       openQuestions: ["Does the customer use any bonded-zone, KITE, VAT, or customs facility?"],
+    },
+    {
+      key: "environment-monitor",
+      title: "Monitor environmental rules and facility-document notices",
+      category: "environment",
+      status: "required",
+      priority: "high",
+      whyApplies:
+        "Manufacturing can trigger national environmental rules plus location-specific AMDAL, UKL-UPL, DELH, DPLH, waste, emissions, and wastewater obligations.",
+      linkedFacts: [...products, ...locationFacts],
+      evidenceRequired:
+        "Current environmental approval/document, waste and emissions permits, facility processes, materials, and successful KLH/local DLH source checks.",
+      sourceHealth: "working",
+      confidence: "inferred",
+      openQuestions: [
+        "Which environmental approval and reporting obligations are printed on the facility's current documents?",
+      ],
+    },
+    {
+      key: "labor-safety-monitor",
+      title: "Monitor labor and occupational safety rules",
+      category: "labor_safety",
+      status: "required",
+      priority: "high",
+      whyApplies:
+        "A manufacturer has workforce and workplace-safety obligations independent of its export product rules.",
+      linkedFacts: [...products, ...locationFacts],
+      evidenceRequired:
+        "Workforce, machinery/process, K3/P2K3, training, inspection, and incident records plus successful Kemnaker source checks.",
+      sourceHealth: "working",
+      confidence: "inferred",
+      openQuestions: ["Which K3, machinery, workforce, and provincial wage obligations apply to this facility?"],
     },
     {
       key: "regional-perda",
       title: "Monitor regional Perda and Perkada by factory location",
       category: "regional",
-      status: locationFacts.length > 0 ? "completed" : "needs_review",
+      status: locationFacts.length > 0 ? "required" : "needs_review",
       priority: "medium",
       whyApplies:
         "Perda and Perkada coverage depends on the factory/legal-entity location and may affect business licensing, nuisance permits, labor, environment, taxes, and local operations.",
@@ -264,7 +296,10 @@ export async function refreshChecklistForCustomer(
       evidenceRequired: "Factory address, legal entity domicile, and relevant province/city/regency JDIH sources.",
       sourceHealth: "manual_assisted",
       confidence: locationFacts.length > 0 ? "inferred" : "lead",
-      openQuestions: locationFacts.length > 0 ? [] : ["What city/regency and province should regional monitoring cover?"],
+      openQuestions:
+        locationFacts.length > 0
+          ? ["Which provincial and city sources successfully covered this location in the latest run?"]
+          : ["What city/regency and province should regional monitoring cover?"],
     },
     {
       key: "memory-review",

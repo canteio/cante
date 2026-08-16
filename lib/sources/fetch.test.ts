@@ -155,3 +155,222 @@ test("an empty incremental eCFR window is a valid quiet result", async () => {
     await rm(rawDir, { recursive: true, force: true });
   }
 });
+
+test("OSS KBLI JSON reports catalogue versions as a heartbeat", () => {
+  const entries = parseEntries(
+    JSON.stringify({
+      success: true,
+      data: [
+        { id: "version-2020", version: "2020" },
+        { id: "version-2025", version: "2025" },
+      ],
+      code: 200,
+    }),
+    source({
+      id: "oss-kbli",
+      country: "Indonesia",
+      domain: "gw.oss.go.id",
+      url: "https://gw.oss.go.id/v2/portal/kbli/version?lang=id",
+      parser: "oss-kbli-versions-json",
+      heartbeat: true,
+    }),
+  );
+
+  assert.equal(entries.length, 1);
+  assert.equal(entries[0].year, 2025);
+  assert.match(entries[0].fullTitle, /Published catalogue versions: 2020, 2025/);
+  assert.match(entries[0].fullTitle, /not a company's license status/);
+});
+
+test("a source retries one transient server failure", async () => {
+  const originalFetch = global.fetch;
+  const rawDir = await mkdtemp(path.join(os.tmpdir(), "cante-fetch-retry-test-"));
+  let attempts = 0;
+  global.fetch = async () => {
+    attempts += 1;
+    if (attempts === 1) return new Response("temporary failure", { status: 503 });
+    return new Response(
+      '<a href="/produk/detail/8736-sni00742011">SNI 0074:2011</a>',
+      { status: 200 },
+    );
+  };
+
+  try {
+    const report = await fetchAllSources(
+      [
+        source({
+          id: "bsn-pesta-produk",
+          country: "Indonesia",
+          domain: "pesta.bsn.go.id",
+          url: "https://pesta.bsn.go.id/produk",
+          parser: "bsn-pesta",
+          maxAttempts: 2,
+        }),
+      ],
+      rawDir,
+    );
+    assert.equal(attempts, 2);
+    assert.equal(report.outcomes[0].success, true);
+    assert.equal(report.outcomes[0].entriesParsed, 1);
+  } finally {
+    global.fetch = originalFetch;
+    await rm(rawDir, { recursive: true, force: true });
+  }
+});
+
+test("Setneg parser preserves legal dates and official PDF identity", () => {
+  const [entry] = parseEntries(
+    JSON.stringify({
+      data: [
+        {
+          idperaturan: "P20579",
+          no_peraturan: "24",
+          tahun: "2026",
+          tentang: "TATA KELOLA EKSPOR KOMODITAS",
+          jns: "PP",
+          nama_jenis: "Peraturan Pemerintah",
+          files: "Salinan PP Nomor 24 Tahun 2026.pdf",
+          tgl_di: "2026-05-20T00:00:00.000Z",
+          diundangkan: "2026-05-20T00:00:00.000Z",
+          status_hukum: "berlaku",
+        },
+      ],
+    }),
+    source({
+      country: "Indonesia",
+      domain: "jdih.setneg.go.id",
+      url: "https://jdih.setneg.go.id/api/hukumproduk/produkhukum",
+      parser: "setneg-json",
+    }),
+  );
+
+  assert.equal(entry.number, "24");
+  assert.equal(entry.year, 2026);
+  assert.equal(entry.effectiveOn, null);
+  assert.match(entry.fullTitle, /Diundangkan 2026-05-20/);
+  assert.match(entry.url, /fl=P20579/);
+});
+
+test("Setneg fetch exhausts pagination for every instrument and both years", async () => {
+  const originalFetch = global.fetch;
+  const rawDir = await mkdtemp(path.join(os.tmpdir(), "cante-setneg-pages-test-"));
+  const requests: Array<{ type: string; year: string; start: number }> = [];
+  global.fetch = async (_input, init) => {
+    const body = JSON.parse(String(init?.body)) as {
+      jns: string[];
+      thn: string[];
+      start: number;
+    };
+    requests.push({ type: body.jns[0], year: body.thn[0], start: body.start });
+    const paged = body.jns[0] === "PP" && body.thn[0] === "2026";
+    const count = paged ? 101 : 0;
+    const rows = paged
+      ? Array.from({ length: body.start === 0 ? 100 : 1 }, (_, index) => ({
+          idperaturan: `P-${body.start + index}`,
+          no_peraturan: String(body.start + index + 1),
+          tahun: "2026",
+          tentang: `Rule ${body.start + index + 1}`,
+          jns: "PP",
+          nama_jenis: "Peraturan Pemerintah",
+          files: `rule-${body.start + index + 1}.pdf`,
+        }))
+      : [];
+    return new Response(JSON.stringify({ data: rows, jml: count }), { status: 200 });
+  };
+
+  try {
+    const report = await fetchAllSources(
+      [
+        source({
+          country: "Indonesia",
+          domain: "jdih.setneg.go.id",
+          url: "https://jdih.setneg.go.id/api/hukumproduk/produkhukum",
+          parser: "setneg-json",
+        }),
+      ],
+      rawDir,
+    );
+    assert.equal(requests.length, 13);
+    assert.ok(requests.some((request) => request.type === "PP" && request.start === 100));
+    assert.equal(report.outcomes[0].entriesParsed, 101);
+  } finally {
+    global.fetch = originalFetch;
+    await rm(rawDir, { recursive: true, force: true });
+  }
+});
+
+test("Surabaya fetch exhausts current and prior year pages", async () => {
+  const originalFetch = global.fetch;
+  const rawDir = await mkdtemp(path.join(os.tmpdir(), "cante-surabaya-pages-test-"));
+  const requested: string[] = [];
+  global.fetch = async (input) => {
+    const url = new URL(String(input));
+    requested.push(url.toString());
+    const year = url.searchParams.get("tahun")!;
+    const page = Number(url.searchParams.get("page"));
+    const totalPage = year === "2026" ? 2 : 1;
+    return new Response(
+      JSON.stringify({
+        total: totalPage,
+        totalPage,
+        data: [
+          {
+            id: `${year}-${page}`,
+            dok_tipe_full: "Peraturan Walikota",
+            dok_no: String(page),
+            dok_tahun: year,
+            dok_judul: `Rule ${year}-${page}`,
+            status: "1",
+            penetapan_tgl: `${year}-01-0${page}`,
+          },
+        ],
+      }),
+      { status: 200 },
+    );
+  };
+
+  try {
+    const report = await fetchAllSources(
+      [
+        source({
+          country: "Indonesia",
+          domain: "jdih.surabaya.go.id",
+          url: "https://jdih.surabaya.go.id/peraturan/ajax",
+          parser: "surabaya-regulations-json",
+        }),
+      ],
+      rawDir,
+    );
+    assert.equal(requested.length, 3);
+    assert.equal(report.outcomes[0].entriesParsed, 3);
+    assert.match(report.regulations[0].textUrl ?? "", /\/peraturan\/download\//);
+  } finally {
+    global.fetch = originalFetch;
+    await rm(rawDir, { recursive: true, force: true });
+  }
+});
+
+test("Indonesia sector parsers preserve context and filter old DLH notices", () => {
+  const kemnaker = parseEntries(
+    '<div class="result-card"><h5><a href="https://jdih.kemnaker.go.id/peraturan/detail/1/rule">Peraturan Menteri Ketenagakerjaan Nomor 11 Tahun 2026</a></h5><p>Keselamatan kerja. Ditetapkan: 10 Agustus 2026</p></div>',
+    source({ parser: "kemnaker", domain: "jdih.kemnaker.go.id" }),
+  );
+  const djp = parseEntries(
+    '<div class="peraturan-content"><a href="/id/peraturan/rule">PER-8/PJ/2026</a><p>Administrasi perpajakan | 2026-07-28 | Aktif</p></div>',
+    source({ parser: "djp-list", domain: "www.pajak.go.id", url: "https://www.pajak.go.id/id/peraturan" }),
+  );
+  const dlh = parseEntries(
+    JSON.stringify({
+      data: [
+        { nama_jenis: "Old", jenis_pengumuman: "AMDAL", file: "old.pdf", created_at: "2026-01-01 00:00:00" },
+        { nama_jenis: "Current plastic industry", jenis_pengumuman: "UKL-UPL", tgl_mohon: "2026-08-10", file: "new.pdf", created_at: "2026-08-11 00:00:00" },
+      ],
+    }),
+    source({ parser: "surabaya-dlh-json", domain: "lh.surabaya.go.id", windowStart: "2026-07-01" }),
+  );
+
+  assert.match(kemnaker[0].fullTitle, /Keselamatan kerja/);
+  assert.match(djp[0].fullTitle, /Administrasi perpajakan/);
+  assert.equal(dlh.length, 1);
+  assert.match(dlh[0].fullTitle, /not a generally applicable regulation/);
+});
