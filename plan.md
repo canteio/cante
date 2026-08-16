@@ -25,19 +25,20 @@ scope. The Indonesia monitor should become a KBLI/OSS/SNI/tax/customs/legal
 hierarchy monitor with a living compliance checklist that updates when chat
 memory changes, not just an HS-code export feed.
 
-First slice built 2026-08-16: `kbli_records`, `source_packs`, and
+Expanded slice built 2026-08-16: `kbli_records`, `source_packs`, and
 `checklist_items` now exist; `/checklist` shows the living work queue; memory
-add / confirm / delete and chat memory extraction refresh the checklist. This is
-not full source automation yet. OSS, SNI, national law, tax/customs, and regional
-coverage stay marked manual-assisted or untested until fetchers are proven.
+add / confirm / delete and chat memory extraction refresh the checklist.
+`npm run check` now attempts every non-blocked Indonesia source row, including
+Kemendag, peraturan.go.id UU/PP/Perpres/Permen, JDIHN, Kemenkeu, BSN/SNI, and
+OSS KBLI. Verified run: Kemendag/Kemenkeu/OSS succeeded; peraturan.go.id,
+JDIHN, and BSN failed from local fetch and were disclosed as coverage gaps.
 
 **Do not build all five at once.** Sequence:
 1. Get MA's real KBLI code from their OSS/NIB registration first — it's the filter everything else runs through.
 2. Confirm real HS codes from PEB/invoice and promote the corresponding Memory rows.
-3. Prove Kemenkeu/DJBC/DJP and BSN/SNI source fetchers before marking those packs automated.
-4. Add UU + PP tracking (national, centrally published, highest impact).
-5. Add Kepres tracking.
-6. Add Perda (regional) last — fragmented by province/city, no single source, and MA is specifically in Surabaya/East Java, so this needs region-specific sources found separately. Lowest priority.
+3. Improve retrieval for peraturan.go.id/JDIHN/BSN so national-law and SNI coverage stops failing from plain local fetch.
+4. Add Perda (regional) source discovery for East Java / Surabaya — fragmented by province/city, no single source, and MA is specifically in Surabaya/East Java.
+5. Once KBLI and HS evidence are confirmed, tighten the judgment prompt from "leads" to "verified KBLI-to-rule mapping."
 
 ## Data sources to check
 Prefer these official sources — they're free, public, and don't need an account:

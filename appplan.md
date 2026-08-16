@@ -4,9 +4,10 @@
 > implemented as specified, with one addition the plan didn't cover: the model
 > runs behind a provider seam (`lib/llm/`) so the local Claude Code CLI and a
 > future hosted API are interchangeable. The definition of done at the bottom
-> is met. As of 2026-08-16, the first Indonesia flagship slice is also built:
-> a living checklist generated from memory/profile/KBLI/source-pack coverage.
-> See `CLAUDE.md` for current working notes.
+> is met. As of 2026-08-16, the Indonesia flagship monitor attempts the broader
+> source set and has a living checklist generated from
+> memory/profile/KBLI/source-pack coverage. See `CLAUDE.md` for current working
+> notes.
 
 ## Goal
 A properly structured Next.js app at the repo root. `npm run dev` from the root just works. Multi-tenant data model from day one, even though only one customer (MA) exists right now — so adding customer #2 is a database row, not a refactor.
@@ -78,13 +79,18 @@ Tables, multi-tenant from the start:
 Key point: everything is keyed by `customer_id`, and sources are keyed by country + regulation_type. That's what makes "add Vietnam" or "add tax regulations" a data change, not a code change.
 
 ## Source registry
-`lib/sources/registry.ts` defines sources as data, not hardcoded logic — each with country, regulation type, URL, and known reliability status. Seed it with what's already been tested:
+`lib/sources/registry.ts` defines sources as data, not hardcoded logic — each with country, regulation type, URL, parser, timeout, and known reliability status. Seed it with what's already been tested:
 - `jdih.kemendag.go.id` — Indonesia, trade, **working**
+- `jdih.kemenkeu.go.id/home` — Indonesia, customs/tax, **working**
+- `oss.go.id/id/kbli` — Indonesia, licensing/KBLI, **working heartbeat**
 - `peraturan.bpk.go.id` — Indonesia, national, **blocked** (bot detection, confirmed)
-- `peraturan.go.id` — Indonesia, national, **unstable** (site maintenance)
-- `jdihn.go.id`, `jdih.kemenkeu.go.id` — Indonesia, untested
+- `peraturan.go.id` — Indonesia, national, **unstable** (UU/PP/Perpres/Permen attempts currently fail from local fetch)
+- `jdihn.go.id`, `pesta.bsn.go.id` — Indonesia, attempted but failing from local fetch
 
-The fetch layer reads from this table, skips sources marked blocked, and records every attempt in `source_results`. When a source fails, that fact surfaces in the UI — never silently reported as "checked, nothing found."
+The fetch layer reads from this table through `monitoredSources()`, skips only
+sources marked blocked, and records every attempt in `source_results`. When a
+source fails, that fact surfaces in the UI and alert caveats — never silently
+reported as "checked, nothing found."
 
 ## Ported logic
 The existing Python (`fetch_sources.py`, and the judgment logic in `daily-prompt-check.md`) gets ported into `lib/sources/fetch.ts` and `lib/checks/judge.ts` so everything lives in one runtime. Keep the behavior identical — especially the honest failure reporting and the "don't invent a change to seem useful" rule in the judgment step.
@@ -97,7 +103,7 @@ The existing Python (`fetch_sources.py`, and the judgment logic in `daily-prompt
 - Built in plain CSS rather than adopting Mike's Tailwind v4 + shadcn stack — same values, far smaller dependency surface.
 - A **"Run check now"** button hitting `POST /api/checks` — manual trigger, no cron yet. The API route is written so a scheduler can call the same endpoint later without changes.
 - Saved chat conversations are nested under the **Chat** nav item in the main sidebar; there is no second chat rail. Memory moved to a bottom sidebar button and full main-screen management page.
-- Checklist is a main sidebar item next to Checks. It shows KBLI, HS, OSS, SNI, tax/customs, regional, and memory-review tasks with status, priority, evidence required, source health, and open questions. Memory stays at the bottom because it is the customer fact editor, not the task queue.
+- Checklist is a main sidebar item next to Checks. It shows KBLI-to-rule mapping, national law, HS, OSS, SNI, tax/customs, regional, and memory-review tasks with status, priority, evidence required, source health, and open questions. Memory stays at the bottom because it is the customer fact editor, not the task queue.
 
 ## How the model gets called (added during the build)
 The plan assumed judgment would just happen inside the app; it didn't say *how*, and the honest answer is that a Next.js server can't use the Claude Code login the way the markdown pipeline did. So the model sits behind `LlmProvider` in `lib/llm/`:
@@ -118,4 +124,4 @@ Validation lives *above* the seam: providers return raw text, and one Zod schema
 - No WhatsApp delivery integration — `alerts.channel` exists in the schema for it, but v1 delivery is manual copy-paste.
 
 ## Definition of done
-`npm install && npm run dev` at the repo root, open localhost, see MA's dashboard, click "Run check now," watch a real check run against the live Kemendag source, see the result stored in the database and rendered in the UI — including an explicit note if any source failed.
+`npm install && npm run dev` at the repo root, open localhost, see MA's dashboard, click "Run check now," watch a real check run against the expanded Indonesia source set, see the result stored in the database and rendered in the UI — including an explicit note if any source failed.

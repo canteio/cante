@@ -19,7 +19,9 @@ npm run db:seed     # seed the sources + MA
 npm run dev         # http://localhost:3000
 ```
 
-Open localhost:3000 and press **Run check now**. It fetches the live Kemendag site, reads what it finds, and stores the result. Takes a few minutes — it fetches a detail page per candidate regulation.
+Open localhost:3000 and press **Run check now**. It fetches the monitored
+Indonesian source set, reads what it finds, and stores the result. Takes a few
+minutes — it fetches listings first, then detail pages for plausible candidates.
 
 ### Other commands
 
@@ -91,25 +93,28 @@ Multi-tenant from day one: everything keys off `customer_id`, sources key off co
 ## Data sources (tested directly, not assumed)
 
 - **jdih.kemendag.go.id/peraturan** — reliable and fetchable. Kemendag's own regulation list, the primary source. Fetched in three views: unfiltered newest-first, plus `Tematik: Ekspor` and `Tematik: Perizinan`. The Ekspor filter matters — it surfaces the "Kebijakan dan Pengaturan Ekspor" Permendag rules that don't appear in the unfiltered top 10 at all.
+- **jdih.kemenkeu.go.id/home** — reliable in the latest run. Monitored for PMK, customs, duty, tariff, and tax-administration entries.
+- **oss.go.id/id/kbli** — reachable as an OSS/KBLI portal heartbeat. Complete KBLI obligation mapping still needs a confirmed KBLI code from OSS/NIB.
 - **Caveat on HPE:** the unfiltered feed is dominated by Harga Patokan Ekspor decrees — commodity reference prices for mining, palm, agriculture and forestry. They never cover PVC tarpaulin. Volume here is not signal.
 - **Official Kemendag newsletter** ("Berlangganan Newsletter JDIH Kemendag") — signed up. The government pushing updates directly is more reliable than scraping anything.
 - **peraturan.bpk.go.id** — confirmed blocks bots. In the registry as `blocked`; never fetched automatically. Still the deepest archive for manual lookups.
-- **peraturan.go.id** — unstable ("website under maintenance"). Bonus, not core.
-- **jdihn.go.id**, **jdih.kemenkeu.go.id** — in the registry as `untested`, not polled.
+- **peraturan.go.id** — unstable. UU, PP, Perpres, Permen, and homepage monitor attempts are recorded; latest local fetch failed.
+- **jdihn.go.id** — attempted and recorded; latest local fetch failed.
+- **pesta.bsn.go.id/produk** — attempted for SNI catalogue coverage; latest local fetch failed.
 
 The wider Indonesia monitor is tracked in `source_packs`, separate from daily
-fetch rows. Seeded packs now cover Kemendag trade (`automated`), KBLI/OSS
-(`manual_assisted`), national law (`untested`), Kemenkeu/DJBC/DJP tax-customs
-(`untested`), BSN/SNI (`untested`), and East Java / Surabaya regional rules
-(`manual_assisted`). That inventory is visible through the checklist logic, but
-only the working Kemendag source rows are polled automatically today.
+fetch rows. Seeded packs now cover Kemendag trade, KBLI/OSS, UU, PP,
+Perpres/Kepres, Permen/Kepmen, Kemenkeu/DJBC/DJP tax-customs, BSN/SNI, and East
+Java / Surabaya regional rules. All non-blocked source rows are attempted by the
+monitor; failures are shown as coverage caveats, not hidden.
 
 ---
 
 ## Status
 
-- **Working end to end locally.** Dashboard → Run check now → live fetch, judgment, stored result, rendered alert. Chat Q&A grounded in stored run data also works.
-- **Checklist is now first-class.** `/checklist` shows a living compliance work queue generated from customer profile, memory, KBLI records, and source coverage. Chat-extracted or manually entered facts refresh it automatically. Current MA seed creates 7 rows covering KBLI, HS codes, OSS, SNI, tax/customs, regional Perda, and memory review; 5 remain open because evidence is still missing.
+- **Working end to end locally.** Dashboard → Run check now → expanded live fetch, judgment, stored result, rendered alert. Chat Q&A grounded in stored run data also works.
+- **Expanded Indonesia monitor verified.** Latest full run attempted 12 non-blocked sources: Kemendag 3 views OK, Kemenkeu OK, OSS KBLI OK, and peraturan.go.id/JDIHN/BSN failed and were disclosed. It produced 8 findings, including PMK 58/2026 as `noted`.
+- **Checklist is now first-class.** `/checklist` shows a living compliance work queue generated from customer profile, memory, KBLI records, and source coverage. Chat-extracted or manually entered facts refresh it automatically. Current MA state creates 9 rows covering KBLI-to-rule mapping, national law, HS codes, OSS, SNI, tax/customs, regional Perda, and memory review; 7 remain open because evidence/source retrieval is still incomplete.
 - **Chat now streams and can search the web.** Answers arrive token by token over SSE with live tool activity shown as it happens: elapsed seconds, phase labels, a visible thinking log, search scan pills with official-source favicons, web-read favicons, and an animated thinking card. The stream closes as soon as the answer is saved, while memory extraction runs in the background so the composer is not stuck waiting. HS-code questions asking for new/latest regulation discovery get an explicit search directive to hit official Indonesian sources immediately. The model may call `WebSearch` / `WebFetch` for outside context — what a regulation actually says, background on an HS code. The two sources of truth are kept explicitly separate in the prompt: stored run data is the only authority on what the monitor checked, and web findings must be attributed to their source. "The 14 Aug run flagged X" and "Kemendag's site says X" have to read differently — a web answer dressed up as a check result is the exact failure this product exists to avoid. Still no API spend: it's the same local CLI provider behind the same seam.
 - First real judgment run: 28 findings — 1 `noted`, 1 `baseline`, 26 `clear`. It fetched Permendag 12/2026's detail page, read the real enactment date, and declined to flag it. The day-one false alert the design exists to prevent, prevented in practice rather than in theory.
 - The alert disclosed the unconfirmed HS codes, unknown destination markets, the ~10-of-2,386 window, and the bootstrap caveat without being prompted per-run.
@@ -120,10 +125,11 @@ only the working Kemendag source rows are polled automatically today.
 ## Next
 
 1. Get MA's actual KBLI from OSS/NIB, actual HS code(s), destination markets, and compliance contact; confirm those facts once they come off real evidence (PEB / invoice / OSS).
-2. Prove Kemenkeu/DJBC/DJP and BSN/SNI fetchers before marking those source packs automated.
-3. Put the check on a daily schedule — local cron calling `npm run check` is enough.
-4. Run it for real for ~14 days, delivering each alert by hand.
-5. Ask MA directly whether they'd pay $200–400/month. That answer, not more research, decides what happens next.
+2. Improve retrieval for peraturan.go.id/JDIHN/BSN, which are now attempted but failing from local plain fetch.
+3. Add East Java / Surabaya regional JDIH source discovery.
+4. Put the check on a daily schedule — local cron calling `npm run check` is enough.
+5. Run it for real for ~14 days, delivering each alert by hand.
+6. Ask MA directly whether they'd pay $200–400/month. That answer, not more research, decides what happens next.
 
 Only after that answer is yes: implement `lib/llm/api.ts`, add a key, deploy.
 

@@ -30,6 +30,7 @@ const STATUS_CLASS: Record<string, string> = {
 
 const CATEGORY_LABELS: Record<string, string> = {
   kbli: "KBLI",
+  national: "National law",
   oss: "OSS",
   sni: "SNI",
   tax_customs: "Tax & customs",

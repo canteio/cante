@@ -253,7 +253,7 @@ export const checklistItems = sqliteTable("checklist_items", {
     .notNull()
     .references(() => customers.id),
   title: text("title").notNull(),
-  /** kbli | oss | sni | tax_customs | trade | regional | document | memory | other */
+  /** kbli | national | oss | sni | tax_customs | trade | regional | document | memory | other */
   category: text("category").notNull().default("other"),
   /** unknown | required | not_required | completed | expiring | blocked | needs_review */
   status: text("status").notNull().default("unknown"),

@@ -20,8 +20,13 @@ const HEADERS: Record<string, string> = {
 };
 
 const TIMEOUT_MS = 25_000;
+const MAX_GENERIC_ENTRIES = 30;
 
 export interface RegulationEntry {
+  sourceId: string;
+  sourceName: string;
+  domain: string;
+  regulationType: string;
   label: string;
   number: string | null;
   year: number | null;
@@ -105,7 +110,7 @@ async function fetchSource(
 
   try {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+    const timer = setTimeout(() => controller.abort(), source.timeoutMs ?? TIMEOUT_MS);
     let html: string;
     try {
       const res = await fetch(source.url, { headers: HEADERS, signal: controller.signal });
@@ -119,7 +124,7 @@ async function fetchSource(
     const rawPath = source.rawFilename ? path.join(rawDir, source.rawFilename) : null;
     if (rawPath) await writeFile(rawPath, html, "utf-8");
 
-    const entries = parseEntries(html, source.view ?? source.id);
+    const entries = parseEntries(html, source);
 
     outcome.success = true;
     outcome.rawContentPath = rawPath;
@@ -138,9 +143,28 @@ async function fetchSource(
   }
 }
 
-export function parseEntries(html: string, view: string): RegulationEntry[] {
+export function parseEntries(html: string, source: SourceDefinition): RegulationEntry[] {
+  switch (source.parser) {
+    case "peraturan-go-id":
+      return parseAnchorRegulations(html, source, /peraturan\.go\.id\/(?:id\/)?/i);
+    case "kemenkeu-home":
+      return parseKemenkeuHome(html, source);
+    case "bsn-pesta":
+      return parseBsnPesta(html, source);
+    case "oss-kbli":
+      return parseOssKbliHeartbeat(html, source);
+    case "generic-regulation":
+      return parseAnchorRegulations(html, source);
+    case "kemendag":
+    default:
+      return parseKemendagEntries(html, source);
+  }
+}
+
+export function parseKemendagEntries(html: string, source: SourceDefinition): RegulationEntry[] {
   const entries: RegulationEntry[] = [];
   ENTRY_RE.lastIndex = 0;
+  const view = source.view ?? source.id;
 
   for (const match of html.matchAll(ENTRY_RE)) {
     const [, url, rawLabel, rawTitle] = match;
@@ -150,6 +174,10 @@ export function parseEntries(html: string, view: string): RegulationEntry[] {
     const labelMatch = LABEL_RE.exec(label);
 
     entries.push({
+      sourceId: source.id,
+      sourceName: source.name,
+      domain: source.domain,
+      regulationType: source.regulationType,
       label,
       number: labelMatch ? labelMatch[1] : null,
       year: labelMatch ? Number(labelMatch[2]) : null,
@@ -162,6 +190,123 @@ export function parseEntries(html: string, view: string): RegulationEntry[] {
   }
 
   return entries;
+}
+
+function parseKemenkeuHome(html: string, source: SourceDefinition): RegulationEntry[] {
+  const anchorEntries = parseAnchorRegulations(html, source, /jdih\.kemenkeu\.go\.id\/dok\//i);
+  return anchorEntries.filter((entry) => /^(PMK|KMK|PER|SE|INS)[\s-]/i.test(entry.label));
+}
+
+function parseBsnPesta(html: string, source: SourceDefinition): RegulationEntry[] {
+  const entries: RegulationEntry[] = [];
+  const seen = new Set<string>();
+  const anchorRe = /<a\s+[^>]*href=["']([^"']*\/produk\/detail\/[^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+
+  for (const match of html.matchAll(anchorRe)) {
+    const url = absolutizeUrl(match[1], source.url);
+    if (seen.has(url)) continue;
+    const text = cleanText(match[2]);
+    const standard = text.match(/\bSNI[\w\s./:-]*\d{4}\b/i)?.[0]?.trim() ?? null;
+    if (!standard && !/\bSNI\b/i.test(text)) continue;
+
+    seen.add(url);
+    const title = text || standard || "SNI catalogue entry";
+    entries.push(
+      buildEntry(source, {
+        label: standard ?? "SNI",
+        number: standard,
+        year: yearFromText(title),
+        listingTitle: title,
+        fullTitle: title,
+        url,
+      }),
+    );
+    if (entries.length >= MAX_GENERIC_ENTRIES) break;
+  }
+
+  return entries;
+}
+
+function parseOssKbliHeartbeat(html: string, source: SourceDefinition): RegulationEntry[] {
+  const title =
+    cleanText(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? "") ||
+    "OSS KBLI and business licensing portal";
+  if (!/\bKBLI\b/i.test(html)) return [];
+
+  return [
+    buildEntry(source, {
+      label: "OSS KBLI",
+      number: null,
+      year: yearFromText(title),
+      listingTitle: title,
+      fullTitle:
+        "OSS KBLI portal reachable; use confirmed KBLI codes to map risk, licensing, PB UMKU, and sector obligations.",
+      url: source.url,
+    }),
+  ];
+}
+
+function parseAnchorRegulations(
+  html: string,
+  source: SourceDefinition,
+  urlPattern?: RegExp,
+): RegulationEntry[] {
+  const entries: RegulationEntry[] = [];
+  const seen = new Set<string>();
+  const anchorRe = /<a\s+[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+
+  for (const match of html.matchAll(anchorRe)) {
+    const url = absolutizeUrl(match[1], source.url);
+    if (seen.has(url)) continue;
+    if (urlPattern && !urlPattern.test(url)) continue;
+
+    const text = cleanText(match[2]);
+    const candidate = text || titleFromSlug(url);
+    if (!looksLikeRegulation(candidate, url)) continue;
+
+    const { label, number, year } = labelFromText(candidate, url);
+    seen.add(url);
+    entries.push(
+      buildEntry(source, {
+        label,
+        number,
+        year,
+        listingTitle: candidate,
+        fullTitle: candidate.length > 20 ? candidate : titleFromSlug(url),
+        url,
+      }),
+    );
+    if (entries.length >= MAX_GENERIC_ENTRIES) break;
+  }
+
+  return entries;
+}
+
+function buildEntry(
+  source: SourceDefinition,
+  entry: {
+    label: string;
+    number: string | null;
+    year: number | null;
+    listingTitle: string;
+    fullTitle: string;
+    url: string;
+  },
+): RegulationEntry {
+  return {
+    sourceId: source.id,
+    sourceName: source.name,
+    domain: source.domain,
+    regulationType: source.regulationType,
+    label: entry.label,
+    number: entry.number,
+    year: entry.year,
+    listingTitle: entry.listingTitle,
+    truncated: entry.listingTitle.endsWith("…") || entry.listingTitle.endsWith("..."),
+    fullTitle: entry.fullTitle,
+    url: entry.url,
+    foundInViews: [source.view ?? source.id],
+  };
 }
 
 /** Strip tags and entities out of a listing fragment, collapse whitespace. */
@@ -196,6 +341,58 @@ function decodeEntities(text: string): string {
 function titleFromSlug(url: string): string {
   const slug = url.replace(/\/+$/, "").split("/").pop() ?? "";
   return decodeURIComponent(slug).replace(/-/g, " ").trim();
+}
+
+function absolutizeUrl(href: string, base: string): string {
+  try {
+    return new URL(href, base).toString();
+  } catch {
+    return href;
+  }
+}
+
+function looksLikeRegulation(text: string, url: string): boolean {
+  const haystack = `${text} ${url}`;
+  return /\b(undang[-\s]?undang|uu|peraturan|pp|perpres|keppres|kepres|permen|pmk|kmk|per-?\d|sni|oss|kbli)\b/i.test(
+    haystack,
+  );
+}
+
+function labelFromText(text: string, url: string): {
+  label: string;
+  number: string | null;
+  year: number | null;
+} {
+  const source = `${text} ${titleFromSlug(url)}`;
+  const patterns = [
+    /\b(PMK|KMK|PER|SE|INS)\s*[-\s]?\s*([\w./-]+)\s+TAHUN\s+(\d{4})\b/i,
+    /\b(Undang[-\s]?Undang|UU|Peraturan Pemerintah|PP|Peraturan Presiden|Perpres|Keputusan Presiden|Keppres|Kepres|Peraturan Menteri|Permen)\s+(?:Nomor|No\.?)?\s*([\w./-]+)\s+Tahun\s+(\d{4})\b/i,
+    /\b(SNI[\w\s./:-]*?(\d{4}))\b/i,
+  ];
+
+  for (const pattern of patterns) {
+    const match = source.match(pattern);
+    if (!match) continue;
+    if (/^SNI/i.test(match[1])) {
+      return { label: match[1].trim(), number: match[1].trim(), year: Number(match[2]) };
+    }
+    return {
+      label: `${match[1].replace(/\s+/g, " ")} ${match[2]} Tahun ${match[3]}`,
+      number: match[2],
+      year: Number(match[3]),
+    };
+  }
+
+  return {
+    label: text.slice(0, 80) || titleFromSlug(url).slice(0, 80),
+    number: null,
+    year: yearFromText(source),
+  };
+}
+
+function yearFromText(text: string): number | null {
+  const match = text.match(/\b(20\d{2}|19\d{2})\b/);
+  return match ? Number(match[1]) : null;
 }
 
 /** Deduplicate across views on the detail URL, then sort newest-first. */

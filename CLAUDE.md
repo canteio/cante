@@ -266,16 +266,19 @@ used the guessed codes.
 
 | Source | Status | Note |
 |---|---|---|
-| `jdih.kemendag.go.id` | **working** | The only one polled. Three views: `semua`, `ekspor`, `perizinan`. |
+| `jdih.kemendag.go.id` | **working** | Polled in three views: `semua`, `ekspor`, `perizinan`. |
+| `jdih.kemenkeu.go.id/home` | **working** | Polled for PMK/customs/duty/tax entries; latest smoke test parsed 7 entries. |
+| `oss.go.id/id/kbli` | **working** | Polled as an OSS/KBLI portal heartbeat. Specific KBLI mapping still requires confirmed KBLI codes. |
 | `peraturan.bpk.go.id` | **blocked** | Confirmed bot detection. Manual lookups only, never automated. |
-| `peraturan.go.id` | **unstable** | Its own homepage says "Website dalam perbaikan". |
-| `jdihn.go.id`, `jdih.kemenkeu.go.id` | untested | In the registry, not polled. |
+| `peraturan.go.id` | **unstable** | UU, PP, Perpres, Permen, and homepage monitor attempts are recorded; latest local fetch failed. |
+| `jdihn.go.id` | **unstable/untested** | Monitor attempt is recorded; latest local fetch failed. |
+| `pesta.bsn.go.id/produk` | **unstable/untested** | SNI catalogue monitor attempt is recorded; latest local fetch failed. |
 
 `source_packs` is the broader coverage inventory, not a claim of automation.
-Seeded Indonesia packs now include Kemendag trade (`automated`), KBLI/OSS
-(`manual_assisted`), national law (`untested`), Kemenkeu/DJBC/DJP tax-customs
-(`untested`), BSN/SNI (`untested`), and East Java / Surabaya regional rules
-(`manual_assisted`). Only the working Kemendag `sources` rows are polled today.
+Seeded Indonesia packs now include Kemendag trade, KBLI/OSS, UU, PP,
+Perpres/Kepres, Permen/Kepmen, Kemenkeu/DJBC/DJP tax-customs, BSN/SNI, and East
+Java / Surabaya regional rules. All non-blocked source rows are attempted by
+`monitoredSources()`; failures become `source_results` rows and coverage caveats.
 
 Things about this feed that will mislead you if forgotten:
 
@@ -325,11 +328,17 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
 ## Current status
 
 - Fetch, judgment, storage, dashboard, and chat all working locally, verified
-  against the live Kemendag source.
+  against the expanded live source set.
 - Checklist is working locally at `/checklist`. `/api/checklist` refreshes rows
   from profile, memory, KBLI records, and Indonesia source-pack coverage. Current
-  MA seed produced 7 rows, 5 open, which is correct because KBLI/HS/SNI/tax
-  coverage still needs evidence.
+  MA state produces 9 rows, 7 open, including KBLI-to-rule mapping and
+  national-law monitoring.
+- Expanded run verified: `npm run check` completed as run
+  `fc108a73-d887-40d8-a17d-d45eaf741229`. It attempted 12 non-blocked sources:
+  Kemendag 3 views OK, Kemenkeu OK with 7 entries, OSS KBLI OK with 1 heartbeat
+  entry, and peraturan.go.id/JDIHN/BSN failed and were disclosed. It produced 8
+  findings: PMK 58/2026 as `noted`, six PMK entries as `clear`, and OSS KBLI as
+  `baseline`.
 - **Chat can reach the internet** — it streams over SSE and may call `WebSearch`
   and `WebFetch`. This makes the grounding rules in the chat system prompt load
   bearing, not decorative: stored run data is the only authority on what the
@@ -352,10 +361,11 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
 
 1. Get MA's real KBLI from OSS/NIB and real HS code(s) from PEB/invoice;
    confirm those Memory rows so Checklist can move from leads to verified facts.
-2. Add proven fetchers for Kemenkeu/DJBC/DJP and BSN/SNI before claiming those
-   packs are automated.
-3. Run for ~14 days, delivering each alert by hand.
-4. Ask MA directly about $200–400/month. That answer decides what happens next.
+2. Improve retrieval for peraturan.go.id/JDIHN/BSN, which are now attempted but
+   failing from local plain fetch.
+3. Add region-specific East Java / Surabaya JDIH source discovery.
+4. Run for ~14 days, delivering each alert by hand.
+5. Ask MA directly about $200–400/month. That answer decides what happens next.
 
 Explicitly not yet: auth, cron, deploy, WhatsApp API, billing, signup.
 

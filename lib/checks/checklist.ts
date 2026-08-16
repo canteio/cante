@@ -50,6 +50,8 @@ export async function refreshChecklistForCustomer(customerId: string): Promise<v
     .get();
   if (!customer || !profile) return;
 
+  deleteObsoleteChecklistItems(customerId);
+
   const memoryRows = db.select().from(memories).where(eq(memories.customerId, customerId)).all();
   await rememberKbliLeads(customerId, memoryRows);
 
@@ -137,6 +139,48 @@ export async function refreshChecklistForCustomer(customerId: string): Promise<v
           : ["Confirm KBLI first, then map OSS obligations."],
     },
     {
+      title: "Map KBLI against Indonesian rule families",
+      category: "kbli",
+      status: confirmedKbli.length > 0 || profileKbli.length > 0 ? "required" : "needs_review",
+      priority: "high",
+      whyApplies:
+        "The core product promise is KBLI-to-rule mapping across UU, PP, Perpres/Kepres, Permen/Kepmen, tax/customs, SNI, OSS, and regional rules.",
+      linkedFacts: [
+        ...profileKbli.map((code) => `Profile KBLI ${code}`),
+        ...kbliRows.map((k) => `KBLI ${k.code}${k.title ? ` - ${k.title}` : ""}`),
+      ],
+      evidenceRequired:
+        "Confirmed KBLI plus source evidence from OSS, peraturan.go.id/JDIHN, relevant ministry JDIH, Kemenkeu/DJBC/DJP, BSN/SNI, and regional JDIH.",
+      sourceHealth: confirmedKbli.length > 0 || profileKbli.length > 0 ? "not_checked" : "manual_assisted",
+      confidence: confirmedKbli.length > 0 || profileKbli.length > 0 ? "inferred" : "lead",
+      openQuestions:
+        confirmedKbli.length > 0 || profileKbli.length > 0
+          ? ["Which linked rules apply directly to this KBLI versus only to the product/HS code?"]
+          : ["Confirm KBLI first; complete Indonesian rule mapping cannot be claimed without it."],
+    },
+    {
+      title: "Monitor UU, PP, Perpres/Kepres, and Permen/Kepmen",
+      category: "national",
+      status: "required",
+      priority: "high",
+      whyApplies:
+        "National legal changes can create licensing, reporting, product, tax, labor, environmental, or export obligations even when Kemendag is quiet.",
+      linkedFacts: [
+        `Business type: ${profile.businessType ?? "unknown"}`,
+        ...products,
+        ...profileKbli.map((code) => `Profile KBLI ${code}`),
+        ...kbliRows.map((k) => `KBLI ${k.code}`),
+      ],
+      evidenceRequired:
+        "Successful source results from peraturan.go.id/JDIHN or relevant official JDIH pages for UU, PP, Perpres/Kepres, and Permen/Kepmen.",
+      sourceHealth: "not_checked",
+      confidence: "inferred",
+      openQuestions: [
+        "Which ministry JDIH is authoritative for the confirmed KBLI sector?",
+        "Did any national rule change since the last successful check affect this KBLI/product?",
+      ],
+    },
+    {
       title: "Screen mandatory SNI exposure",
       category: "sni",
       status: products.length > 0 ? "needs_review" : "unknown",
@@ -145,7 +189,7 @@ export async function refreshChecklistForCustomer(customerId: string): Promise<v
         "BSN/SNI obligations are product-specific, and should be checked from the actual product description plus HS code.",
       linkedFacts: products,
       evidenceRequired: "Product specs, SKUs, SNI certificate if any, and a BSN/SNI lookup result.",
-      sourceHealth: "untested",
+      sourceHealth: "not_checked",
       confidence: "lead",
       openQuestions: ["Is PVC tarpaulin sold under any mandatory SNI category or sector technical rule?"],
     },
@@ -161,19 +205,19 @@ export async function refreshChecklistForCustomer(customerId: string): Promise<v
         ...profile.destinationMarkets.map((market) => `Destination: ${market}`),
       ],
       evidenceRequired: "PMK/DJBC/DJP source check, broker notes, and any current facility status.",
-      sourceHealth: "untested",
+      sourceHealth: "not_checked",
       confidence: "lead",
       openQuestions: ["Does the customer use any bonded-zone, KITE, VAT, or customs facility?"],
     },
     {
-      title: "Add regional Perda and Perkada monitoring location",
+      title: "Monitor regional Perda and Perkada by factory location",
       category: "regional",
       status: locationFacts.length > 0 ? "completed" : "needs_review",
       priority: "medium",
       whyApplies:
-        "Perda and Perkada coverage depends on the factory and legal-entity location, not just country.",
+        "Perda and Perkada coverage depends on the factory/legal-entity location and may affect business licensing, nuisance permits, labor, environment, taxes, and local operations.",
       linkedFacts: locationFacts,
-      evidenceRequired: "Factory address and legal entity domicile.",
+      evidenceRequired: "Factory address, legal entity domicile, and relevant province/city/regency JDIH sources.",
       sourceHealth: "manual_assisted",
       confidence: locationFacts.length > 0 ? "inferred" : "lead",
       openQuestions: locationFacts.length > 0 ? [] : ["What city/regency and province should regional monitoring cover?"],
@@ -198,6 +242,15 @@ export async function refreshChecklistForCustomer(customerId: string): Promise<v
 
   for (const draft of drafts) {
     await upsertChecklistItem(customerId, draft);
+  }
+}
+
+function deleteObsoleteChecklistItems(customerId: string): void {
+  const obsoleteTitles = ["Add regional Perda and Perkada monitoring location"];
+  for (const title of obsoleteTitles) {
+    db.delete(checklistItems)
+      .where(and(eq(checklistItems.customerId, customerId), eq(checklistItems.title, title)))
+      .run();
   }
 }
 

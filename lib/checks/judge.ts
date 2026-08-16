@@ -26,6 +26,10 @@ export const JudgmentSchema = z.object({
   findings: z
     .array(
       z.object({
+        sourceId: z
+          .string()
+          .nullable()
+          .describe("The sourceId from the regulation entry that produced this verdict."),
         regulationRef: z.string().describe('e.g. "Permendag 12 Tahun 2026"'),
         title: z.string(),
         url: z.string(),
@@ -178,6 +182,27 @@ The log is empty, so the entire visible backlog looks new. Do NOT flag all of it
 Use fullTitle — it is complete, reconstructed from the URL slug. listingTitle is truncated where truncated=true, and the cut-off part is usually the part that says what the rule covers.
 
 Weight foundInViews: entries from the "ekspor" view are export-policy-tagged by Kemendag itself and are far likelier to matter than the general "semua" feed. The "perizinan" view is mostly historical.
+
+Each regulation entry includes sourceId, sourceName, domain, and regulationType.
+Copy sourceId into every finding you return so the stored finding points to the
+actual source. Do not collapse everything into Kemendag.
+
+## KBLI mapping pass
+
+If confirmed KBLI codes are present in the customer profile or confirmed memory,
+map them against official Indonesian rules before finalising coverage:
+- Search/fetch OSS KBLI pages for the code to identify risk, licensing, PB UMKU,
+  and sector ministry obligations.
+- Search/fetch official national-law sources for that KBLI/product context:
+  peraturan.go.id, JDIHN, relevant ministry JDIH, Kemenkeu/DJBC/DJP, Kemendag,
+  and BSN/SNI.
+- Treat UU, PP, Perpres/Kepres, Permen/Kepmen, Perda/Perkada, tax/customs, OSS,
+  and SNI as separate coverage families.
+
+If KBLI is missing or only unconfirmed, say in coverageCaveats that complete KBLI
+mapping is not possible yet and use the unconfirmed KBLI only as a lead. Do not
+claim "all applicable Indonesian rules" are mapped until a confirmed KBLI exists
+and the relevant source families succeeded.
 
 ${JSON.stringify(report.regulations, null, 2)}
 

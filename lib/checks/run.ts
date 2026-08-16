@@ -12,7 +12,7 @@ import {
 import { getProvider, type LlmProviderChoice } from "@/lib/llm";
 import { judge } from "@/lib/checks/judge";
 import { fetchAllSources } from "@/lib/sources/fetch";
-import { fetchableSources } from "@/lib/sources/registry";
+import { monitoredSources } from "@/lib/sources/registry";
 import { desc, and } from "drizzle-orm";
 
 /**
@@ -41,7 +41,8 @@ export async function runCheck(
 
     // --- Fetch stage -------------------------------------------------------
     const rawDir = path.join(process.cwd(), "raw");
-    const report = await fetchAllSources(fetchableSources(), rawDir);
+    const monitored = monitoredSources();
+    const report = await fetchAllSources(monitored, rawDir);
 
     for (const outcome of report.outcomes) {
       db.insert(sourceResults)
@@ -93,17 +94,13 @@ export async function runCheck(
     });
 
     // --- Store -------------------------------------------------------------
-    const viewToSourceId = new Map(
-      fetchableSources().map((s) => [s.view ?? s.id, s.id] as const),
-    );
-
     for (const finding of judgment.findings) {
       db.insert(findings)
         .values({
           id: randomUUID(),
           checkRunId: runId,
           customerId,
-          sourceId: viewToSourceId.get("ekspor") ?? null,
+          sourceId: finding.sourceId ?? null,
           regulationRef: finding.regulationRef,
           title: finding.title,
           url: finding.url,
