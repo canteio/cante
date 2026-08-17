@@ -16,6 +16,12 @@
 > legal effective dates. First-run history is a disclosed seven-day bootstrap,
 > not a claim of historical coverage.
 
+> **Free US trade-data update 2026-08-16:** USITC HTS/IDS, CBP CROSS/CSMS/WRO,
+> USTR Section 301, targeted Federal Register trade overlays, DHS UFLPA, and
+> Trade.gov CSL are integrated without paid keys. Exact CSL name matching is
+> available through `POST /api/screening`; fuzzy identity, ownership, end-use,
+> license, and transaction review remain explicit manual/expert gaps.
+
 ## Goal
 A daily automated check that watches Indonesian government trade sources for changes affecting a specific exporter's products, and sends a plain-language WhatsApp alert when something relevant changes. First real customer: MA (PVC tarpaulin manufacturer, Surabaya, Indonesia).
 

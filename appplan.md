@@ -14,6 +14,12 @@
 > checklist rows are isolated; the composer switch changes actual grounding
 > and official sources. See `US-plan.md` for implemented coverage.
 
+> **Free trade-data pass built 2026-08-16.** Profile-scoped USITC HTS and CBP
+> CROSS, CSMS, targeted Federal Register trade overlays, USITC IDS, USTR Section
+> 301, Trade.gov CSL, DHS UFLPA, and CBP WRO/forced-labor adapters are live.
+> Exact CSL matching is exposed at `POST /api/screening`; higher-risk screening
+> workflow and ownership analysis remain separate product work.
+
 ## Goal
 A properly structured Next.js app at the repo root. `npm run dev` from the root just works. Multi-tenant data model from day one, even though only one customer (MA) exists right now — so adding customer #2 is a database row, not a refactor.
 
@@ -118,8 +124,9 @@ capped at ten unseen documents per source and later runs judge only new or
 changed content. This was verified with a 513-record run followed by an
 immediate repeat with zero changes and zero model judgment entries.
 
-The US registry uses agency-specific Federal Register JSON, eCFR version-history
-JSON, OSHA RSS, the CPSC recall API, OFAC list actions, and Cheerio-backed
+The US registry uses agency-specific and targeted Federal Register JSON, eCFR
+version-history JSON, USITC HTS/IDS, CBP CROSS/CSMS/WRO, USTR and Trade.gov JSON,
+OSHA/forced-labor RSS, the CPSC recall API, OFAC list actions, and Cheerio-backed
 official HTML adapters. The North Carolina starter pack now parses the NC
 Register, DEQ releases and air notices, NCDOL updates, NCDOR notices, and
 Charlotte/Mecklenburg air notices. Official CA, NY, and TX rulemaking registers
@@ -134,11 +141,17 @@ set. A dated URL fragment is the monitoring identity, so repeat amendments to a
 stable CFR citation are not suppressed as already seen. `amendedOn` never stands
 in for a legal effective date.
 
+The source-inventory ledger applies to US datasets as well as Indonesia; full
+inventories are fingerprinted, first-run judgment is bounded, and later runs
+emit only new or changed records. `POST /api/screening` adds bounded cached exact
+normalized-name matching against Trade.gov CSL and returns explicit non-clearance
+caveats with `no-store` responses.
+
 This is deeper change discovery, not a complete state obligation engine. State
 registers do not replace topic-specific EPR, PFAS, packaging, tax, product,
-consumer, permit, or enforcement sources. Restricted-party screening, ECCN
-classification, AES determination, and ITAR jurisdiction remain evidence and
-expert workflows even though their official change feeds are monitored.
+consumer, permit, or enforcement sources. Fuzzy restricted-party resolution,
+ownership analysis, ECCN classification, AES determination, and ITAR jurisdiction
+remain evidence and expert workflows even though list data and change feeds are monitored.
 
 ## Ported logic
 The existing Python (`fetch_sources.py`, and the judgment logic in `daily-prompt-check.md`) gets ported into `lib/sources/fetch.ts` and `lib/checks/judge.ts` so everything lives in one runtime. Keep the behavior identical — especially the honest failure reporting and the "don't invent a change to seem useful" rule in the judgment step.

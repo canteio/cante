@@ -56,7 +56,7 @@ CLAUDE_BIN=/path/to/claude npm run dev
 
 Two stages, kept separate because a **fetch failure** and a **bad judgment call** are different problems and were getting silently conflated:
 
-**1. Fetch — `lib/sources/fetch.ts`.** Plain fetching and parsing, no AI. Reads official JSON, HTML, and RSS sources, follows configured pagination, and writes one `source_results` row per source per run: success, error, entries parsed, and parse warning. Indonesia's full fetched inventory is fingerprinted in `source_documents`, so later checks judge only new or changed documents instead of repeatedly judging the same backlog.
+**1. Fetch — `lib/sources/fetch.ts`.** Plain fetching and parsing, no AI. Reads official JSON, HTML, CSV, and RSS sources, follows configured pagination, and writes one `source_results` row per source per run: success, error, entries parsed, and parse warning. Full Indonesian and US inventories are fingerprinted in `source_documents`, so later checks judge only new or changed records instead of repeatedly judging the same backlog.
 
 **2. Judge — `lib/checks/judge.ts`.** Reads the parsed entries plus the customer profile and the dedup log, and judges relevance the way a person would — not keyword matching, since most relevant regulations won't contain "PVC" or "tarpaulin" in the title. Returns a Zod-validated verdict per regulation (`flagged` / `noted` / `baseline` / `clear`) plus a ready-to-send message.
 
@@ -83,19 +83,20 @@ Two properties of the source that can't be engineered away, so the judgment stag
 
 ```
 lib/llm/          types.ts (the seam) · claude-code.ts (works) · api.ts (stub) · index.ts
-lib/sources/      registry.ts (sources + profile activation) · fetch.ts (JSON/RSS/HTML parsers)
+lib/sources/      registry.ts (sources + profile activation) · fetch.ts (JSON/RSS/HTML/CSV parsers)
+lib/screening/    csl.ts (Trade.gov CSL exact-name matching)
 lib/checks/       judge.ts · run.ts (fetch → judge → store) · checklist.ts
 lib/db/           schema.ts · client.ts · queries.ts
-app/              page.tsx (Checks) · checklist/ · chat/ · memory/ · api/{checks,checklist,chat,customers,memories}
+app/              page.tsx (Checks) · checklist/ · chat/ · memory/ · api/{checks,checklist,chat,customers,memories,screening}
 components/       dashboard/ · checklist/ · memory/ · chat/
-scripts/          seed.ts (sources + Indonesia source packs + MA) · run-check.ts
+scripts/          seed.ts (sources + country source packs + MA) · run-check.ts
 config/           customer.json — read at seed time only
 ```
 
 Multi-tenant from day one: everything keys off `customer_id`, sources key off country + regulation type. Adding customer #2 or a second country is a row, not a refactor. SQLite via Drizzle, portable to Postgres if deploy ever happens.
 
-On the first Indonesia inventory, Cante judges at most ten unseen documents per
-source and records older documents as historical baseline. Subsequent runs still
+On the first source inventory in either supported country, Cante judges at most
+ten unseen records per source and records the remainder as historical baseline. Subsequent runs still
 fetch and fingerprint the full configured inventory, but send only new or
 changed records to the model. A document changed at the same URL is re-evaluated.
 
@@ -173,6 +174,13 @@ to the alert as code-written coverage caveats.
   37 deduplicated entries from seven applicable sources with zero failures.
   General state registers are discovery surfaces, not complete EPR/PFAS/tax/
   consumer-rule coverage.
+- **Free US trade-data adapters are working live.** Cante now monitors USITC HTS
+  releases and profile codes, CBP CROSS and CSMS, Section 301/232 and trade-remedy
+  Federal Register queries, USITC IDS, the USTR Section 301 overlay, Trade.gov
+  CSL snapshots, DHS UFLPA entities, and CBP WRO/Findings and forced-labor news.
+  `POST /api/screening` performs exact normalized primary/alias matching against
+  the current CSL bulk file. It deliberately does not claim fuzzy identity,
+  beneficial ownership, end-use, destination, license, or transaction clearance.
 - **US reference run:** `2405fb73-d714-4f2d-804b-ce6c4ddfe3be` selected seven
   general federal sources for the empty profile. All succeeded; 37 entries were
   code-audited as 21 new verdicts, 16 exact-URL prior matches, and 0 unaccounted.

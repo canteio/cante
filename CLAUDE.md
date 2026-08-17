@@ -60,10 +60,11 @@ fastest way to test without the browser.
 lib/llm/          types.ts = the seam (+ streaming) · claude-code.ts (works) · codex-cli.ts (local fallback) · api.ts (stub) · index.ts (factory)
 lib/sources/      registry.ts (sources + profile activation as data) · fetch.ts (no AI, fetch+JSON/RSS/Cheerio parse)
                   *.test.ts (incremental windows, pagination, source-field contracts)
+lib/screening/    csl.ts (bounded, cached exact-name matching against Trade.gov CSL bulk data)
 lib/checks/       judge.ts (prompt + Zod schema) · run.ts (fetch → judge → store) · checklist.ts (living obligations)
                   facts.ts (HS/KBLI tiers — the one answer to "what is established") · coverage.ts (entries in, verdicts out)
 lib/db/           schema.ts · client.ts · queries.ts
-app/              page.tsx (Checks) · checklist/ · chat/ · memory/ · api/{checks,checklist,chat,customers,memories}
+app/              page.tsx (Checks) · checklist/ · chat/ · memory/ · api/{checks,checklist,chat,customers,memories,screening}
 components/       dashboard/ · checklist/ · memory/ · chat/ (chat-panel.tsx reads the SSE stream · markdown.tsx renders answers)
 scripts/          seed.ts (sources + source packs + MA) · run-check.ts
 mike-main/        reference copy of another project — design source, gitignored,
@@ -399,6 +400,14 @@ for the exact automation boundary. `db:seed` also removes the superseded
 | OSHA Federal Register RSS | **working** | Official targeted feed; latest test parsed 5 entries and intentionally overlaps Federal Register. |
 | CPSC Recall API | **working** | Official API, rolling 45-day window; live probe parsed 30 recalls. Activated only for a recorded consumer-product flag. |
 | OFAC recent list actions | **working** | Official list-change page; live probe parsed 10 updates. This detects list changes but does not screen counterparties. |
+| USITC HTS REST API | **working** | Current-release detection plus profile-scoped HTS-6 searches. Live code `6306.12` returned the official 10-digit row, description, units, and duty fields. A lookup monitors a recorded classification; it does not create or legally validate one. |
+| CBP CROSS | **working** | Profile-scoped HTS-6 searches exhaust result pagination and retain only exact tariff-code overlaps. The live `6306.12` probe returned no exact overlap and was recorded as a validated quiet result. The endpoint is an undocumented official application contract, so schema drift fails visibly. |
+| CBP CSMS RSS | **working** | Official rolling operational feed; live probe parsed 20 current messages. The rolling window is not a historical archive. |
+| Targeted Federal Register overlays | **working** | Section 301, Section 232, AD/CVD, import injury, and UFLPA queries use a run-aware publication-date window and complete pagination. A live Section 301 window with zero documents was validated as quiet rather than broken. |
+| USITC IDS | **working** | No-key advanced-search POST is fully paginated. The live import-injury inventory parsed 1,927 records; the source ledger limits first-run judgment while retaining all fingerprints. This tracks cases, not shipment liability. |
+| USTR Section 301 HTS overlay | **working** | Full official product dataset is filtered against recorded customer HTS codes; live `6306.12` matching returned one overlay row. Federal Register notices and the HTS remain controlling evidence. |
+| Trade.gov CSL | **working, exact matching only** | Bulk snapshot change monitoring plus `POST /api/screening` for cached local exact normalized primary/alias matching. Live verification returned two Huawei candidates and an explicit no-hit. Responses are `no-store`; every candidate requires human review, and no-hit does not clear ownership, end use, or licensing. |
+| DHS UFLPA / CBP WRO and Findings | **working** | Live probes parsed 193 unique UFLPA entities and 67 WRO/Findings rows; CBP forced-labor RSS parsed 4 announcements. These are current source inventories and change signals, not automatic supply-chain clearance. |
 | NC OAH / DEQ / NCDOL / NCDOR | **working** | NC Register (12 issues), DEQ releases (15), open air notices (3), labor releases (10), and tax updates (11) parsed in live probes. Facility/distribution facts control activation. |
 | Mecklenburg air notices | **working, validated empty** | Local Charlotte/Mecklenburg-only adapter. The latest page had no open permit rows; a known page marker distinguishes that from parser failure. |
 | CA / NY / TX registers | **working** | Official state rulemaking registers parsed 2 / 1 / 1 current issues. Activated only when the profile or confirmed Memory names the state. |
@@ -407,10 +416,10 @@ for the exact automation boundary. `db:seed` also removes the superseded
 `selectMonitoredSources()` is profile-driven. Confirmed Memory facts participate;
 unconfirmed chat extraction cannot activate coverage. Missing facilities,
 distribution states, product flags, or export facts produce deterministic alert
-caveats listing what was not activated. An empty profile currently polls seven
-general federal rows; the source-only verification fetched 37 deduplicated
-entries with zero failures. A fully populated synthetic Charlotte/multistate/
-export profile selected 35 rows. Only NC, CA, NY, and TX have state-register
+caveats listing what was not activated. An empty profile currently polls eight
+general federal rows. A fully populated synthetic Charlotte/multistate/export
+profile selects 51 source rows, including one HTS and one CROSS source for its
+recorded HTS-6 code. Only NC, CA, NY, and TX have state-register
 adapters; topic-specific EPR, PFAS, packaging, tax, consumer, and permit mapping
 is still incomplete even in those states.
 
@@ -535,9 +544,13 @@ country-specific judgment and checklist generation.
 UI instead of silently absent.
 
 `source_documents` is the per-customer inventory ledger. Every successfully
-fetched Indonesia document is fingerprinted even when it is not sent to the
-model. The first inventory judges at most ten unseen records per source and
-baselines older history; later runs judge only new or changed fingerprints.
+fetched regulation/list record in either supported jurisdiction is fingerprinted
+even when it is not sent to the model. The first inventory judges at most ten
+unseen records per source and baselines the remainder; later runs judge only new
+or changed fingerprints.
+HTS and CROSS sources are generated per recorded HTS-6 code, so `runCheck()`
+upserts every selected source instance before writing foreign-keyed source
+results or inventory rows; static seeding alone cannot create those IDs.
 This gives paginated sources full discovery coverage without repeatedly spending
 minutes judging the same backlog.
 
@@ -580,11 +593,18 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
   North Carolina/Charlotte and CA/NY/TX state registers are real adapters rather
   than heartbeats. Profile and confirmed-Memory facts activate them, and code
   appends caveats for inactive or unsupported packs.
+- **The free US trade-data pass is integrated and live-verified.** USITC HTS,
+  CBP CROSS and CSMS, targeted Federal Register overlays, USITC IDS, USTR
+  Section 301, Trade.gov CSL, DHS UFLPA, and CBP WRO/forced-labor sources all
+  have adapters. Full inventories use the same per-customer source ledger as
+  Indonesia, so the 1,927-case IDS inventory does not become 1,927 first-run
+  model judgments. `/api/screening` performs exact normalized primary/alias CSL
+  matching only; it is not fuzzy identity or beneficial-ownership clearance.
 - **The eCFR monitor is incremental and version-safe.** It paginates without a
   hidden entry cap, resumes from the last completed run, gives repeated section
   amendments distinct identities, resolves appendix citations, and keeps
-  amendment dates separate from effective dates. The eight-test focused source
-  regression suite plus a live Title 15 probe passed on 16 Aug 2026.
+  amendment dates separate from effective dates. The 34-test focused regression
+  suite, type checker, and live source probes passed on 16 Aug 2026.
 - **US run `2405fb73-d714-4f2d-804b-ce6c4ddfe3be` is the current reference.**
   The empty profile selected seven general federal sources; all succeeded and
   produced 37 entries. Judgment accounted for every one: 21 new verdicts, 16
@@ -663,8 +683,11 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
 4. Enter a real US pilot profile and add topic-specific state agency adapters for
    its actual distribution states; general state registers are discovery, not
    full EPR/PFAS/tax/product coverage.
-5. Run for ~14 days, delivering each alert by hand.
-6. Ask MA directly about $200–400/month. That answer decides what happens next.
+5. Add persisted screening cases, fuzzy candidate generation, ownership review,
+   and transaction evidence before presenting restricted-party screening as a
+   complete workflow.
+6. Run for ~14 days, delivering each alert by hand.
+7. Ask MA directly about $200–400/month. That answer decides what happens next.
 
 Explicitly not yet: auth, cron, deploy, WhatsApp API, billing, signup.
 

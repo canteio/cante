@@ -1,6 +1,6 @@
 # Cante USA Plan
 
-## Implementation Status — Deeper Source Pass 2026-08-15
+## Implementation Status — Free Trade-Data Pass 2026-08-16
 
 The product foundation in this plan is implemented locally:
 
@@ -27,6 +27,16 @@ The product foundation in this plan is implemented locally:
   distribution, and exports, with the status vocabulary below.
 - US-specific chat and judgment prompts that separate stored monitor evidence
   from fresh web research and separate proposed rules from current duties.
+- Profile-scoped USITC HTS tariff rows and CBP CROSS rulings for each recorded
+  HTS-6 code, plus current HTS release detection and complete CROSS pagination.
+- Incremental, fully paginated Federal Register overlays for Section 301,
+  Section 232, AD/CVD, USITC import injury, and UFLPA legal notices.
+- Fully paginated USITC IDS import-injury inventory, USTR's Section 301 HTS
+  overlay, CBP CSMS, DHS UFLPA entities, CBP WRO/Findings, and forced-labor RSS.
+- Trade.gov CSL bulk snapshot monitoring and `POST /api/screening` for bounded,
+  cached exact normalized primary/alias matching with `no-store` responses.
+- The source inventory ledger now covers the US, preventing full list/case
+  inventories from becoming hundreds of first-run model judgments.
 
 Initial adapter verification was run without creating an alert:
 
@@ -37,16 +47,25 @@ Initial adapter verification was run without creating an alert:
 - CA, NY, and TX parsed 2, 1, and 1 current register issues.
 - Mecklenburg had no open permit rows and was reported as a validated empty
   listing, not a broken parser.
-- The empty-profile baseline selected 7 general federal sources and fetched 37
-  deduplicated entries with zero failures. A fully populated synthetic profile
-  selected 35 source rows and disclosed Florida as manual-assisted.
+- The current empty-profile baseline selects 8 general federal sources. A fully
+  populated synthetic Charlotte/multistate/export profile selects 51 source
+  rows and discloses Florida as manual-assisted.
+- Live trade-data probes parsed one HTS row for `6306.12`, one matching USTR
+  overlay row, 20 CSMS messages, 1,927 IDS investigations, 193 UFLPA entities,
+  67 WRO/Findings rows, four forced-labor announcements, and one CSL snapshot.
+  A quiet Section 301 window and a CROSS search with no exact tariff overlap
+  were both distinguished from parser failure.
+- Live exact CSL screening returned two list candidates for Huawei and an
+  explicit no-hit for a synthetic name; every response retained the ownership,
+  end-use, destination, license, and human-review caveats.
 
 The first evidence-grounded US judgment run still requires a real pilot profile.
 Only NC, CA, NY, and TX currently have state-register automation, and a general
 register does not equal complete EPR, PFAS, packaging, tax, consumer, permit, or
-product-rule coverage. Restricted-party screening, ECCN classification, AES
-determination, and ITAR jurisdiction workflows are not built; Cante monitors
-their official changes and keeps the transaction-specific work as evidence gaps.
+product-rule coverage. Exact CSL list matching now exists, but fuzzy identity
+resolution, beneficial-ownership analysis, persisted hit review, ECCN
+classification, AES determination, and ITAR jurisdiction workflows are not
+complete; Cante keeps that transaction-specific work as evidence gaps.
 
 Current end-to-end reference run: `2405fb73-d714-4f2d-804b-ce6c4ddfe3be`.
 The empty profile selected seven baseline sources; all succeeded and fetched 37

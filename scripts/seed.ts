@@ -146,6 +146,10 @@ const US_SOURCE_PACKS = [
   ["us-ofac", "federal", "OFAC sanctions and party controls", "export", "automated"],
   ["us-ddtc-itar", "federal", "DDTC and ITAR exposure", "export", "manual_assisted"],
   ["us-cbp", "federal", "CBP customs and export enforcement", "export", "automated"],
+  ["us-hts-rulings", "federal", "USITC HTS tariffs and CBP CROSS rulings", "customs", "automated"],
+  ["us-trade-remedies", "federal", "Section 301, Section 232, AD/CVD, and import-injury actions", "trade", "automated"],
+  ["us-forced-labor", "federal", "UFLPA entities and CBP WRO/Findings", "trade", "automated"],
+  ["us-csl-screening", "federal", "Trade.gov consolidated restricted-party screening", "export", "automated"],
 ].map(([id, jurisdiction, name, category, status]) => ({
   id,
   country: "United States",

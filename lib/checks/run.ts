@@ -90,6 +90,33 @@ export async function runCheck(
     if (monitored.length === 0) {
       throw new Error(`No monitored sources are registered for ${jurisdiction}.`);
     }
+    for (const source of monitored) {
+      db.insert(sources)
+        .values({
+          id: source.id,
+          country: source.country,
+          name: source.name,
+          domain: source.domain,
+          url: source.url,
+          regulationType: source.regulationType,
+          reliabilityStatus: source.reliabilityStatus,
+          view: source.view ?? null,
+          notes: source.notes ?? null,
+        })
+        .onConflictDoUpdate({
+          target: sources.id,
+          set: {
+            name: source.name,
+            domain: source.domain,
+            url: source.url,
+            regulationType: source.regulationType,
+            reliabilityStatus: source.reliabilityStatus,
+            view: source.view ?? null,
+            notes: source.notes ?? null,
+          },
+        })
+        .run();
+    }
     const report = await fetchAllSources(monitored, rawDir, selection.coverageCaveats);
 
     for (const outcome of report.outcomes) {
@@ -120,20 +147,20 @@ export async function runCheck(
     }
 
     const seen = await getSeenRegulations(customerId, jurisdiction);
-    if (jurisdiction === "Indonesia") {
-      const fetchedInventoryCount = report.regulations.length;
-      const changes = selectSourceChanges(
-        customerId,
-        jurisdiction,
-        report.regulations,
-        seen.map((entry) => entry.url),
-      );
-      report.regulations = changes.regulations;
-      report.coverageCaveats.push(...changes.caveats);
-      report.coverageCaveats.push(
-        `Inventaris sumber membuat sidik jari untuk ${fetchedInventoryCount} catatan yang berhasil diambil; ${changes.newCount} baru ditemukan setelah baseline, ${changes.changedCount} berubah sejak inventaris sebelumnya, ${changes.baselinedCount} menjadi baseline historis pada run pertama, dan ${changes.regulations.length} masuk tahap penilaian.`,
-      );
-    }
+    const fetchedInventoryCount = report.regulations.length;
+    const changes = selectSourceChanges(
+      customerId,
+      jurisdiction,
+      report.regulations,
+      seen.map((entry) => entry.url),
+    );
+    report.regulations = changes.regulations;
+    report.coverageCaveats.push(...changes.caveats);
+    report.coverageCaveats.push(
+      jurisdiction === "Indonesia"
+        ? `Inventaris sumber membuat sidik jari untuk ${fetchedInventoryCount} catatan yang berhasil diambil; ${changes.newCount} baru ditemukan setelah baseline, ${changes.changedCount} berubah sejak inventaris sebelumnya, ${changes.baselinedCount} menjadi baseline historis pada run pertama, dan ${changes.regulations.length} masuk tahap penilaian.`
+        : `The source inventory fingerprinted ${fetchedInventoryCount} successfully fetched records; ${changes.newCount} were new after baseline, ${changes.changedCount} changed since the prior inventory, ${changes.baselinedCount} were recorded as first-run historical baseline, and ${changes.regulations.length} entered judgment.`,
+    );
 
     // --- Judgment stage ----------------------------------------------------
     const judgment = await judge(provider, {

@@ -21,6 +21,14 @@ export type SourceParser =
   | "federal-register-json"
   | "ecfr-versions-json"
   | "cpsc-recalls-json"
+  | "usitc-hts-release"
+  | "usitc-hts-search"
+  | "cbp-cross-json"
+  | "ustr-301-json"
+  | "usitc-ids-json"
+  | "dataset-snapshot-json"
+  | "uflpa-html"
+  | "cbp-wro-csv"
   | "rss"
   | "dated-link-list"
   | "nc-register"
@@ -112,6 +120,11 @@ export interface SourceDefinition {
   activation?: SourceActivation;
   /** Narrow per-source override for official sites that reject browser impersonation. */
   requestHeaders?: Record<string, string>;
+  /** Optional request metadata for official JSON APIs that require POST. */
+  requestMethod?: "GET" | "POST";
+  requestBody?: string;
+  /** Normalized customer codes that caused this source instance to be selected. */
+  profileCodes?: string[];
   /** A zero-row result is valid only when this marker is present in the body. */
   emptyStateMarker?: string;
   /** If this marker is present, zero rows are a parser warning instead. */
@@ -160,6 +173,86 @@ function federalRegister(agencies: string[], view: string): string {
   if (view === "us-export") params.append("conditions[type][]", "NOTICE");
   for (const field of FR_FIELDS) params.append("fields[]", field);
   return `https://www.federalregister.gov/api/v1/documents.json?${params.toString()}`;
+}
+
+function targetedFederalRegister(agencies: string[], term: string): string {
+  const params = new URLSearchParams({
+    per_page: "100",
+    order: "newest",
+    "conditions[term]": term,
+  });
+  for (const agency of agencies) params.append("conditions[agencies][]", agency);
+  for (const type of ["RULE", "PRORULE", "NOTICE", "PRESDOCU"]) {
+    params.append("conditions[type][]", type);
+  }
+  for (const field of FR_FIELDS) params.append("fields[]", field);
+  return `https://www.federalregister.gov/api/v1/documents.json?${params.toString()}`;
+}
+
+const CROSS_PROFILE_CODE_LIMIT = 10;
+
+function normalizedHts6Codes(profile?: SourceSelectionProfile | null): string[] {
+  return [
+    ...new Set(
+      (profile?.htsScheduleBCodes ?? [])
+        .map(({ code }) => code.replace(/\D/g, ""))
+        .filter((code) => code.length >= 6)
+        .map((code) => code.slice(0, 6)),
+    ),
+  ].slice(0, CROSS_PROFILE_CODE_LIMIT);
+}
+
+function crossSources(profile?: SourceSelectionProfile | null): SourceDefinition[] {
+  return normalizedHts6Codes(profile).map((code) => {
+    const term = `${code.slice(0, 4)}.${code.slice(4)}`;
+    const params = new URLSearchParams({
+      term,
+      collection: "ALL",
+      pageSize: "100",
+      page: "1",
+      sortBy: "DATE_DESC",
+    });
+    return {
+      id: `us-cbp-cross-${code}`,
+      country: "United States",
+      name: `CBP CROSS rulings - HTS ${term}`,
+      domain: "rulings.cbp.gov",
+      url: `https://rulings.cbp.gov/api/search?${params.toString()}`,
+      regulationType: "customs",
+      reliabilityStatus: "working",
+      parser: "cbp-cross-json",
+      view: "us-cbp-cross",
+      rawFilename: `us-cbp-cross-${code}.json`,
+      timeoutMs: 30_000,
+      profileCodes: [code],
+      emptyStateMarker: '"totalHits":',
+      notes:
+        "Official CBP CROSS application API search scoped to one recorded HTS-6 code; rulings are research evidence, not a binding classification for another product.",
+    };
+  });
+}
+
+function htsSearchSources(profile?: SourceSelectionProfile | null): SourceDefinition[] {
+  return normalizedHts6Codes(profile).map((code) => {
+    const term = `${code.slice(0, 4)}.${code.slice(4)}`;
+    return {
+      id: `us-usitc-hts-${code}`,
+      country: "United States",
+      name: `USITC HTS tariff data - ${term}`,
+      domain: "hts.usitc.gov",
+      url: `https://hts.usitc.gov/reststop/search?${new URLSearchParams({ keyword: term }).toString()}`,
+      regulationType: "customs",
+      reliabilityStatus: "working",
+      parser: "usitc-hts-search",
+      view: "us-hts-code",
+      rawFilename: `us-usitc-hts-${code}.json`,
+      timeoutMs: 30_000,
+      profileCodes: [code],
+      emptyStateMarker: "[]",
+      notes:
+        "Official no-key HTS search scoped to one recorded HTS-6 code. Rates and descriptions are monitored as declared-code data, not generated legal classification advice.",
+    } satisfies SourceDefinition;
+  });
 }
 
 /** A first run starts near today; it is a monitor bootstrap, not a historical audit. */
@@ -603,6 +696,169 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     activation: { profileGate: "defense" },
     notes: "State Department notices are activated only when the profile records a defense, military, space, or ITAR signal.",
   },
+  {
+    id: "us-usitc-hts-release",
+    country: "United States",
+    name: "USITC - current HTS release",
+    domain: "hts.usitc.gov",
+    url: "https://hts.usitc.gov/reststop/currentRelease",
+    regulationType: "customs",
+    reliabilityStatus: "working",
+    parser: "usitc-hts-release",
+    view: "us-hts-release",
+    rawFilename: "us-usitc-hts-release.json",
+    notes:
+      "Official no-key HTS API release marker. A changed release triggers retrieval and comparison by the HTS adapter; it is not classification advice by itself.",
+  },
+  {
+    id: "us-cbp-csms",
+    country: "United States",
+    name: "CBP - Cargo Systems Messaging Service",
+    domain: "content.govdelivery.com",
+    url: "https://content.govdelivery.com/accounts/USDHSCBP/widgets/USDHSCBP_WIDGET_2.rss",
+    regulationType: "customs",
+    reliabilityStatus: "working",
+    parser: "rss",
+    view: "us-cbp-csms",
+    rawFilename: "us-cbp-csms.xml",
+    timeoutMs: 30_000,
+    activation: { profileGate: "export" },
+    notes:
+      "Official rolling feed of the latest 100 CSMS bulletins. Polling gaps can lose messages and must remain visible as a coverage caveat.",
+  },
+  ...[
+    ["section-301", "USTR Section 301 actions", ["trade-representative-office-of-united-states"], "Section 301"],
+    ["section-232-bis", "BIS Section 232 actions", ["industry-and-security-bureau"], "Section 232"],
+    ["section-232-ita", "ITA Section 232 administration", ["international-trade-administration"], "Section 232"],
+    ["commerce-adcvd", "Commerce AD/CVD actions", ["international-trade-administration"], "antidumping countervailing duty"],
+    ["usitc-import-injury", "USITC import-injury actions", ["international-trade-commission"], "import injury"],
+    ["uflpa", "DHS UFLPA Entity List actions", ["homeland-security-department"], "UFLPA Entity List"],
+  ].map(([id, label, agencies, term]) => ({
+    id: `us-fr-${id}`,
+    country: "United States",
+    name: `Federal Register - ${label}`,
+    domain: "www.federalregister.gov",
+    url: targetedFederalRegister(agencies as string[], term as string),
+    regulationType: "trade" as const,
+    reliabilityStatus: "working" as const,
+    parser: "federal-register-json" as const,
+    view: `us-trade-${id}`,
+    rawFilename: `us-federal-register-${id}.json`,
+    timeoutMs: 30_000,
+    activation: { profileGate: "export" as const },
+    notes: `Official no-key Federal Register query targeted to ${label}; event coverage complements, but does not replace, complete inventories.`,
+  })),
+  {
+    id: "us-usitc-ids-import-injury",
+    country: "United States",
+    name: "USITC IDS - import-injury investigations",
+    domain: "ids.usitc.gov",
+    url: "https://ids.usitc.gov/idata/api/v1/advanced-search",
+    regulationType: "trade",
+    reliabilityStatus: "working",
+    parser: "usitc-ids-json",
+    view: "us-usitc-import-injury",
+    rawFilename: "us-usitc-ids-import-injury.json",
+    timeoutMs: 60_000,
+    requestMethod: "POST",
+    requestBody: JSON.stringify({
+      pageNumber: 1,
+      pageSize: 100,
+      sortColumn: "institution_start_date",
+      sortOrder: "desc",
+      criteria: [
+        {
+          field: { id: 49, name: "investigation_type_id" },
+          lines: [{ value: "Import Injury", innerOperator: "is" }],
+        },
+      ],
+      search_type: "advanced",
+    }),
+    requestHeaders: { "Content-Type": "application/json" },
+    activation: { profileGate: "export" },
+    notes:
+      "Official USITC no-key investigation search. The adapter must exhaust pagination and fail visibly on implementation-level schema drift.",
+  },
+  {
+    id: "us-ustr-section-301-hts",
+    country: "United States",
+    name: "USTR - Section 301 HTS product overlay",
+    domain: "ustr.gov",
+    url: "https://ustr.gov/themes/custom/ustr2021/tariff/hts_new.json",
+    regulationType: "trade",
+    reliabilityStatus: "working",
+    parser: "ustr-301-json",
+    view: "us-ustr-section-301",
+    rawFilename: "us-ustr-section-301-hts.json",
+    timeoutMs: 45_000,
+    activation: { profileGate: "export" },
+    emptyStateMarker: '"HTS_id"',
+    notes:
+      "Official USTR product-search dataset used as a secondary HTS overlay. Federal Register notices and HTS releases remain the legal change signals.",
+  },
+  {
+    id: "us-trade-csl",
+    country: "United States",
+    name: "Trade.gov - Consolidated Screening List snapshot",
+    domain: "data.trade.gov",
+    url: "https://data.trade.gov/downloadable_consolidated_screening_list/v1/consolidated.json",
+    regulationType: "licensing",
+    reliabilityStatus: "working",
+    parser: "dataset-snapshot-json",
+    view: "us-screening-list-snapshot",
+    rawFilename: "us-trade-csl.json",
+    timeoutMs: 90_000,
+    activation: { profileGate: "export" },
+    notes:
+      "Official keyless CSL bulk snapshot for change detection and local party matching. A no-hit result does not establish ownership, end-use, or license clearance.",
+  },
+  {
+    id: "us-cbp-forced-labor",
+    country: "United States",
+    name: "CBP - forced-labor announcements",
+    domain: "www.cbp.gov",
+    url: "https://www.cbp.gov/rss/trade/forced-labor",
+    regulationType: "trade",
+    reliabilityStatus: "working",
+    parser: "rss",
+    view: "us-forced-labor-announcements",
+    rawFilename: "us-cbp-forced-labor.xml",
+    activation: { profileGate: "export" },
+    notes:
+      "Official announcement overlay with a small rolling feed; it is not the authoritative UFLPA or WRO inventory.",
+  },
+  {
+    id: "us-dhs-uflpa-entities",
+    country: "United States",
+    name: "DHS - UFLPA Entity List snapshot",
+    domain: "www.dhs.gov",
+    url: "https://www.dhs.gov/uflpa-entity-list",
+    regulationType: "trade",
+    reliabilityStatus: "working",
+    parser: "uflpa-html",
+    view: "us-uflpa-entity-snapshot",
+    rawFilename: "us-dhs-uflpa-entities.html",
+    timeoutMs: 45_000,
+    activation: { profileGate: "export" },
+    notes:
+      "Official current UFLPA statutory-list tables. Entity identity retains statutory sublist membership because one entity can appear in multiple tables.",
+  },
+  {
+    id: "us-cbp-wro-findings",
+    country: "United States",
+    name: "CBP - Withhold Release Orders and Findings",
+    domain: "www.cbp.gov",
+    url: "https://www.cbp.gov/document/stats/withhold-release-orders-findings",
+    regulationType: "trade",
+    reliabilityStatus: "working",
+    parser: "cbp-wro-csv",
+    view: "us-cbp-wro-findings",
+    rawFilename: "us-cbp-wro-findings.csv",
+    timeoutMs: 45_000,
+    activation: { profileGate: "export" },
+    notes:
+      "Official discovery page for the latest complete WRO/Findings CSV. Missing records are revisions to investigate, not automatic evidence of revocation.",
+  },
   ...[
     [29, "labor", "Labor and OSHA"],
     [40, "environment", "Environmental protection"],
@@ -894,9 +1150,17 @@ export function selectMonitoredSources(
   }
   if (country !== "United States") return { sources: candidates, coverageCaveats: [] };
 
-  const active = candidates
-    .filter((source) => sourceIsActive(source, profile, options))
-    .map((source) => refreshDynamicUrl(source, options));
+  const active = [
+    ...candidates
+      .filter((source) => sourceIsActive(source, profile, options))
+      .map((source) =>
+        source.id === "us-ustr-section-301-hts"
+          ? { ...source, profileCodes: normalizedHts6Codes(profile) }
+          : source,
+      ),
+    ...htsSearchSources(profile),
+    ...crossSources(profile),
+  ].map((source) => refreshDynamicUrl(source, options));
   const coverageCaveats: string[] = [];
   const facilities = profile?.facilityAddresses ?? [];
   const distribution = profile?.distributionStates ?? [];
@@ -931,10 +1195,36 @@ export function selectMonitoredSources(
     coverageCaveats.push(
       "BIS, Census/FTR, OFAC, CBP, and export eCFR feeds were not activated because no U.S. export classification, code, or destination is recorded.",
     );
+  } else {
+    coverageCaveats.push(
+      "No complete free public HTS-to-PGA requirements feed exists. PGA applicability and required ACE data elements remain manual-assisted and must not be represented as fully checked.",
+    );
+    const recordedHtsCodes = [
+      ...new Set(
+        (profile?.htsScheduleBCodes ?? [])
+          .map(({ code }) => code.replace(/\D/g, ""))
+          .filter((code) => code.length >= 6)
+          .map((code) => code.slice(0, 6)),
+      ),
+    ];
+    if (!recordedHtsCodes.length) {
+      coverageCaveats.push(
+        "CBP CROSS code-specific ruling searches were not activated because no valid six-digit HTS or Schedule B code is recorded.",
+      );
+    } else if (recordedHtsCodes.length > CROSS_PROFILE_CODE_LIMIT) {
+      coverageCaveats.push(
+        `CBP CROSS searches were limited to the first ${CROSS_PROFILE_CODE_LIMIT} distinct recorded HTS-6 codes; ${recordedHtsCodes.length - CROSS_PROFILE_CODE_LIMIT} additional codes remain outside this run.`,
+      );
+    }
   }
   if (!options.lastCompletedAt && active.some((source) => source.parser === "ecfr-versions-json")) {
     coverageCaveats.push(
       `eCFR bootstrap coverage begins ${ecfrWindowStart(options)}. Earlier amendments were not historically audited by this monitor.`,
+    );
+  }
+  if (!options.lastCompletedAt && active.some((source) => source.parser === "federal-register-json")) {
+    coverageCaveats.push(
+      `Federal Register bootstrap coverage begins ${ecfrWindowStart(options)}. Earlier documents were not historically audited by this monitor.`,
     );
   }
 
@@ -951,6 +1241,12 @@ function refreshDynamicUrl(
     return { ...source, windowStart: since.toISOString().slice(0, 10) };
   }
   if (source.id === "us-cpsc-recalls") return { ...source, url: cpscRecentRecalls() };
+  if (source.parser === "federal-register-json") {
+    const url = new URL(source.url);
+    const windowStart = ecfrWindowStart(options);
+    url.searchParams.set("conditions[publication_date][gte]", windowStart);
+    return { ...source, url: url.toString(), windowStart, emptyStateMarker: '"count":0' };
+  }
   // The eCFR window is relative to today, so it has to be recomputed per run —
   // the registry is built once at module load and a long-lived server would
   // otherwise keep asking for a window that ages with the process.

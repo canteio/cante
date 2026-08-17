@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { load } from "cheerio";
@@ -190,7 +191,11 @@ async function fetchSource(
 
     await mkdir(rawDir, { recursive: true });
     const rawPath = source.rawFilename ? path.join(rawDir, source.rawFilename) : null;
-    if (rawPath) await writeFile(rawPath, html, "utf-8");
+    if (rawPath) {
+      const rawContent =
+        String(source.parser) === "cbp-wro-csv" ? unwrapCbpWroCsv(html).csv : html;
+      await writeFile(rawPath, rawContent, "utf-8");
+    }
 
     const entries = parseEntries(html, source);
 
@@ -226,16 +231,32 @@ async function fetchSourceContent(source: SourceDefinition): Promise<string> {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), source.timeoutMs ?? TIMEOUT_MS);
     try {
-      if (source.parser === "ecfr-versions-json") {
+      const parser = String(source.parser ?? "kemendag");
+      if (parser === "ecfr-versions-json") {
         return await fetchAllEcfrPages(source, controller.signal);
       }
-      if (source.parser === "setneg-json") {
+      if (parser === "federal-register-json") {
+        return await fetchAllFederalRegisterPages(source, controller.signal);
+      }
+      if (parser === "setneg-json") {
         return await fetchAllSetnegPages(source, controller.signal);
       }
-      if (source.parser === "surabaya-regulations-json") {
+      if (parser === "surabaya-regulations-json") {
         return await fetchAllSurabayaPages(source, controller.signal);
       }
-      return await fetchText(source.url, source, controller.signal);
+      if (parser === "usitc-ids-json") {
+        return await fetchAllUsitcIdsPages(source, controller.signal);
+      }
+      if (parser === "cbp-cross-json") {
+        return await fetchAllCbpCrossPages(source, controller.signal);
+      }
+      if (parser === "cbp-wro-csv") {
+        return await fetchCbpWroCsv(source, controller.signal);
+      }
+      return await fetchText(source.url, source, controller.signal, {
+        method: source.requestMethod ?? "GET",
+        ...(source.requestBody ? { body: source.requestBody } : {}),
+      });
     } catch (error) {
       lastError = error;
       const message = error instanceof Error ? error.message : String(error);
@@ -265,6 +286,91 @@ async function fetchText(
   });
   if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
   return res.text();
+}
+
+/** Discover CBP's dated WRO export from its stable index, then retain both URLs. */
+async function fetchCbpWroCsv(source: SourceDefinition, signal: AbortSignal): Promise<string> {
+  const indexHtml = await fetchText(source.url, source, signal);
+  const $ = load(indexHtml);
+  const candidates = $("a[href]")
+    .map((_, element) => absolutizeUrl($(element).attr("href") ?? "", source.url))
+    .get()
+    .filter((url) => /\.csv(?:$|[?#])/i.test(url));
+
+  if (candidates.length === 0) {
+    throw new Error("CBP WRO index did not contain a CSV download link");
+  }
+
+  const csvUrl = [...new Set(candidates)].sort((a, b) => {
+    const dateA = extractSortableUrlDate(a);
+    const dateB = extractSortableUrlDate(b);
+    return dateB.localeCompare(dateA);
+  })[0];
+  const response = await fetch(csvUrl, {
+    headers: { ...HEADERS, ...source.requestHeaders },
+    signal,
+  });
+  if (!response.ok) throw new Error(`HTTP ${response.status} ${response.statusText}`);
+  const bytes = await response.arrayBuffer();
+  const prefix = new Uint8Array(bytes, 0, Math.min(3, bytes.byteLength));
+  const utf8Bom = prefix[0] === 0xef && prefix[1] === 0xbb && prefix[2] === 0xbf;
+  const csv = new TextDecoder(utf8Bom ? "utf-8" : "windows-1252").decode(bytes);
+
+  return JSON.stringify({ indexUrl: source.url, csvUrl, csv });
+}
+
+function extractSortableUrlDate(url: string): string {
+  const ymd = url.match(/\b(20\d{2})[-_/](\d{1,2})[-_/](\d{1,2})\b/);
+  if (ymd) return `${ymd[1]}-${ymd[2].padStart(2, "0")}-${ymd[3].padStart(2, "0")}`;
+  const yearMonth = url.match(/\b(20\d{2})[-_/](\d{1,2})\b/);
+  return yearMonth ? `${yearMonth[1]}-${yearMonth[2].padStart(2, "0")}-00` : "";
+}
+
+/** Exhaust the implementation-level IDS API; a partial case inventory is unchecked. */
+async function fetchAllUsitcIdsPages(
+  source: SourceDefinition,
+  signal: AbortSignal,
+): Promise<string> {
+  if (source.requestMethod !== "POST" || !source.requestBody) {
+    return fetchText(source.url, source, signal);
+  }
+  const request = JSON.parse(source.requestBody) as Record<string, unknown>;
+  const pageSize = Number(request.pageSize ?? 100);
+  if (!Number.isInteger(pageSize) || pageSize < 1) {
+    throw new Error("USITC IDS request contained an invalid pageSize");
+  }
+
+  const cases: unknown[] = [];
+  let pageNumber = 1;
+  let totalRecords = 0;
+  let first: Record<string, unknown> | null = null;
+  do {
+    const text = await fetchText(source.url, source, signal, {
+      method: "POST",
+      body: JSON.stringify({ ...request, pageNumber, pageSize }),
+    });
+    const payload = JSON.parse(text) as unknown;
+    if (!isRecord(payload) || !Array.isArray(payload.cases)) {
+      throw new Error(`USITC IDS page ${pageNumber} did not contain a cases array`);
+    }
+    const count = Number(payload.totalRecords);
+    if (!Number.isInteger(count) || count < 0) {
+      throw new Error(`USITC IDS page ${pageNumber} contained invalid totalRecords`);
+    }
+    if (first === null) {
+      first = payload;
+      totalRecords = count;
+    } else if (count !== totalRecords) {
+      throw new Error(`USITC IDS totalRecords changed during pagination (${totalRecords} to ${count})`);
+    }
+    cases.push(...payload.cases);
+    if (payload.cases.length === 0 && cases.length < totalRecords) {
+      throw new Error(`USITC IDS pagination stopped at ${cases.length} of ${totalRecords}`);
+    }
+    pageNumber += 1;
+  } while (cases.length < totalRecords);
+
+  return JSON.stringify({ ...first, cases, totalRecords });
 }
 
 const SETNEG_TYPES = ["UU", "PERPU", "PP", "PERPRES", "KEPPRES", "INPRES"] as const;
@@ -403,8 +509,75 @@ async function fetchAllEcfrPages(
   return JSON.stringify({ ...first, content_versions: contentVersions });
 }
 
+/** Follow every documented Federal Register result page or fail the source. */
+async function fetchAllFederalRegisterPages(
+  source: SourceDefinition,
+  signal: AbortSignal,
+): Promise<string> {
+  const firstText = await fetchText(source.url, source, signal);
+  const first = JSON.parse(firstText) as Record<string, unknown>;
+  if (Number(first.count) === 0 && first.results === undefined) {
+    return JSON.stringify({ ...first, total_pages: 1, next_page_url: null, results: [] });
+  }
+  if (!Array.isArray(first.results)) {
+    throw new Error("Federal Register payload did not contain results");
+  }
+  const totalPages = Number(first.total_pages ?? 1);
+  if (!Number.isInteger(totalPages) || totalPages < 1) {
+    throw new Error(`Federal Register returned an invalid page count: ${String(first.total_pages)}`);
+  }
+
+  const results = [...first.results];
+  let nextUrl = typeof first.next_page_url === "string" ? first.next_page_url : null;
+  for (let page = 2; page <= totalPages; page += 1) {
+    if (!nextUrl) throw new Error(`Federal Register pagination stopped before page ${page}`);
+    const text = await fetchText(nextUrl, source, signal);
+    const payload = JSON.parse(text) as Record<string, unknown>;
+    if (!Array.isArray(payload.results)) {
+      throw new Error(`Federal Register page ${page} did not contain results`);
+    }
+    results.push(...payload.results);
+    nextUrl = typeof payload.next_page_url === "string" ? payload.next_page_url : null;
+  }
+  return JSON.stringify({ ...first, results, next_page_url: null });
+}
+
+/** Exhaust a profile-scoped CROSS search; one partial result page is unchecked. */
+async function fetchAllCbpCrossPages(
+  source: SourceDefinition,
+  signal: AbortSignal,
+): Promise<string> {
+  const firstText = await fetchText(source.url, source, signal);
+  const first = JSON.parse(firstText) as Record<string, unknown>;
+  if (!Array.isArray(first.rulings)) throw new Error("CBP CROSS payload did not contain rulings");
+  const totalHits = Number(first.totalHits);
+  if (!Number.isInteger(totalHits) || totalHits < first.rulings.length) {
+    throw new Error("CBP CROSS payload contained invalid totalHits");
+  }
+
+  const url = new URL(source.url);
+  const pageSize = Number(url.searchParams.get("pageSize") ?? 100);
+  if (!Number.isInteger(pageSize) || pageSize < 1) {
+    throw new Error("CBP CROSS request contained an invalid pageSize");
+  }
+  const rulings = [...first.rulings];
+  for (let page = 2; rulings.length < totalHits; page += 1) {
+    url.searchParams.set("page", String(page));
+    const text = await fetchText(url.toString(), source, signal);
+    const payload = JSON.parse(text) as Record<string, unknown>;
+    if (!Array.isArray(payload.rulings) || payload.rulings.length === 0) {
+      throw new Error(`CBP CROSS pagination stopped at ${rulings.length} of ${totalHits}`);
+    }
+    if (Number(payload.totalHits) !== totalHits) {
+      throw new Error("CBP CROSS totalHits changed during pagination");
+    }
+    rulings.push(...payload.rulings);
+  }
+  return JSON.stringify({ ...first, rulings, totalHits });
+}
+
 export function parseEntries(html: string, source: SourceDefinition): RegulationEntry[] {
-  switch (source.parser) {
+  switch (String(source.parser ?? "kemendag")) {
     case "peraturan-go-id":
       return parseAnchorRegulations(html, source, /peraturan\.go\.id\/(?:id\/)?/i);
     case "kemenkeu-home":
@@ -445,12 +618,560 @@ export function parseEntries(html: string, source: SourceDefinition): Regulation
       return parseTexasRegister(html, source);
     case "heartbeat-html":
       return parseHtmlHeartbeat(html, source);
+    case "usitc-hts-release":
+      return parseUsitcHtsRelease(html, source);
+    case "usitc-hts-search":
+      return parseUsitcHtsSearch(html, source);
+    case "cbp-cross-json":
+      return parseCbpCrossJson(html, source);
+    case "ustr-301-json":
+      return parseUstr301Json(html, source);
+    case "usitc-ids-json":
+      return parseUsitcIdsJson(html, source);
+    case "dataset-snapshot-json":
+      return parseDatasetSnapshotJson(html, source);
+    case "uflpa-html":
+      return parseUflpaHtml(html, source);
+    case "cbp-wro-csv":
+      return parseCbpWroCsv(html, source);
     case "generic-regulation":
       return parseAnchorRegulations(html, source);
     case "kemendag":
     default:
       return parseKemendagEntries(html, source);
   }
+}
+
+function parseUsitcHtsRelease(json: string, source: SourceDefinition): RegulationEntry[] {
+  const payload = JSON.parse(json) as { name?: unknown; description?: unknown; title?: unknown };
+  if (
+    !payload ||
+    typeof payload.name !== "string" ||
+    typeof payload.description !== "string" ||
+    typeof payload.title !== "string"
+  ) {
+    throw new Error("USITC HTS release payload did not contain name, description, and title");
+  }
+  const hash = contentHash(json);
+  return [
+    buildEntry(source, {
+      label: payload.name,
+      number: payload.name,
+      year: yearFromText(`${payload.name} ${payload.title}`),
+      listingTitle: payload.description,
+      fullTitle:
+        `Current official USITC HTS release: ${payload.description} (${payload.name}). ` +
+        "A release change triggers a tariff-data refresh and product rescreening; this entry is not itself a classification or party-screening result.",
+      url: withCanteFragment(source.url, `hts-release-${hash.slice(0, 16)}`),
+      textUrl: source.url,
+      documentType: "HTS release metadata",
+    }),
+  ];
+}
+
+function parseUsitcHtsSearch(json: string, source: SourceDefinition): RegulationEntry[] {
+  const payload = JSON.parse(json) as unknown;
+  if (!Array.isArray(payload)) throw new Error("USITC HTS search payload was not an array");
+  const profileCodes = sourceProfileCodes(source);
+  if (profileCodes.length === 0) return [];
+
+  return payload.flatMap((raw): RegulationEntry[] => {
+    if (!isRecord(raw)) throw new Error("USITC HTS search row was not an object");
+    const code = stringValue(raw.htsno);
+    const description = stringValue(raw.description);
+    if (!code || !description) throw new Error("USITC HTS search row lacked code or description");
+    if (!profileCodes.some((profile) => tariffCodesOverlap(code, profile))) return [];
+
+    const normalized = normalizeTariffCode(code);
+    const units = stringArrayField(raw, "units") ?? [];
+    const general = stringValue(raw.general);
+    const special = stringValue(raw.special);
+    const other = stringValue(raw.other);
+    const additional = stringValue(raw.additionalDuties);
+    return [
+      buildEntry(source, {
+        label: `HTS ${code}`,
+        number: normalized,
+        year: null,
+        listingTitle: `${code} - ${description}`,
+        fullTitle:
+          `Official USITC HTS row ${code}: ${description}.` +
+          `${units.length ? ` Units: ${units.join(", ")}.` : ""}` +
+          `${general ? ` General duty: ${general}.` : ""}` +
+          `${special ? ` Special duty: ${special}.` : ""}` +
+          `${other ? ` Column 2 duty: ${other}.` : ""}` +
+          `${additional ? ` Additional duties: ${additional}.` : ""} ` +
+          "This monitors a recorded code; it does not establish that the product was classified correctly.",
+        url: withCanteFragment(source.url, `hts-${normalized}`),
+        documentType: "HTS tariff row",
+      }),
+    ];
+  });
+}
+
+function parseCbpCrossJson(json: string, source: SourceDefinition): RegulationEntry[] {
+  const payload = JSON.parse(json) as { rulings?: unknown };
+  if (!payload || !Array.isArray(payload.rulings)) {
+    throw new Error("CBP CROSS payload did not contain a rulings array");
+  }
+  const profileCodes = sourceProfileCodes(source);
+  if (profileCodes.length === 0) return [];
+
+  return payload.rulings
+    .flatMap((raw): RegulationEntry[] => {
+      if (!isRecord(raw)) throw new Error("CBP CROSS ruling was not an object");
+      const rulingNumber = stringField(raw, "rulingNumber");
+      const subject = stringField(raw, "subject");
+      const rulingDate = stringField(raw, "rulingDate");
+      const tariffs = stringArrayField(raw, "tariffs");
+      if (!rulingNumber || !subject || !rulingDate || !tariffs) {
+        throw new Error("CBP CROSS ruling was missing required fields");
+      }
+      const matched = tariffs.filter((code) => profileCodes.some((profile) => tariffCodesOverlap(code, profile)));
+      if (matched.length === 0) return [];
+      const categories = stringField(raw, "categories");
+      const collection = stringField(raw, "collection");
+      const status = raw.operationallyRevoked === true ? "Operationally revoked" : "Current in CROSS";
+      const url = `https://rulings.cbp.gov/ruling/${encodeURIComponent(rulingNumber)}`;
+      return [
+        buildEntry(source, {
+          label: `CBP ruling ${rulingNumber}`,
+          number: rulingNumber,
+          year: yearFromText(rulingDate),
+          listingTitle: subject,
+          fullTitle:
+            `${subject}. Ruling ${rulingNumber}, dated ${rulingDate.slice(0, 10)}. ` +
+            `Matched customer HTS code(s): ${matched.join(", ")}. Status: ${status}.` +
+            `${categories ? ` Categories: ${categories}.` : ""}` +
+            `${collection ? ` Collection: ${collection}.` : ""}`,
+          url,
+          documentType: "CBP classification ruling",
+        }),
+      ];
+    });
+}
+
+function parseUstr301Json(json: string, source: SourceDefinition): RegulationEntry[] {
+  const payload = JSON.parse(json) as unknown;
+  if (!Array.isArray(payload)) throw new Error("USTR Section 301 payload was not an array");
+  const profileCodes = sourceProfileCodes(source);
+  if (profileCodes.length === 0) return [];
+
+  return payload
+    .flatMap((raw): RegulationEntry[] => {
+      if (!isRecord(raw)) throw new Error("USTR Section 301 row was not an object");
+      const rawCode = raw.HTS_id;
+      const code =
+        typeof rawCode === "number"
+          ? String(rawCode).padStart(8, "0")
+          : typeof rawCode === "string"
+            ? rawCode
+            : "";
+      const description = stringField(raw, "description");
+      const action = stringField(raw, "action_description");
+      if (!code || !description || !action) {
+        throw new Error("USTR Section 301 row was missing required fields");
+      }
+      if (!profileCodes.some((profile) => tariffCodesOverlap(code, profile))) return [];
+      const normalized = normalizeTariffCode(code);
+      const note = stringField(raw, "note");
+      return [
+        buildEntry(source, {
+          label: `Section 301 HTS ${formatTariffCode(normalized)}`,
+          number: normalized,
+          year: null,
+          listingTitle: `${formatTariffCode(normalized)} - ${description}`,
+          fullTitle:
+            `USTR Section 301 product overlay for HTS ${formatTariffCode(normalized)}: ${description}. ` +
+            `Action: ${action}.${note ? ` Note: ${note}.` : ""} ` +
+            "This mapping aid must be confirmed against the controlling Federal Register notice and current HTS release.",
+          url: withCanteFragment(source.url, `hts-${normalized}`),
+          documentType: "Section 301 product overlay",
+          action,
+        }),
+      ];
+    });
+}
+
+function parseUsitcIdsJson(json: string, source: SourceDefinition): RegulationEntry[] {
+  const payload = JSON.parse(json) as unknown;
+  if (!isRecord(payload)) throw new Error("USITC IDS payload was not an object");
+  if (Array.isArray(payload.cases)) {
+    return parseUsitcIdsAdvancedSearch(payload, source);
+  }
+  if (!Array.isArray(payload.data)) throw new Error("USITC IDS payload did not contain cases or data");
+  if (typeof payload.count !== "number" || payload.count < payload.data.length) {
+    throw new Error("USITC IDS payload contained invalid count metadata");
+  }
+  const windowStart = source.windowStart ?? "9999-12-31";
+
+  return payload.data
+    .flatMap((raw): RegulationEntry[] => {
+      if (!isRecord(raw)) throw new Error("USITC IDS investigation was not an object");
+      const type = nestedName(raw["Investigation Type"]);
+      if (type !== "Import Injury") return [];
+      const id = numberOrString(raw["Investigation ID"]);
+      const number = stringValue(raw["Investigation Number"]);
+      const title = stringValue(raw["Full Title"]);
+      const topic = stringValue(raw.Topic);
+      const status = nestedName(raw["Investigation Status"]);
+      const phase = nestedName(raw["Investigation Phase"]);
+      if (!id || !number || !title || !status || !phase) {
+        throw new Error("USITC IDS import-injury investigation was missing required fields");
+      }
+      const started = normalizeUsDate(stringValue(raw["Start Date"]) ?? "");
+      const determination = dateObjectValue(raw["Determination Date"]);
+      const isCurrent = status.toLowerCase() === "active";
+      const isRecent = Boolean(
+        (started && started >= windowStart) || (determination && determination >= windowStart),
+      );
+      if (!isCurrent && !isRecent) return [];
+      const countries = arrayNames(raw.Countries);
+      return [
+        buildEntry(source, {
+          label: `USITC ${number}`,
+          number,
+          year: yearFromText(started ?? determination ?? ""),
+          listingTitle: title,
+          fullTitle:
+            `${title}. Import Injury investigation ${number}; status ${status}; phase ${phase}.` +
+            `${topic ? ` Product/topic: ${topic}.` : ""}` +
+            `${countries.length ? ` Countries: ${countries.join(", ")}.` : ""}` +
+            `${started ? ` Started ${started}.` : ""}` +
+            `${determination ? ` Determination date ${determination}.` : ""}`,
+          url: `https://ids.usitc.gov/case/${encodeURIComponent(id)}`,
+          documentType: "USITC import-injury investigation",
+        }),
+      ];
+    })
+    .sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
+}
+
+function parseUsitcIdsAdvancedSearch(
+  payload: Record<string, unknown>,
+  source: SourceDefinition,
+): RegulationEntry[] {
+  const cases = payload.cases;
+  if (!Array.isArray(cases)) throw new Error("USITC IDS advanced search did not contain cases");
+  if (
+    typeof payload.totalRecords !== "number" ||
+    !Number.isInteger(payload.totalRecords) ||
+    payload.totalRecords < cases.length
+  ) {
+    throw new Error("USITC IDS advanced search contained invalid totalRecords");
+  }
+  const windowStart = source.windowStart ?? "9999-12-31";
+  const entries: RegulationEntry[] = [];
+
+  for (const caseRecord of cases) {
+    if (!isRecord(caseRecord) || !Array.isArray(caseRecord.level_1_investigations)) {
+      throw new Error("USITC IDS case was missing level_1_investigations");
+    }
+    for (const raw of caseRecord.level_1_investigations) {
+      if (!isRecord(raw)) throw new Error("USITC IDS investigation was not an object");
+      const type = nestedName(raw.investigation_type_id);
+      if (type !== "Import Injury") continue;
+      const id = numberOrString(raw.investigation_id);
+      const number = stringValue(raw.investigation_number);
+      const title = stringValue(raw.investigation_title);
+      const phase = nestedName(raw.investigation_phase_id);
+      const started = normalizeUsDate(stringValue(raw.institution_start_date) ?? "");
+      if (!id || !number || !title || !phase || typeof raw.is_active !== "boolean") {
+        throw new Error("USITC IDS import-injury investigation was missing required fields");
+      }
+      const status = raw.is_active ? "Active" : "Inactive";
+      if (!raw.is_active && !(started && started >= windowStart)) continue;
+      const topic = stringValue(raw.investigation_full_product);
+      entries.push(
+        buildEntry(source, {
+          label: `USITC ${number}`,
+          number,
+          year: yearFromText(started ?? ""),
+          listingTitle: title,
+          fullTitle:
+            `${title}. Import Injury investigation ${number}; status ${status}; phase ${phase}.` +
+            `${topic ? ` Product/topic: ${topic}.` : ""}` +
+            `${started ? ` Started ${started}.` : ""}`,
+          url: `https://ids.usitc.gov/case/${encodeURIComponent(id)}`,
+          documentType: "USITC import-injury investigation",
+        }),
+      );
+    }
+  }
+
+  return entries.sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
+}
+
+function parseDatasetSnapshotJson(json: string, source: SourceDefinition): RegulationEntry[] {
+  const payload = JSON.parse(json) as unknown;
+  const count = snapshotRecordCount(payload);
+  const hash = contentHash(json);
+  return [
+    buildEntry(source, {
+      label: `${source.name} dataset snapshot`,
+      number: hash.slice(0, 16),
+      year: new Date().getUTCFullYear(),
+      listingTitle: `${source.name}: ${count.toLocaleString("en-US")} records`,
+      fullTitle:
+        `${source.name} official dataset snapshot contains ${count.toLocaleString("en-US")} records; content SHA-256 ${hash}. ` +
+        "A dataset update triggers customer-party rescreening, but this dataset-change entry is not itself a party-screening result.",
+      url: withCanteFragment(source.url, `snapshot-${hash.slice(0, 16)}`),
+      documentType: "Dataset snapshot",
+    }),
+  ];
+}
+
+function parseUflpaHtml(html: string, source: SourceDefinition): RegulationEntry[] {
+  const $ = load(html);
+  const entries: RegulationEntry[] = [];
+  const seen = new Set<string>();
+
+  $("table").each((_, tableElement) => {
+    const table = $(tableElement);
+    const headers = table
+      .find("tr")
+      .first()
+      .find("th,td")
+      .map((__, cell) => cleanText($(cell).html() ?? "").toLowerCase())
+      .get();
+    const entityIndex = headers.findIndex((header) => /entity|company|name/.test(header));
+    const dateIndex = headers.findIndex((header) => /effective|date/.test(header));
+    if (entityIndex < 0) return;
+    const heading = cleanText(
+      table.prevAll("h1,h2,h3,h4,h5,h6").first().html() ?? table.find("caption").html() ?? "",
+    );
+
+    table.find("tr").slice(1).each((__, rowElement) => {
+      const cells = $(rowElement).find("th,td");
+      const entity = cleanText(cells.eq(entityIndex).html() ?? "");
+      const effective = dateIndex >= 0 ? cleanText(cells.eq(dateIndex).html() ?? "") : "";
+      if (!entity) return;
+      const key = `${heading}|${entity}`.toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+      const fragment = `uflpa-${contentHash(key).slice(0, 16)}`;
+      entries.push(
+        buildEntry(source, {
+          label: `UFLPA entity: ${entity}`,
+          number: null,
+          year: yearFromText(effective),
+          listingTitle: entity,
+          fullTitle:
+            `${entity} appears on the DHS UFLPA Entity List` +
+            `${heading ? ` under ${heading}` : ""}.` +
+            `${effective ? ` Effective date: ${effective}.` : ""} ` +
+            "This is a source-list record, not proof that a customer counterparty was screened or matched.",
+          url: withCanteFragment(source.url, fragment),
+          textUrl: source.url,
+          effectiveOn: normalizeUsDate(effective),
+          documentType: heading || "UFLPA Entity List membership",
+        }),
+      );
+    });
+  });
+
+  return entries;
+}
+
+function parseCbpWroCsv(payloadText: string, source: SourceDefinition): RegulationEntry[] {
+  const { csv, indexUrl, csvUrl } = unwrapCbpWroCsv(payloadText, source.url);
+  const rows = parseCsvRecords(csv);
+  if (rows.length === 0) return [];
+  const required = ["Effective Date", "Country", "Merchandise", "WRO/Finding", "Status", "Entity"];
+  for (const field of required) {
+    if (!Object.hasOwn(rows[0], field)) throw new Error(`CBP WRO CSV was missing required column ${field}`);
+  }
+
+  return rows.flatMap((row) => {
+    const entity = row.Entity?.trim();
+    const merchandise = row.Merchandise?.trim();
+    const type = row["WRO/Finding"]?.trim();
+    const effective = row["Effective Date"]?.trim();
+    const country = row.Country?.trim();
+    if (!entity || !merchandise || !type || !effective || !country) return [];
+    const key = `${country}|${entity}|${merchandise}|${type}|${effective}`.toLowerCase();
+    const pressRelease = row["Press Release"]?.trim();
+    return [
+      buildEntry(source, {
+        label: `${type}: ${entity}`,
+        number: null,
+        year: yearFromText(effective),
+        listingTitle: `${entity} - ${merchandise}`,
+        fullTitle:
+          `CBP ${type} record for ${entity}, ${country}; merchandise: ${merchandise}. ` +
+          `Effective date: ${effective}. Status: ${row.Status?.trim() || "not stated"}.` +
+          `${row.Industry?.trim() ? ` Industry: ${row.Industry.trim()}.` : ""}` +
+          `${row.Remarks?.trim() ? ` Remarks: ${row.Remarks.trim()}.` : ""}` +
+          `${pressRelease ? ` Press release: ${absolutizeUrl(pressRelease, indexUrl)}.` : ""} ` +
+          "This is a source-list record, not proof that a customer shipment or counterparty was screened or matched.",
+        url: withCanteFragment(indexUrl, `wro-${contentHash(key).slice(0, 16)}`),
+        textUrl: csvUrl,
+        effectiveOn: normalizeUsDate(effective),
+        documentType: `CBP ${type}`,
+      }),
+    ];
+  });
+}
+
+function unwrapCbpWroCsv(
+  payloadText: string,
+  fallbackUrl = "",
+): { csv: string; indexUrl: string; csvUrl: string } {
+  if (!payloadText.trimStart().startsWith("{")) {
+    return { csv: payloadText, indexUrl: fallbackUrl, csvUrl: fallbackUrl };
+  }
+  const payload = JSON.parse(payloadText) as { indexUrl?: unknown; csvUrl?: unknown; csv?: unknown };
+  if (
+    typeof payload.indexUrl !== "string" ||
+    typeof payload.csvUrl !== "string" ||
+    typeof payload.csv !== "string"
+  ) {
+    throw new Error("CBP WRO fetch payload was missing indexUrl, csvUrl, or csv");
+  }
+  return { indexUrl: payload.indexUrl, csvUrl: payload.csvUrl, csv: payload.csv };
+}
+
+/** RFC 4180-compatible rows, including quoted commas, escaped quotes, and newlines. */
+function parseCsvRecords(csv: string): Array<Record<string, string>> {
+  const matrix: string[][] = [];
+  let row: string[] = [];
+  let field = "";
+  let quoted = false;
+
+  for (let index = 0; index < csv.length; index += 1) {
+    const char = csv[index];
+    if (quoted) {
+      if (char === '"' && csv[index + 1] === '"') {
+        field += '"';
+        index += 1;
+      } else if (char === '"') {
+        quoted = false;
+      } else {
+        field += char;
+      }
+    } else if (char === '"' && field.length === 0) {
+      quoted = true;
+    } else if (char === ",") {
+      row.push(field);
+      field = "";
+    } else if (char === "\n" || char === "\r") {
+      if (char === "\r" && csv[index + 1] === "\n") index += 1;
+      row.push(field);
+      if (row.some((value) => value.length > 0)) matrix.push(row);
+      row = [];
+      field = "";
+    } else {
+      field += char;
+    }
+  }
+  if (quoted) throw new Error("CSV ended inside a quoted field");
+  if (field.length > 0 || row.length > 0) {
+    row.push(field);
+    if (row.some((value) => value.length > 0)) matrix.push(row);
+  }
+  if (matrix.length === 0) return [];
+  const headers = matrix[0].map((header, index) =>
+    (index === 0 ? header.replace(/^\uFEFF/, "") : header).trim(),
+  );
+  if (new Set(headers).size !== headers.length || headers.some((header) => !header)) {
+    throw new Error("CSV contained blank or duplicate headers");
+  }
+  return matrix.slice(1).map((values) =>
+    Object.fromEntries(headers.map((header, index) => [header, values[index] ?? ""])),
+  );
+}
+
+function sourceProfileCodes(source: SourceDefinition): string[] {
+  const value = (source as SourceDefinition & { profileCodes?: unknown }).profileCodes;
+  return Array.isArray(value)
+    ? value.filter((code): code is string => typeof code === "string" && normalizeTariffCode(code).length >= 6)
+    : [];
+}
+
+function normalizeTariffCode(code: string): string {
+  return code.replace(/\D/g, "");
+}
+
+function tariffCodesOverlap(left: string, right: string): boolean {
+  const a = normalizeTariffCode(left);
+  const b = normalizeTariffCode(right);
+  if (a.length < 6 || b.length < 6) return false;
+  return a.startsWith(b) || b.startsWith(a);
+}
+
+function formatTariffCode(code: string): string {
+  if (code.length <= 4) return code;
+  return `${code.slice(0, 4)}.${code.slice(4)}`;
+}
+
+function contentHash(value: string): string {
+  return createHash("sha256").update(value).digest("hex");
+}
+
+function withCanteFragment(url: string, fragment: string): string {
+  const parsed = new URL(url);
+  parsed.hash = `cante-${fragment}`;
+  return parsed.toString();
+}
+
+function snapshotRecordCount(payload: unknown): number {
+  if (Array.isArray(payload)) return payload.length;
+  if (!isRecord(payload)) throw new Error("Dataset snapshot JSON was not an array or object");
+  for (const key of ["data", "results", "records", "items"]) {
+    if (Array.isArray(payload[key])) return payload[key].length;
+  }
+  if (typeof payload.count === "number" && Number.isInteger(payload.count) && payload.count >= 0) {
+    return payload.count;
+  }
+  throw new Error("Dataset snapshot JSON did not expose records or a valid count");
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function stringValue(value: unknown): string | null {
+  return typeof value === "string" && value.trim() ? value.trim() : null;
+}
+
+function stringField(record: Record<string, unknown>, key: string): string | null {
+  return stringValue(record[key]);
+}
+
+function stringArrayField(record: Record<string, unknown>, key: string): string[] | null {
+  const value = record[key];
+  if (!Array.isArray(value) || value.some((item) => typeof item !== "string")) return null;
+  return value.map((item) => item.trim()).filter(Boolean);
+}
+
+function numberOrString(value: unknown): string | null {
+  return typeof value === "number" && Number.isFinite(value) ? String(value) : stringValue(value);
+}
+
+function nestedName(value: unknown): string | null {
+  return isRecord(value) ? stringValue(value.Name ?? value.name) : null;
+}
+
+function arrayNames(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item) => {
+    if (typeof item === "string" && item.trim()) return [item.trim()];
+    const name = nestedName(item);
+    return name ? [name] : [];
+  });
+}
+
+function dateObjectValue(value: unknown): string | null {
+  if (typeof value === "string") return normalizeUsDate(value);
+  return isRecord(value) ? normalizeUsDate(stringValue(value.date) ?? "") : null;
+}
+
+function normalizeUsDate(value: string): string | null {
+  const iso = value.match(/^(20\d{2})-(\d{2})-(\d{2})/);
+  if (iso) return `${iso[1]}-${iso[2]}-${iso[3]}`;
+  const us = value.match(/^(\d{1,2})[/-](\d{1,2})[/-](20\d{2})$/);
+  if (us) return `${us[3]}-${us[1].padStart(2, "0")}-${us[2].padStart(2, "0")}`;
+  return extractDate(value) || null;
 }
 
 function parseCpscRecallsJson(json: string, source: SourceDefinition): RegulationEntry[] {
@@ -682,7 +1403,7 @@ function parseFederalRegisterJson(json: string, source: SourceDefinition): Regul
     }>;
   };
 
-  return (payload.results ?? []).slice(0, 20).flatMap((item) => {
+  return (payload.results ?? []).flatMap((item) => {
     if (!item.title || !item.html_url || !item.document_number) return [];
     const agency = item.agencies?.map((a) => a.name).filter(Boolean).join(", ");
     const date = item.publication_date ?? "date unknown";

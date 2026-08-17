@@ -50,7 +50,7 @@ function revisionUrl(url: string, hash: string): string {
 /**
  * Persist the complete fetched inventory and return only records that need a
  * verdict. A source's first inventory is a disclosed bootstrap, not hundreds
- * of fabricated "new" changes.
+ * of fabricated "new" changes. Source order is not assumed to be chronological.
  */
 export function selectSourceChanges(
   customerId: string,
@@ -140,8 +140,8 @@ export function selectSourceChanges(
         if (baseline > 0) {
           caveats.push(
             indonesia
-              ? `${sourceEntries[0]?.sourceName ?? sourceId}: inventaris pertama mencatat ${baseline} entri katalog lama sebagai baseline tanpa audit penerapan historis; 10 entri terbaru yang belum pernah dilihat masuk ke tahap penilaian. Entri baru atau berubah berikutnya akan dideteksi otomatis.`
-              : `${sourceEntries[0]?.sourceName ?? sourceId}: first inventory baselined ${baseline} older catalogue entries without historical applicability review; the 10 newest unseen entries entered judgment. Future new or changed records are fingerprinted automatically.`,
+              ? `${sourceEntries[0]?.sourceName ?? sourceId}: inventaris pertama mencatat ${baseline} entri katalog tambahan sebagai baseline tanpa audit penerapan historis; 10 entri yang belum pernah dilihat masuk ke tahap penilaian. Entri baru atau berubah berikutnya akan dideteksi otomatis.`
+              : `${sourceEntries[0]?.sourceName ?? sourceId}: first inventory baselined ${baseline} additional catalogue entries without historical applicability review; 10 unseen entries entered judgment. Future new or changed records are fingerprinted automatically.`,
           );
         } else if (bootstrapCandidates.length > 0) {
           caveats.push(
