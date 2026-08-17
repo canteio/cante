@@ -38,7 +38,21 @@ export type SourceParser =
   | "generic-regulation";
 
 export type UsProfileGate =
+  /**
+   * Genuinely export-only: EAR/CCL, AES/EEI filing, ITAR. A company that only
+   * imports never files these.
+   */
   | "export"
+  /**
+   * Cross-border either way — Section 301/232, AD/CVD, UFLPA, forced labour,
+   * CBP operations, 19 CFR customs duties, sanctions screening.
+   *
+   * Split out from `export` because conflating the two made a domestic
+   * manufacturer importing Chinese inputs invisible to Section 301 and AD/CVD,
+   * which is where that company's money actually moves. Importing is not
+   * exporting, and neither is "not domestic".
+   */
+  | "trade"
   | "consumer-product"
   | "food-drug"
   | "electronics"
@@ -67,6 +81,15 @@ export interface SourceSelectionProfile {
   exportClassifications: Array<{ code: string }>;
   exportCountries: string[];
   regulatedProductFlags: string[];
+  /**
+   * domestic | import | export | both.
+   *
+   * Previously stored on the customer profile, rendered into prompts as a
+   * string, and attached to no behaviour at all. It now decides whether the
+   * cross-border source packs are polled, so a purely domestic manufacturer is
+   * a first-class customer rather than an exporter with missing facts.
+   */
+  sideOfTrade?: string | null;
 }
 
 export interface SourceSelection {
@@ -681,11 +704,13 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     notes: `Official no-key Federal Register API scoped to ${label}; rules and proposals are kept distinct during judgment.`,
   })),
   ...[
-    ["bis", "BIS / EAR", ["industry-and-security-bureau"]],
-    ["census", "Census / FTR", ["census-bureau"]],
-    ["ofac", "OFAC", ["foreign-assets-control-office"]],
-    ["cbp", "CBP", ["u-s-customs-and-border-protection"]],
-  ].map(([id, label, agencies]) => ({
+    // BIS/EAR and Census/AES are filings only an exporter makes. OFAC and CBP
+    // reach any cross-border movement, so an importer needs them too.
+    ["bis", "BIS / EAR", ["industry-and-security-bureau"], "export"],
+    ["census", "Census / FTR", ["census-bureau"], "export"],
+    ["ofac", "OFAC", ["foreign-assets-control-office"], "trade"],
+    ["cbp", "CBP", ["u-s-customs-and-border-protection"], "trade"],
+  ].map(([id, label, agencies, gate]) => ({
     id: `us-fr-export-${id}`,
     country: "United States",
     name: `Federal Register - ${label}`,
@@ -696,7 +721,7 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     parser: "federal-register-json" as const,
     view: `us-export-${id}`,
     rawFilename: `us-federal-register-export-${id}.json`,
-    activation: { profileGate: "export" as const },
+    activation: { profileGate: gate as UsProfileGate },
     notes: `Official no-key Federal Register API scoped to ${label} export changes.`,
   })),
   {
@@ -739,7 +764,7 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     view: "us-cbp-csms",
     rawFilename: "us-cbp-csms.xml",
     timeoutMs: 30_000,
-    activation: { profileGate: "export" },
+    activation: { profileGate: "trade" },
     notes:
       "Official rolling feed of the latest 100 CSMS bulletins. Polling gaps can lose messages and must remain visible as a coverage caveat.",
   },
@@ -762,7 +787,8 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     view: `us-trade-${id}`,
     rawFilename: `us-federal-register-${id}.json`,
     timeoutMs: 30_000,
-    activation: { profileGate: "export" as const },
+    // Section 301/232, AD/CVD, import injury and UFLPA are all import-side.
+    activation: { profileGate: "trade" as const },
     notes: `Official no-key Federal Register query targeted to ${label}; event coverage complements, but does not replace, complete inventories.`,
   })),
   {
@@ -792,7 +818,7 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
       search_type: "advanced",
     }),
     requestHeaders: { "Content-Type": "application/json" },
-    activation: { profileGate: "export" },
+    activation: { profileGate: "trade" },
     notes:
       "Official USITC no-key investigation search. The adapter must exhaust pagination and fail visibly on implementation-level schema drift.",
   },
@@ -808,7 +834,7 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     view: "us-ustr-section-301",
     rawFilename: "us-ustr-section-301-hts.json",
     timeoutMs: 45_000,
-    activation: { profileGate: "export" },
+    activation: { profileGate: "trade" },
     emptyStateMarker: '"HTS_id"',
     notes:
       "Official USTR product-search dataset used as a secondary HTS overlay. Federal Register notices and HTS releases remain the legal change signals.",
@@ -825,7 +851,7 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     view: "us-screening-list-snapshot",
     rawFilename: "us-trade-csl.json",
     timeoutMs: 90_000,
-    activation: { profileGate: "export" },
+    activation: { profileGate: "trade" },
     notes:
       "Official keyless CSL bulk snapshot for change detection and local party matching. A no-hit result does not establish ownership, end-use, or license clearance.",
   },
@@ -840,7 +866,7 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     parser: "rss",
     view: "us-forced-labor-announcements",
     rawFilename: "us-cbp-forced-labor.xml",
-    activation: { profileGate: "export" },
+    activation: { profileGate: "trade" },
     notes:
       "Official announcement overlay with a small rolling feed; it is not the authoritative UFLPA or WRO inventory.",
   },
@@ -856,7 +882,7 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     view: "us-uflpa-entity-snapshot",
     rawFilename: "us-dhs-uflpa-entities.html",
     timeoutMs: 45_000,
-    activation: { profileGate: "export" },
+    activation: { profileGate: "trade" },
     notes:
       "Official current UFLPA statutory-list tables. Entity identity retains statutory sublist membership because one entity can appear in multiple tables.",
   },
@@ -872,7 +898,7 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     view: "us-cbp-wro-findings",
     rawFilename: "us-cbp-wro-findings.csv",
     timeoutMs: 45_000,
-    activation: { profileGate: "export" },
+    activation: { profileGate: "trade" },
     notes:
       "Official discovery page for the latest complete WRO/Findings CSV. Missing records are revisions to investigate, not automatic evidence of revocation.",
   },
@@ -881,7 +907,7 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     [40, "environment", "Environmental protection"],
     [16, "consumer", "Commercial practices, FTC, and CPSC"],
     [15, "commerce", "Commerce and foreign trade", "export"],
-    [31, "sanctions", "Treasury and OFAC", "export"],
+    [31, "sanctions", "Treasury and OFAC", "trade"],
     [49, "transport", "Transportation and hazmat", "transport"],
     [21, "fda", "Food and drugs", "food-drug"],
     /*
@@ -892,7 +918,7 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
      * an exporter's duty exposure turns on. Gated on export like Title 15.
      * Live probe 16 Aug 2026: 1 substantive change in 7 days, 3 in 30.
      */
-    [19, "customs", "Customs duties, drawback, entry and valuation", "export"],
+    [19, "customs", "Customs duties, drawback, entry and valuation", "trade"],
     /*
      * 26 CFR — Internal Revenue. Ungated, matching the IRS Federal Register
      * feed. Volume was the worry and it did not materialise: 3 substantive
@@ -956,7 +982,7 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     parser: "dated-link-list",
     view: "ofac-list-updates",
     rawFilename: "us-ofac-list-updates.html",
-    activation: { profileGate: "export" },
+    activation: { profileGate: "trade" },
     notes: "Official OFAC list-change log. This detects list updates; it does not screen a customer's counterparties.",
   },
   {
@@ -1345,8 +1371,9 @@ function matchesProfileGate(
   profile?: SourceSelectionProfile | null,
 ): boolean {
   if (gate === "export") return hasExportProfile(profile);
+  if (gate === "trade") return hasTradeProfile(profile);
   const flags = (profile?.regulatedProductFlags ?? []).join(" ");
-  const patterns: Record<Exclude<UsProfileGate, "export">, RegExp> = {
+  const patterns: Record<Exclude<UsProfileGate, "export" | "trade">, RegExp> = {
     "consumer-product": /consumer|children|toy|household|recreation|apparel|textile/i,
     "food-drug": /food|beverage|drug|medical|device|cosmetic|biologic|agricultur/i,
     electronics: /electronic|radio|wireless|telecom|fcc/i,
@@ -1356,12 +1383,35 @@ function matchesProfileGate(
   return patterns[gate].test(flags);
 }
 
+/** A declared side of trade, when the customer has stated one. */
+function tradeSide(profile?: SourceSelectionProfile | null): string {
+  return (profile?.sideOfTrade ?? "").trim().toLowerCase();
+}
+
+/**
+ * Export-only sources. A stated `domestic` or `import` side suppresses them
+ * even when stray codes are on file — a declared fact beats an inferred one.
+ */
 function hasExportProfile(profile?: SourceSelectionProfile | null): boolean {
+  const side = tradeSide(profile);
+  if (side === "domestic" || side === "import") return false;
+  if (side === "export" || side === "both") return true;
   return Boolean(
     profile?.htsScheduleBCodes.length ||
       profile?.exportClassifications.length ||
       profile?.exportCountries.length,
   );
+}
+
+/**
+ * Cross-border sources, in either direction. An importer gets Section 301,
+ * AD/CVD, UFLPA and 19 CFR without ever exporting anything.
+ */
+function hasTradeProfile(profile?: SourceSelectionProfile | null): boolean {
+  const side = tradeSide(profile);
+  if (side === "domestic") return false;
+  if (side === "import" || side === "export" || side === "both") return true;
+  return hasExportProfile(profile);
 }
 
 function matchesState(value: string, state: keyof typeof STATE_ALIASES): boolean {

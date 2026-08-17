@@ -226,3 +226,60 @@ test("the IRS feed asks for the dated fields, like every other Federal Register 
   assert.ok(fields.includes("raw_text_url"));
   assert.equal(irs.regulationType, "tax");
 });
+
+test("a domestic manufacturer is a first-class customer, not an exporter with gaps", () => {
+  // The export gate used to be inferred from stray codes, so "domestic" was
+  // indistinguishable from "exporter whose facts are missing".
+  const domestic = selectMonitoredSources(
+    "United States",
+    profile({ sideOfTrade: "domestic", htsScheduleBCodes: [{ code: "6306.12" }] }),
+  );
+  const ids = new Set(domestic.sources.map((source) => source.id));
+
+  // A stated fact beats an inferred one: the stray HTS code does not reopen
+  // the cross-border packs.
+  assert.ok(!ids.has("us-fr-section-301"));
+  assert.ok(!ids.has("us-ecfr-title-19"));
+  assert.ok(!ids.has("us-bis-ear"));
+
+  // The domestic substance is still fully monitored.
+  assert.ok(ids.has("us-fr-epa"));
+  assert.ok(ids.has("us-fr-osha"));
+  assert.ok(ids.has("us-ecfr-title-29"));
+  assert.ok(ids.has("us-ecfr-title-40"));
+  assert.ok(ids.has("us-fr-irs"));
+});
+
+test("an importer gets Section 301 and 19 CFR without ever exporting", () => {
+  // The highest-value US segment: a domestic manufacturer buying foreign
+  // inputs. Conflating import with export made this company invisible to the
+  // measures that actually cost it money.
+  const importer = selectMonitoredSources("United States", profile({ sideOfTrade: "import" }));
+  const ids = new Set(importer.sources.map((source) => source.id));
+
+  assert.ok(ids.has("us-fr-section-301"), "Section 301 hits importers");
+  assert.ok(ids.has("us-ecfr-title-19"), "19 CFR is customs duties and drawback");
+  assert.ok(ids.has("us-fr-commerce-adcvd"));
+  assert.ok(ids.has("us-fr-uflpa"));
+  assert.ok(ids.has("us-fr-export-cbp"));
+
+  // But not the filings only an exporter makes.
+  assert.ok(!ids.has("us-bis-ear"), "EAR is an export control");
+  assert.ok(!ids.has("us-census-aes"), "AES/EEI is an export filing");
+
+  const exporter = selectMonitoredSources("United States", profile({ sideOfTrade: "export" }));
+  const exporterIds = new Set(exporter.sources.map((source) => source.id));
+  assert.ok(exporterIds.has("us-bis-ear"));
+  assert.ok(exporterIds.has("us-fr-section-301"), "exporters import inputs too");
+});
+
+test("every Indonesian source serves a domestic manufacturer", () => {
+  // Indonesia has no export-gated rows at all: national law, tax, environment,
+  // labor, SNI, licensing and regional rules apply whether or not anyone ships
+  // abroad. Any future export-only Indonesian source must be gated, not added
+  // to the default set.
+  const domestic = selectMonitoredSources("Indonesia", profile({ sideOfTrade: "domestic" }));
+  const all = selectMonitoredSources("Indonesia", profile({ sideOfTrade: "both" }));
+  assert.equal(domestic.sources.length, all.sources.length);
+  assert.ok(domestic.sources.length >= 10);
+});

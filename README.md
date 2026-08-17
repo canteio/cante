@@ -1,7 +1,12 @@
 # Cante — Manufacturer Compliance Monitor
 
 A country-scoped monitor of official regulatory sources, matched against one
-manufacturer's actual products and operations. Indonesia remains the deepest
+manufacturer's actual products and operations. **Export is optional** — a purely
+domestic factory is a first-class customer, and `sideOfTrade`
+(`domestic | import | export | both`) decides whether cross-border sources are
+polled. All 13 Indonesian sources and 29 of 52 US sources apply to a domestic
+manufacturer; an importer additionally gets Section 301, AD/CVD, UFLPA and
+19 CFR without ever exporting. Indonesia remains the deepest
 flagship pack; the United States pack keeps domestic manufacturing,
 distribution, and exports as separate coverage tracks. It alerts **only when
 something genuinely relevant changed**.
@@ -31,7 +36,9 @@ minutes — it fetches listings first, then detail pages for plausible candidate
 
 | Command | What it does |
 |---|---|
-| `npm run check` | Same check, from the terminal. Identical code path to the button — this is what a cron entry would call. |
+| `npm run check` | Same check, from the terminal. Identical code path to the button. |
+| `npm run check:scheduled` | The cron entrypoint: runs the check, sends the result to Telegram, exits with a code cron can act on. Announces its own failures — silence never means "all clear". |
+| `npm run check:scheduled -- --verify` | Confirm the Telegram bot and chat work before relying on them. |
 | `CANTE_COUNTRY="United States" npm run check` | Run the US source pack from the terminal. |
 | `npm test` | Run focused source-window, pagination, and parser regression tests. |
 | `npm run build` | Production build. |
@@ -68,7 +75,7 @@ decision, not something an unset variable can trigger. Validation lives *above*
 the seam (providers return raw text; one Zod schema parses it), so they can't
 drift into accepting different shapes.
 
-Delivery is manual: open the run, copy the "ready to send" block into WhatsApp. Automating that is a deliberate fast-follow, not a v1 blocker.
+Delivery: `npm run check:scheduled` pushes each run to Telegram — including the quiet days and the failures — so the operator knows the check ran without opening anything. Forwarding to the customer on WhatsApp is still a deliberate manual step. Automating that is a deliberate fast-follow, not a v1 blocker.
 
 ### The design constraint everything follows from
 

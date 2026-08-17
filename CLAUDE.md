@@ -1,8 +1,16 @@
 # Cante — working notes for agents
 
-Daily automated check of Indonesian government trade sources, matched against one
-exporter's product, producing a plain-language alert only when something genuinely
-changed. First customer: **MA**, PVC tarpaulin manufacturer, Surabaya.
+Daily automated check of official government sources, matched against one
+manufacturer's actual operations, producing a plain-language alert only when
+something genuinely changed. First customer: **MA**, PVC tarpaulin
+manufacturer, Surabaya.
+
+**Not export-only.** A purely domestic manufacturer is a first-class customer:
+every one of the 13 Indonesian sources — national law, tax, environment, labor
+and OHS, SNI, KBLI/OSS licensing, regional Perda — applies whether or not
+anything ships abroad, and 29 of 52 US sources are domestic. `sideOfTrade`
+(`domestic | import | export | both`) decides whether the cross-border packs are
+polled at all.
 
 Business model is Vanta's, pointed at Indonesian *export* compliance: watch
 something automatically, alert on change, charge monthly, sell to businesses too
@@ -41,6 +49,8 @@ being audited.
 npm run dev        # Next.js at localhost:3000
 npm run check      # same code path as POST /api/checks, from the terminal
 CANTE_COUNTRY="United States" npm run check  # run the US pack
+npm run check:scheduled            # the cron entrypoint: run, deliver, exit with a code
+npm run check:scheduled -- --verify # confirm the Telegram bot and chat work
 npm run db:push    # apply lib/db/schema.ts to cante.db
 npm run db:seed    # seed sources + MA from config/customer.json
 npm test           # focused source-window/parser regression tests
@@ -67,6 +77,7 @@ lib/checks/       judge.ts (prompt + Zod schema) · run.ts (fetch → judge → 
                   lifecycle.ts (amends/revokes/supersedes links + favourable/unfavourable direction)
 lib/catalogue/    products.ts (SKUs + CSV import) · classifications.ts (tiered code history + approval)
                   lanes.ts (trade lanes, suppliers) · csv.ts (quote-correct reader, no dependency)
+lib/delivery/     telegram.ts (Bot API, chunking) · dispatch.ts (run → message, with honest delivery states)
 lib/classification/ suggest.ts (retrieval-grounded HTS suggestions; lead-only, adopt-then-approve)
 lib/tariff/       duty-expression.ts (rate strings → numbers, or an honest refusal) · rates.ts (USITC HTS lookup, quote, compare)
 lib/substances/   bom.ts (components, declared substances, restriction lists, four-verdict assessment)
@@ -80,7 +91,7 @@ app/              page.tsx (Checks) · checklist/ · chat/ · memory/ · catalog
                   api/{checks,checklist,chat,customers,memories,screening,products,classifications,lanes,documents,workqueue,suppliers,tariff,substances}
 components/       dashboard/ · checklist/ · memory/ · chat/ (chat-panel.tsx reads the SSE stream · markdown.tsx renders answers)
                   catalogue/ · documents/ · workqueue/ · suppliers/ (the Operations screens)
-scripts/          seed.ts (sources + source packs + MA) · run-check.ts
+scripts/          seed.ts (sources + source packs + MA) · run-check.ts · scheduled-check.ts (cron)
 mike-main/        reference copy of another project — design source, gitignored,
                   excluded in tsconfig (else `next build` compiles its backend)
 uigen-claude/     reference copy used for chat streaming/thinking UI patterns,
@@ -323,6 +334,99 @@ overwrites `.next` underneath the dev server and it starts serving stale CSS wit
 no error. Symptom: edits to `globals.css` silently don't appear. Fix: kill dev,
 `rm -rf .next`, restart.
 
+## Scheduling and delivery (added 17 Aug 2026)
+
+`npm run check` is for a human at a terminal. `npm run check:scheduled` is for
+07:00 with nobody watching, and the entire difference is failure handling.
+
+**The rule this layer exists to enforce: silence must never be ambiguous.** A
+monitor that goes quiet when it breaks teaches its reader that no message means
+all clear — which is the most expensive way this product can fail, and it is a
+delivery bug rather than a judgment bug. So every outcome produces a message,
+including the failures, and the exit code tells cron what happened:
+
+| Exit | Meaning |
+|---|---|
+| 0 | Ran, delivered (or skipped because no channel is configured) |
+| 1 | Setup problem — no customer, or `--verify` found the bot unusable |
+| 2 | The check crashed or ended non-`complete`; a failure notice was sent |
+| 3 | The check ran but a *configured* channel refused the message |
+
+`alerts.deliveryStatus` distinguishes four states, and the distinction is
+load-bearing:
+
+- `pending` — written, nothing attempted yet
+- `skipped` — **no channel configured; nobody tried.** Legitimate during the
+  pilot, where the last mile is deliberately manual
+- `failed` — attempted and rejected. `deliveryError` keeps the reason verbatim,
+  `deliveryAttempts` counts
+- `delivered` — arrived, with `deliveredAt`
+
+Collapsing `skipped` and `failed` would report a broken bot as a quiet day.
+`deliveryHealth()` counts consecutive failures so a channel that has been dead
+for a week is visible rather than merely absent.
+
+**Telegram is for the operator, not the customer.** Indonesian businesses live
+on WhatsApp, and the WhatsApp Business API needs Meta approval, a verified
+business and per-message fees — none of which belongs in a 14-day pilot.
+Telegram is free and needs one BotFather token. The pilot shape is: Telegram
+notifies the operator, the operator forwards on WhatsApp. Nothing in
+`lib/delivery/` should ever be described as delivering to the customer.
+
+Messages are sent as **plain text**, not Markdown: Telegram's parser rejects
+unescaped `_`, `*`, `[` and `.`, which appear constantly in regulation numbers
+and URLs, and one parse error would drop the whole alert. Long alerts chunk on
+line boundaries at the 4096-character ceiling — a truncated coverage caveat is
+worse than a second message.
+
+### Setting it up
+
+```bash
+# 1. Get a token from @BotFather, then your chat id from @userinfobot
+export TELEGRAM_BOT_TOKEN="123456:ABC..."
+export TELEGRAM_CHAT_ID="987654321"
+
+# 2. Optional but recommended — a dead-man's switch (see below)
+export CANTE_HEARTBEAT_URL="https://hc-ping.com/your-uuid"
+
+# 3. Confirm Telegram works before trusting it nightly
+npm run check:scheduled -- --verify
+```
+
+**Schedule with `launchd`, not `cron`, on macOS.** launchd runs a missed
+`StartCalendarInterval` job **on wake**; cron silently skips it. For a machine
+that sleeps — which is every laptop — that difference is the whole job. The
+LaunchAgent needs `/bin/zsh -lc` so the shell profile loads and the `claude`
+CLI is on PATH, and `EnvironmentVariables` for the tokens, because a
+LaunchAgent does not inherit a terminal's environment.
+
+**Not GitHub Actions.** Two independent blockers: a runner cannot use the local
+Claude Code login (so it needs an API key, breaking rule 1), and runners are
+ephemeral while `cante.db` holds the run history and the seen-log that stops a
+regulation being reported twice. Scheduled workflows are also routinely delayed
+and are auto-disabled after 60 days of repo inactivity.
+
+### The dead-man's switch
+
+`notifyRunFailure()` covers a check that ran and broke. It cannot cover **the
+machine being off** — power cut, OS update reboot, unplugged laptop — and that
+produces exactly the silence this layer exists to prevent.
+
+So a successful run POSTs to `CANTE_HEARTBEAT_URL` and a failed one POSTs to
+`<url>/fail`. If the ping stops arriving, the watcher tells you from
+infrastructure the Mac cannot take down with it. Any provider works
+(Healthchecks.io, Better Stack, Cronitor). Unset the variable and the mechanism
+disappears entirely.
+
+Heartbeat errors are swallowed on purpose: a watcher that is unreachable must
+never turn a healthy run into a failed one.
+
+⚠️ **Cron does not solve rule 1.** The check still runs through the local
+`claude-code` CLI, so the machine must be awake and logged in. Running it on a
+server means implementing `lib/llm/api.ts` and accepting API spend — roughly
+$4/month, half that on the Batch API. That decision is the user's and has not
+been made; nothing here presumes it.
+
 ## Memory
 
 Two separate things, both new:
@@ -561,6 +665,43 @@ it reaches a customer. Related and already recorded elsewhere in this file: bea
 keluar applies only to listed commodities (CPO, minerals, wood, leather, cocoa),
 which is the same fact as the HPE decrees flooding the Kemendag feed never
 touching PVC tarpaulin.
+
+### `sideOfTrade` is a real switch, and import is not export
+
+`customer_profiles.sideOfTrade` existed from the beginning, was rendered into
+prompts as a bare string, and drove no behaviour. Source selection instead
+*inferred* export from stray HTS/ECCN/country facts, which made "domestic
+manufacturer" indistinguishable from "exporter whose facts are missing" — the
+one thing rule 2 is supposed to prevent. It now threads from the customer
+profile into `SourceSelectionProfile` and gates the cross-border packs. A stated
+fact beats an inferred one: `domestic` suppresses those sources even when a
+stray code is on file.
+
+**The gate was also split, because conflating import with export hid the segment
+that actually pays.** A domestic manufacturer buying Chinese inputs eats Section
+301, AD/CVD and UFLPA directly, and none of it was reaching them.
+
+| Gate | Covers | Activates for |
+|---|---|---|
+| `export` | EAR/CCL, Census AES/EEI, ITAR, 15 CFR | `export`, `both` |
+| `trade` | Section 301/232, AD/CVD, import injury, UFLPA, forced labour, CBP, CSMS, OFAC, CSL, 19 CFR, 31 CFR | `import`, `export`, `both` |
+
+Measured after the split — US has 52 active rows, 5 export-gated, 18 trade-gated:
+
+| Side of trade | Sources selected | Section 301 | 19 CFR | EAR |
+|---|---|---|---|---|
+| `domestic` | 10 | no | no | no |
+| `import` | 28 | **yes** | **yes** | no |
+| `export` / `both` | 33 | yes | yes | yes |
+
+Indonesia has **zero** export-gated rows: `domestic` and `both` select the same
+13 sources. Any future export-only Indonesian source must be gated rather than
+added to the default set — there is a test asserting this.
+
+The Indonesian judgment prompt was also export-framed ("one specific exporter's
+product") and now reads the side of trade and says plainly that a domestic
+manufacturer is normal, with KBLI/OSS/SNI/environment/labor/tax/Perda as the
+substance instead of export licensing.
 
 ### ⚠️ Both US APIs must be asked for what you need
 

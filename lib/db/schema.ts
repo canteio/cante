@@ -273,11 +273,21 @@ export const alerts = sqliteTable("alerts", {
   checkRunId: text("check_run_id").references(() => checkRuns.id),
   /** The full ready-to-send message body. */
   body: text("body").notNull(),
-  /** whatsapp | email | manual */
+  /** whatsapp | telegram | email | manual */
   channel: text("channel").notNull().default("manual"),
-  /** pending | delivered | skipped */
+  /**
+   * pending | delivered | failed | skipped
+   *
+   * `failed` and `skipped` are separate on purpose. Skipped means no channel
+   * was configured — nobody tried. Failed means we tried and it did not
+   * arrive. A monitoring product that cannot tell those apart will report a
+   * silent outage as a quiet day.
+   */
   deliveryStatus: text("delivery_status").notNull().default("pending"),
   deliveredAt: text("delivered_at"),
+  /** Why a delivery failed, kept verbatim for the operator. */
+  deliveryError: text("delivery_error"),
+  deliveryAttempts: integer("delivery_attempts").notNull().default(0),
   createdAt: text("created_at").notNull().default(now),
 });
 

@@ -76,9 +76,11 @@ export const JudgmentSchema = z.object({
 
 export type Judgment = z.infer<typeof JudgmentSchema>;
 
-const SYSTEM_PROMPT = `You are the judgment stage of an Indonesian export-compliance monitor.
+const SYSTEM_PROMPT = `You are the judgment stage of an Indonesian compliance monitor for one manufacturer.
 
-Your job is to read regulation listings the way an experienced person would, and decide honestly whether anything genuinely affects one specific exporter's product. You are not a keyword matcher. Most relevant regulations will not contain the product's name in the title.
+Your job is to read regulation listings the way an experienced person would, and decide honestly whether anything genuinely affects this specific company. You are not a keyword matcher. Most relevant regulations will not contain the product's name in the title.
+
+The company may export, import, or sell only domestically — "Side of trade" below says which. Do not assume export. A purely domestic manufacturer is a normal customer, and for one, export licensing and customs procedure are irrelevant while KBLI licensing, OSS, SNI product standards, environmental permits, labor and OHS rules, tax administration, and local Perda are the substance of the job. Judge against what this company actually does.
 
 Accuracy matters more than having something to report. Nothing-to-report is the expected outcome on most days — genuinely relevant changes for a single product category are rare, and a quiet alert is the product working, not failing.
 

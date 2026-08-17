@@ -77,7 +77,7 @@ export async function runCheck(
       .get();
     const selection = selectMonitoredSources(
       jurisdiction,
-      sourceProfileWithConfirmedMemory(jurisdictionProfile, memoryRows),
+      sourceProfileWithConfirmedMemory(jurisdictionProfile, memoryRows, target.profile.sideOfTrade),
       {
         lastCompletedAt: previousRun?.completedAt ?? null,
         locations:
@@ -258,11 +258,29 @@ export async function runCheck(
   }
 }
 
+/** All-empty selection facts, used when only the side of trade is known. */
+function emptySelectionProfile(): Omit<SourceSelectionProfile, "sideOfTrade"> {
+  return {
+    facilityAddresses: [],
+    products: [],
+    distributionStates: [],
+    labelsClaims: [],
+    htsScheduleBCodes: [],
+    exportClassifications: [],
+    exportCountries: [],
+    regulatedProductFlags: [],
+  };
+}
+
 function sourceProfileWithConfirmedMemory(
   profile: JurisdictionProfile | null,
   memories: Memory[],
+  sideOfTrade?: string | null,
 ): SourceSelectionProfile | null {
-  if (!profile) return null;
+  // A stated side of trade is a fact about the customer, not about a
+  // jurisdiction, so it comes off the customer profile and is threaded in here
+  // rather than duplicated per country.
+  if (!profile) return sideOfTrade ? { ...emptySelectionProfile(), sideOfTrade } : null;
   const confirmed = memories.filter((memory) => memory.confirmed);
   const values = (kind: string) =>
     confirmed.filter((memory) => memory.kind === kind).map((memory) => memory.content);
@@ -270,6 +288,7 @@ function sourceProfileWithConfirmedMemory(
     values(kind).map((content) => ({ code: content.match(pattern)?.[0] ?? content }));
 
   return {
+    sideOfTrade: sideOfTrade ?? null,
     facilityAddresses: [...profile.facilityAddresses, ...values("location")],
     products: [...profile.products, ...values("product")],
     distributionStates: [...profile.distributionStates, ...values("distribution_state")],
