@@ -6,6 +6,7 @@ import {
   ingestDocument,
   listDocumentFindings,
   listDocuments,
+  priceDocumentFindings,
   promoteCodesFromDocument,
 } from "@/lib/documents/audit";
 
@@ -57,14 +58,25 @@ export async function POST(request: Request) {
       });
       // Audit immediately — an uploaded document nobody checked is worth
       // nothing, and the parse status travels with the result either way.
-      const findings = auditDocument(document.id);
-      return Response.json({ document, findings });
+      auditDocument(document.id);
+      // Price the mismatches straight away: a code discrepancy without its
+      // duty consequence is the compliance half of a business fact.
+      await priceDocumentFindings(document.id).catch(() => undefined);
+      return Response.json({ document, findings: listDocumentFindings(document.id) });
     }
 
     if (action === "audit") {
       const documentId = payload.documentId as string;
       if (!documentId) return Response.json({ error: "documentId is required." }, { status: 400 });
-      return Response.json({ findings: auditDocument(documentId) });
+      auditDocument(documentId);
+      await priceDocumentFindings(documentId).catch(() => undefined);
+      return Response.json({ findings: listDocumentFindings(documentId) });
+    }
+
+    if (action === "price") {
+      const documentId = payload.documentId as string;
+      if (!documentId) return Response.json({ error: "documentId is required." }, { status: 400 });
+      return Response.json({ findings: await priceDocumentFindings(documentId) });
     }
 
     if (action === "promote") {

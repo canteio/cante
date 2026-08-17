@@ -21,6 +21,9 @@ type DocFinding = {
   documentValue: string | null;
   expectedValue: string | null;
   expectationTier: string;
+  dutyDifference: number | null;
+  dutyCurrency: string;
+  dutyBasis: string[];
 };
 
 type TradeDoc = {
@@ -231,6 +234,22 @@ export function DocumentsPanel({ country }: { country: JurisdictionName }) {
                           {finding.expectationTier} tier)
                         </div>
                       )}
+                      {finding.dutyDifference !== null && (
+                        <div className="strong">
+                          Duty difference: {finding.dutyCurrency}{" "}
+                          {finding.dutyDifference.toLocaleString()}
+                          {finding.dutyDifference > 0
+                            ? " — the declared code paid less than the catalogue code would."
+                            : finding.dutyDifference < 0
+                              ? " — the declared code paid more than the catalogue code would."
+                              : " — no difference at published rates."}
+                        </div>
+                      )}
+                      {finding.dutyBasis?.map((line, index) => (
+                        <div key={index} className="code-basis muted">
+                          {line}
+                        </div>
+                      ))}
                     </div>
                   ))}
                 </div>

@@ -64,16 +64,20 @@ lib/screening/    csl.ts (bounded, cached exact-name matching against Trade.gov 
                   persist.ts (screens as dated, auditable events; `error` is never `clear`)
 lib/checks/       judge.ts (prompt + Zod schema) · run.ts (fetch → judge → store) · checklist.ts (living obligations)
                   facts.ts (HS/KBLI tiers — the one answer to "what is established") · coverage.ts (entries in, verdicts out)
+                  lifecycle.ts (amends/revokes/supersedes links + favourable/unfavourable direction)
 lib/catalogue/    products.ts (SKUs + CSV import) · classifications.ts (tiered code history + approval)
                   lanes.ts (trade lanes, suppliers) · csv.ts (quote-correct reader, no dependency)
-lib/impact/       assess.ts (finding → affected SKUs/lanes → exposure, or an honest null)
+lib/classification/ suggest.ts (retrieval-grounded HTS suggestions; lead-only, adopt-then-approve)
+lib/tariff/       duty-expression.ts (rate strings → numbers, or an honest refusal) · rates.ts (USITC HTS lookup, quote, compare)
+lib/substances/   bom.ts (components, declared substances, restriction lists, four-verdict assessment)
+lib/impact/       assess.ts (finding → affected SKUs/lanes → exposure, or an honest null; + tariff enrichment)
 lib/documents/    audit.ts (PEB/invoice text → line items → discrepancies → document-tier promotion)
 lib/workflow/     actions.ts (finding → human response, kept separate from the evidence)
 lib/suppliers/    evidence.ts (certificate status, gaps, expiry horizon)
 lib/test-support/ operating-db.ts (throwaway SQLite + per-test tenant isolation)
 lib/db/           schema.ts · client.ts · queries.ts
 app/              page.tsx (Checks) · checklist/ · chat/ · memory/ · catalogue/ · documents/ · workqueue/ · suppliers/
-                  api/{checks,checklist,chat,customers,memories,screening,products,classifications,lanes,documents,workqueue,suppliers}
+                  api/{checks,checklist,chat,customers,memories,screening,products,classifications,lanes,documents,workqueue,suppliers,tariff,substances}
 components/       dashboard/ · checklist/ · memory/ · chat/ (chat-panel.tsx reads the SSE stream · markdown.tsx renders answers)
                   catalogue/ · documents/ · workqueue/ · suppliers/ (the Operations screens)
 scripts/          seed.ts (sources + source packs + MA) · run-check.ts
@@ -642,6 +646,138 @@ decisions a regulation has to be matched *against*. Cante monitored well and
 connected nothing; competitors connect regulations to products, shipments,
 classifications and money. These are items 2–10 of that gap analysis.
 
+### The reference-data layer (added 17 Aug 2026)
+
+The competitive gap that survived items 2–10 was not a feature. It was that
+**Cante observed and never computed.** It could say a rule changed and which SKU
+it touched; it could not say what that cost, because every rival's money pitch
+comes from calculating against reference data — rate tables, substance lists —
+and Cante had feeds and judgment but no reference data at all.
+
+`lib/impact/assess.ts` showed it exactly: `AssessInput.duty` was an **optional
+parameter the caller passed in**. The arithmetic existed; the operands never
+did, so almost every US assessment rendered "not calculable". Meanwhile the
+USITC HTS source was already fetching `general`, `special`, `other` and
+`additionalDuties` on every run and flattening them into prose.
+
+**`lib/tariff/` closes it.** `lookupTariff()` reads the official row,
+`quoteDuty()` prices a shipment, `compareDuty()` prices a misclassification.
+Verified live: HTS 6306.12.00.00 general 8.8%, and the MA case computes —
+the seed guess 3921.90 (4.2%) against the document's 6306.12 (8.8%) on a $400k
+lane is a **USD 18,400/year** difference.
+
+Three rules keep the arithmetic as honest as the coverage:
+
+1. **A rate this parser does not fully understand is `parsed: false`, never a
+   partial number.** The dangerous failure is `"4.4¢/kg + 8.5%"` being read as
+   8.5% — a confident, materially under-stated duty. A compound rate with no
+   quantity in the matching unit returns `amount: null` and says why.
+2. **Rates are rounded at parse time.** `8.8 / 100` is `0.08800000000000001` in
+   binary floating point, and that noise would ride into every figure.
+3. **The general (NTR) column is the default and says so.** Claiming an FTA
+   preferential rate needs a certificate of origin and a rules-of-origin
+   analysis Cante does not perform, so `special` is quoted only on an explicit
+   claim and always with a caveat that eligibility is unverified. Chapter 99
+   measures (Section 301/232) are flagged as **excluded from the figure**.
+
+**`annualDutyAtRisk` is not `estimatedAnnualExposure`.** The published schedule
+gives today's rate, not tomorrow's. For a misclassification both codes have a
+rate right now, so the delta is real. For a regulation that will change a rate,
+the "after" rate does not exist yet — so `enrichDraftsWithTariff()` fills the
+duty currently flowing through the affected lane and leaves the delta alone.
+Magnitude without inventing a difference.
+
+### Model-suggested classifications (added 17 Aug 2026)
+
+Quickcode's core capability, with this project's discipline welded on.
+Classification is a legal determination with money and liability attached, so a
+model that emits a plausible code is the most dangerous thing this codebase
+could contain. Four constraints hold it down.
+
+**1. The model chooses; it never invents.** Candidate rows are fetched from the
+official USITC schedule *first*, and a returned code outside that set is
+rejected rather than recorded. The model is only ever picking from real,
+declarable lines.
+
+**2. It may decline, and declining is the preferred answer.** The first live run
+proved why. The model correctly judged that none of the retrieved candidates
+covered a PVC-coated tarpaulin and said so in its uncertainties — but the prompt
+told it to "pick the closest anyway", so a nonwoven-fabric code was written to
+the database for a good that belongs in heading 6306. **Being unable to decline
+turned an honest model into a wrong row.** `noSuitableCandidate` fixed it:
+nothing is recorded, and the error names the heading the model expected.
+
+**3. A suggestion is always `lead` tier.** `recordSuggestion()` takes no tier
+parameter, so no refactor can quietly strengthen it, and
+`approveClassification()` already refuses leads. A suggestion is *structurally*
+unable to become approved without a human in between.
+
+**4. Adoption is its own act.** `adoptSuggestion()` promotes lead → human and
+demands a named person and a written reason. Adopting says "I have read this and
+I stand behind it"; approving says "this is the code we use". Collapsing them
+would let one click carry a model's guess to an approved classification.
+
+⚠️ **Retrieval is the accuracy ceiling, not the model.** Three retrieval bugs
+made the first run fail, all found by live probe and all fixed:
+
+- **`PVC` was dropped by a `length > 3` filter.** The most discriminating term a
+  materials list carries. The minimum is now 3.
+- **Multi-word phrases return garbage.** The USITC endpoint does keyword, not
+  phrase, matching: `"coated tarpaulin"` finds nothing while `"tarpaulin"` alone
+  returns exactly 6306.12.00.00. Single words only, longest first.
+- **One broad term flooded the candidate cap.** `"coated"` filled all 25 slots
+  with chewing gum, confectioners' coatings and medicated dressings before
+  `"tarpaulin"` was ever queried. `PER_TERM_CANDIDATES` now reserves slots per
+  term.
+
+After the fix, the same product classified to **6306.12.00.00 at high
+confidence under GRI 1**, citing Chapter 39 Note 2(p) and Chapter 59 — and the
+official rate on that row (8.8%) matches what `lib/tariff/` independently
+returns. CBP CROSS rulings are attached as `supportingRefs`; they are research
+evidence, never binding for another product.
+
+### Structure: bills of materials and substances
+
+`products.materials` is a string array — enough for "PVC coated polyester",
+useless for PFAS, REACH or RoHS, which restrict a *substance* at a
+*concentration* inside a *component*. `lib/substances/bom.ts` adds
+`product_components` (self-referencing, so assemblies nest), `substances` keyed
+on CAS number, `component_substances` with concentration and tier, and
+restriction lists as stored snapshots.
+
+`assessRestrictions()` returns **four verdicts, and they are not two**:
+
+| Verdict | Means |
+|---|---|
+| `over_threshold` | Declared at or above the restricted level. |
+| `below_threshold` | A real pass. |
+| `present_unknown_amount` | The substance is there and nobody said how much. **Not a pass.** |
+| `undeclared` | Nobody ever asked. Reported separately, never as clean. |
+
+`productsContainingSubstanceNamedIn()` is the join `matchProducts()` cannot
+make: a PFAS rule names a chemical, not an HS heading, so the affected SKU is
+whichever one has that chemical somewhere in its bill of materials. Matching is
+by CAS number first, then name, then synonym.
+
+### Regulation lifecycle
+
+`lib/checks/lifecycle.ts` links a rule to the rule it changes. Permendag 12/2026
+is the *fifth amendment to 23/2023* and nothing connected them — which made the
+monitor look like it read documents rather than law.
+
+Detection is **regex over the citation sentence, not a model call**: Indonesian
+and US drafting both signal these in fixed language ("Perubahan Kelima atas",
+"mencabut", "amending", "revokes"). Deterministic, auditable, and it cannot
+hallucinate a relationship. Every link stores the sentence it was read from.
+`supersededFindings()` reports what the newer rule *claims* — never a legal
+determination that the older rule stopped applying, because transitional
+provisions routinely keep parts of it in force.
+
+`classifyDirection()` adds favourable / unfavourable / neutral / unknown. A
+monitor that only ever reports bad news trains the reader to dread it, and a
+duty reduction or an exclusion grant is worth surfacing. Both signals present is
+`unknown`, not a coin flip.
+
 **`products` is the keystone.** Lanes, impact, document audit and supplier
 evidence are all meaningless without a first-class SKU to hang them on, so it was
 built first and everything else references it. `jurisdiction_profiles.products`
@@ -758,6 +894,16 @@ Operating data (the customer's own business, not regulations):
 · `supplier_documents` · `trade_documents` · `document_findings`
 · `finding_actions` · `impact_assessments` · `screening_results`
 
+Structure and reference data:
+`product_components` · `substances` · `component_substances`
+· `restricted_substance_lists` · `restricted_substance_entries` · `regulation_links`
+
+`substances` is unique on `cas_number` — CAS is how restriction lists cite a
+chemical, so it is the identity. `product_components.parentComponentId` is
+self-referencing, so an assembly nests. `regulation_links` is its own table
+because the target is usually a rule Cante never fetched: an amendment names its
+parent whether or not we saw the parent.
+
 `products` is unique on `(customer_id, sku)` — SKU is the merge key, so a
 re-import updates rather than duplicating. `finding_actions` is unique on
 `finding_id`: one current response per finding, with the history in its own
@@ -829,6 +975,22 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
   and the `us-federal-tax-customs` pack (US packs now 25). An empty US profile
   selects 10 general federal rows, up from 8. 67 tests pass. See the taxation
   section above for why 19 CFR matters more than 26 CFR here.
+- **The reference-data layer is built and live-verified, 17 Aug 2026.** 85 tests
+  pass (up from 75), typecheck and `npm run build` are clean. Verified end to end
+  against the real `cante.db` and the live USITC service: a customs entry
+  declaring 6306.12 against a catalogue holding 3921.90 priced the difference at
+  **USD 18,400** with the arithmetic printed; promoting and approving the
+  document code then produced `annualDutyAtRisk` of **USD 35,200/year** on a
+  $400k lane via "USITC HTS general 8.8%"; the Permendag 12/2026 text linked
+  `amends → Peraturan Menteri Perdagangan Nomor 23 Tahun 2023`; and a PFAS list
+  flagged PFOA at 40 ppm against a 25 ppm threshold while reporting the
+  undeclared scrim separately. All probe data was deleted afterwards.
+- **Still not done, and deliberately**: customs *filing* (Descartes/CargoWise
+  territory — losing there costs nothing), supplier outreach delivery, licence
+  determination and FTA qualification (both need rules-of-origin logic Cante
+  does not have), cross-tenant network effects, and model-suggested
+  classifications. Rates cover **US import duty only** — there is no Indonesian
+  tariff schedule behind `lib/tariff/`.
 - **What is NOT done in that layer**: OCR/PDF ingestion, supplier outreach
   delivery, export-licence determination, and PGA-requirements-per-HS-code
   (item 7's one remaining gap). Each is disclosed in code and in the section

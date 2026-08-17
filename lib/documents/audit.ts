@@ -11,6 +11,7 @@ import {
 } from "@/lib/db/schema";
 import { getProductBySku, listProducts } from "@/lib/catalogue/products";
 import { listClassifications, recordClassification } from "@/lib/catalogue/classifications";
+import { compareDuty } from "@/lib/tariff/rates";
 
 /**
  * Document audit — item 8.
@@ -267,8 +268,24 @@ export function auditDocument(documentId: string): DocumentFinding[] {
   const found: DocumentFinding[] = [];
   const now = new Date().toISOString();
 
-  const add = (finding: Omit<DocumentFinding, "id" | "documentId" | "createdAt">) => {
-    const row = { id: randomUUID(), documentId, createdAt: now, ...finding };
+  // Duty fields are optional here: most discrepancies (origin, UOM, missing
+  // number) have no price, and only the code-mismatch path fills them in.
+  const add = (
+    finding: Omit<
+      DocumentFinding,
+      "id" | "documentId" | "createdAt" | "dutyDifference" | "dutyCurrency" | "dutyBasis"
+    > &
+      Partial<Pick<DocumentFinding, "dutyDifference" | "dutyCurrency" | "dutyBasis">>,
+  ) => {
+    const row = {
+      id: randomUUID(),
+      documentId,
+      createdAt: now,
+      dutyDifference: null,
+      dutyCurrency: "USD",
+      dutyBasis: [] as string[],
+      ...finding,
+    };
     db.insert(documentFindings).values(row).run();
     found.push(row as DocumentFinding);
   };
@@ -367,6 +384,83 @@ export function auditDocument(documentId: string): DocumentFinding[] {
   });
 
   return found;
+}
+
+/**
+ * Price the code mismatches on a document.
+ *
+ * `auditDocument()` stays synchronous and network-free — it establishes *that*
+ * the declared code differs from the catalogue. This second pass asks the
+ * official tariff schedule what that difference is worth, which is what turns
+ * a compliance observation into a business event a finance person will read.
+ *
+ * Run separately, and tolerant of failure: a tariff outage leaves the finding
+ * intact and unpriced rather than losing the audit.
+ *
+ * Direction convention: **positive means the declared code under-paid** — the
+ * expected classification carries more duty than what was entered.
+ */
+export async function priceDocumentFindings(
+  documentId: string,
+  options: { signal?: AbortSignal } = {},
+): Promise<DocumentFinding[]> {
+  const doc = getDocument(documentId);
+  if (!doc) throw new DocumentInputError("Document not found.");
+
+  const priced: DocumentFinding[] = [];
+  const lines = doc.extracted?.lines ?? [];
+
+  for (const finding of listDocumentFindings(documentId)) {
+    if (finding.kind !== "code_mismatch" || !finding.documentValue || !finding.expectedValue) {
+      continue;
+    }
+
+    // The expected side may list several codes; price the first, and say so.
+    const expectedCodes = finding.expectedValue.split(",").map((c) => c.trim()).filter(Boolean);
+    const line = lines.find((l) => l.hsCode === finding.documentValue);
+    const value = line?.lineValue ?? null;
+
+    let dutyDifference: number | null = null;
+    let dutyBasis: string[] = [];
+
+    try {
+      const delta = await compareDuty({
+        declaredCode: finding.documentValue,
+        expectedCode: expectedCodes[0],
+        value,
+        quantity: line?.quantity ?? null,
+        unit: line?.unitOfMeasure ?? null,
+        signal: options.signal,
+      });
+      dutyDifference = delta.difference;
+      dutyBasis = [...delta.basis];
+      if (expectedCodes.length > 1) {
+        dutyBasis.push(
+          `The catalogue holds ${expectedCodes.length} candidate codes (${expectedCodes.join(", ")}); only ${expectedCodes[0]} was priced.`,
+        );
+      }
+      if (value === null) {
+        dutyBasis.push("No line value was read from the document, so this is a rate comparison, not a duty figure.");
+      }
+      if (finding.expectationTier !== "document") {
+        dutyBasis.push(
+          `The expected code is ${finding.expectationTier} tier, not document-verified, so this difference is indicative — the document may well be right and the catalogue wrong.`,
+        );
+      }
+    } catch (error) {
+      dutyBasis = [
+        `Tariff lookup failed (${error instanceof Error ? error.message : "unknown error"}); the difference is unknown, not zero.`,
+      ];
+    }
+
+    db.update(documentFindings)
+      .set({ dutyDifference, dutyBasis })
+      .where(eq(documentFindings.id, finding.id))
+      .run();
+    priced.push({ ...finding, dutyDifference, dutyBasis });
+  }
+
+  return priced;
 }
 
 export function listDocumentFindings(documentId: string): DocumentFinding[] {

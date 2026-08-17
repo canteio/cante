@@ -9,7 +9,12 @@ import {
   WorkflowError,
   type ActionState,
 } from "@/lib/workflow/actions";
-import { assessImpact, listImpactForFinding, storeImpact } from "@/lib/impact/assess";
+import {
+  assessImpact,
+  enrichDraftsWithTariff,
+  listImpactForFinding,
+  storeImpact,
+} from "@/lib/impact/assess";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -64,7 +69,9 @@ export async function POST(request: Request) {
       effectiveOn: (payload.effectiveOn as string) ?? finding.enactedOn ?? null,
       duty: duty ? { before: duty.before ?? null, after: duty.after ?? null } : undefined,
     });
-    return Response.json({ impact: storeImpact(customerId, findingId, drafts) });
+    // Resolve real duty rates before storing, so the queue shows the money.
+    const enriched = await enrichDraftsWithTariff(drafts);
+    return Response.json({ impact: storeImpact(customerId, findingId, enriched) });
   }
 
   try {

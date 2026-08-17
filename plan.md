@@ -136,6 +136,10 @@ that review are now built:
 | 6 | Classification workspace (history, rationale, approval) | built |
 | 7 | US trade depth (HTS, CROSS, 301/232, AD/CVD, UFLPA) | was already built; PGA-per-code outstanding |
 | 7b | US federal tax and customs (IRS, 19 CFR, 26 CFR) | added 16 Aug 2026 — the US pack had no tax authority at all while Indonesia had three |
+| 11 | Reference data: duty rates, substance lists | added 17 Aug 2026 — closes "observes but never computes" |
+| 12 | Structure: bills of materials, substances by CAS | added 17 Aug 2026 — flat products cannot answer a PFAS question |
+| 13 | Regulation lifecycle: amends / revokes / supersedes | added 17 Aug 2026 |
+| 14 | Model-suggested classifications with GRI reasoning | added 17 Aug 2026 — lead-only, adopt-then-approve |
 | 8 | Document audit (PEB/invoice → discrepancies) | built, text only |
 | 9 | Supplier evidence tracking | built, outreach not sent |
 | 10 | Restricted-party screening, persisted | built |

@@ -144,6 +144,9 @@ CREATE TABLE document_findings (
   expected_value TEXT,
   expectation_tier TEXT NOT NULL DEFAULT 'lead',
   status TEXT NOT NULL DEFAULT 'open',
+  duty_difference REAL,
+  duty_currency TEXT NOT NULL DEFAULT 'USD',
+  duty_basis TEXT NOT NULL DEFAULT '[]',
   created_at TEXT NOT NULL
 );
 CREATE TABLE finding_actions (
@@ -174,13 +177,78 @@ CREATE TABLE impact_assessments (
   next_affected_shipment_at TEXT,
   duty_rate_before REAL,
   duty_rate_after REAL,
+  annual_duty_at_risk REAL,
+  tariff_code TEXT,
+  tariff_basis TEXT,
   estimated_annual_exposure REAL,
   estimated_monthly_exposure REAL,
   currency TEXT NOT NULL DEFAULT 'USD',
   delay_risk TEXT NOT NULL DEFAULT 'none',
+  direction TEXT NOT NULL DEFAULT 'unknown',
   basis TEXT NOT NULL DEFAULT '[]',
   confidence TEXT NOT NULL DEFAULT 'indicative',
   created_at TEXT NOT NULL
+);
+CREATE TABLE regulation_links (
+  id TEXT PRIMARY KEY,
+  customer_id TEXT NOT NULL,
+  finding_id TEXT NOT NULL,
+  relation TEXT NOT NULL,
+  target_ref TEXT NOT NULL,
+  target_finding_id TEXT,
+  evidence TEXT,
+  confidence TEXT NOT NULL DEFAULT 'inferred',
+  created_at TEXT NOT NULL
+);
+CREATE TABLE product_components (
+  id TEXT PRIMARY KEY,
+  product_id TEXT NOT NULL,
+  parent_component_id TEXT,
+  name TEXT NOT NULL,
+  part_number TEXT,
+  supplier_id TEXT,
+  quantity REAL,
+  unit TEXT,
+  mass_grams REAL,
+  notes TEXT,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE substances (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  cas_number TEXT,
+  ec_number TEXT,
+  synonyms TEXT NOT NULL DEFAULT '[]',
+  created_at TEXT NOT NULL
+);
+CREATE UNIQUE INDEX substances_cas_unique ON substances(cas_number);
+CREATE TABLE component_substances (
+  id TEXT PRIMARY KEY,
+  component_id TEXT NOT NULL,
+  substance_id TEXT NOT NULL,
+  concentration_ppm REAL,
+  tier TEXT NOT NULL DEFAULT 'lead',
+  basis TEXT NOT NULL,
+  supplier_document_id TEXT,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE restricted_substance_lists (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  jurisdiction TEXT NOT NULL,
+  authority TEXT,
+  version TEXT,
+  source_url TEXT,
+  captured_at TEXT NOT NULL
+);
+CREATE TABLE restricted_substance_entries (
+  id TEXT PRIMARY KEY,
+  list_id TEXT NOT NULL,
+  substance_id TEXT NOT NULL,
+  threshold_ppm REAL,
+  restriction TEXT NOT NULL DEFAULT 'restricted',
+  effective_on TEXT,
+  citation TEXT
 );
 CREATE TABLE screening_results (
   id TEXT PRIMARY KEY,

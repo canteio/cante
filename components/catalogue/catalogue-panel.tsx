@@ -101,6 +101,43 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
     }
   }
 
+  async function suggest(product: Product) {
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/classifications/suggest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sku: product.sku, productId: product.id }),
+      });
+      const data = await res.json();
+      // A refusal is a real answer here — retrieval missed the heading, or the
+      // model declined. Show it as information, not as a failure to retry.
+      if (!res.ok) setError(data.error ?? "Suggestion failed.");
+      else await load();
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function adopt(classificationId: string) {
+    const adoptedBy = window.prompt("Who is adopting this model suggestion?");
+    if (!adoptedBy) return;
+    const reason = window.prompt(
+      "Why do you stand behind it? (recorded — you are taking responsibility for a model's suggestion)",
+    );
+    if (!reason) return;
+
+    const res = await fetch("/api/classifications/suggest", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ classificationId, adoptedBy, reason }),
+    });
+    const data = await res.json();
+    if (!res.ok) setError(data.error ?? "Could not adopt.");
+    else await load();
+  }
+
   async function approve(classificationId: string) {
     const approvedBy = window.prompt("Who is approving this classification?");
     if (!approvedBy) return;
@@ -201,9 +238,18 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
                   <div className="mono strong">{product.sku}</div>
                   <div className="checklist-summary">{product.name}</div>
                 </div>
-                {product.originCountry && (
-                  <span className="pill pill-muted">{product.originCountry}</span>
-                )}
+                <div className="meta-row">
+                  {product.originCountry && (
+                    <span className="pill pill-muted">{product.originCountry}</span>
+                  )}
+                  <button
+                    className="btn btn-small"
+                    disabled={busy}
+                    onClick={() => void suggest(product)}
+                  >
+                    Suggest code
+                  </button>
+                </div>
               </div>
 
               {product.materials.length > 0 && (
@@ -232,6 +278,16 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
                         <span className="pill pill-ok">
                           <Check size={12} /> approved by {classification.approvedBy}
                         </span>
+                      ) : classification.tier === "lead" &&
+                        classification.basis.startsWith("Model suggestion") ? (
+                        // A model suggestion cannot be approved. It must first be
+                        // adopted by a named person, which is what makes it theirs.
+                        <button
+                          className="btn btn-small"
+                          onClick={() => void adopt(classification.id)}
+                        >
+                          Adopt suggestion
+                        </button>
                       ) : (
                         <button
                           className="btn btn-small"

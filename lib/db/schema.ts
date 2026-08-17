@@ -613,7 +613,148 @@ export const documentFindings = sqliteTable("document_findings", {
   expectationTier: text("expectation_tier").notNull().default("lead"),
   /** open | accepted | dismissed | corrected */
   status: text("status").notNull().default("open"),
+  /**
+   * Money on a code mismatch: expected duty − declared duty, at published
+   * rates. Positive means the declared code under-paid.
+   *
+   * Detecting that a document declares a different code than the catalogue is
+   * a compliance observation; this is the number that makes it a business
+   * event. Null whenever either side could not be priced — never zero.
+   */
+  dutyDifference: real("duty_difference"),
+  dutyCurrency: text("duty_currency").notNull().default("USD"),
+  /** The arithmetic and its caveats, printed with the figure. */
+  dutyBasis: text("duty_basis", { mode: "json" }).$type<string[]>().notNull().default([]),
   createdAt: text("created_at").notNull().default(now),
+});
+
+/* ---------------------------------------------------------------------------
+ * Regulation lifecycle.
+ *
+ * A finding records that a rule was observed on a day. It does not record that
+ * the rule *replaced* another one, and that gap makes the monitor look like it
+ * reads documents rather than law: Permendag 12/2026 is the fifth amendment to
+ * 23/2023, and nothing linked them. Competitors track announcement →
+ * implementation → revocation; this is the minimum that earns that.
+ *
+ * Links are their own table rather than columns because the target is often a
+ * rule Cante has never fetched — an amendment names its parent whether or not
+ * we ever saw the parent.
+ * ------------------------------------------------------------------------- */
+export const regulationLinks = sqliteTable("regulation_links", {
+  id: text("id").primaryKey(),
+  customerId: text("customer_id")
+    .notNull()
+    .references(() => customers.id),
+  /** The finding that asserts the relationship. */
+  findingId: text("finding_id")
+    .notNull()
+    .references(() => findings.id),
+  /** amends | supersedes | revokes | implements | extends */
+  relation: text("relation").notNull(),
+  /** The target rule as cited, e.g. "Permendag 23 Tahun 2023". Free text on purpose. */
+  targetRef: text("target_ref").notNull(),
+  /** Set when the target is a rule we have actually seen. */
+  targetFindingId: text("target_finding_id").references(() => findings.id),
+  /** The sentence the relationship was read from. Never assert without it. */
+  evidence: text("evidence"),
+  /** stated | inferred — `stated` means the document said so in terms. */
+  confidence: text("confidence").notNull().default("inferred"),
+  createdAt: text("created_at").notNull().default(now),
+});
+
+/* ---------------------------------------------------------------------------
+ * Product structure: bill of materials and substances.
+ *
+ * `products.materials` is a string array — fine for "PVC coated polyester" and
+ * useless for PFAS, REACH or RoHS, which restrict a *substance* at a
+ * *concentration* inside a *component*. A flat product cannot answer "does any
+ * part of this contain a listed substance above threshold", which is the only
+ * question those rules ask.
+ * ------------------------------------------------------------------------- */
+
+/** A part within a product. Self-referencing, so assemblies can nest. */
+export const productComponents = sqliteTable("product_components", {
+  id: text("id").primaryKey(),
+  productId: text("product_id")
+    .notNull()
+    .references(() => products.id),
+  /** Null for a top-level component; otherwise the parent part. */
+  parentComponentId: text("parent_component_id"),
+  name: text("name").notNull(),
+  partNumber: text("part_number"),
+  supplierId: text("supplier_id").references(() => suppliers.id),
+  quantity: real("quantity"),
+  unit: text("unit"),
+  /** Mass of this component, needed to evaluate concentration thresholds. */
+  massGrams: real("mass_grams"),
+  notes: text("notes"),
+  createdAt: text("created_at").notNull().default(now),
+});
+
+/** A chemical substance, identified the way regulators identify it. */
+export const substances = sqliteTable(
+  "substances",
+  {
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    /** The identifier restriction lists key on. Null only when genuinely unknown. */
+    casNumber: text("cas_number"),
+    ecNumber: text("ec_number"),
+    /** Common synonyms, so a regulation naming one form matches. */
+    synonyms: text("synonyms", { mode: "json" }).$type<string[]>().notNull().default([]),
+    createdAt: text("created_at").notNull().default(now),
+  },
+  (table) => ({
+    cas: uniqueIndex("substances_cas_unique").on(table.casNumber),
+  }),
+);
+
+/** A declared substance inside a component, with its concentration and evidence. */
+export const componentSubstances = sqliteTable("component_substances", {
+  id: text("id").primaryKey(),
+  componentId: text("component_id")
+    .notNull()
+    .references(() => productComponents.id),
+  substanceId: text("substance_id")
+    .notNull()
+    .references(() => substances.id),
+  /** Parts per million within the component. Null means present, amount unknown. */
+  concentrationPpm: real("concentration_ppm"),
+  /** document | supplier_declaration | human | lead — same discipline as codes. */
+  tier: text("tier").notNull().default("lead"),
+  basis: text("basis").notNull(),
+  /** The supplier declaration this came off, when there is one. */
+  supplierDocumentId: text("supplier_document_id").references(() => supplierDocuments.id),
+  createdAt: text("created_at").notNull().default(now),
+});
+
+/** A regulatory restriction list — REACH SVHC, RoHS Annex II, a state PFAS ban. */
+export const restrictedSubstanceLists = sqliteTable("restricted_substance_lists", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  jurisdiction: text("jurisdiction").notNull(),
+  authority: text("authority"),
+  version: text("version"),
+  sourceUrl: text("source_url"),
+  /** When this snapshot was captured. A stale list is a disclosed caveat. */
+  capturedAt: text("captured_at").notNull().default(now),
+});
+
+export const restrictedSubstanceEntries = sqliteTable("restricted_substance_entries", {
+  id: text("id").primaryKey(),
+  listId: text("list_id")
+    .notNull()
+    .references(() => restrictedSubstanceLists.id),
+  substanceId: text("substance_id")
+    .notNull()
+    .references(() => substances.id),
+  /** Concentration at or above which the restriction bites. Null = any presence. */
+  thresholdPpm: real("threshold_ppm"),
+  /** restricted | banned | authorisation_required | notification_required | candidate */
+  restriction: text("restriction").notNull().default("restricted"),
+  effectiveOn: text("effective_on"),
+  citation: text("citation"),
 });
 
 /**
@@ -679,12 +820,35 @@ export const impactAssessments = sqliteTable("impact_assessments", {
   nextAffectedShipmentAt: text("next_affected_shipment_at"),
   dutyRateBefore: real("duty_rate_before"),
   dutyRateAfter: real("duty_rate_after"),
+  /**
+   * Annual duty currently flowing through the matched lane at the published
+   * rate — "how much duty this regulation is standing next to".
+   *
+   * Distinct from `estimatedAnnualExposure`, which is the *delta* when a rate
+   * change is known. A published tariff schedule gives today's rate, not
+   * tomorrow's, so for most regulation changes the delta is unknowable and the
+   * honest magnitude signal is the duty at risk. Reporting one as the other
+   * would be the most expensive kind of confident wrong answer.
+   */
+  annualDutyAtRisk: real("annual_duty_at_risk"),
+  /** The HTS row the rate came from, so the figure is checkable. */
+  tariffCode: text("tariff_code"),
+  /** e.g. "USITC HTS general 8.8%" — printed with the number. */
+  tariffBasis: text("tariff_basis"),
   /** Annualised currency delta. Null whenever any input is missing — never zero-as-unknown. */
   estimatedAnnualExposure: real("estimated_annual_exposure"),
   estimatedMonthlyExposure: real("estimated_monthly_exposure"),
   currency: text("currency").notNull().default("USD"),
   /** none | low | medium | high — schedule risk, separate from money. */
   delayRisk: text("delay_risk").notNull().default("none"),
+  /**
+   * unfavorable | favorable | neutral | unknown.
+   *
+   * Not every change costs money — a duty reduction or an exclusion grant is
+   * worth surfacing too, and a monitor that only ever reports bad news trains
+   * the reader to dread it. `unknown` is the default and is a real answer.
+   */
+  direction: text("direction").notNull().default("unknown"),
   /** Every input and assumption, listed. Printed with the figure or it isn't printed. */
   basis: text("basis", { mode: "json" }).$type<string[]>().notNull().default([]),
   /** verified | estimated | indicative — `verified` requires document-tier inputs throughout. */
@@ -801,3 +965,9 @@ export type FindingAction = typeof findingActions.$inferSelect;
 export type ImpactAssessment = typeof impactAssessments.$inferSelect;
 /** Row type. `ScreeningResult` in lib/screening/csl.ts is the upstream payload. */
 export type ScreeningResultRow = typeof screeningResults.$inferSelect;
+export type RegulationLink = typeof regulationLinks.$inferSelect;
+export type ProductComponent = typeof productComponents.$inferSelect;
+export type Substance = typeof substances.$inferSelect;
+export type ComponentSubstance = typeof componentSubstances.$inferSelect;
+export type RestrictedSubstanceList = typeof restrictedSubstanceLists.$inferSelect;
+export type RestrictedSubstanceEntry = typeof restrictedSubstanceEntries.$inferSelect;

@@ -21,6 +21,9 @@ type Impact = {
   nextAffectedShipmentAt: string | null;
   estimatedAnnualExposure: number | null;
   estimatedMonthlyExposure: number | null;
+  annualDutyAtRisk: number | null;
+  tariffCode: string | null;
+  tariffBasis: string | null;
   currency: string;
   delayRisk: string;
   basis: string[];
@@ -213,9 +216,19 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
                           <span className="pill pill-warn">delay risk: {impact.delayRisk}</span>
                         )}
                       </div>
+                      {impact.annualDutyAtRisk !== null && (
+                        <div className="strong">
+                          Duty at risk: {impact.currency}{" "}
+                          {impact.annualDutyAtRisk.toLocaleString()}/year
+                          {impact.tariffBasis ? ` · ${impact.tariffBasis}` : ""}
+                          {impact.tariffCode ? ` (${impact.tariffCode})` : ""}
+                        </div>
+                      )}
                       <div className="strong">
                         {impact.estimatedAnnualExposure === null ? (
-                          "Exposure not calculable from what is on file."
+                          impact.annualDutyAtRisk === null
+                            ? "Exposure not calculable from what is on file."
+                            : "Rate change not quantified — the figure above is the duty currently flowing through this lane, not the delta."
                         ) : (
                           <>
                             {impact.currency} {impact.estimatedAnnualExposure.toLocaleString()}/year

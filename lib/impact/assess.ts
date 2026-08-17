@@ -1,10 +1,18 @@
 import { randomUUID } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db/client";
-import { impactAssessments, type Finding, type ImpactAssessment, type Product, type TradeLane } from "@/lib/db/schema";
+import {
+  impactAssessments,
+  tradeLanes,
+  type Finding,
+  type ImpactAssessment,
+  type Product,
+  type TradeLane,
+} from "@/lib/db/schema";
 import { listProducts } from "@/lib/catalogue/products";
 import { annualShipmentsOf, listLanes } from "@/lib/catalogue/lanes";
-import { listClassifications } from "@/lib/catalogue/classifications";
+import { listClassifications, resolveProductCodes } from "@/lib/catalogue/classifications";
+import { quoteDuty } from "@/lib/tariff/rates";
 
 /**
  * Impact calculation — item 5.
@@ -149,6 +157,10 @@ export interface AssessmentDraft {
   delayRisk: string;
   basis: string[];
   confidence: Confidence;
+  /** Filled by enrichDraftsWithTariff(); null until a rate has been resolved. */
+  annualDutyAtRisk?: number | null;
+  tariffCode?: string | null;
+  tariffBasis?: string | null;
 }
 
 function weakestConfidence(a: Confidence, b: Confidence): Confidence {
@@ -293,6 +305,101 @@ export function assessImpact(input: AssessInput): AssessmentDraft[] {
   return drafts;
 }
 
+/**
+ * Resolve real duty rates for drafts and attach the annual duty at risk.
+ *
+ * Kept separate from `assessImpact()` so the matching and arithmetic stay pure
+ * and testable without a network, and so a tariff-service outage degrades one
+ * field instead of failing the whole assessment.
+ *
+ * What this can and cannot know: the USITC publishes **today's** rate. For a
+ * misclassification we can compute a real delta, because both codes have a
+ * published rate right now. For a regulation that changes a rate in future, the
+ * "after" rate does not exist yet — so this fills `annualDutyAtRisk` (the duty
+ * currently flowing through the affected lane) and leaves
+ * `estimatedAnnualExposure` alone. Magnitude without inventing a delta.
+ */
+export async function enrichDraftsWithTariff(
+  drafts: AssessmentDraft[],
+  options: { signal?: AbortSignal } = {},
+): Promise<AssessmentDraft[]> {
+  const out: AssessmentDraft[] = [];
+
+  for (const draft of drafts) {
+    if (!draft.productId) {
+      out.push(draft);
+      continue;
+    }
+
+    const resolved = resolveProductCodes(draft.productId, "hts").current
+      ? resolveProductCodes(draft.productId, "hts")
+      : resolveProductCodes(draft.productId, "hs");
+    const classification = resolved.current ?? resolved.document[0] ?? resolved.human[0] ?? null;
+    const lane = draft.laneId
+      ? db.select().from(tradeLanes).where(eq(tradeLanes.id, draft.laneId)).get()
+      : null;
+
+    if (!classification || !lane?.annualValue) {
+      out.push({
+        ...draft,
+        annualDutyAtRisk: null,
+        basis: [
+          ...draft.basis,
+          !classification
+            ? "No established classification, so no tariff rate could be looked up."
+            : "No annual lane value on file, so duty at risk could not be computed.",
+        ],
+      });
+      continue;
+    }
+
+    try {
+      const quote = await quoteDuty({
+        htsCode: classification.code,
+        value: lane.annualValue,
+        signal: options.signal,
+      });
+
+      if (!quote) {
+        out.push({
+          ...draft,
+          annualDutyAtRisk: null,
+          basis: [
+            ...draft.basis,
+            `No published USITC HTS row matched ${classification.code}, so no duty was computed.`,
+          ],
+        });
+        continue;
+      }
+
+      out.push({
+        ...draft,
+        annualDutyAtRisk: quote.computation.amount,
+        tariffCode: quote.htsCode,
+        tariffBasis: `USITC HTS ${quote.column} ${quote.rate.raw}`,
+        basis: [
+          ...draft.basis,
+          `Annual duty at risk on this lane: ${quote.computation.basis.join(" ")}`,
+          ...quote.caveats,
+          "This is the duty currently flowing through the lane at the published rate, not an estimate of how the rate will change.",
+        ],
+      });
+    } catch (error) {
+      // A tariff outage costs one field, not the assessment.
+      out.push({
+        ...draft,
+        annualDutyAtRisk: null,
+        basis: [
+          ...draft.basis,
+          `Tariff lookup failed (${error instanceof Error ? error.message : "unknown error"}), so duty at risk is unknown rather than zero.`,
+        ],
+      });
+    }
+  }
+
+  return out;
+}
+
 /** Persist drafts for a finding, replacing any previous assessment of it. */
 export function storeImpact(
   customerId: string,
@@ -319,6 +426,9 @@ export function storeImpact(
         estimatedMonthlyExposure: draft.estimatedMonthlyExposure,
         currency: draft.currency,
         delayRisk: draft.delayRisk,
+        annualDutyAtRisk: draft.annualDutyAtRisk ?? null,
+        tariffCode: draft.tariffCode ?? null,
+        tariffBasis: draft.tariffBasis ?? null,
         basis: draft.basis,
         confidence: draft.confidence,
         createdAt: new Date().toISOString(),

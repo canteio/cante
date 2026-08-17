@@ -169,6 +169,23 @@ to the alert as code-written coverage caveats.
   most: the US constitutionally cannot tax exports, so an exporter's exposure is
   on the customs side, chiefly duty drawback on inputs that are later re-exported.
   A new `us-tax-customs` checklist row asks whether drawback is being claimed.
+- **Model-suggested classifications (17 Aug 2026).** Ask for a code and Cante
+  retrieves real USITC rows, has the model pick one with GRI reasoning and
+  alternatives, and files it as an unconfirmed lead. It cannot invent a code
+  (anything outside the retrieved set is rejected), it can decline when
+  retrieval missed the right heading, and it cannot be approved until a named
+  person adopts it in writing. Live-verified: a PVC-coated tarpaulin classified
+  to 6306.12.00.00 at high confidence under GRI 1.
+- **Cante now computes consequences, not just changes (17 Aug 2026).** A duty-rate
+  engine reads the official USITC schedule, so a code mismatch on an uploaded
+  entry comes back priced and a finding carries the duty currently at risk on the
+  affected lane. Products now have bills of materials with declared substances
+  and CAS numbers, so a PFAS or REACH rule can be matched to the component that
+  actually contains the chemical. Regulations link to the rules they amend or
+  revoke. Live-verified: a 3921.90-vs-6306.12 mismatch prices at USD 18,400 and a
+  $400k lane shows USD 35,200/year of duty at risk. Rates are US import duty
+  only; customs filing, licence determination and FTA qualification remain out of
+  scope.
 - **The operating-data layer is built (16 Aug 2026).** Cante now holds the
   customer's own business alongside the regulations: a product catalogue with CSV
   import, trade lanes, suppliers, uploaded trade documents, an action workflow,
