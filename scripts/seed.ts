@@ -137,6 +137,13 @@ const US_SOURCE_PACKS = [
   ["us-nc-deq", "North Carolina", "North Carolina environmental and air notices", "regional", "automated"],
   ["us-mecklenburg-air", "Mecklenburg County", "Mecklenburg County air permit notices", "regional", "automated"],
   ["us-nc-tax", "North Carolina", "NCDOR tax notices and law-change guidance", "tax", "automated"],
+  [
+    "us-federal-tax-customs",
+    "federal",
+    "IRS rules, 26 CFR internal revenue, and 19 CFR customs duties including drawback",
+    "tax",
+    "automated",
+  ],
   ["us-ca-register", "California", "California Regulatory Notice Register", "distribution", "automated"],
   ["us-ny-register", "New York", "New York State Register", "distribution", "automated"],
   ["us-tx-register", "Texas", "Texas Register", "distribution", "automated"],

@@ -593,6 +593,30 @@ async function refreshUsChecklist(
       openQuestions: ["Who files EEI, and which exemption citation is used when no filing is made?"],
     },
     {
+      /*
+       * The US tax/customs counterpart to Indonesia's `tax-customs-monitor`.
+       * The US pack watched thirteen agencies and no tax authority until IRS,
+       * 19 CFR and 26 CFR were added, so this row exists to make that coverage
+       * visible as an obligation rather than only as source rows.
+       */
+      key: "us-tax-customs",
+      title: "Monitor IRS, 19 CFR customs, and 26 CFR tax changes",
+      category: "tax_customs",
+      status: "monitored",
+      priority: hasExports ? "high" : "medium",
+      whyApplies:
+        "The US cannot tax exports (Constitution, Art. I §9 cl. 5), so the exposure is on the customs and income-tax side: duty drawback under 19 CFR 190, entry, valuation and origin rules, plus federal tax changes. Import duty on inputs is where an exporter's money actually moves.",
+      linkedFacts: codeFacts("HTS/Schedule B", facts.hts),
+      evidenceRequired:
+        "Import entry records, duties paid on inputs, drawback claims or a recorded decision not to claim, and the responsible tax adviser or customs broker.",
+      sourceHealth: "working",
+      confidence: "inferred",
+      openQuestions: [
+        "Are duties paid on imported inputs that are later re-exported? If so, is drawback being claimed under 19 CFR 190?",
+        "Is an FTZ, FDII, or IC-DISC position in use, and who reviews it?",
+      ],
+    },
+    {
       key: "us-export-ofac",
       title: "Screen OFAC, destination, end user, and end use",
       category: "export",

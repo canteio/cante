@@ -114,6 +114,7 @@ changed records to the model. A document changed at the same URL is re-evaluated
 - **lh.surabaya.go.id/weblh/data-pengumuman-dokumen** — official Surabaya environmental notices, monitored in a rolling 45-day window. The latest probe parsed 13 records.
 - **Caveat on HPE:** the unfiltered feed is dominated by Harga Patokan Ekspor decrees — commodity reference prices for mining, palm, agriculture and forestry. They never cover PVC tarpaulin. Volume here is not signal.
 - **Official Kemendag newsletter** ("Berlangganan Newsletter JDIH Kemendag") — signed up. The government pushing updates directly is more reliable than scraping anything.
+- **US federal tax and customs** — the IRS Federal Register feed, eCFR Title 19 (customs duties, including drawback under part 190), and eCFR Title 26 (internal revenue). Live-probed 16 Aug 2026: IRS returned 4 dated entries, Title 19 had 1 substantive change in 7 days and 3 in 30, Title 26 had 3 and 9. Title 19 activates for an export profile; the IRS feed and Title 26 are ungated because federal tax reaches any company with US operations. Note the structural asymmetry with Indonesia: the US cannot tax exports at all (Constitution, Art. I §9 cl. 5), so there is no US export-duty regime — the exposure is import duty on inputs, and drawback when those inputs are re-exported.
 - **peraturan.bpk.go.id** — confirmed blocks bots. In the registry as `blocked`; never fetched automatically. Still the deepest archive for manual lookups.
 - **peraturan.go.id and jdihn.go.id** — disabled from daily fetching because their public services are not dependable. Measured 16 Aug 2026: they resolve to 103.145.96.87 and 103.145.96.88, adjacent IPs in one government subnet, and both refused TCP connections from two independent networks. So this is a dead host, not bot detection, and no retrieval or header change will recover it. Setneg now covers six national instrument types. JDIHN's ILDIS convention can expose member feeds such as `/feed/document.json`, but each agency's adoption and quality must be verified separately.
 - **insw.go.id** — not yet integrated, and the most promising remaining lead. Its NTR service maps an HS code to duty rates *and* lartas (prohibition/restriction) status, which is closer to the product than any regulation listing: "what restricts 6306.19.90 today" is diffable, where "does this Permendag touch PVC tarpaulin" needs judgment. No public developer documentation was found. It times out from the development machine but loads from other networks, so the block is routing or geo, not a dead service. Gated on the same thing as everything else: real HS codes off a PEB.
@@ -160,6 +161,14 @@ to the alert as code-written coverage caveats.
 ## Status
 
 - **Working end to end locally.** Dashboard → Run check now → expanded live fetch, judgment, stored result, rendered alert. Chat Q&A grounded in stored run data also works.
+- **US federal tax and customs are now monitored (16 Aug 2026).** The US pack had
+  thirteen agency feeds and no tax authority at all, while Indonesia has watched
+  DJP, DJBC and Kemenkeu from the start. Added and live-probed: the IRS Federal
+  Register feed, eCFR Title 19 (customs duties — drawback, entry, valuation,
+  origin) and eCFR Title 26 (internal revenue). 19 CFR is the one that matters
+  most: the US constitutionally cannot tax exports, so an exporter's exposure is
+  on the customs side, chiefly duty drawback on inputs that are later re-exported.
+  A new `us-tax-customs` checklist row asks whether drawback is being claimed.
 - **The operating-data layer is built (16 Aug 2026).** Cante now holds the
   customer's own business alongside the regulations: a product catalogue with CSV
   import, trade lanes, suppliers, uploaded trade documents, an action workflow,

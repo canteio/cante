@@ -435,8 +435,8 @@ for the exact automation boundary. `db:seed` also removes the superseded
 
 | Source | Status | Note |
 |---|---|---|
-| Federal Register API | **working** | Thirteen no-key agency feeds were live-probed: EPA, OSHA, FTC, CPSC, FDA, USDA, FCC, DOT/NHTSA, BIS, Census, OFAC, CBP, and State/DDTC. Each agency gets its own result window instead of competing in one broad query. Queried with an explicit `fields[]` list — see below, this is load-bearing. |
-| eCFR versioner API | **working** | Titles 15, 16, 21, 29, 31, 40, and 49. Each run resumes inclusively from the last completed run; a first run uses a disclosed seven-day bootstrap window. Every API page and every substantive dated amendment is retained. Export and sector titles activate from profile facts. |
+| Federal Register API | **working** | Fourteen no-key agency feeds were live-probed: EPA, OSHA, FTC, CPSC, FDA, USDA, FCC, DOT/NHTSA, BIS, Census, OFAC, CBP, State/DDTC, and **IRS**. Each agency gets its own result window instead of competing in one broad query. Queried with an explicit `fields[]` list — see below, this is load-bearing. |
+| eCFR versioner API | **working** | Titles 15, 16, **19**, 21, **26**, 29, 31, 40, and 49. Each run resumes inclusively from the last completed run; a first run uses a disclosed seven-day bootstrap window. Every API page and every substantive dated amendment is retained. Export and sector titles activate from profile facts. |
 | OSHA Federal Register RSS | **working** | Official targeted feed; latest test parsed 5 entries and intentionally overlaps Federal Register. |
 | CPSC Recall API | **working** | Official API, rolling 45-day window; live probe parsed 30 recalls. Activated only for a recorded consumer-product flag. |
 | OFAC recent list actions | **working** | Official list-change page; live probe parsed 10 updates. This detects list changes but does not screen counterparties. |
@@ -506,6 +506,57 @@ Things about this feed that will mislead you if forgotten:
   every anchor including nav and footer passed. It looked harmless only because
   that fetch always fails; the first success would have produced 30 junk entries,
   each costing a detail-page read and a judgment.
+
+### Taxation, and why the two countries look nothing alike (added 16 Aug 2026)
+
+Indonesia has been covered from the start — `jdih.kemenkeu.go.id` (PMK),
+`peraturan.beacukai.go.id` (DJBC customs and excise) and `pajak.go.id/peraturan`
+(DJP) — plus the `tax-customs-monitor` checklist row and the `id-tax-customs`
+pack. The US pack had **thirteen agency feeds and no tax authority at all**; its
+only tax source was NCDOR, a North Carolina state feed that activates only when a
+profile names NC. Title 31 was present but that is the *sanctions* title, not the
+customs one.
+
+Three rows closed it, all live-probed on 16 Aug 2026:
+
+| Source | Gate | Probe |
+|---|---|---|
+| Federal Register — IRS (`internal-revenue-service`) | ungated | 4 entries; `Backup Withholding on Third Party Network Transactions` carried `effective_on: 2026-08-10` |
+| eCFR Title 19 — Customs Duties | `export` | 1 substantive change in 7 days, 3 in 30 |
+| eCFR Title 26 — Internal Revenue | ungated | 3 substantive changes in 7 days, 9 in 30 |
+
+**19 CFR is the important one, not 26 CFR.** The US cannot tax exports at all —
+Constitution, Article I §9 cl. 5, "No Tax or Duty shall be laid on Articles
+exported from any State" — so there is no US export-duty regime to monitor. An
+exporter's money moves on the customs side: duty drawback (19 CFR 190) on inputs
+that are later re-exported, plus entry, valuation and origin. That is why 19 CFR
+follows the `export` gate while 26 CFR is ungated like EPA and OSHA: federal
+income tax reaches any company with US operations, but customs duties only matter
+once trade facts exist.
+
+The two federal tax feeds are a deliberate cross-check and will overlap. The
+probe caught it working: the IRS Federal Register rule on backup withholding
+(effective 2026-08-10) and the 26 CFR §31.3406 codified text arrived the same day
+through independent feeds — the rule as published and the rule as codified.
+
+An empty US profile now selects **10** general federal rows (was 8): EPA, OSHA,
+FTC, IRS, USITC HTS release, eCFR 16/26/29/40, and the OSHA RSS feed.
+
+`us-tax-customs` is the checklist counterpart, taking US rows from 17 to 18. It
+is `monitored` rather than `completed` and asks the two questions that decide
+whether any of this is worth money to the customer: whether duties are paid on
+imported inputs that are later re-exported (drawback), and whether an FTZ, FDII
+or IC-DISC position exists and who reviews it.
+
+**Assumed, not verified.** The source coverage above is verified by live probe.
+The tax-law characterisations — export-tax prohibition, drawback under part 190,
+Indonesian export VAT zero-rating and bea keluar scope — are reasoning from
+general knowledge, not something Cante has checked against a source. They must be
+confirmed by an Indonesian tax consultant and a US customs broker before any of
+it reaches a customer. Related and already recorded elsewhere in this file: bea
+keluar applies only to listed commodities (CPO, minerals, wood, leather, cocoa),
+which is the same fact as the HPE decrees flooding the Kemendag feed never
+touching PVC tarpaulin.
 
 ### ⚠️ Both US APIs must be asked for what you need
 
@@ -772,6 +823,12 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
   were then re-confirmed over HTTP — approving a `lead` returned 400, and
   asserting `tier: "document"` via POST returned 400. All demo rows were deleted
   afterwards; `cante.db` holds no fabricated catalogue data.
+- **US federal tax and customs coverage added and live-probed, 16 Aug 2026.**
+  IRS Federal Register, eCFR Title 19 (customs duties) and eCFR Title 26
+  (internal revenue), plus the `us-tax-customs` checklist row (US rows 17 → 18)
+  and the `us-federal-tax-customs` pack (US packs now 25). An empty US profile
+  selects 10 general federal rows, up from 8. 67 tests pass. See the taxation
+  section above for why 19 CFR matters more than 26 CFR here.
 - **What is NOT done in that layer**: OCR/PDF ingestion, supplier outreach
   delivery, export-licence determination, and PGA-requirements-per-HS-code
   (item 7's one remaining gap). Each is disclosed in code and in the section

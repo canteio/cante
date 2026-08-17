@@ -649,6 +649,23 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
       "national",
       "transport",
     ],
+    /*
+     * IRS, ungated.
+     *
+     * The US pack monitored thirteen agencies and no tax authority at all,
+     * while the Indonesian pack has watched DJP, DJBC and Kemenkeu from the
+     * start. Ungated because federal tax reaches any company with US
+     * operations — the same reasoning that leaves EPA and OSHA ungated — and
+     * because the volume is small: a live probe on 16 Aug 2026 found RULE and
+     * PRORULE documents arriving at roughly one a week.
+     *
+     * Note what this feed is NOT. The US cannot tax exports at all
+     * (Constitution, Art. I §9 cl. 5), so there is no export-duty regime here
+     * to watch. What matters to an exporter is on the customs side — drawback,
+     * entry, valuation, origin — which is why 19 CFR was added alongside this
+     * and is the more important of the two.
+     */
+    ["irs", "IRS", ["internal-revenue-service"], "tax", undefined],
   ].map(([id, label, agencies, regulationType, profileGate]) => ({
     id: `us-fr-${id}`,
     country: "United States",
@@ -867,6 +884,22 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     [31, "sanctions", "Treasury and OFAC", "export"],
     [49, "transport", "Transportation and hazmat", "transport"],
     [21, "fda", "Food and drugs", "food-drug"],
+    /*
+     * 19 CFR — Customs Duties. The most exporter-relevant title in the CFR and
+     * the conspicuous omission from the original set: Title 31 was present, but
+     * that is the sanctions title, not the customs one. This is where drawback
+     * (part 190), entry, valuation and origin rules live, which is exactly what
+     * an exporter's duty exposure turns on. Gated on export like Title 15.
+     * Live probe 16 Aug 2026: 1 substantive change in 7 days, 3 in 30.
+     */
+    [19, "customs", "Customs duties, drawback, entry and valuation", "export"],
+    /*
+     * 26 CFR — Internal Revenue. Ungated, matching the IRS Federal Register
+     * feed. Volume was the worry and it did not materialise: 3 substantive
+     * changes in 7 days and 9 in 30 on the same probe, well inside what the
+     * source ledger absorbs.
+     */
+    [26, "tax", "Internal Revenue"],
   ].map(([title, view, label, profileGate]) => ({
     id: `us-ecfr-title-${title}`,
     country: "United States",

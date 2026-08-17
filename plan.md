@@ -135,6 +135,7 @@ that review are now built:
 | 5 | Impact calculation (affected SKUs, effective date, exposure) | built |
 | 6 | Classification workspace (history, rationale, approval) | built |
 | 7 | US trade depth (HTS, CROSS, 301/232, AD/CVD, UFLPA) | was already built; PGA-per-code outstanding |
+| 7b | US federal tax and customs (IRS, 19 CFR, 26 CFR) | added 16 Aug 2026 — the US pack had no tax authority at all while Indonesia had three |
 | 8 | Document audit (PEB/invoice → discrepancies) | built, text only |
 | 9 | Supplier evidence tracking | built, outreach not sent |
 | 10 | Restricted-party screening, persisted | built |

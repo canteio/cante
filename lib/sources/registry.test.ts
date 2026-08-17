@@ -184,3 +184,45 @@ test("HTS-specific trade sources stay inactive without a trade profile", () => {
   assert.ok(![...ids].some((id) => id.startsWith("us-cbp-cross-")));
   assert.ok(!selection.coverageCaveats.some((caveat) => caveat.includes("HTS-to-PGA")));
 });
+
+test("federal tax sources are monitored, and customs duties activate for exporters", () => {
+  // The US pack watched thirteen agencies and no tax authority at all, while
+  // the Indonesian pack has monitored DJP, DJBC and Kemenkeu from the start.
+  const empty = selectMonitoredSources("United States", profile());
+  const emptyIds = new Set(empty.sources.map((source) => source.id));
+
+  // Federal tax reaches any company with US operations, so these are ungated —
+  // the same reasoning that leaves EPA and OSHA ungated.
+  assert.ok(emptyIds.has("us-fr-irs"), "IRS rulemaking is monitored without a profile");
+  assert.ok(emptyIds.has("us-ecfr-title-26"), "26 CFR is monitored without a profile");
+
+  // 19 CFR is the customs-duties title — drawback, entry, valuation, origin —
+  // so it follows the export gate like Title 15 rather than polling for a
+  // company with no trade facts on file.
+  assert.ok(!emptyIds.has("us-ecfr-title-19"), "customs duties need an export profile");
+
+  const exporter = selectMonitoredSources(
+    "United States",
+    profile({ exportClassifications: [{ code: "EAR99" }] }),
+  );
+  const exporterIds = new Set(exporter.sources.map((source) => source.id));
+  assert.ok(exporterIds.has("us-ecfr-title-19"));
+  assert.ok(exporterIds.has("us-fr-irs"));
+  assert.ok(exporterIds.has("us-ecfr-title-26"));
+});
+
+test("the IRS feed asks for the dated fields, like every other Federal Register row", () => {
+  const selection = selectMonitoredSources("United States", profile());
+  const irs = selection.sources.find((source) => source.id === "us-fr-irs");
+  assert.ok(irs);
+
+  const params = new URL(irs.url).searchParams;
+  assert.deepEqual(params.getAll("conditions[agencies][]"), ["internal-revenue-service"]);
+  // Without fields[] the API returns a short default set carrying no dates at
+  // all — the failure that silently gutted every US alert once already.
+  const fields = params.getAll("fields[]");
+  assert.ok(fields.includes("effective_on"));
+  assert.ok(fields.includes("comments_close_on"));
+  assert.ok(fields.includes("raw_text_url"));
+  assert.equal(irs.regulationType, "tax");
+});
