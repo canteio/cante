@@ -1,5 +1,15 @@
 import Link from "next/link";
-import { Brain, Building2, ClipboardCheck, ListChecks, MessageSquare } from "lucide-react";
+import {
+  Boxes,
+  Brain,
+  Building2,
+  ClipboardCheck,
+  FileText,
+  Inbox,
+  ListChecks,
+  MessageSquare,
+  Truck,
+} from "lucide-react";
 import { cookies } from "next/headers";
 import { ChatNav } from "@/components/dashboard/chat-nav";
 import { ProviderSwitcher } from "@/components/dashboard/provider-switcher";
@@ -19,7 +29,16 @@ export async function Sidebar({
   activeConversationId = null,
   jurisdiction = DEFAULT_JURISDICTION,
 }: {
-  active: "checks" | "checklist" | "chat" | "memory" | "profile";
+  active:
+    | "checks"
+    | "checklist"
+    | "chat"
+    | "memory"
+    | "profile"
+    | "catalogue"
+    | "documents"
+    | "workqueue"
+    | "suppliers";
   activeConversationId?: string | null;
   jurisdiction?: JurisdictionName;
 }) {
@@ -55,6 +74,33 @@ export async function Sidebar({
           Profile
         </Link>
       </nav>
+
+      {/*
+        Operating data, kept as its own group. Everything in the nav above
+        describes regulations; everything here describes the customer's own
+        business, and a regulation only becomes an alert when the two meet.
+      */}
+      <div className="side-section fade-2">
+        <div className="side-label">Operations</div>
+        <nav className="nav">
+          <Link href={`/workqueue${countryQuery}`} data-active={active === "workqueue"}>
+            <Inbox size={15} strokeWidth={1.75} />
+            Work queue
+          </Link>
+          <Link href={`/catalogue${countryQuery}`} data-active={active === "catalogue"}>
+            <Boxes size={15} strokeWidth={1.75} />
+            Catalogue
+          </Link>
+          <Link href={`/documents${countryQuery}`} data-active={active === "documents"}>
+            <FileText size={15} strokeWidth={1.75} />
+            Documents
+          </Link>
+          <Link href={`/suppliers${countryQuery}`} data-active={active === "suppliers"}>
+            <Truck size={15} strokeWidth={1.75} />
+            Suppliers
+          </Link>
+        </nav>
+      </div>
 
       <div className="side-section fade-2">
         <div className="side-label">Customers</div>

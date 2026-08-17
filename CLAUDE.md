@@ -61,11 +61,21 @@ lib/llm/          types.ts = the seam (+ streaming) · claude-code.ts (works) ·
 lib/sources/      registry.ts (sources + profile activation as data) · fetch.ts (no AI, fetch+JSON/RSS/Cheerio parse)
                   *.test.ts (incremental windows, pagination, source-field contracts)
 lib/screening/    csl.ts (bounded, cached exact-name matching against Trade.gov CSL bulk data)
+                  persist.ts (screens as dated, auditable events; `error` is never `clear`)
 lib/checks/       judge.ts (prompt + Zod schema) · run.ts (fetch → judge → store) · checklist.ts (living obligations)
                   facts.ts (HS/KBLI tiers — the one answer to "what is established") · coverage.ts (entries in, verdicts out)
+lib/catalogue/    products.ts (SKUs + CSV import) · classifications.ts (tiered code history + approval)
+                  lanes.ts (trade lanes, suppliers) · csv.ts (quote-correct reader, no dependency)
+lib/impact/       assess.ts (finding → affected SKUs/lanes → exposure, or an honest null)
+lib/documents/    audit.ts (PEB/invoice text → line items → discrepancies → document-tier promotion)
+lib/workflow/     actions.ts (finding → human response, kept separate from the evidence)
+lib/suppliers/    evidence.ts (certificate status, gaps, expiry horizon)
+lib/test-support/ operating-db.ts (throwaway SQLite + per-test tenant isolation)
 lib/db/           schema.ts · client.ts · queries.ts
-app/              page.tsx (Checks) · checklist/ · chat/ · memory/ · api/{checks,checklist,chat,customers,memories,screening}
+app/              page.tsx (Checks) · checklist/ · chat/ · memory/ · catalogue/ · documents/ · workqueue/ · suppliers/
+                  api/{checks,checklist,chat,customers,memories,screening,products,classifications,lanes,documents,workqueue,suppliers}
 components/       dashboard/ · checklist/ · memory/ · chat/ (chat-panel.tsx reads the SSE stream · markdown.tsx renders answers)
+                  catalogue/ · documents/ · workqueue/ · suppliers/ (the Operations screens)
 scripts/          seed.ts (sources + source packs + MA) · run-check.ts
 mike-main/        reference copy of another project — design source, gitignored,
                   excluded in tsconfig (else `next build` compiles its backend)
@@ -282,6 +292,23 @@ regional Perda, and memory-review rows with status, priority, evidence, and open
 questions. It can mark a row complete or back to review, but the refresh logic
 will continue to surface unverified facts as `needs_review`.
 
+**Operations is its own sidebar group**, below the regulation screens, holding
+Work queue, Catalogue, Documents, and Suppliers. The split is the point:
+everything in the top nav describes regulations, everything in Operations
+describes the customer's business, and an alert is what happens where they meet.
+
+Three display rules carry rule 2 into these screens and must not be softened:
+
+- Every classification code shows a **tier badge**. Without it a CSV guess and a
+  PEB-verified code look identical.
+- An exposure figure is **never shown without its basis lines**, and
+  "not calculable from what is on file" is its own rendered state — never a zero.
+- A supplier with no screening on record renders **"never screened"**, and a
+  failed screen renders its error. Neither may look like `clear`.
+
+New CSS lives at the end of `globals.css` under an Operations comment and uses
+only existing tokens — no new palette, still no Tailwind.
+
 **LLM provider switcher lives at the bottom of the sidebar.** It shows Claude
 Code, Codex / ChatGPT, and Hosted API health. Only healthy providers can be
 selected. This exists for rate-limit fallback, but still obeys rule 1: Codex is
@@ -373,6 +400,19 @@ used the guessed codes.
 | `jdihn.go.id` | **blocked** | The old central host times out and the replacement is not a dependable public document API. Member ILDIS feeds remain an expansion route. |
 | East Java JDIH | **blocked** | Works interactively but Cloudflare rejects unattended fetches. Disclosed as a manual regional gap. |
 | `pesta.bsn.go.id/produk` | **working** | Live probe parsed 19 SNI records. Server-rendered HTML, not a public API; one retry handles transient transport/server failures. |
+
+**Whole-set verification, 16 Aug 2026.** A source-only probe of the selected
+Indonesia set (no profile, so the Surabaya rows stayed inactive) fetched
+**11 of 11 sources with zero failures and 380 parsed entries**: Kemendag 10/10/10,
+Setneg 263, KLH 30, BSN 19, Kemnaker 15, DJBC 10, Kemenkeu 7, DJP 5, OSS 1
+heartbeat. The immediately prior set was 5 of 12 with 38 entries. The two
+reclassified hosts were confirmed dead at the transport layer, not bot-blocked:
+`peraturan.go.id` (103.145.96.87) and `jdihn.go.id` (103.145.96.88) are adjacent
+IPs in one government subnet and refused TCP connections from two independent
+networks, so `blocked` is a fact about the host and no retrieval change will fix
+it. `insw.go.id` behaves differently — unreachable locally but reachable from
+other networks — so it is a routing/geo question, not a dead service, and remains
+an unexplored lead for HS-code-to-lartas mapping.
 
 API research on 16 Aug 2026 found usable official read endpoints at Setneg,
 KLH/BPLH, OSS, Surabaya JDIH, and Surabaya DLH. Setneg replaces the failed
@@ -513,7 +553,25 @@ Each identity is the human eCFR citation plus
 `#cante-amendment-YYYY-MM-DD`. The fragment makes a later amendment to the same
 section new to exact-URL dedup without breaking the citation. Do not collapse to
 one row per section: live data included the same section on multiple amendment
-dates. API `appendix` rows use `/appendix-`, not `/section-`; the latter returns
+dates.
+
+> ⚠️ **Open bug (found 16 Aug 2026, not yet fixed): `identity()` discards this
+> fragment.** `lib/checks/source-changes.ts` strips the URL hash before keying
+> the ledger, so two amendments of one section collapse to a single identity and
+> violate the `source_documents` unique index. It is inside `db.transaction()`,
+> so it aborts the **whole run**, not one source. Reproduced against the real
+> schema: `SQLITE_CONSTRAINT_UNIQUE`. Measured exposure from live eCFR data —
+> Title 40 has 0 colliding sections in a 7-day window, 1 in 30 days, and 234
+> since 1 Jan 2026; Title 49 has 178 since 1 Jan. Daily runs are safe; a stalled
+> monitor is not, and the failure is self-reinforcing because the window resumes
+> from the last *completed* run, so each failure widens the window that caused
+> it. Fix is to preserve `#cante-amendment-` fragments in `identity()`. Two
+> related nits: `revisionUrl()` overwrites the amendment fragment with
+> `#cante-revision-`, dropping the amendment date from the customer-facing
+> citation; and the bootstrap `slice(0, 10)` takes source order while its own
+> comment disclaims that order is chronological.
+
+API `appendix` rows use `/appendix-`, not `/section-`; the latter returns
 404/406. Live verification parsed all 17 Title 15 changes since 23 July 2026,
 and its generated Supplement No. 5 appendix URL resolved to the official page
 with HTTP 200.
@@ -525,6 +583,115 @@ as explicit nulls so absence and parser omission cannot look the same.
 
 ---
 
+## Operating data (built 16 Aug 2026)
+
+Everything described above this section is about **regulations**. This section is
+about the customer's own business — the products, lanes, suppliers, documents and
+decisions a regulation has to be matched *against*. Cante monitored well and
+connected nothing; competitors connect regulations to products, shipments,
+classifications and money. These are items 2–10 of that gap analysis.
+
+**`products` is the keystone.** Lanes, impact, document audit and supplier
+evidence are all meaningless without a first-class SKU to hang them on, so it was
+built first and everything else references it. `jurisdiction_profiles.products`
+and `.skus` stay as they are — they describe the company in prose for source
+activation, and they are not the catalogue.
+
+| # | What | Where | State |
+|---|---|---|---|
+| 2 | Product catalogue, CSV import | `lib/catalogue/products.ts` | built, tested |
+| 3 | Trade lanes, suppliers | `lib/catalogue/lanes.ts` | built, tested |
+| 4 | Action workflow | `lib/workflow/actions.ts` | built, tested |
+| 5 | Impact calculation | `lib/impact/assess.ts` | built, tested |
+| 6 | Classification workspace | `lib/catalogue/classifications.ts` | built, tested |
+| 7 | US trade depth | `lib/sources/registry.ts` | was already built; PGA-per-code still missing |
+| 8 | Document audit | `lib/documents/audit.ts` | built, tested — **text only, no OCR** |
+| 9 | Supplier evidence | `lib/suppliers/evidence.ts` | built, tested — **records requests, does not send them** |
+| 10 | Screening persistence | `lib/screening/persist.ts` | built — restricted-party only, no licence determination |
+
+### The tier discipline now reaches the SKU
+
+`product_classifications.tier` reuses `lib/checks/facts.ts` exactly — `document`
+/ `human` / `lead` / `guess` — so the customer-level and SKU-level answers to
+"is this established?" cannot drift apart. Three structural rules enforce it,
+and all three are verified over HTTP:
+
+1. **A CSV cannot produce a verified code.** Codes in an imported spreadsheet
+   land as `lead`/`proposed`. A spreadsheet is not an export document.
+2. **`approveClassification()` refuses `lead` and `guess` tiers**, and requires a
+   named approver plus a written rationale. Approving a model suggestion without
+   first establishing it is the laundering step this project exists to prevent.
+3. **`POST /api/classifications` refuses `tier: "document"` outright.** That tier
+   is produced only by `promoteCodesFromDocument()`, which can cite the paperwork.
+
+Nothing is ever overwritten. A superseded code gets `supersededAt` and stays in
+the table, because "what did we declare in March" is a question customs asks.
+
+### Document audit is the roadmap unblocker, not just parity
+
+The `document` tier is the only one that counts as verified, and until now
+nothing could produce one — it needed a human to read a PEB and type the code
+into Memory. `promoteCodesFromDocument()` is that path, automated but not
+weakened: the document must have a readable number **and** date (otherwise it is
+uncitable and nothing is promoted), the line must name a known SKU, and the
+result still arrives `proposed` for human approval.
+
+Two things the parser must keep doing:
+
+- **`parseStatus` distinguishes `parsed` / `partial` / `failed`.** A document
+  nobody could read must never present like one that was read and found clean.
+  Rule 2 applied to the customer's own paperwork.
+- **An HS code needs a separator or 8+ digits, and chapter 01–99.** The naive
+  regex read the PEB's own registration number `000123` as heading `0001.23` and
+  invented a phantom line item. Chapters 98/99 are deliberately allowed —
+  `9903.*` is where Section 301/232 duties are declared, so rejecting them would
+  blind the parser to the measures the US pack cares most about.
+
+### Impact may not invent precision
+
+`lib/impact/assess.ts` is the file most able to damage credibility, because a
+dollar figure reads as fact in a way prose does not.
+
+- **A missing input produces `null`, never `0`.** Zero exposure and unknown
+  exposure are different answers, and a customer reading "$0" concludes there is
+  nothing to do.
+- **`basis` is mandatory and rendered with the figure**, in both the API and the
+  UI. Every number is reconstructible from the assumptions beside it.
+- **`confidence` is capped by the weakest input.** An exposure computed from a
+  `lead`-tier code is `indicative` however precise the arithmetic.
+- **A 6-digit rule against an 8-digit catalogue code is a `code_prefix` match**,
+  never silently promoted to exact. Tariff measures are usually written at 6
+  digits; the caveat says to confirm at the full code before acting.
+- **An empty catalogue is a coverage gap, not "no impact."** An unmatched
+  regulation and an unclassified catalogue look identical otherwise.
+
+### Workflow is separate from evidence on purpose
+
+`finding_actions` is its own table rather than columns on `findings`. A finding
+is what the monitor observed on a given day and must stay immutable; the action
+is the mutable human response. Merging them would let a workflow click rewrite
+the monitoring record, and "what did we know on the 14th" would stop being
+answerable. Marking a finding `irrelevant` requires a written reason — it is the
+one transition that destroys information, so it costs a sentence.
+
+### What these deliberately do NOT do
+
+Stated here because each is a place where looking finished would be worse than
+the gap:
+
+- **No OCR or PDF extraction.** `ingestDocument()` takes text and says so in its
+  error rather than accepting a scan and producing an empty, clean-looking audit.
+- **No supplier outreach delivery.** `requestEvidence()` records that a request
+  was made and returns a draft message with `delivered: false`. Sending needs the
+  delivery infrastructure item 1 defers; the UI must never render this as "sent".
+- **No licence determination or ECCN classification.** Item 10 covers
+  restricted-party screening against one official US list. `outcome: "error"` is
+  a first-class value and must never render as `clear` — a failed screen is an
+  unscreened party.
+- **Item 1 (scheduling and push delivery) remains out of scope.** It is still
+  listed under "explicitly not yet". Items 2–10 make the alert worth more; they
+  do not make it arrive on its own.
+
 ## Data model
 
 Multi-tenant from day one — everything keys off `customer_id`, sources key off
@@ -534,6 +701,16 @@ refactor. SQLite via Drizzle; the schema is portable to Postgres.
 `customers` · `customer_profiles` · `jurisdiction_profiles` · `kbli_records` · `source_packs` · `sources`
 · `check_runs` · **`source_results`** · **`source_documents`** · `findings` · `alerts` · `conversations`
 · `chat_messages` · `memories` · `checklist_items`
+
+Operating data (the customer's own business, not regulations):
+**`products`** · `product_classifications` · `trade_lanes` · `suppliers`
+· `supplier_documents` · `trade_documents` · `document_findings`
+· `finding_actions` · `impact_assessments` · `screening_results`
+
+`products` is unique on `(customer_id, sku)` — SKU is the merge key, so a
+re-import updates rather than duplicating. `finding_actions` is unique on
+`finding_id`: one current response per finding, with the history in its own
+timestamps rather than in extra rows.
 
 `check_runs`, `conversations`, `memories`, and `checklist_items` carry a
 `jurisdiction`. That prevents Indonesian evidence and US evidence from being
@@ -583,6 +760,22 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
 
 - Fetch, judgment, storage, dashboard, and chat all working locally, verified
   against the expanded live source set.
+- **The operating-data layer (items 2–10) is built and verified locally,
+  16 Aug 2026.** 65 tests pass (up from 34), `npx tsc --noEmit` and
+  `npm run build` are clean, and all four new pages return HTTP 200. Verified end
+  to end against the real `cante.db`: a CSV import created products and filed its
+  codes as leads; a lane referencing an unknown SKU was rejected with a reason; a
+  pasted PEB parsed to `parsed` with number and date; the audit caught the exact
+  drift CLAUDE.md documents (seed guess `3921.90` vs the document's
+  `6306.12.00`); promotion moved the code to `document` tier as `proposed`; and
+  approval superseded the old code while retaining it in history. Both guardrails
+  were then re-confirmed over HTTP — approving a `lead` returned 400, and
+  asserting `tier: "document"` via POST returned 400. All demo rows were deleted
+  afterwards; `cante.db` holds no fabricated catalogue data.
+- **What is NOT done in that layer**: OCR/PDF ingestion, supplier outreach
+  delivery, export-licence determination, and PGA-requirements-per-HS-code
+  (item 7's one remaining gap). Each is disclosed in code and in the section
+  above rather than stubbed to look finished.
 - **United States foundation is built.** Official feeds, country-specific
   judgment/chat grounding, structured profile, a 17-row domestic/distribution/
   export checklist, country-scoped history/memory, and the composer nation

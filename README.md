@@ -115,7 +115,8 @@ changed records to the model. A document changed at the same URL is re-evaluated
 - **Caveat on HPE:** the unfiltered feed is dominated by Harga Patokan Ekspor decrees — commodity reference prices for mining, palm, agriculture and forestry. They never cover PVC tarpaulin. Volume here is not signal.
 - **Official Kemendag newsletter** ("Berlangganan Newsletter JDIH Kemendag") — signed up. The government pushing updates directly is more reliable than scraping anything.
 - **peraturan.bpk.go.id** — confirmed blocks bots. In the registry as `blocked`; never fetched automatically. Still the deepest archive for manual lookups.
-- **peraturan.go.id and jdihn.go.id** — disabled from daily fetching because their public services are not dependable. Setneg now covers six national instrument types. JDIHN's ILDIS convention can expose member feeds such as `/feed/document.json`, but each agency's adoption and quality must be verified separately.
+- **peraturan.go.id and jdihn.go.id** — disabled from daily fetching because their public services are not dependable. Measured 16 Aug 2026: they resolve to 103.145.96.87 and 103.145.96.88, adjacent IPs in one government subnet, and both refused TCP connections from two independent networks. So this is a dead host, not bot detection, and no retrieval or header change will recover it. Setneg now covers six national instrument types. JDIHN's ILDIS convention can expose member feeds such as `/feed/document.json`, but each agency's adoption and quality must be verified separately.
+- **insw.go.id** — not yet integrated, and the most promising remaining lead. Its NTR service maps an HS code to duty rates *and* lartas (prohibition/restriction) status, which is closer to the product than any regulation listing: "what restricts 6306.19.90 today" is diffable, where "does this Permendag touch PVC tarpaulin" needs judgment. No public developer documentation was found. It times out from the development machine but loads from other networks, so the block is routing or geo, not a dead service. Gated on the same thing as everything else: real HS codes off a PEB.
 - **East Java JDIH** — the public site works interactively but Cloudflare blocks unattended collection. The provincial layer remains a disclosed manual gap; Surabaya city coverage is automated.
 - **pesta.bsn.go.id/produk** — working server-rendered SNI catalogue. A live probe parsed 19 entries. There is no discovered public read API, so Cante retains the HTML adapter and retries one transient connection, timeout, rate-limit, or server failure.
 
@@ -159,6 +160,18 @@ to the alert as code-written coverage caveats.
 ## Status
 
 - **Working end to end locally.** Dashboard → Run check now → expanded live fetch, judgment, stored result, rendered alert. Chat Q&A grounded in stored run data also works.
+- **The operating-data layer is built (16 Aug 2026).** Cante now holds the
+  customer's own business alongside the regulations: a product catalogue with CSV
+  import, trade lanes, suppliers, uploaded trade documents, an action workflow,
+  and impact estimates. Four new screens — Work queue, Catalogue, Documents,
+  Suppliers — sit in an Operations group in the sidebar. 65 tests pass, the build
+  is clean, and the whole chain was exercised against the real database: import a
+  catalogue, paste a PEB, watch the audit catch a code mismatch, promote the
+  document's code to verified tier, approve it, and see the old code superseded
+  but retained. Not done, and disclosed rather than stubbed: OCR/PDF ingestion,
+  actually sending supplier requests, and export-licence determination.
+- **Indonesia source coverage verified whole-set on 16 Aug 2026: 11 of 11 sources fetched, 0 failures, 380 entries parsed** (Kemendag 30 across three views, Setneg 263, KLH 30, BSN 19, Kemnaker 15, DJBC 10, Kemenkeu 7, DJP 5, OSS 1 heartbeat). The set immediately before this work was 5 of 12 with 38 entries. Surabaya rows were not exercised by that probe because it ran without a profile.
+- **Known open bug, not yet fixed:** the source ledger's `identity()` strips the URL fragment that gives repeated eCFR section amendments distinct identities, so a run whose window contains two amendments of one section aborts on a unique-index violation. Reproduced against the real schema. Daily runs are unaffected; a monitor stalled for weeks is, and the failure widens its own window. See CLAUDE.md for measured exposure and the fix.
 - **US mode is built at the product-foundation level.** The composer switches
   between Indonesia and United States; histories, prompts, memories, profiles,
   checklists, and runs remain country-scoped. The US profile captures

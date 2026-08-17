@@ -120,5 +120,35 @@ That's the entire logic. It doesn't need a separate script or its own API key �
 - It has correctly identified at least one real, relevant change (or correctly identified zero when there was nothing — either counts, as long as it's accurate).
 - MA has received at least one real alert whose content was generated entirely by the automated check, even though you sent the WhatsApp message yourself.
 
+## Scope change, 16 Aug 2026 — from monitoring engine to monitoring service
+
+A competitive review (Quickcode, GingerControl, Onyx, Descartes, E2open,
+CargoWise, Assent, Altana) found Cante's capabilities were real but all pointed
+at regulatory documents rather than the customer's operating data. Items 2–10 of
+that review are now built:
+
+| # | Item | State |
+|---|---|---|
+| 2 | Product catalogue + CSV import | built |
+| 3 | Trade lanes | built |
+| 4 | Action workflow (acknowledge → assign → broker → close) | built |
+| 5 | Impact calculation (affected SKUs, effective date, exposure) | built |
+| 6 | Classification workspace (history, rationale, approval) | built |
+| 7 | US trade depth (HTS, CROSS, 301/232, AD/CVD, UFLPA) | was already built; PGA-per-code outstanding |
+| 8 | Document audit (PEB/invoice → discrepancies) | built, text only |
+| 9 | Supplier evidence tracking | built, outreach not sent |
+| 10 | Restricted-party screening, persisted | built |
+
+**Item 1 — always-on service — is still not done, and it is still the most
+important gap.** Scheduling, push delivery, retries and delivery logs remain out
+of scope alongside auth and deploy. Items 2–10 make each alert worth more; none
+of them make an alert arrive on its own. Until that changes, Cante is a better
+monitoring engine, not yet a finished monitoring service.
+
+The v1 definition of done below is unchanged: the 14-day live test with MA
+and a real answer on willingness to pay still decide what happens next. The
+operating-data layer exists to make those 14 days produce a sharper alert, not
+to replace the test.
+
 ## Explicitly not solving yet
 Pricing, contracts, onboarding flow, and expansion to more customers all come after the two-week live test with MA produces a real yes/no on willingness to pay. Do not build billing or a signup page as part of this MVP.

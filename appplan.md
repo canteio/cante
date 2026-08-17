@@ -169,6 +169,44 @@ The existing Python (`fetch_sources.py`, and the judgment logic in `daily-prompt
   editor. Country controls on Checks, Checklist, Profile, Memory, and inside the
   chat composer all drive the same jurisdiction value.
 
+## The operating-data layer (added 16 Aug 2026)
+
+The architecture up to this point had one axis: regulations. Sources, runs,
+findings, alerts, checklist — all of it describes documents published by
+governments. A competitive review made the gap plain: rivals connect regulations
+to products, shipments, classifications and money, and Cante connected them to
+nothing. The alert could say "this rule changed" but never "this affects
+MAX-TARP-12 on your Rotterdam lane, by roughly this much, before your 10 Sep
+shipment".
+
+So the schema now has a second axis, and the two meet in `lib/impact/assess.ts`:
+
+```
+regulations                     operating data
+sources → check_runs        products → product_classifications
+   → source_documents         → trade_lanes → suppliers → supplier_documents
+   → findings ───────────┐    → trade_documents → document_findings
+   → alerts              └──→ impact_assessments ←──┘
+                              finding_actions
+```
+
+Three architectural decisions worth keeping:
+
+1. **`products` is the keystone, built first.** Lanes, impact, document audit and
+   supplier evidence all reference it. Building any of them first would have
+   meant building it twice.
+2. **Workflow is a separate table from findings.** A finding is immutable
+   evidence of what the monitor saw on a day; `finding_actions` is the mutable
+   human response. Merging them would let a UI click rewrite history.
+3. **The tier vocabulary was reused, not reinvented.** `product_classifications.tier`
+   is the same `document | human | lead | guess` as `lib/checks/facts.ts`, so the
+   SKU-level and customer-level answers to "what is established" cannot drift.
+   This is what stops a CSV column from ever becoming a verified code.
+
+The document-audit path also closes a loop the plan never had an answer for: the
+`document` tier was the only tier that counted as verified, and nothing in the
+system could produce one without a human retyping a PEB into Memory.
+
 ## How the model gets called (added during the build)
 The plan assumed judgment would just happen inside the app; it didn't say *how*, and the honest answer is that a Next.js server can't use the Claude Code login the way the markdown pipeline did. So the model sits behind `LlmProvider` in `lib/llm/`:
 

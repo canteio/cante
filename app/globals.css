@@ -2098,3 +2098,108 @@ a.tl-target:hover {
     animation: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Operations screens — catalogue, documents, work queue, suppliers.
+
+   Same tokens as the rest of the app; nothing new is introduced. The only
+   opinionated piece is .code-basis, which is deliberately small and quiet:
+   it carries the assumptions behind an exposure figure, and it must be
+   present without competing with the figure itself.
+   ------------------------------------------------------------------------- */
+
+.page-sub {
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 4px 0 0;
+  max-width: 68ch;
+}
+
+.strong {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: 12.5px;
+}
+
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.input {
+  background: var(--app-background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 8px 10px;
+  width: 100%;
+}
+
+.input:focus {
+  border-color: var(--azure);
+  outline: none;
+}
+
+textarea.input {
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.meta-row .input {
+  width: auto;
+  flex: 1 1 180px;
+}
+
+.btn-small {
+  font-size: 12px;
+  padding: 4px 10px;
+}
+
+.import-summary,
+.impact-row,
+.code-row {
+  border-top: 1px solid var(--border-soft);
+  padding-top: 10px;
+  margin-top: 10px;
+}
+
+.code-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+/* The basis line. Small, quiet, and always present next to a number. */
+.code-basis {
+  flex-basis: 100%;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.import-row {
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  padding: 3px 0;
+}
+
+.import-row.muted {
+  color: var(--text-faint);
+}
