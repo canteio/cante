@@ -417,10 +417,40 @@ the repo so `.env` resolves.
 
 **Schedule with `launchd`, not `cron`, on macOS.** launchd runs a missed
 `StartCalendarInterval` job **on wake**; cron silently skips it. For a machine
-that sleeps — which is every laptop — that difference is the whole job. The
-LaunchAgent needs `/bin/zsh -lc` so the shell profile loads and `npm`/`node`
-are on PATH; it needs no `EnvironmentVariables` block for tokens because
-`scripts/load-env.ts` reads `.env` once the working directory is the repo.
+that sleeps — which is every laptop — that difference is the whole job. It
+needs no `EnvironmentVariables` block for tokens because `scripts/load-env.ts`
+reads `.env` once the working directory is the repo.
+
+⚠️ **`zsh -lc` does NOT load `.zshrc`, and this broke the first live run.**
+`-c` makes the shell non-interactive; login shells only source `.zshrc` when
+interactive, `-l` alone does not do it. Both nvm's Node (`.nvm/versions/node/
+vX/bin`) and the `claude` CLI (`~/.local/bin`) get onto `PATH` via lines in
+`.zshrc` here, so a naive `/bin/zsh -lc "cd … && npm run check:scheduled"`
+silently ran the wrong `npm` (a Homebrew-installed Node 26, not the tested
+Node 24) and then failed with `spawn claude ENOENT` once PATH was fixed halfway.
+Fix: export `PATH` explicitly inside the plist command rather than relying on
+shell startup files:
+```xml
+<string>export PATH="$HOME/.nvm/versions/node/vX.Y.Z/bin:$HOME/.local/bin:$PATH"; cd /path/to/cante && npm run check:scheduled</string>
+```
+
+⚠️ **A project under `~/Desktop` (or Documents/Downloads) needs Full Disk
+Access granted to the interpreter, not just the terminal.** Those folders are
+TCC-protected; Terminal.app is normally granted access the first time it asks,
+but a process `launchd` spawns directly is a different, unprivileged identity
+and gets a silent `EPERM: process.cwd failed with error operation not
+permitted, uv_cwd` — indistinguishable from a Node bug, and identical across
+Node versions, which is what proved it wasn't one. Fix: System Settings →
+Privacy & Security → Full Disk Access → add both `/bin/zsh` and the actual
+`node` binary path, toggled on. No code change fixes this; it is host
+configuration and must be redone on every new machine — including the second,
+always-on Mac in `HANDOFF.md`.
+
+Verified 18 Aug 2026 end to end on `com.cante.dailycheck`: after both fixes,
+run `76285f64-576c-48f3-9d78-b17a5ad002cb` fetched 13/13 Indonesian sources,
+produced a quiet (0 flagged, 0 noted) result, and delivered to Telegram in one
+message — confirming the full `launchd` → `.env` → `claude` CLI → Telegram path
+works unattended, not just interactively.
 
 Verified 17 Aug 2026: `~/Library/LaunchAgents/com.cante.dailycheck.plist` runs
 `/bin/zsh -lc "cd /Users/a/Desktop/cante && npm run check:scheduled"` daily at
