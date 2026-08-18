@@ -1,5 +1,9 @@
 # Cante — working notes for agents
 
+> **New session? Read `HANDOFF.md` first.** This file covers the code; that one
+> covers where the business actually stands, what is in flight, and which
+> decisions are already settled.
+
 Daily automated check of official government sources, matched against one
 manufacturer's actual operations, producing a plain-language alert only when
 something genuinely changed. First customer: **MA**, PVC tarpaulin
