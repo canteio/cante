@@ -1,3 +1,4 @@
+import "./load-env";
 import { runCheck } from "../lib/checks/run";
 import { getDefaultCustomerId, getRunHistory } from "../lib/db/queries";
 import { normalizeJurisdiction } from "../lib/countries";

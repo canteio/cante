@@ -381,17 +381,35 @@ worse than a second message.
 
 ### Setting it up
 
+Secrets live in **`.env`**, which is gitignored. `scripts/load-env.ts` is
+imported first by both check scripts and calls `process.loadEnvFile()` (built
+into Node 22 — no dependency), so the same file serves the terminal, launchd and
+cron alike.
+
+This is not convenience. A LaunchAgent inherits **no** shell environment — no
+profile, no exports. Without the loader, a scheduled run silently loses
+`TELEGRAM_BOT_TOKEN` and records every alert as `skipped`, while testing
+perfectly by hand. Real environment variables still win, because `loadEnvFile`
+never overwrites a value that is already set.
+
 ```bash
-# 1. Get a token from @BotFather, then your chat id from @userinfobot
-export TELEGRAM_BOT_TOKEN="123456:ABC..."
-export TELEGRAM_CHAT_ID="987654321"
+# 1. Token from @BotFather, chat id from @userinfobot
+cat > .env <<'ENV'
+TELEGRAM_BOT_TOKEN=123456:ABC...
+TELEGRAM_CHAT_ID=987654321
+CANTE_HEARTBEAT_URL=https://hc-ping.com/your-uuid
+ENV
+chmod 600 .env
 
-# 2. Optional but recommended — a dead-man's switch (see below)
-export CANTE_HEARTBEAT_URL="https://hc-ping.com/your-uuid"
+# 2. Press Start on your own bot first — Telegram forbids a bot messaging
+#    anyone who has not opened a conversation with it.
 
-# 3. Confirm Telegram works before trusting it nightly
-npm run check:scheduled -- --verify
+# 3. Confirm before trusting it nightly
+npm run check:scheduled -- --verify   # want: "Telegram OK — bot @yourbot"
 ```
+
+The LaunchAgent then carries **no secrets at all** — it only needs to `cd` into
+the repo so `.env` resolves.
 
 **Schedule with `launchd`, not `cron`, on macOS.** launchd runs a missed
 `StartCalendarInterval` job **on wake**; cron silently skips it. For a machine
