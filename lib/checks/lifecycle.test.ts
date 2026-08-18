@@ -25,6 +25,30 @@ test("revocation and supersession are distinguished from amendment", () => {
   assert.equal(supersedes[0]?.relation, "supersedes");
 });
 
+test("title capitalisation does not hide an amendment", () => {
+  // Titles capitalise what prose does not. Matching only "Perubahan atas" found
+  // 1 link across 23 live Kemenperin regulations; 8 were amendments or
+  // revocations written "Perubahan Atas" and "Pencabutan".
+  const links = detectRegulationLinks(
+    "Peraturan Menteri Perindustrian Nomor 4 Tahun 2026 tentang Perubahan Atas Peraturan Menteri Perindustrian Nomor 2 Tahun 2025.",
+  );
+  assert.equal(links[0]?.relation, "amends");
+  assert.match(links[0].targetRef, /2 Tahun 2025/);
+});
+
+test("a revocation written as a title noun, even in capitals, is still a revocation", () => {
+  const noun = detectRegulationLinks(
+    "Peraturan Menteri Perindustrian Nomor 9 Tahun 2026 tentang Pencabutan Peraturan Menteri Perindustrian Nomor 27 Tahun 2020.",
+  );
+  assert.equal(noun[0]?.relation, "revokes");
+  assert.match(noun[0].targetRef, /27 Tahun 2020/);
+
+  const shouted = detectRegulationLinks(
+    "PENCABUTAN PERATURAN MENTERI PERINDUSTRIAN NOMOR 15 TAHUN 2019 TENTANG STANDAR.",
+  );
+  assert.equal(shouted[0]?.relation, "revokes", "an all-capitals title is still a revocation");
+});
+
 test("US amendment and revocation language is detected too", () => {
   const amends = detectRegulationLinks("Final rule amending 19 CFR 190.51 to clarify drawback claims.");
   assert.equal(amends[0]?.relation, "amends");

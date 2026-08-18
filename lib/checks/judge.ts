@@ -70,7 +70,13 @@ export const JudgmentSchema = z.object({
     .string()
     .describe(
       "The ready-to-send WhatsApp message, in the tone of a real message to a business owner. " +
-        "Use the language required by the system prompt. If nothing is relevant, say so plainly.",
+        "Use the language required by the system prompt. If nothing is flagged or noted, this must be " +
+        "ONE short line stating so plainly, bolded with a single leading/trailing asterisk " +
+        "(WhatsApp's own bold syntax, not Markdown) — e.g. '*Aman* — tidak ada yang baru hari ini buat " +
+        "MA.' or '*Clear* — nothing new today.' Do not add an explanatory paragraph after it, and do " +
+        "not restate coverage caveats, failed sources, or unconfirmed HS/KBLI facts here — code appends " +
+        "those automatically as a separate section right after this message. Only write more than the " +
+        "one-line summary when something is actually flagged or noted and needs explaining.",
     ),
 });
 
@@ -89,7 +95,8 @@ Hard rules:
 - Never claim a source was checked if it failed or parsed zero entries.
 - Never assert something is new or recent without an authoritative legal or publication date. Kemendag listings carry only a year; use their detail page. Other entries may carry structured dates from the official source; preserve the distinction between legal dates, upload dates, and notice-posting dates.
 - If you are unsure whether something is new or relevant, say "worth a manual look" rather than asserting impact confidently.
-- Write Bahasa Indonesia that a business owner reads easily: casual, clear, no legal jargon, no long quotes. Paraphrase.`;
+- Write Bahasa Indonesia that a business owner reads easily: casual, clear, no legal jargon, no long quotes. Paraphrase.
+- Keep the WhatsApp message short. If nothing is flagged or noted, one bolded line is the whole message — do not add a "Catatan" paragraph restating coverage gaps, failed sources, or unconfirmed HS/KBLI codes; those are appended automatically afterward. Never state or imply a specific entry was already checked unless you actually returned a verdict for it — that claim is audited against your own findings and will be caught if false.`;
 
 const US_SYSTEM_PROMPT = `You are the judgment stage of a United States manufacturing, distribution, and export compliance monitor.
 
@@ -108,7 +115,8 @@ Hard rules:
 - Missing company facts are coverage gaps. Do not infer NAICS, ECCN, permit status, waste streams, or distribution states.
 - Never describe an item as probably, typically, or likely EAR99. Without a documented classification, say ECCN/EAR99 is unknown.
 - If applicability requires legal, engineering, environmental, customs, or export-control judgment, use "requires expert review" language.
-- Write concise plain English for a small manufacturer. Cite the agency, document number or CFR citation, and source URL.`;
+- Write concise plain English for a small manufacturer. Cite the agency, document number or CFR citation, and source URL.
+- Keep the WhatsApp message short. If nothing is flagged or noted, one bolded line is the whole message — do not add a paragraph restating coverage gaps, failed sources, or unconfirmed facts; those are appended automatically afterward. Never state or imply a specific entry was already checked unless you actually returned a verdict for it — that claim is audited against your own findings and will be caught if false.`;
 
 export interface JudgeInput {
   customer: Customer;
@@ -224,6 +232,10 @@ Weight foundInViews: entries from the "ekspor" view are export-policy-tagged by 
 Each regulation entry includes sourceId, sourceName, domain, and regulationType.
 Copy sourceId into every finding you return so the stored finding points to the
 actual source. Do not collapse everything into Kemendag.
+
+An entry carrying a "provenance" field did NOT come from the government's own record — it was re-published by a private legal database because the official source is unreachable. Most such rows are the publisher's unreviewed parse. Judge the substance normally, but never present one as an official record: say in the message that it comes from a private re-publisher and still needs confirming against the official document, and prefer "worth a manual look" over asserting a confident obligation. An entry with no provenance field came straight from the official portal and needs no such hedge.
+
+For those entries, read "datesNote" before deciding anything about recency. When it names a Ditetapkan (signed) or Diundangkan (promulgated) date, that date is established and you may reason from it — a rule promulgated last month is genuinely recent, one promulgated eight months ago is not, and saying so is the point of the monitor. When datesNote is absent or empty, the year is the only time fact available: do not state or imply the entry is new, recent, or newly in force. In neither case is the date it takes legal effect established — that is usually set by the regulation's own closing article and can be later than promulgation, so do not present a promulgation date as an effective date.
 
 ${renderKbliSection(kbli)}
 ${JSON.stringify(report.regulations, null, 2)}

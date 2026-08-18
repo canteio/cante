@@ -20,5 +20,5 @@
   // mike-main and uigen-claude are downloaded reference copies of other
   // projects, not ours — without this, tsc and `next build` try to compile
   // their whole backends.
-  "exclude": ["node_modules", "mike-main", "uigen-claude"]
+  "exclude": ["node_modules", "mike-main", "uigen-claude", "pasal-main"]
 }

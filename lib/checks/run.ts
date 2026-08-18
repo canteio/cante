@@ -20,10 +20,12 @@ import {
 } from "@/lib/db/queries";
 import { getProvider, type LlmProviderChoice } from "@/lib/llm";
 import { judge } from "@/lib/checks/judge";
-import { auditVerdictCoverage } from "@/lib/checks/coverage";
+import { auditVerdictCoverage, normalizeUrlKey } from "@/lib/checks/coverage";
 import { selectSourceChanges } from "@/lib/checks/source-changes";
 import { refreshChecklistForCustomer } from "@/lib/checks/checklist";
 import { fetchAllSources } from "@/lib/sources/fetch";
+import { enrichPasalDates } from "@/lib/sources/pasal-dates";
+import { fallbackCaveat, selectFallbackSources } from "@/lib/sources/fallback";
 import {
   selectMonitoredSources,
   type SourceSelectionProfile,
@@ -119,6 +121,41 @@ export async function runCheck(
     }
     const report = await fetchAllSources(monitored, rawDir, selection.coverageCaveats);
 
+    // An official source that failed leaves the customer with nothing for that
+    // topic. Where a re-publisher covers the same ministry, fetch it as a
+    // labelled backup — additive, never a swap: the primary's failure row stays
+    // untouched and a caveat says the official record was unreachable.
+    const fallbacks = selectFallbackSources(report);
+    if (fallbacks.length > 0) {
+      for (const source of fallbacks) {
+        db.insert(sources)
+          .values({
+            id: source.id,
+            country: source.country,
+            name: source.name,
+            domain: source.domain,
+            url: source.url,
+            regulationType: source.regulationType,
+            reliabilityStatus: source.reliabilityStatus,
+            view: source.view ?? null,
+            notes: source.notes ?? null,
+          })
+          .onConflictDoUpdate({
+            target: sources.id,
+            set: { name: source.name, url: source.url, notes: source.notes ?? null },
+          })
+          .run();
+      }
+      const backup = await fetchAllSources(fallbacks, rawDir);
+      report.outcomes.push(...backup.outcomes);
+      report.regulations.push(...backup.regulations);
+      report.heartbeats.push(...backup.heartbeats);
+      for (const outcome of backup.outcomes) {
+        if (outcome.success) report.coverageCaveats.push(fallbackCaveat(outcome.sourceId));
+      }
+      console.log(`[fallback] ${fallbacks.length} backup source(s) fetched for failed primaries`);
+    }
+
     for (const outcome of report.outcomes) {
       db.insert(sourceResults)
         .values({
@@ -156,6 +193,19 @@ export async function runCheck(
     );
     report.regulations = changes.regulations;
     report.coverageCaveats.push(...changes.caveats);
+
+    // pasal.id publishes no date through its API, so entries arrive knowing only
+    // their year. Enrich here rather than in the parser: this runs after the
+    // ledger diff, so only the handful of new or changed regulations cost a
+    // lookup instead of the whole year, every day. Failures are absorbed into
+    // caveats — a missing date must never fail a run that otherwise succeeded.
+    const pasalDates = await enrichPasalDates(report.regulations);
+    report.coverageCaveats.push(...pasalDates.caveats);
+    if (pasalDates.attempted > 0) {
+      console.log(
+        `[pasal-dates] ${pasalDates.resolved} of ${pasalDates.attempted} enactment dates resolved`,
+      );
+    }
     report.coverageCaveats.push(
       jurisdiction === "Indonesia"
         ? `Inventaris sumber membuat sidik jari untuk ${fetchedInventoryCount} catatan yang berhasil diambil; ${changes.newCount} baru ditemukan setelah baseline, ${changes.changedCount} berubah sejak inventaris sebelumnya, ${changes.baselinedCount} menjadi baseline historis pada run pertama, dan ${changes.regulations.length} masuk tahap penilaian.`
@@ -163,36 +213,120 @@ export async function runCheck(
     );
 
     // --- Judgment stage ----------------------------------------------------
+    const seenForPrompt = seen.map((s) => ({
+      regulationRef: s.regulationRef,
+      title: s.title,
+      url: s.url,
+      relevance: s.relevance,
+    }));
     const judgment = await judge(provider, {
       customer: target.customer,
       profile: target.profile,
       jurisdiction,
       jurisdictionProfile,
       report,
-      seen: seen.map((s) => ({
-        regulationRef: s.regulationRef,
-        title: s.title,
-        url: s.url,
-        relevance: s.relevance,
-      })),
+      seen: seenForPrompt,
       lastRunAt: previousRun?.completedAt ?? null,
       memories: memoryRows,
     });
+
+    // --- Completion pass -----------------------------------------------------
+    // judge()'s prompt explicitly instructs the model to return a verdict for
+    // every entry — but on a large batch it does not always fully comply, and
+    // auditVerdictCoverage() is exactly what catches that. Disclosing the gap
+    // is necessary but not sufficient: retry once against only the entries the
+    // first pass missed. A much smaller batch is far more likely to get full
+    // compliance. Bounded to a single retry, so worst case is two model calls,
+    // never an open-ended loop chasing a model that may never fully finish. A
+    // retry failure must not fail a run that otherwise succeeded — it falls
+    // back to the same honest "unaccounted" disclosure the first pass would
+    // have produced alone.
+    const lang = jurisdiction === "United States" ? "en" : "id";
+    let allFindings = judgment.findings;
+    let allCaveats = judgment.coverageCaveats;
+    let finalMessage = judgment.whatsappMessage;
+
+    const firstPassCoverage = auditVerdictCoverage(
+      report.regulations,
+      allFindings.map((f) => f.url),
+      seen.map((s) => s.url),
+      lang,
+    );
+
+    if (firstPassCoverage.unaccounted.length > 0) {
+      try {
+        const retrySeen = [
+          ...seenForPrompt,
+          ...allFindings.map((f) => ({
+            regulationRef: f.regulationRef,
+            title: f.title,
+            url: f.url,
+            relevance: f.relevance,
+          })),
+        ];
+        const retryJudgment = await judge(provider, {
+          customer: target.customer,
+          profile: target.profile,
+          jurisdiction,
+          jurisdictionProfile,
+          report: { ...report, regulations: firstPassCoverage.unaccounted },
+          seen: retrySeen,
+          lastRunAt: previousRun?.completedAt ?? null,
+          memories: memoryRows,
+        });
+
+        // Only accept verdicts for entries actually in the missed set — the
+        // model choosing to re-litigate something already judged does not
+        // count as completing the retry.
+        const missedUrls = new Set(firstPassCoverage.unaccounted.map((e) => normalizeUrlKey(e.url)));
+        const validRetryFindings = retryJudgment.findings.filter((f) =>
+          missedUrls.has(normalizeUrlKey(f.url)),
+        );
+        allFindings = [...allFindings, ...validRetryFindings];
+
+        const newlySurfaced = validRetryFindings.filter(
+          (f) => f.relevance === "flagged" || f.relevance === "noted",
+        );
+        if (newlySurfaced.length > 0) {
+          finalMessage +=
+            lang === "en"
+              ? `\n\n[Follow-up pass — ${newlySurfaced.length} item(s) missed on the first pass:]\n` +
+                newlySurfaced.map((f) => `- ${f.regulationRef}: ${f.summaryEn ?? f.reasoning}`).join("\n")
+              : `\n\n[Ditemukan di pemeriksaan lanjutan — ${newlySurfaced.length} item terlewat di pass pertama:]\n` +
+                newlySurfaced.map((f) => `- ${f.regulationRef}: ${f.summaryId ?? f.reasoning}`).join("\n");
+        }
+
+        allCaveats = [
+          ...allCaveats,
+          lang === "en"
+            ? `Completion pass: ${validRetryFindings.length} of ${firstPassCoverage.unaccounted.length} initially-unjudged entries received a verdict on retry.`
+            : `Pemeriksaan lanjutan: ${validRetryFindings.length} dari ${firstPassCoverage.unaccounted.length} entri yang awalnya belum dinilai kini mendapat verdict pada percobaan ulang.`,
+        ];
+      } catch (retryError) {
+        const message = retryError instanceof Error ? retryError.message : String(retryError);
+        allCaveats = [
+          ...allCaveats,
+          lang === "en"
+            ? `Completion pass failed (${message}) — ${firstPassCoverage.unaccounted.length} entries remain unjudged from the first pass.`
+            : `Pemeriksaan lanjutan gagal (${message}) — ${firstPassCoverage.unaccounted.length} entri masih belum dinilai dari pass pertama.`,
+        ];
+      }
+    }
 
     // --- Store -------------------------------------------------------------
     // Entries in, verdicts out. Anything fetched but never judged, and never
     // seen before, is unchecked — and has to say so in the alert.
     const coverage = auditVerdictCoverage(
       report.regulations,
-      judgment.findings.map((f) => f.url),
+      allFindings.map((f) => f.url),
       seen.map((s) => s.url),
-      jurisdiction === "United States" ? "en" : "id",
+      lang,
     );
     console.log(
       `[coverage] ${coverage.totalEntries} entries — ${coverage.judged} judged, ` +
         `${coverage.alreadySeen} already seen, ${coverage.unaccounted.length} unaccounted`,
     );
-    for (const finding of judgment.findings) {
+    for (const finding of allFindings) {
       db.insert(findings)
         .values({
           id: randomUUID(),
@@ -212,12 +346,12 @@ export async function runCheck(
     }
 
     const caveats = [...new Set([
-      ...judgment.coverageCaveats,
+      ...allCaveats,
       ...report.coverageCaveats,
       ...coverage.caveats,
     ])];
     const body = [
-      judgment.whatsappMessage,
+      finalMessage,
       caveats.length
         ? `\n---\n${jurisdiction === "Indonesia" ? "Catatan cakupan" : "Coverage notes"}:\n${caveats.map((c) => `- ${c}`).join("\n")}`
         : "",

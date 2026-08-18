@@ -62,6 +62,16 @@ export interface RegulationEntry {
   documentType?: string | null;
   /** The agency's own one-line description of what the document does. */
   action?: string | null;
+  /**
+   * Set only when the entry did NOT come from the primary government record —
+   * currently pasal.id, a private re-publisher. Entries are JSON-serialized
+   * straight into the judgment prompt, so this is how the model learns that a
+   * row is second-hand and how strongly its publisher vouches for it. Absent on
+   * official sources, because saying nothing there is correct: Setneg and
+   * Kemendag *are* the record. Never let a re-published row reach judgment or
+   * the customer looking like an official one.
+   */
+  provenance?: string;
   foundInViews: string[];
 }
 
@@ -253,6 +263,9 @@ async function fetchSourceContent(source: SourceDefinition): Promise<string> {
       if (parser === "cbp-wro-csv") {
         return await fetchCbpWroCsv(source, controller.signal);
       }
+      if (parser === "pasal-laws-json") {
+        return await fetchAllPasalPages(source, controller.signal);
+      }
       return await fetchText(source.url, source, controller.signal, {
         method: source.requestMethod ?? "GET",
         ...(source.requestBody ? { body: source.requestBody } : {}),
@@ -273,6 +286,28 @@ function isRetryableFetchFailure(message: string): boolean {
   return isDomainFailure(message) || /HTTP (?:429|5\d\d)\b/i.test(message);
 }
 
+/**
+ * Auth for the one source that needs it. Resolved here, at request time, rather
+ * than stored on the SourceDefinition: the registry is a module-level exported
+ * constant that tests import and code logs, and a live bearer token has no
+ * business sitting in it. `requiresEnv` on the definition keeps the *dependency*
+ * declarative while the *secret* stays out of the data structure.
+ */
+function authHeaders(source: SourceDefinition): Record<string, string> {
+  if (!source.requiresEnv) return {};
+  const token = process.env[source.requiresEnv]?.trim();
+  if (!token) {
+    // Selection should have deactivated this source already. Reaching here means
+    // it was requested without credentials, and a source that cannot be
+    // authenticated is unchecked — never a quiet pass.
+    throw new Error(
+      `${source.requiresEnv} is not set — ${source.name} was not checked. ` +
+        "Set it in .env to enable this source.",
+    );
+  }
+  return { Authorization: `Bearer ${token}` };
+}
+
 async function fetchText(
   url: string,
   source: SourceDefinition,
@@ -281,11 +316,61 @@ async function fetchText(
 ): Promise<string> {
   const res = await fetch(url, {
     ...init,
-    headers: { ...HEADERS, ...source.requestHeaders, ...(init.headers ?? {}) },
+    headers: { ...HEADERS, ...source.requestHeaders, ...authHeaders(source), ...(init.headers ?? {}) },
     signal,
   });
   if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
   return res.text();
+}
+
+/**
+ * Exhaust pasal.id's offset pagination.
+ *
+ * The API caps `limit` at 50 and reports the real size in `total`. Kemenperin
+ * has 23 rows a year so one page held it, but Kemenkeu has 57 — a single page
+ * silently dropped 7 PMK while still reporting success, which is precisely the
+ * "looks checked, wasn't" failure this project exists to avoid. Following
+ * `total` is what makes the fetch honest.
+ *
+ * A page that fails or contradicts the first page's `total` fails the whole
+ * source, matching the eCFR rule: a partial page set must never be presented as
+ * complete coverage.
+ */
+async function fetchAllPasalPages(
+  source: SourceDefinition,
+  signal: AbortSignal,
+): Promise<string> {
+  const url = new URL(source.url);
+  const pageSize = Number(url.searchParams.get("limit") ?? "50");
+  url.searchParams.set("offset", "0");
+
+  const first = JSON.parse(await fetchText(url.toString(), source, signal)) as {
+    total?: number;
+    laws?: unknown[];
+  };
+  if (!Array.isArray(first.laws)) throw new Error("pasal.id payload did not contain laws");
+  const total = Number(first.total ?? first.laws.length);
+  const laws = [...first.laws];
+
+  while (laws.length < total) {
+    url.searchParams.set("offset", String(laws.length));
+    const page = JSON.parse(await fetchText(url.toString(), source, signal)) as {
+      total?: number;
+      laws?: unknown[];
+    };
+    if (!Array.isArray(page.laws) || page.laws.length === 0) {
+      throw new Error(`pasal.id pagination stopped at ${laws.length} of ${total}`);
+    }
+    if (Number(page.total) !== total) {
+      throw new Error("pasal.id total changed during pagination");
+    }
+    laws.push(...page.laws);
+    if (laws.length > total + pageSize) {
+      throw new Error("pasal.id pagination overran its reported total");
+    }
+  }
+
+  return JSON.stringify({ total, laws });
 }
 
 /** Discover CBP's dated WRO export from its stable index, then retain both URLs. */
@@ -588,6 +673,8 @@ export function parseEntries(html: string, source: SourceDefinition): Regulation
       return parseOssKbliVersionsJson(html, source);
     case "setneg-json":
       return parseSetnegJson(html, source);
+    case "pasal-laws-json":
+      return parsePasalLawsJson(html, source);
     case "klh-json":
       return parseKlhJson(html, source);
     case "kemnaker":
@@ -1636,6 +1723,135 @@ function parseOssKbliVersionsJson(json: string, source: SourceDefinition): Regul
   ];
 }
 
+/**
+ * pasal.id — a PRIVATE re-publisher, not a government record. This is the only
+ * route to Kemenperin's regulations: `jdih.kemenperin.go.id` has been dark to
+ * the outside world since Feb 2024 and `peraturan.go.id` (the record pasal.id
+ * itself cites as its source) is equally dead, so nothing official is reachable
+ * for the ministry that governs MA's own sector.
+ *
+ * Three properties of this feed are load-bearing and must not be smoothed over:
+ *
+ * 1. **No dates. At all.** Not in the listing, not in the detail response —
+ *    only `year`. This is the Kemendag problem in a harder form, since here
+ *    there is no detail page carrying a real enactment date either. `effectiveOn`
+ *    stays null and the entry says outright that recency is unestablished.
+ * 2. **`verification.tier` is the publisher's own confidence.** Every observed
+ *    Kemenperin row is `parsed_unreviewed` with `content_verified: false` — the
+ *    publisher stating nobody checked it. That travels into `provenance` rather
+ *    than being dropped, because a re-publisher's unreviewed parse is the
+ *    weakest evidence in this system and judgment has to weigh it as such.
+ * 3. **`type=PERMEN` is not a clean bucket.** The unfiltered feed mixes in
+ *    other issuers entirely (a Keputusan KPU came back under PERMEN), so the
+ *    `issuing_body` filter is what makes this a Kemenperin source. Rows whose
+ *    issuing body is not the requested one are dropped rather than reported as
+ *    ministry coverage.
+ */
+/** pasal.id instrument codes → the Indonesian name a reader expects. */
+const PASAL_TYPE_LABELS: Record<string, string> = {
+  PERMEN: "Peraturan Menteri",
+  KEPMEN: "Keputusan Menteri",
+  PERDA: "Peraturan Daerah",
+  PERGUB: "Peraturan Gubernur",
+  PERWALI: "Peraturan Walikota",
+  PERBUP: "Peraturan Bupati",
+  PERBAN: "Peraturan Badan",
+  SE: "Surat Edaran",
+  PP: "Peraturan Pemerintah",
+  PERPRES: "Peraturan Presiden",
+  UU: "Undang-Undang",
+};
+
+function parsePasalLawsJson(json: string, source: SourceDefinition): RegulationEntry[] {
+  const payload = JSON.parse(json) as {
+    total?: unknown;
+    laws?: Array<{
+      frbr_uri?: string;
+      title?: string;
+      number?: string;
+      year?: number;
+      status?: string;
+      type?: string;
+      content_verified?: boolean;
+      verification?: { tier?: string } | null;
+      issuing_body?: { slug?: string; name?: string; abbreviation?: string } | null;
+      // Not returned by the API today. pasal.id stores both (migration 018) and
+      // renders them on its own pages, so an upstream request to expose them is
+      // open — see CLAUDE.md. Read them here so that the day they appear, the
+      // date arrives free and `enrichPasalDates()` simply finds nothing to do.
+      tanggal_penetapan?: string | null;
+      tanggal_pengundangan?: string | null;
+    }>;
+  };
+  if (!Array.isArray(payload.laws)) throw new Error("pasal.id payload did not contain laws");
+
+  // The issuing body this source claims to cover. A row from any other issuer
+  // is not this ministry's coverage, however well it parses.
+  const expectedBody = new URL(source.url).searchParams.get("issuing_body");
+
+  return payload.laws.flatMap((law) => {
+    if (!law.frbr_uri || !law.title) return [];
+    const bodySlug = law.issuing_body?.slug ?? null;
+    if (expectedBody && bodySlug !== expectedBody) return [];
+
+    const body = law.issuing_body?.name ?? "";
+    const tier = law.verification?.tier ?? "unknown";
+    const verified = law.content_verified === true;
+    const number = law.number ?? null;
+    const year = typeof law.year === "number" ? law.year : null;
+
+    // pasal.id titles read "Peraturan Daerah Nomor 1 Tahun 2026 tentang …" — the
+    // issuer lives in issuing_body, not the title, so a bare title cannot tell
+    // one ministry or one city from another. Build the label from both, and from
+    // the instrument type: "Kota Surabaya" under a PERDA must not come out as
+    // "Peraturan Menteri Surabaya".
+    const kind = PASAL_TYPE_LABELS[law.type ?? ""] ?? law.type ?? "Peraturan";
+    const issuer = body.replace(/^Kementerian\s+/i, "").trim();
+    const label = `${kind}${issuer ? ` ${issuer}` : ""} Nomor ${number ?? "?"} Tahun ${year ?? "?"}`;
+    // Titles arrive with embedded CRLFs from the source PDF.
+    const title = law.title.replace(/\s+/g, " ").trim();
+    const subject = title.replace(/^.*?\btentang\s+/i, "").trim() || title;
+    const enacted = law.tanggal_penetapan?.slice(0, 10) ?? null;
+    const promulgated = law.tanggal_pengundangan?.slice(0, 10) ?? null;
+    const datesNote =
+      enacted || promulgated
+        ? `${[enacted ? `Ditetapkan ${enacted}` : null, promulgated ? `Diundangkan ${promulgated}` : null]
+            .filter(Boolean)
+            .join("; ")}. Tanggal berlaku menurut pasal penutup belum dipastikan.`
+        : null;
+
+    return [
+      buildEntry(source, {
+        label,
+        number,
+        year,
+        listingTitle: `${label} tentang ${subject}`,
+        fullTitle:
+          `${label} tentang ${subject}.` +
+          `${law.status ? ` Status menurut penerbit ulang: ${law.status}.` : ""}` +
+          (datesNote
+            ? ` ${datesNote}`
+            : " Listing ini tidak mencantumkan tanggal penetapan atau pengundangan;" +
+              " tanggal dilengkapi terpisah bila tersedia."),
+        datesNote,
+        // Verified to resolve: https://pasal.id + frbr_uri returns HTTP 200.
+        // Built from the identifier the API returned, never guessed from a slug.
+        url: new URL(law.frbr_uri, "https://pasal.id").toString(),
+        // No date is available anywhere in this API, so asserting one would be
+        // invention. Absence is the honest value.
+        effectiveOn: null,
+        documentType: law.type ?? "PERMEN",
+        provenance:
+          `Diterbitkan ulang oleh pasal.id (basis data hukum swasta), bukan catatan resmi pemerintah. ` +
+          `Tingkat verifikasi penerbit: ${tier}` +
+          `${verified ? "" : " (belum ditinjau manusia)"}. ` +
+          `JDIH ${body} dan peraturan.go.id tidak dapat diakses, jadi teks resmi belum diverifikasi ke sumber pemerintah. ` +
+          `Perlakukan sebagai petunjuk yang harus dikonfirmasi, bukan bukti.`,
+      }),
+    ];
+  });
+}
+
 function parseSetnegJson(json: string, source: SourceDefinition): RegulationEntry[] {
   const payload = JSON.parse(json) as {
     data?: Array<{
@@ -1944,6 +2160,7 @@ function buildEntry(
     datesNote?: string | null;
     documentType?: string | null;
     action?: string | null;
+    provenance?: string;
   },
 ): RegulationEntry {
   return {
@@ -1969,6 +2186,7 @@ function buildEntry(
       ? { documentType: entry.documentType ?? null }
       : {}),
     ...(Object.hasOwn(entry, "action") ? { action: entry.action ?? null } : {}),
+    ...(entry.provenance ? { provenance: entry.provenance } : {}),
     foundInViews: [source.view ?? source.id],
   };
 }

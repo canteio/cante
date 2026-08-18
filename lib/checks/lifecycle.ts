@@ -38,13 +38,21 @@ interface Pattern {
 const ID_CITATION = String.raw`((?:Peraturan\s+\w+(?:\s+\w+){0,3}|Permendag|Permenkeu|PMK|PP|Perpres|UU|Permen\w*)\s*(?:Nomor\s*)?\d+[^,.;]{0,40}?(?:Tahun\s*\d{4}|\/\d{4}))`;
 const EN_CITATION = String.raw`((?:\d+\s+CFR\s+[\d.]+|Executive\s+Order\s+\d+|Public\s+Law\s+[\d-]+|\d{2}\s+U\.?S\.?C\.?\s+[\d.]+))`;
 
+// The Indonesian patterns are case-insensitive because these phrases arrive as
+// *titles*, not prose. A title capitalises words the body text does not
+// ("Perubahan Atas", not "perubahan atas") and is sometimes typed entirely in
+// capitals. Matching only the lower-case form silently found one link in a live
+// batch of 23 Kemenperin regulations where eight were amendments or revocations.
 const PATTERNS: Pattern[] = [
   // Indonesian: "Perubahan Kelima atas Peraturan Menteri Perdagangan Nomor 23 Tahun 2023"
-  { relation: "amends", language: "id", re: new RegExp(String.raw`[Pp]erubahan\s+\w*\s*atas\s+${ID_CITATION}`) },
-  { relation: "amends", language: "id", re: new RegExp(String.raw`[Mm]engubah\s+(?:atas\s+)?${ID_CITATION}`) },
-  { relation: "revokes", language: "id", re: new RegExp(String.raw`[Mm]encabut\s+(?:dan menyatakan tidak berlaku\s+)?${ID_CITATION}`) },
-  { relation: "supersedes", language: "id", re: new RegExp(String.raw`[Mm]enggantikan\s+${ID_CITATION}`) },
-  { relation: "implements", language: "id", re: new RegExp(String.raw`[Pp]elaksanaan\s+(?:dari\s+)?${ID_CITATION}`) },
+  { relation: "amends", language: "id", re: new RegExp(String.raw`perubahan\s+\w*\s*atas\s+${ID_CITATION}`, "i") },
+  { relation: "amends", language: "id", re: new RegExp(String.raw`mengubah\s+(?:atas\s+)?${ID_CITATION}`, "i") },
+  // Both the verb ("mencabut", how a rule's body reads) and the noun
+  // ("Pencabutan", how its title reads). Titles are usually all this monitor has.
+  { relation: "revokes", language: "id", re: new RegExp(String.raw`mencabut\s+(?:dan menyatakan tidak berlaku\s+)?${ID_CITATION}`, "i") },
+  { relation: "revokes", language: "id", re: new RegExp(String.raw`pencabutan\s+(?:atas\s+)?${ID_CITATION}`, "i") },
+  { relation: "supersedes", language: "id", re: new RegExp(String.raw`menggantikan\s+${ID_CITATION}`, "i") },
+  { relation: "implements", language: "id", re: new RegExp(String.raw`pelaksanaan\s+(?:dari\s+)?${ID_CITATION}`, "i") },
 
   { relation: "amends", language: "en", re: new RegExp(String.raw`amend(?:s|ing|ment\s+to)\s+${EN_CITATION}`, "i") },
   { relation: "revokes", language: "en", re: new RegExp(String.raw`(?:revok(?:es|ing)|rescind(?:s|ing))\s+${EN_CITATION}`, "i") },

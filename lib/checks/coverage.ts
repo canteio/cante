@@ -24,9 +24,11 @@ export interface VerdictCoverage {
   caveats: string[];
 }
 
-function key(url: string | null | undefined): string {
+/** Exported so a second-pass judgment retry can match its findings back to the exact entries it was asked about. */
+export function normalizeUrlKey(url: string | null | undefined): string {
   return (url ?? "").trim().replace(/\/+$/, "").toLowerCase();
 }
+const key = normalizeUrlKey;
 
 export function auditVerdictCoverage(
   regulations: RegulationEntry[],

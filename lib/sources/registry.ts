@@ -12,6 +12,7 @@ export type SourceParser =
   | "bsn-pesta"
   | "oss-kbli-versions-json"
   | "setneg-json"
+  | "pasal-laws-json"
   | "klh-json"
   | "kemnaker"
   | "djbc-home"
@@ -143,6 +144,14 @@ export interface SourceDefinition {
   activation?: SourceActivation;
   /** Narrow per-source override for official sites that reject browser impersonation. */
   requestHeaders?: Record<string, string>;
+  /**
+   * Name of an environment variable holding this source's credential. The
+   * variable name lives here; the secret itself never does — `fetch.ts` reads
+   * `process.env` at request time. A source whose variable is unset is
+   * deactivated by `sourceIsActive()` and disclosed as a coverage gap, because
+   * an unconfigured source is unchecked, not quiet.
+   */
+  requiresEnv?: string;
   /** Optional request metadata for official JSON APIs that require POST. */
   requestMethod?: "GET" | "POST";
   requestBody?: string;
@@ -472,6 +481,40 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     notes: "Production portal times out and the development portal has no working DNS; member integration feeds are decentralized rather than a public central read API.",
   },
   {
+    // The only route to the ministry that governs MA's own sector. Both
+    // official records for Kemenperin regulations are unreachable — its JDIH
+    // has been dark since Feb 2024 and peraturan.go.id, which pasal.id names as
+    // its own upstream, is equally dead. This is a private re-publisher standing
+    // in for a government record that nobody can currently fetch, and every
+    // layer below is built to keep that distinction visible rather than to
+    // quietly restore the appearance of coverage.
+    id: "kemenperin-pasal",
+    country: "Indonesia",
+    name: "pasal.id (penerbit ulang swasta) — Permen Kemenperin",
+    domain: "pasal.id",
+    // year is rewritten per run by refreshDynamicUrl; limit 50 is the API max
+    // and current Kemenperin volume is ~23/year, so one page holds the year.
+    url: "https://pasal.id/api/v1/laws?type=PERMEN&issuing_body=permenperin&limit=50&year=2026",
+    regulationType: "national",
+    reliabilityStatus: "working",
+    parser: "pasal-laws-json",
+    view: "kemenperin-permen",
+    rawFilename: "kemenperin-pasal.json",
+    maxAttempts: 2,
+    requestHeaders: { Accept: "application/json" },
+    requiresEnv: "PASAL_API_TOKEN",
+    // The feed has no date field, so it cannot be windowed by date and the whole
+    // current year is fetched each run. New rows are found by the
+    // source_documents fingerprint ledger, not by ordering — the API returns
+    // rows in no chronological order, so "read page 1 for what's new" would
+    // silently miss things.
+    notes:
+      "Private re-publisher, verified 18 Aug 2026: 23 Permenperin rows for 2026, every one carrying verification tier 'parsed_unreviewed' and content_verified false — the publisher's own statement that nobody reviewed the parse. " +
+      "type=PERMEN alone is not a Kemenperin filter (an unrelated Keputusan KPU came back under it), so issuing_body=permenperin is load-bearing and the parser drops rows from any other issuer. " +
+      "No date field exists anywhere in this API, including detail responses, so effectiveOn stays null and recency is never asserted. " +
+      "Relationship edges are empty for these rows despite titles like 'Perubahan Atas …', so lifecycle links come from lib/checks/lifecycle.ts reading the title, not from the publisher.",
+  },
+  {
     id: "kemenkeu-jdih",
     country: "Indonesia",
     name: "JDIH Kemenkeu — customs, duty and tariff (PMK)",
@@ -649,7 +692,71 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     view: "east-java-regional",
     activation: { locationTerms: ["East Java", "Jawa Timur", "Surabaya"] },
     notes:
-      "Official catalogue works interactively but Cloudflare blocks unattended fetches. Provincial Perda, Pergub, Kepgub, instructions, and circulars remain manual-assisted.",
+      "Official catalogue works interactively but Cloudflare blocks unattended fetches, confirmed 17 Aug 2026 (HTTP 403, Cloudflare challenge page) from a plain fetch matching production headers. " +
+      "Superseded for daily polling by the api.jdih.jatimprov.go.id rows below, which serve the same JDIH Jatim content unblocked; kept here, still blocked, as the documented reason this host is not retried directly.",
+  },
+  {
+    id: "east-java-perda",
+    country: "Indonesia",
+    name: "JDIH East Java (api) — Peraturan Daerah",
+    domain: "api.jdih.jatimprov.go.id",
+    url: "https://api.jdih.jatimprov.go.id/peraturan-daerah",
+    regulationType: "regional",
+    reliabilityStatus: "working",
+    parser: "generic-regulation",
+    view: "east-java-perda",
+    rawFilename: "east-java-perda.html",
+    maxAttempts: 2,
+    activation: { locationTerms: ["East Java", "Jawa Timur", "Surabaya"] },
+    notes:
+      "Discovered 17 Aug 2026: same JDIH Jatim CMS as the Cloudflare-blocked main domain, served from this subdomain without the challenge. Live probe returned HTTP 200 and parsed real current entries.",
+  },
+  {
+    id: "east-java-pergub",
+    country: "Indonesia",
+    name: "JDIH East Java (api) — Peraturan Gubernur",
+    domain: "api.jdih.jatimprov.go.id",
+    url: "https://api.jdih.jatimprov.go.id/peraturan-gubernur",
+    regulationType: "regional",
+    reliabilityStatus: "working",
+    parser: "generic-regulation",
+    view: "east-java-pergub",
+    rawFilename: "east-java-pergub.html",
+    maxAttempts: 2,
+    activation: { locationTerms: ["East Java", "Jawa Timur", "Surabaya"] },
+  },
+  {
+    id: "east-java-kepgub",
+    country: "Indonesia",
+    name: "JDIH East Java (api) — Keputusan Gubernur",
+    domain: "api.jdih.jatimprov.go.id",
+    url: "https://api.jdih.jatimprov.go.id/keputusan-gubernur",
+    regulationType: "regional",
+    reliabilityStatus: "working",
+    parser: "generic-regulation",
+    view: "east-java-kepgub",
+    rawFilename: "east-java-kepgub.html",
+    maxAttempts: 2,
+    activation: { locationTerms: ["East Java", "Jawa Timur", "Surabaya"] },
+    notes:
+      "Live probe parsed 7 anchors, 6 genuine Kepgub entries and 1 false positive (a news article whose headline happened to cite a Perda number, e.g. 'Mahasiswa Magang ... Perda Jatim Nomor 4 Tahun 2022'). " +
+      "looksLikeRegulation() matches link text only, so a news item citing a regulation by number/year is indistinguishable from the regulation itself; judgment must be able to discard it as off-topic rather than the parser silently dropping true entries.",
+  },
+  {
+    id: "east-java-instruksi",
+    country: "Indonesia",
+    name: "JDIH East Java (api) — Instruksi Gubernur",
+    domain: "api.jdih.jatimprov.go.id",
+    url: "https://api.jdih.jatimprov.go.id/instruksi-gubernur",
+    regulationType: "regional",
+    reliabilityStatus: "working",
+    parser: "generic-regulation",
+    view: "east-java-instruksi",
+    rawFilename: "east-java-instruksi.html",
+    maxAttempts: 2,
+    activation: { locationTerms: ["East Java", "Jawa Timur", "Surabaya"] },
+    notes:
+      "Surat Edaran (circulars) were checked at the equivalent /surat-edaran slug and do not exist on this host (404) — that gap remains manual-assisted.",
   },
   ...[
     ["epa", "EPA", ["environmental-protection-agency"], "national", undefined],
@@ -1174,6 +1281,107 @@ const STATE_ALIASES: Record<NonNullable<SourceActivation["state"]>, string[]> = 
   Texas: ["Texas", "TX"],
 };
 
+/**
+ * Regional Perda coverage through pasal.id, activated by customer location.
+ *
+ * Indonesia has 38 provinces and 500-plus regencies and cities, each issuing its
+ * own Perda. Cante has official adapters for exactly two jurisdictions —
+ * Surabaya city and East Java province — because those are where the first
+ * customer is. A customer in Sidoarjo, or one distributing into Banten, had no
+ * regional coverage at all and no way to get it without a new hand-built
+ * adapter per city.
+ *
+ * pasal.id carries these nationally, so a region becomes a row here rather than
+ * an adapter. Three rules keep that from turning into false coverage:
+ *
+ * 1. **Every slug below was verified live against the API.** Coverage is
+ *    genuinely patchy and cannot be guessed from a pattern: `perda-kabupaten-
+ *    mojokerto` holds 99 regulations while `perda-kota-mojokerto` does not
+ *    exist, and Gresik has neither. A wrong slug returns `{"error":"Unknown
+ *    issuing body"}`, which fails the source loudly — the right behaviour, but
+ *    not something to rely on as a discovery mechanism.
+ * 2. **Regions with a working official adapter are deliberately absent.**
+ *    Surabaya and East Java are covered by `jdih.surabaya.go.id` and
+ *    `api.jdih.jatimprov.go.id`. Adding a private re-publisher beside a working
+ *    official feed duplicates findings under two URLs that dedup cannot match,
+ *    and downgrades the evidence.
+ * 3. **A recorded location that matches nothing here is disclosed**, not
+ *    silently dropped — see the caveat in `selectMonitoredSources()`.
+ */
+interface PasalRegion {
+  /** Location words that activate this region, matched case-insensitively. */
+  terms: string[];
+  /** Verified pasal.id issuing_body slug. */
+  slug: string;
+  /** Human name for the source row. */
+  label: string;
+}
+
+const PASAL_REGIONS: PasalRegion[] = [
+  // East Java, excluding Surabaya city and the province itself (both official).
+  { terms: ["Sidoarjo"], slug: "perda-kabupaten-sidoarjo", label: "Kabupaten Sidoarjo" },
+  { terms: ["Mojokerto"], slug: "perda-kabupaten-mojokerto", label: "Kabupaten Mojokerto" },
+  { terms: ["Pasuruan"], slug: "perda-kota-pasuruan", label: "Kota Pasuruan" },
+  // Other provinces a customer may operate in or distribute to.
+  { terms: ["Banten"], slug: "perda-provinsi-banten", label: "Provinsi Banten" },
+  { terms: ["Kota Tangerang", "Tangerang"], slug: "perda-kota-tangerang", label: "Kota Tangerang" },
+  {
+    terms: ["Kabupaten Tangerang", "Tangerang"],
+    slug: "perda-kabupaten-tangerang",
+    label: "Kabupaten Tangerang",
+  },
+  {
+    terms: ["Jakarta", "DKI"],
+    slug: "perda-provinsi-dki-jakarta",
+    label: "Provinsi DKI Jakarta",
+  },
+];
+
+/** Locations that already have an official adapter and must not be duplicated. */
+const OFFICIALLY_COVERED_REGIONS = ["Surabaya", "Jawa Timur", "East Java"];
+
+function matchedPasalRegions(
+  profile?: SourceSelectionProfile | null,
+  options: SourceSelectionOptions = {},
+): PasalRegion[] {
+  const haystack = [...(options.locations ?? []), ...(profile?.facilityAddresses ?? [])]
+    .join(" ")
+    .toLowerCase();
+  if (!haystack.trim()) return [];
+  return PASAL_REGIONS.filter((region) =>
+    region.terms.some((term) => haystack.includes(term.toLowerCase())),
+  );
+}
+
+/** One source per matched region, or none when no location is on file. */
+export function regionalPasalSources(
+  profile?: SourceSelectionProfile | null,
+  options: SourceSelectionOptions = {},
+): SourceDefinition[] {
+  if (!process.env.PASAL_API_TOKEN?.trim()) return [];
+
+  return matchedPasalRegions(profile, options).map((region) => ({
+    id: `pasal-region-${region.slug}`,
+    country: "Indonesia",
+    name: `pasal.id (penerbit ulang swasta) — Perda ${region.label}`,
+    domain: "pasal.id",
+    // No year filter: see refreshDynamicUrl(). The ledger decides what is new.
+    url: `https://pasal.id/api/v1/laws?issuing_body=${region.slug}&limit=50`,
+    // A regency genuinely passing no Perda is a real quiet result, not a broken
+    // parser — but only when the API says so in as many words.
+    emptyStateMarker: '"total":0',
+    regulationType: "regional",
+    reliabilityStatus: "working",
+    parser: "pasal-laws-json",
+    view: `pasal-${region.slug}`,
+    rawFilename: `${region.slug}.json`,
+    maxAttempts: 2,
+    requestHeaders: { Accept: "application/json" },
+    requiresEnv: "PASAL_API_TOKEN",
+    notes: `Regional Perda for ${region.label} via pasal.id, a private re-publisher. Activated by recorded customer location. No official adapter exists for this jurisdiction.`,
+  }));
+}
+
 export function selectMonitoredSources(
   country = "Indonesia",
   profile?: SourceSelectionProfile | null,
@@ -1183,16 +1391,29 @@ export function selectMonitoredSources(
     (source) => source.country === country && source.reliabilityStatus !== "blocked",
   );
   if (country === "Indonesia") {
-    const active = candidates
-      .filter((source) => sourceIsActive(source, profile, options))
-      .map((source) => refreshDynamicUrl(source, options));
+    const active = [
+      ...candidates.filter((source) => sourceIsActive(source, profile, options)),
+      ...regionalPasalSources(profile, options),
+    ].map((source) => refreshDynamicUrl(source, options));
     const coverageCaveats = [
       "JDIH Setneg mengotomatiskan UU, Perpu, PP, Perpres, Keppres, dan Inpres, tetapi belum ada sumber pusat yang andal untuk seluruh Permen/Kepmen. Cante memantau sumber kementerian yang sudah terverifikasi; kementerian lain tetap perlu pemeriksaan manual.",
+    ];
+    if (active.some((source) => source.id === "kemenperin-pasal")) {
+      coverageCaveats.push(
+        "Peraturan Menteri Perindustrian dipantau lewat pasal.id, sebuah basis data hukum swasta yang menerbitkan ulang — bukan catatan resmi pemerintah. JDIH Kemenperin dan peraturan.go.id tidak dapat diakses sejak lama, sehingga tidak ada sumber resmi yang bisa diambil otomatis untuk kementerian ini. Setiap temuan dari sumber ini harus dikonfirmasi ke dokumen resmi sebelum ditindaklanjuti.",
+        "API pasal.id hanya memberi tahun, tanpa tanggal. Cante mengambil tanggal penetapan dan pengundangan secara terpisah untuk setiap Permenperin yang masuk penilaian; kalau sebuah entri tidak menyebutkan tanggal, umur peraturan itu memang belum diketahui. Tanggal mulai berlaku menurut pasal penutup tetap belum dipastikan. Hanya Permen (bukan Kepmen atau Surat Edaran) yang tersedia di sana untuk Kemenperin.",
+      );
+    } else {
+      coverageCaveats.push(
+        "Peraturan Menteri Perindustrian tidak dipantau: PASAL_API_TOKEN belum diatur, sedangkan JDIH Kemenperin dan peraturan.go.id tidak dapat diakses. Kementerian yang paling relevan untuk manufaktur ini sepenuhnya belum tercakup dan perlu pemeriksaan manual.",
+      );
+    }
+    coverageCaveats.push(
       "JDIH Provinsi Jawa Timur memblokir permintaan otomatis. Perda, Pergub, Kepgub, instruksi, dan surat edaran tingkat provinsi tetap perlu pemeriksaan manual meskipun sumber Kota Surabaya berhasil.",
       "API OSS hanya membuktikan katalog KBLI tersedia; status NIB perusahaan, tingkat risiko, perizinan, dan kewajiban PB-UMKU memerlukan bukti OSS yang sudah dikonfirmasi.",
       "BSN PESTA adalah katalog SNI, bukan bukti bahwa suatu standar wajib untuk produk ini. Status wajib harus dibuktikan dari peraturan teknis yang berlaku.",
       "Penemuan pengumuman dokumen lingkungan DLH Surabaya memakai jendela 45 hari. Pengumuman yang lebih lama belum diaudit secara historis oleh monitor ini.",
-    ];
+    );
     if (
       SOURCE_REGISTRY.some(
         (source) =>
@@ -1203,6 +1424,23 @@ export function selectMonitoredSources(
     ) {
       coverageCaveats.push(
         "Sumber provinsi/kota yang spesifik lokasi tidak diaktifkan karena lokasi yang tercatat belum cocok dengan adapter regional yang tersedia.",
+      );
+    }
+    const regional = active.filter((source) => source.id.startsWith("pasal-region-"));
+    if (regional.length > 0) {
+      coverageCaveats.push(
+        `Perda daerah berikut dipantau lewat pasal.id (penerbit ulang swasta, bukan catatan resmi): ${regional
+          .map((source) => source.name.replace(/^.*— Perda /, ""))
+          .join(", ")}. Daerah ini belum punya adapter resmi di Cante, jadi cakupannya belum tentu lengkap dan setiap temuan harus dikonfirmasi ke JDIH daerah setempat.`,
+      );
+    }
+    const locationsOnFile = [
+      ...(options.locations ?? []),
+      ...(profile?.facilityAddresses ?? []),
+    ].filter((value) => value.trim());
+    if (locationsOnFile.length > 0 && regional.length === 0) {
+      coverageCaveats.push(
+        "Selain Surabaya dan Jawa Timur, belum ada sumber Perda daerah yang cocok dengan lokasi yang tercatat. Peraturan daerah di lokasi lain tersebut belum dipantau sama sekali dan perlu pemeriksaan manual.",
       );
     }
     return { sources: active, coverageCaveats };
@@ -1299,6 +1537,19 @@ function refreshDynamicUrl(
     since.setUTCDate(since.getUTCDate() - source.lookbackDays);
     return { ...source, windowStart: since.toISOString().slice(0, 10) };
   }
+  // pasal.id has no date field to window on, so a ministry feed retrieves by
+  // calendar year, recomputed per run because the registry is built once at
+  // module load. Only sources that already carry a `year` are refreshed:
+  // regional Perda feeds deliberately omit it, because a regency may pass no
+  // Perda at all in a given year (Sidoarjo and Banten both had zero for 2026
+  // while holding 8 and 137 across all years) — windowing them to the current
+  // year would return nothing and look like coverage.
+  if (source.parser === "pasal-laws-json") {
+    const url = new URL(source.url);
+    if (!url.searchParams.has("year")) return source;
+    url.searchParams.set("year", String(new Date(options.now ?? new Date()).getUTCFullYear()));
+    return { ...source, url: url.toString() };
+  }
   if (source.id === "us-cpsc-recalls") return { ...source, url: cpscRecentRecalls() };
   if (source.parser === "federal-register-json") {
     const url = new URL(source.url);
@@ -1327,6 +1578,12 @@ function sourceIsActive(
   profile?: SourceSelectionProfile | null,
   options: SourceSelectionOptions = {},
 ): boolean {
+  // A credentialed source with no credential is not selectable. It is excluded
+  // here rather than left to fail at fetch time so it does not become a
+  // permanent red row that trains the reader to skim failures; selection
+  // discloses the resulting gap as a caveat instead.
+  if (source.requiresEnv && !process.env[source.requiresEnv]?.trim()) return false;
+
   const activation = source.activation;
   if (!activation) return true;
 

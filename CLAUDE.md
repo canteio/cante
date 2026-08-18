@@ -45,6 +45,47 @@ already-seen / unaccounted and appends a **code-written** caveat for the last
 group. Model-written caveats can't be the only ones — the model is the thing
 being audited.
 
+**Disclosure alone isn't the fix for that gap — `runCheck()` also retries it
+(added 18 Aug 2026).** `judge()`'s prompt explicitly instructs the model to
+return a verdict for every entry, but on a large batch it does not always fully
+comply: a real run (`dfd33ac5`, 18 Aug 2026, the day the East Java sources above
+went live) put 54 entries into judgment and got verdicts back for only 36–37,
+with the missing 18 coming from established Setneg/Kemnaker sources, not the new
+ones. `runCheck()` now computes `auditVerdictCoverage()` right after the first
+`judge()` call and, if anything is unaccounted, retries **once** against only
+the missed entries — a much smaller batch is far more likely to get full model
+compliance. Newly surfaced `flagged`/`noted` findings from the retry are
+appended to the customer-facing message; a code-written caveat always states how
+many of the missed entries the retry actually resolved. The retry is bounded to
+a single attempt (never a loop chasing a model that may never fully finish), and
+a retry failure is caught and degrades to the same honest "unaccounted"
+disclosure the first pass would have produced alone — a completion-pass bug must
+never turn an otherwise-successful run into a failed one. `normalizeUrlKey()` is
+exported from `coverage.ts` so the retry can match returned findings back to the
+exact entries it was asked about, rather than trusting the model not to
+re-litigate something already judged. `lib/checks/coverage.test.ts` covers the
+audit function itself, which had no test coverage despite being load-bearing.
+
+**A live run on 18 Aug 2026 found a gap the audit itself doesn't cover: the
+model's free-text `whatsappMessage` can assert something the model's own
+`findings` don't back.** One run's message opened with "the only rule that
+came up was already checked before" — but the coverage audit for that same
+run said the opposite: 0 judged, 0 already-seen, 1 unaccounted for that exact
+entry, and the code-written caveat correctly called it out three sections
+later. `auditVerdictCoverage()` audits the *findings* array; nothing audited
+the *prose*, so a false claim could open the message a reader sees first and
+be silently corrected only in caveats they might not reach. `judge()`'s
+system prompts (both languages) now explicitly forbid stating or implying an
+entry was already checked without a backing verdict, and warn that the claim
+is audited. The same run also showed the message repeating, in paragraph
+form, content the code was about to append anyway as coverage notes — so the
+prompt and the `whatsappMessage` schema description now require a single
+bolded one-liner (WhatsApp's own `*asterisk*` syntax, not Markdown — Telegram
+never gets `parse_mode` and would show it literally) when nothing is flagged
+or noted, with caveats left entirely to the code-appended section. Not yet
+re-verified against a live run; the next `npm run check` with a quiet result
+is the test.
+
 ---
 
 ## Commands
@@ -73,6 +114,7 @@ fastest way to test without the browser.
 ```
 lib/llm/          types.ts = the seam (+ streaming) · claude-code.ts (works) · codex-cli.ts (local fallback) · api.ts (stub) · index.ts (factory)
 lib/sources/      registry.ts (sources + profile activation as data) · fetch.ts (no AI, fetch+JSON/RSS/Cheerio parse)
+                  pasal-dates.ts (enactment dates the pasal.id API omits) · fallback.ts (labelled backup when an official source fails)
                   *.test.ts (incremental windows, pagination, source-field contracts)
 lib/screening/    csl.ts (bounded, cached exact-name matching against Trade.gov CSL bulk data)
                   persist.ts (screens as dated, auditable events; `error` is never `clear`)
@@ -100,6 +142,10 @@ mike-main/        reference copy of another project — design source, gitignore
                   excluded in tsconfig (else `next build` compiles its backend)
 uigen-claude/     reference copy used for chat streaming/thinking UI patterns,
                   excluded in tsconfig for the same reason
+pasal-main/       reference copy of github.com/ilhamfp/pasal (AGPL-3.0), the
+                  open-source upstream of the pasal.id API Cante consumes.
+                  Gitignored and excluded in tsconfig for the same reason —
+                  its Next.js app broke `tsc --noEmit` until excluded.
 config/           customer.json — read only at seed time now
 raw/              source HTML, rewritten every run (gitignored, write-only debug trail)
 cante.db          the SQLite file (gitignored)
@@ -564,11 +610,364 @@ used the guessed codes.
 | `gw.oss.go.id/v2/portal/kbli/version` | **working** | No-auth JSON gateway used by the official OSS frontend. Reports published KBLI catalogue versions as a heartbeat; specific KBLI mapping still requires confirmed codes. |
 | `jdih.surabaya.go.id/peraturan/ajax` | **working** | No-auth JSON listing. Cante exhausts current/prior-year pagination; latest probe parsed 123 records. Activated for Surabaya operations. |
 | `lh.surabaya.go.id/weblh/data-pengumuman-dokumen` | **working** | Official AMDAL/UKL-UPL/DELH/DPLH notices in a rolling 45-day window; latest probe parsed 13 records. |
-| `peraturan.bpk.go.id` | **blocked** | Confirmed bot detection. Manual lookups only, never automated. |
-| `peraturan.go.id` | **blocked** | Public service remains unreliable. Superseded for six national instrument types by Setneg; it is not retried on daily runs. |
+| `peraturan.bpk.go.id` | **blocked** | Confirmed bot detection. Manual lookups only, never automated — and not a bypass candidate: its `robots.txt` (checked 17 Aug 2026) explicitly disallows `ClaudeBot` by name alongside the standard AI-crawler blocklist (GPTBot, CCBot, Bytespider, etc.), a direct statement that this operator does not want Claude-driven automated access. It is also broader than "BPK's own regulations" — it aggregates UU/PP/Perpres, ministry Permen/Kepmen, and Perda/Pergub/Perwali from many agencies, so losing it is a real coverage gap, not a niche one. The fix is ministry-specific portals (e.g. `jdih.kemenperin.go.id` for MA's own ministry), not a replacement aggregator. |
+| `jdih.kemenperin.go.id` | **blocked — long-dead, not transient** | Ministry of Industry's own JDIH — the ministry most directly relevant to MA. Checked 17 Aug 2026 (`ECONNREFUSED` 202.47.80.10:443); re-checked 18 Aug from **three vantage points**: this machine (timeout, both ports), Anthropic's fetch infrastructure (`ECONNREFUSED`), and the Wayback Machine's crawlers — whose **last successful capture is February 2024** (SIINas: April 2024). The entire `kemenperin.go.id` web presence (JDIH, SIINas, main site) has been dark to the outside world for ~2 years; `api.` subdomain doesn't resolve. Do not wait for recovery. The one live host found, `itjen.kemenperin.go.id` (Inspectorate General, HTTP 200, server-rendered), was probed and **rejected as coverage**: its Permenperin list is 8 curated internal-governance entries spanning 2010–2025 (kode etik, SAKIP, pengawasan intern) — a false heartbeat for industrial-policy coverage. ⚠️ Web search also surfaces `jdih.kementrianhukumdanham.com` and `jdih.kemenkumhamri.com` — misspelled `.com` squats of official JDIH sites; never treat these as sources. The realistic route is pasal.id's authenticated API (below). |
+| `peraturan.go.id` | **unreachable from here — but alive** | Not a dead host: Wayback recorded HTTP 200 crawls through 24 Apr 2026, and pasal.id crawls it daily from Southeast Asia. It times out from this machine and from Anthropic's fetch infrastructure, so this is a geo/network restriction. Still not polled: it publishes **only PDFs** (no search, no structure, no API), so using it needs an Indonesian egress path *and* the PDF/OCR pipeline this project declines to build. Superseded for six national instrument types by Setneg; reached second-hand for Kemenperin via pasal.id. |
 | `jdihn.go.id` | **blocked** | The old central host times out and the replacement is not a dependable public document API. Member ILDIS feeds remain an expansion route. |
-| East Java JDIH | **blocked** | Works interactively but Cloudflare rejects unattended fetches. Disclosed as a manual regional gap. |
+| East Java JDIH (`jdih.jatimprov.go.id`) | **blocked** | Works interactively but Cloudflare rejects unattended fetches — reconfirmed 17 Aug 2026 with a plain `fetch()` matching production headers (HTTP 403, Cloudflare challenge page). Not retried directly; superseded by the row below. |
+| East Java JDIH (`api.jdih.jatimprov.go.id`) | **working** | Discovered 17 Aug 2026: same JDIH Jatim CMS, served from this subdomain without the Cloudflare challenge — confirmed with a real `fetch()` from this machine, not a proxy. Four views (`peraturan-daerah`, `peraturan-gubernur`, `keputusan-gubernur`, `instruksi-gubernur`) all returned HTTP 200 with genuine 2026-dated content; the Kepgub probe parsed 7 anchors, 6 real entries and 1 false positive (a news article whose headline cited a Perda by number — `looksLikeRegulation()` matches link text only, so this is a known, disclosed limitation, not a regression). `surat-edaran` (circulars) was checked at the equivalent slug and does not exist on this host (404); that gap stays manual. |
 | `pesta.bsn.go.id/produk` | **working** | Live probe parsed 19 SNI records. Server-rendered HTML, not a public API; one retry handles transient transport/server failures. |
+| `pasal.id/api/v1/laws` | **working — private re-publisher, NOT official** | The only route to Kemenperin, whose own JDIH is dead and whose official record (`peraturan.go.id`) is unreachable from here. Authenticated (`PASAL_API_TOKEN`); live run parsed 23 Permenperin 2026 rows. Every row is the publisher's unreviewed parse and the API carries **no date** — dates are filled in separately by `lib/sources/pasal-dates.ts`. Never present its entries as an official record; see the pasal.id sections below. |
+
+**`pasal.id` — evaluated 17 Aug 2026, not integrated.** A private/commercial
+Indonesian legal database (177k+ regulations, 3.84M structured articles, 1945–
+2026), not an official government service — it re-publishes "publikasi resmi
+lembaga negara" rather than being one. It offers a real REST API
+(`pasal.id/api/v1/search`) and an MCP integration, gated behind an account (an
+unauthenticated probe returned `401`); free tier is 5 lookups/day. Worth
+revisiting as a **cross-check or gap-filler** — e.g. for BPK's aggregated
+content now that the official aggregator is off the table — but it cannot
+replace an official source under rule 2: judgment and the customer-facing
+alert need to know when a fact came from a private re-publisher rather than
+the primary government record, so any future integration must carry that
+label through, not blend it in as if it were `jdih.kemendag.go.id` or Setneg.
+
+**Re-evaluated 18 Aug 2026 — API docs read in full, integration is a go once
+the user creates a token.** The user explicitly asked for unofficial routes to
+the blocked/dead sources, which is the green light the paragraph above was
+waiting for. What the docs (`pasal.id/api`) establish: `GET /api/v1/laws?type=
+&year=&status=&limit=&offset=` is a **paginated listing feed** — `type=PERMEN
+&year=2026` filtered client-side for "Perindustrian" is the Kemenperin gap
+closed in 2–3 calls/day; type codes also cover `KEPMEN`, `SE`, `PERDA_PROV`,
+`PERGUB`. `GET /api/v1/laws/{frbr_uri}` returns full metadata plus
+`relationships` with `Mengubah`/`Amends` edges (maps directly onto
+`lib/checks/lifecycle.ts`), and rows carry `content_verified` plus a
+`verification.tier` of `automated_source` vs `human_golden` — the same tier
+discipline this project uses, so the label can be carried through faithfully.
+Auth is `Authorization: Bearer` or `x-api-key`; token is created free at
+`pasal.id/akun` — **an account only the user can create**. On access ethics:
+pasal.id's robots.txt disallows `ClaudeBot` (crawling), but the authenticated
+API is the operator's own sanctioned integration surface — its 401 error
+literally instructs you to sign up and points at the docs. Being an API
+customer is not crawling. `peraturan.bpk.go.id` remains off-limits entirely.
+**Built and live-verified 18 Aug 2026.** The user created the token; the
+adapter is `kemenperin-pasal` in the registry with parser `pasal-laws-json`.
+Live end-to-end through `fetchAllSources()`: **23 Permenperin rows for 2026,
+zero failures**, including 8 mandatory-SNI / revocation rules
+(`Pemberlakuan Standar Nasional Indonesia`, `Pencabutan …`) that Cante was
+previously blind to — this is the ministry that governs MA's own sector.
+
+⚠️ **This is the only non-official regulation source in the registry**, and
+four mechanisms keep it from reading like an official one. Do not weaken any
+of them:
+
+1. **`RegulationEntry.provenance`** is a new optional field, set *only* by
+   this parser and serialized straight into the judgment prompt. It carries
+   pasal.id's own `verification.tier` verbatim. Every observed Kemenperin row
+   is `parsed_unreviewed` with `content_verified: false` — the publisher
+   stating nobody reviewed the parse, which makes it the weakest evidence in
+   the system. Official sources set no `provenance` at all, because saying
+   nothing there is correct: Setneg and Kemendag *are* the record. Both
+   Indonesian and US judgment prompts now explain the field and require the
+   customer-facing message to name the private re-publisher and prefer
+   "worth a manual look" over asserting an obligation.
+2. **Dates come from a separate enrichment step, never from the listing.**
+   See the section below — the API returns no date, so `lib/sources/pasal-dates.ts`
+   fills them in and `effectiveOn` still stays `null`.
+3. **`issuing_body=permenperin` is load-bearing, and the parser re-checks
+   it.** `type=PERMEN` alone is not a Kemenperin filter — a live probe
+   returned an unrelated *Keputusan KPU* under it. Rows whose issuing body
+   is not the requested one are dropped rather than counted as ministry
+   coverage.
+4. **The citation URL is built from the returned `frbr_uri`, never guessed.**
+   `https://pasal.id` + `frbr_uri` was verified to return HTTP 200, while
+   the slug-shaped `/peraturan/…` forms 404. The detail endpoint's
+   `source_url` names `peraturan.go.id` as pasal.id's own upstream.
+
+### What pasal.id actually is (source read 18 Aug 2026)
+
+It is **open source** — `github.com/ilhamfp/pasal`, AGPL-3.0, cloned to
+`pasal-main/` (gitignored, and **excluded in `tsconfig.json`** — it ships a
+full Next.js 16 app whose 131 TS files broke `npx tsc --noEmit` until it was
+excluded, the same trap `mike-main` and `uigen-claude` document). Reading the
+pipeline settles several things guesswork could not:
+
+- **It stores its own copy.** A Python worker crawls `peraturan.go.id` listing
+  pages → seeds a `crawl_jobs` queue → downloads each PDF → extracts text with
+  PyMuPDF → deterministic OCR correction → a regex state machine parses
+  BAB/Pasal/Ayat structure → loads into Supabase Postgres. It is not a
+  passthrough proxy, so its freshness is its crawler's freshness, not the
+  government's.
+- **It refreshes daily.** `discovery_progress` caches per regulation type with
+  a **24-hour** TTL, and the Railway service runs `worker.run continuous` in a
+  permanent discover → process → sleep loop. So a daily Cante run is well
+  matched to a source that re-discovers about that often.
+- **It is not a bulk dump.** There is no snapshot to download; retrieval is
+  page-by-page crawling. The REST API is the only sane integration surface,
+  which is what Cante uses.
+
+⚠️ **`content_verified: false` / tier `parsed_unreviewed` is narrower than it
+sounds, and knowing this matters.** Migration 009 defines `content_verified` as
+"whether any human has verified the parsed **content** matches the source PDF"
+— it is about `document_nodes.content_text`, the PDF-extracted article body.
+**Cante consumes none of that.** Cante reads title, number, year, and issuing
+body, and `worker/discover.py` builds those by scraping the listing page's
+anchor text and parsing the URL slug — no PDF, no OCR anywhere in that path.
+So the weak tier attaches to the part Cante does not use, while the part it
+does use is a deterministic HTML scrape. The provenance label stays as written
+regardless: it is still second-hand, and the judgment prompt should still hedge.
+
+**This also explains the KPU row that justified the `issuing_body` filter.**
+`_infer_type_from_prefix()` ends with `# Safe default: most regulations on
+peraturan.go.id are ministerial` and returns `PERMEN` for any unrecognised slug
+prefix. `kepkpu` is unrecognised, so a Keputusan KPU is *typed* as PERMEN at
+crawl time. The pollution is structural and permanent, not a one-off — the
+parser's issuing-body check is load-bearing and must stay. The same slug
+parsing explains malformed numbers like `pmk11`: `SLUG_RE` captures whatever
+sits between `-no-` and `-tahun-`.
+
+### Enactment dates: `lib/sources/pasal-dates.ts` (added 18 Aug 2026)
+
+The pasal.id API returns **no date field anywhere** — not in `/laws`, not in
+`/laws/{frbr_uri}`, and not through any MCP tool (`get_law_context` accepts only
+`summary` / `outline` / `relationships`, all checked live). Only `year`. That
+breaks the oldest rule here — never assert recency from a listing alone — in a
+harder form than Kemendag, where at least a detail page carries the real date.
+
+**The dates exist; they were just not exposed.** pasal.id's crawler scrapes them
+off peraturan.go.id's detail-page tables into `works.tanggal_penetapan` /
+`tanggal_pengundangan` (migration 018, written by `_extract_metadata_from_soup()`
+in `worker/process.py`), and **its own web page renders them**. Verified on
+Permenperin 22/2026: *Penetapan: Jakarta, 15 Juli 2026*, *Pengundangan:
+31 Juli 2026*, *LN 2026 No. 529*.
+
+Both halves of the fix were done, on the user's instruction:
+
+1. **`enrichPasalDates()` reads them from the rendered page.** It parses the
+   `<dt>Penetapan</dt><dd>…</dd>` definition list, which deliberately ignores
+   the React server payload earlier in the document — that payload also carries
+   the UI's *translation bundle*, where the word "Penetapan" appears as a label
+   with no date attached, and a looser match would happily read it.
+2. **An upstream request is drafted at `pasal-upstream-issue.md`** (not filed —
+   `gh` is unauthenticated and it posts under the user's identity). It asks them
+   to expose the two columns they already populate.
+
+Four properties matter:
+
+- **It runs after the ledger diff, not in the parser.** `runCheck()` calls it
+  once `report.regulations` has been narrowed to new/changed entries, so only a
+  handful cost a lookup rather than the whole year every day. At ~23 Permenperin
+  a year, steady state is roughly two fetches a month. Live: 4/4 resolved in 6s.
+- **It writes `datesNote`, not `effectiveOn`** — the same choice the Setneg
+  parser already makes with these two dates. Signing and promulgation say when a
+  rule was *made*; the date it takes legal *effect* is set by its own closing
+  article and can be later. `effectiveOn` stays `null` because no source here
+  established it, and the note says so in as many words.
+- **It cannot fail a run.** Every error path leaves the entry exactly as
+  dateless as it already was and appends a code-written caveat. Lookups are
+  capped at 25/run so a bad ledger diff can never become a crawl.
+- **It is forward-compatible.** `parsePasalLawsJson()` already reads
+  `tanggal_penetapan`/`tanggal_pengundangan` if they ever appear, and
+  `enrichPasalDates()` skips entries that already carry dates. The day upstream
+  merges, the date arrives free and this module quietly does nothing. There is a
+  test pinning that contract.
+
+The judgment prompt was updated to match: it now says to read `datesNote` and
+reason from a date when present, treat its absence as "year only, do not imply
+recency", and never present a promulgation date as an effective date.
+
+**Verified in a real run, 18 Aug 2026** — `725945ce-a124-4ad1-b2f5-af07040d069b`,
+not just a probe. The source fetched 23 Permenperin, the ledger baselined 13 and
+sent 10 into judgment, `[pasal-dates] 10 of 10 enactment dates resolved`, and all
+10 came back `clear` — correctly, since they cover safety glass, wheat flour,
+palm cooking oil, halal certification, aircraft-repair imports and agro
+machinery, none of which touch PVC tarpaulin. The one-line quiet alert also
+landed as designed: `*Aman* — tidak ada yang baru atau relevan buat MA hari
+ini.`
+
+⚠️ **A stale caveat shipped with it, and it is the exact failure rule 2 exists to
+catch — in reverse.** The selection caveat still read "pasal.id tidak memuat
+tanggal penetapan maupun pengundangan sama sekali, hanya tahun", written before
+the enrichment existed. So the same alert that logged 10 of 10 dates resolved
+also told the customer no dates were available. A caveat that *understates*
+coverage is as much a lie as one that overstates it, and it is easier to miss
+because it reads as appropriately humble. Fixed to describe the separate lookup
+and to keep the honest part — that a missing date means the age is genuinely
+unknown, and that the closing-article effective date is still unestablished.
+**When a capability lands, grep the caveats for what they claim about it**; the
+prompt and the parser were updated in the same turn as the enrichment, and this
+line was still missed.
+
+⚠️ **On access ethics.** pasal.id's `robots.txt` disallows `ClaudeBot`, and the
+authenticated API remains the sanctioned surface for bulk work — that is why the
+listing goes through the API and only this narrow, ledger-gated, ~2/month date
+lookup reads a page. The upstream issue exists precisely so this step can be
+deleted. If pasal.id ever objects, delete `enrichPasalDates()`; everything
+degrades to the honest "year only" disclosure it replaced.
+
+### Kemenkeu fallback — and why East Java and BSN were refused (18 Aug 2026)
+
+`lib/sources/fallback.ts`. `jdih.kemenkeu.go.id` — the customs, duty and tax
+feed — timed out on two of the last three real runs. The alert correctly said
+PMK changes went unchecked, but the customer still learned nothing about tax
+exposure that day. pasal.id re-publishes the same ministry (57 PMK for 2026,
+clean numbers), so a failed day can now carry a partial answer.
+
+**It is a fallback, not a source.** Running it daily would report every PMK
+twice under two URLs that dedup cannot match. `selectFallbackSources()` returns
+it only when the primary actually failed *in that run*, so a healthy day costs
+nothing.
+
+**It is additive and disclosed, never a swap.** A backup that silently stood in
+for an official source would convert "we could not check tax" into what reads as
+a completed check — the exact rule 2 failure. The primary's failure row is left
+untouched, the backup arrives as its own source with its own `provenance`, and
+`fallbackCaveat()` states plainly that the official record was unreachable and
+these rows are leads. There is a test asserting the caveat contains
+"bukan pengganti".
+
+**Two others were asked for and refused, on evidence:**
+
+| Asked | Verdict |
+|---|---|
+| East Java | **Refused — already covered officially.** `api.jdih.jatimprov.go.id` returned 48 entries on the last run. pasal.id does carry it, under `PERDA` (53,752 all-years) and `PERGUB` (25,216) — **not** `PERDA_PROV`/`PERDA_KAB`, which are empty despite existing as type codes. Adding a private re-publisher beside a working official feed is a downgrade, not coverage. |
+| BSN / SNI | **Refused — not in pasal.id at all.** Its `PERBAN` bucket holds BPOM, OJK, BSSN, BI, BMKG, Perpusnas, BPS, BRIN, BPJPH and LAN; no BSN. SNI are *standards*, not regulations: pasal.id has laws that make an SNI mandatory (e.g. Permenperin 22/2026), never the standard itself. No wiring fixes this. |
+
+⚠️ **A type code existing in pasal.id's documented list does not mean data
+exists behind it.** `PERDA_PROV`, `PERDA_KAB` and `KEPMEN` all return **0** rows
+across all years. Always probe a code before building on it.
+
+### Regional Perda by customer location (added 18 Aug 2026)
+
+Indonesia has 38 provinces and 500-plus regencies and cities, each issuing its
+own Perda. Cante had official adapters for exactly two jurisdictions — Surabaya
+city and East Java province — because that is where the first customer is. A
+customer in Sidoarjo, or one distributing into Banten, had **no regional
+coverage at all**, and no route to it without hand-building an adapter per city.
+
+`regionalPasalSources(profile, options)` in `registry.ts` generates one source
+per matched region from `PASAL_REGIONS`, activated by recorded customer
+locations — so a new region is a row, not an adapter. It composes with
+everything already built: the parser's `issuing_body` check, `provenance`, and
+`enrichPasalDates()` all key off data that is already there.
+
+Verified live: a Surabaya-only profile activates **zero** pasal regions, while
+`["Sidoarjo, Jawa Timur", "Banten"]` activates two and fetches 8 and 137
+regulations.
+
+| Rule | Why |
+|---|---|
+| Every slug was verified live | Coverage is genuinely patchy and **cannot be guessed from a pattern**: `perda-kabupaten-mojokerto` holds 99 while `perda-kota-mojokerto` does not exist, and Gresik has neither. A wrong slug returns `{"error":"Unknown issuing body"}` and fails the source loudly — correct, but not a discovery mechanism. |
+| Officially covered regions are excluded | Surabaya and East Java have working official adapters. A re-publisher beside them duplicates findings under two URLs dedup cannot match, and downgrades the evidence. |
+| A recorded location matching nothing is disclosed | It says the location is *belum dipantau sama sekali* rather than being silently absent. |
+
+⚠️ **Regional feeds carry no `year` filter, and that is deliberate.** Sidoarjo
+had **0** Perda in 2026 and 8 across all years; Banten had 0 and 137. Windowing
+a regency to the current year returns nothing and reads as coverage. The feeds
+fetch all years and the `source_documents` ledger decides what is new — the same
+shape as the official Surabaya adapter. `refreshDynamicUrl()` therefore only
+refreshes `year` on sources that already carry one, which is how ministry feeds
+and regional feeds share a parser without sharing a window.
+
+They carry `emptyStateMarker: '"total":0'` so a regency genuinely passing no
+Perda is a *validated* empty rather than a silent parser failure.
+
+⚠️ **Label bug found while wiring this up.** The parser built every label as
+`Peraturan Menteri ${issuer}`, which was right for the only source that existed
+at the time. A Perda whose `issuing_body.name` is "Kota Surabaya" came out as
+**"Peraturan Menteri Surabaya"** — a city bylaw presented as a ministerial
+regulation. Labels now come from `PASAL_TYPE_LABELS[law.type]`, so a PERDA reads
+"Peraturan Daerah Kota Surabaya" and a PERGUB "Peraturan Gubernur Provinsi
+Banten". Titles are also whitespace-normalised: they arrive with embedded CRLFs
+from the source PDF.
+
+### Perpajakan — where tax actually stands
+
+Asked directly, so recorded here. Tax is one of the better-covered areas:
+
+| Layer | Source | State |
+|---|---|---|
+| PMK (tax, customs, duty) | `jdih.kemenkeu.go.id` | official, **plus** the pasal.id fallback above when it fails |
+| Customs and excise | `peraturan.beacukai.go.id` (DJBC) | official, working |
+| Tax administration | `pajak.go.id/peraturan` (DJP) | official, working |
+| Regional tax (pajak/retribusi daerah) | Perda feeds — Surabaya and East Java official, other regions via pasal.id | working |
+
+The Kemenkeu fallback was the real perpajakan gap: that feed failed on two of
+the last three runs, and PMK is where tariff and duty changes land. It is now
+the only source in the registry with a backup. The tax-law *characterisations*
+in the taxation section above remain assumed, not verified — that has not
+changed.
+
+### ⚠️ Pagination: `total` is not the page (found by live probe, 18 Aug 2026)
+
+The pasal.id API caps `limit` at 50 and reports the true size in `total`.
+Kemenperin has 23 rows a year so a single request held the year and this was
+invisible. **Kemenkeu has 57 — the first fallback fetch returned 50 and
+reported success, silently dropping 7 PMK.** A source that looks checked and
+is not is the failure this project exists to prevent, and it took a live probe
+against a *different* ministry to surface it.
+
+`fetchAllPasalPages()` now follows `total` through `offset`, verified live:
+Kemenkeu 57/57, Kemenperin 23/23. A page that fails, returns nothing, or
+disagrees with the first page's `total` fails the whole source rather than
+presenting a partial set as complete — the same rule the eCFR fetcher follows.
+
+**Not every pasal.id row has a date, and that is honest.** The probe found PMK
+rows (e.g. the oddly-slugged `permenkeu/2026/61+`) whose pages carry no
+Penetapan block at all — pasal.id's crawler never captured metadata for them.
+`enrichPasalDates()` correctly resolves nothing, leaves the entry dateless, and
+discloses the count. Malformed numbers like `61+` come from upstream slug
+parsing and are rendered as-is rather than cleaned, so the citation still
+matches what the publisher holds.
+
+### ⚠️ Correction: `peraturan.go.id` is alive, just not reachable from here
+
+Recorded above as dead alongside `jdih.kemenperin.go.id`. That was wrong, and
+the difference matters. Wayback CDX, checked 18 Aug 2026:
+
+| Host | Last successful crawl | Verdict |
+|---|---|---|
+| `peraturan.go.id` | **2026-04-24** (200s through Feb–Apr 2026) | alive, network-restricted from here |
+| `jdih.kemenperin.go.id` | 2024-02-19 | genuinely dead, ~2 years |
+
+pasal.id's own worker entrypoint recommends running on Railway in **region:
+Southeast Asia**, and its source registry rates `peraturan.go.id` as
+`"anti_scraping": "Minimal — standard HTTP works"`. A host that answers
+Indonesian infrastructure and Wayback but times out from this machine *and*
+from Anthropic's fetch infrastructure is geo/network-restricted, not down. So
+"no scraping technique fixes a refused TCP connection" is true of Kemenperin
+and **not** of peraturan.go.id.
+
+That does **not** make it a Cante source, for a reason that also justifies the
+whole integration: peraturan.go.id publishes **only PDFs** — pasal.id's README
+exists because it offers "no search, no structure, no API". Consuming it
+directly would require the OCR/PDF extraction pipeline this project explicitly
+declines to build. pasal.id is doing exactly the work Cante deliberately does
+not, which is the honest argument for depending on it. If direct official
+access ever becomes worthwhile, it needs an Indonesian egress path *and* a PDF
+parser — two decisions, not one.
+
+**Secrets stay out of the registry.** `SourceDefinition.requiresEnv` holds the
+*variable name*; `fetch.ts` reads `process.env` at request time. `SOURCE_REGISTRY`
+is a module-level export that tests import and code logs, so a live bearer token
+has no business in it. Verified the token appears in no repo file but `.env`
+(gitignored). A source whose variable is unset is **deactivated by
+`sourceIsActive()` and disclosed as a caveat**, not left to fail every run —
+a permanent red row trains the reader to skim failures, which is the same
+reasoning as the per-domain circuit breaker.
+
+**No date field also means no date window.** The whole current year is fetched
+each run (23 rows, one page at the API's 50 max) and new rows are found by the
+`source_documents` fingerprint ledger. Do not "read page 1 for what's new":
+the API returns rows in **no chronological order**, verified live, so that
+would silently miss things. `refreshDynamicUrl()` rewrites `year` per run
+because the registry is built once at module load.
+
+Scope checked and deliberately narrow: `KEPMEN` and `SE` return **0** rows for
+Kemenperin, so only Permen exists here. Kemendag (22) and Kemnaker (11) rows
+are available but **not** wired up — both already have working *official*
+sources, and replacing an official record with a private re-publisher's
+unreviewed parse would be a straight downgrade.
 
 **Whole-set verification, 16 Aug 2026.** A source-only probe of the selected
 Indonesia set (no profile, so the Surabaya rows stayed inactive) fetched
@@ -971,6 +1370,20 @@ Detection is **regex over the citation sentence, not a model call**: Indonesian
 and US drafting both signal these in fixed language ("Perubahan Kelima atas",
 "mencabut", "amending", "revokes"). Deterministic, auditable, and it cannot
 hallucinate a relationship. Every link stores the sentence it was read from.
+
+⚠️ **Bug found and fixed 18 Aug 2026 by running this against real data: the
+Indonesian patterns were case-sensitive and verb-only.** They matched
+"Perubahan **a**tas" but not "Perubahan **A**tas", and "mencabut" (the verb, how
+a rule's *body* reads) but not "Pencabutan" (the noun, how its *title* reads).
+Titles capitalise what prose does not, and this monitor usually has only the
+title. Measured on a live batch of 23 Kemenperin regulations: **1 link detected
+before, 9 after** — eight amendments and revocations were being silently
+dropped, including one title typed entirely in capitals. The Indonesian
+patterns now carry the `i` flag (the English ones always had it) and there is a
+`pencabutan` pattern beside `mencabut`. This was never pasal.id-specific; it
+affected every Indonesian source, and it stayed invisible because the regexes
+were only ever tested against hand-written prose sentences rather than real
+listing titles.
 `supersededFindings()` reports what the newer rule *claims* — never a legal
 determination that the older rule stopped applying, because transitional
 provisions routinely keep parts of it in force.
@@ -1159,6 +1572,25 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
 
 - Fetch, judgment, storage, dashboard, and chat all working locally, verified
   against the expanded live source set.
+- **Open bug, reproduced twice: the judgment completion retry resolves nothing.**
+  Run `98922259` retried 1 unaccounted entry and resolved 0; run `725945ce`
+  retried 3 and resolved 0. Both printed `Pemeriksaan lanjutan: 0 dari N`. The
+  disclosure is working exactly as intended — the alert names the unjudged
+  entries and says to treat them as unchecked — but the mechanism meant to
+  close the gap has never once succeeded, so it is currently disclosure with no
+  repair behind it. The three misses in `725945ce` (PP 27/2026, Permenaker
+  11/2026, Permenakertrans PER.02/MEN/1982) came from established Setneg and
+  Kemnaker sources, not the new pasal.id one. Not yet diagnosed; the retry
+  prompt, the `normalizeUrlKey()` match, and whether the model returns those
+  URLs at all are the three places to look.
+- **Kemenperin coverage exists for the first time (18 Aug 2026), via pasal.id.**
+  122 tests pass (up from 111: 9 new pasal tests, 2 new lifecycle regressions),
+  `npx tsc --noEmit` clean. Live end-to-end through `fetchAllSources()` parsed
+  23 Permenperin 2026 rows with zero failures. The same probe exposed a
+  case-sensitivity bug in `lifecycle.ts` that was dropping 8 of 9 amendment and
+  revocation links across *all* Indonesian sources. `npm run build` was **not**
+  run because `npm run dev` was live — see the warning above; run it after
+  stopping dev.
 - **The operating-data layer (items 2–10) is built and verified locally,
   16 Aug 2026.** 65 tests pass (up from 34), `npx tsc --noEmit` and
   `npm run build` are clean, and all four new pages return HTTP 200. Verified end
@@ -1292,8 +1724,16 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
    confirm those Memory rows so Checklist can move from leads to verified facts.
 2. Add ministry-specific Permen/Kepmen feeds based on MA's confirmed KBLI,
    products, permits, and markets; there is no reliable all-ministry central feed.
-3. Find a structured East Java provincial route and add verified INSW/lartas
-   discovery. Surabaya city regulations and environmental notices are automated.
+   Kemenperin is now covered via pasal.id (private re-publisher, disclosed as
+   such). Next: run a real `npm run check` and read how the 23 Permenperin rows
+   land in the alert — in particular whether the model honours the provenance
+   hedge, and whether the 8 mandatory-SNI rules match MA's products. Those
+   SNI rules are the most likely first genuine `flagged` finding this monitor
+   produces, so it is worth watching closely rather than assuming.
+3. East Java provincial coverage is now automated via `api.jdih.jatimprov.go.id`
+   (Perda, Pergub, Kepgub, Instruksi) — verify it in a real `npm run check` run,
+   not just the source-only probe, then add verified INSW/lartas discovery.
+   Surabaya city regulations and environmental notices remain automated.
 4. Enter a real US pilot profile and add topic-specific state agency adapters for
    its actual distribution states; general state registers are discovery, not
    full EPR/PFAS/tax/product coverage.
