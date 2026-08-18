@@ -418,9 +418,18 @@ the repo so `.env` resolves.
 **Schedule with `launchd`, not `cron`, on macOS.** launchd runs a missed
 `StartCalendarInterval` job **on wake**; cron silently skips it. For a machine
 that sleeps — which is every laptop — that difference is the whole job. The
-LaunchAgent needs `/bin/zsh -lc` so the shell profile loads and the `claude`
-CLI is on PATH, and `EnvironmentVariables` for the tokens, because a
-LaunchAgent does not inherit a terminal's environment.
+LaunchAgent needs `/bin/zsh -lc` so the shell profile loads and `npm`/`node`
+are on PATH; it needs no `EnvironmentVariables` block for tokens because
+`scripts/load-env.ts` reads `.env` once the working directory is the repo.
+
+Verified 17 Aug 2026: `~/Library/LaunchAgents/com.cante.dailycheck.plist` runs
+`/bin/zsh -lc "cd /Users/a/Desktop/cante && npm run check:scheduled"` daily at
+07:00 via `StartCalendarInterval`, with `StandardOutPath`/`StandardErrorPath`
+at `~/Library/Logs/cante-dailycheck.log` and `RunAtLoad` false so loading it
+does not immediately fire a real Telegram send. `launchctl load` registered it
+successfully (`launchctl list` showed `com.cante.dailycheck` with status `0`).
+The `--verify` Telegram round-trip was confirmed working the same day after the
+initial `chat not found` error (bot not yet started by the user) was resolved.
 
 **Not GitHub Actions.** Two independent blockers: a runner cannot use the local
 Claude Code login (so it needs an API key, breaking rule 1), and runners are
