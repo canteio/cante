@@ -91,9 +91,11 @@ Two properties of the source that can't be engineered away, so the judgment stag
 ```
 lib/llm/          types.ts (the seam) · claude-code.ts (works) · api.ts (stub) · index.ts
 lib/sources/      registry.ts (sources + profile activation) · fetch.ts (JSON/RSS/HTML/CSV parsers)
-lib/screening/    csl.ts (Trade.gov CSL) · us-trade-controls.ts (Section 301/232, AD/CVD, UFLPA, PGA)
-lib/tariff/       insw.ts (INSW / NTR Bea Masuk, PPN, PPh 22, LARTAS) · usitc.ts
-lib/workflow/     actions.ts (state machine) · draft.ts (PPJK, Internal Ops, Supplier action drafts)
+lib/screening/    csl.ts · us-trade-controls.ts · us-isf.ts · us-export-controls.ts
+lib/tariff/       insw.ts (INSW / NTR) · usitc.ts · usmca.ts · quota-ledger.ts (PI & Quota Ledger)
+lib/substances/   us-chemical-controls.ts (EPA TSCA PFAS/PBT, CA Prop 65)
+lib/documents/    discrepancy.ts (Doc Cross-Check & OCR Engine) · extract-file.ts
+lib/workflow/     actions.ts · draft.ts (PPJK, Ops, Supplier) · us-cbp-response.ts · audit-vault.ts
 lib/checks/       judge.ts · judge-batched.ts · briefing.ts · run.ts · checklist.ts
 lib/db/           schema.ts · client.ts · queries.ts
 app/              page.tsx (Checks) · workqueue/ · checklist/ · chat/ · memory/ · api/{checks,workqueue,checklist,chat,customers,memories,screening}

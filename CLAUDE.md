@@ -607,6 +607,23 @@ Evaluates US shipments against:
 **5. Work Queue UI Integration (`components/workqueue/workqueue-panel.tsx`, `app/api/workqueue/route.ts`)**
 - Added 1-click copy buttons (`📱 Copy PPJK WhatsApp`, `📋 Copy Ops Checklist`, `✉️ Copy Supplier Inquiry`) to each finding card in the work queue.
 
+**6. US Trade Compliance & Enforcement Suite (`lib/screening/`, `lib/tariff/`, `lib/substances/`, `lib/workflow/`)**
+- **ISF 10+2 Pre-Arrival Compliance ([`lib/screening/us-isf.ts`](file:///Users/a/Desktop/cante/lib/screening/us-isf.ts))**: Enforces 19 CFR 149 24-hour pre-loading transmission deadlines for ocean shipments and calculates $5,000 liquidated damages risk per violation.
+- **USMCA Rules of Origin Engine ([`lib/tariff/usmca.ts`](file:///Users/a/Desktop/cante/lib/tariff/usmca.ts))**: Evaluates Chapter/Heading/Subheading Tariff Shifts (CC, CTH, CTSH), computes Regional Value Content (RVC Transaction Value and Net Cost methods), and produces compliant 9-element USMCA Origin Certifications.
+- **Dual-Use Export Controls & ECCN Screener ([`lib/screening/us-export-controls.ts`](file:///Users/a/Desktop/cante/lib/screening/us-export-controls.ts))**: Determines ECCN (Commerce Control List Categories 0-9) vs EAR99, evaluates Country Group matrix licensing (15 CFR 740 Supp. 1), and blocks comprehensive embargoed destinations (Cuba, Iran, North Korea, Syria).
+- **EPA TSCA PFAS & CA Prop 65 Controls ([`lib/substances/us-chemical-controls.ts`](file:///Users/a/Desktop/cante/lib/substances/us-chemical-controls.ts))**: Identifies EPA TSCA Section 8(a)(7) reportable PFAS, verifies TSCA Section 6 PBT prohibited flame retardants (DecaBDE, PIP 3:1), and formats California Prop 65 safe harbor warning copy for plasticizers (DINP, DEHP).
+- **CBP Form 28 / Form 29 Response Drafter ([`lib/workflow/us-cbp-response.ts`](file:///Users/a/Desktop/cante/lib/workflow/us-cbp-response.ts))**: Generates formal legal response letters to CBP Port Directors and Import Specialists citing General Rules of Interpretation (GRI 1, GRI 3(b) Essential Character, GRI 6) and binding CROSS ruling precedents.
+
+**7. Enterprise Core Suite (`lib/documents/`, `lib/tariff/`, `lib/workflow/`)**
+- **Document Cross-Check & Discrepancy Engine ([`lib/documents/discrepancy.ts`](file:///Users/a/Desktop/cante/lib/documents/discrepancy.ts))**: Cross-references Commercial Invoice, Packing List, Bill of Lading, COA, and COO to detect HTS mismatches, Net > Gross weight discrepancies, Incoterm/freight conflicts, missing chemical CAS numbers, and container discrepancies.
+- **Live Quota & Permit Ledger ([`lib/tariff/quota-ledger.ts`](file:///Users/a/Desktop/cante/lib/tariff/quota-ledger.ts))**: Tracks government-allocated import/export quotas (PI Bahan Baku, PI TPT, PI B2), deducts realized shipments, calculates monthly burn rates, and issues 60/30/14-day renewal alerts.
+- **Customs Post-Clearance Audit Vault ([`lib/workflow/audit-vault.ts`](file:///Users/a/Desktop/cante/lib/workflow/audit-vault.ts))**: Compiles 1-click sealed "Reasonable Care" defense dossiers for Bea Cukai Audit Pabean and US CBP Focused Assessments.
+
+**8. Future Enterprise Roadmap (Deferred External Connectors)**
+- **ERP & PO Sync Connectors**: Direct webhooks and ingestors for SAP, NetSuite, Oracle, and Indonesian ERPs (Accurate, Jurnal) to evaluate purchase orders before issuance.
+- **Direct Push Notification Connectors**: Interactive Slack App, Microsoft Teams bot, and official WhatsApp Cloud API integration for operational approvals.
+- **Cloud SaaS Migration**: PostgreSQL / AWS RDS migration, SSO (Okta, Azure AD SAML), and SOC 2 Type II compliance audit trails.
+
 ### Setting it up
 
 Secrets live in **`.env`**, which is gitignored. `scripts/load-env.ts` is

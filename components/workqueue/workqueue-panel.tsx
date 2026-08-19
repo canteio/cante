@@ -264,6 +264,8 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
                     </div>
                   ))
                 )}
+              </div>
+
               {row.drafts && (
                 <div className="checklist-block">
                   <div className="side-label">Action Drafts</div>
