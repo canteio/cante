@@ -1,6 +1,6 @@
 import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db/client";
-import { alerts, checkRuns, findings, sourceResults, type Alert } from "@/lib/db/schema";
+import { alerts, checkRuns, findings, sourceResults, sources, type Alert } from "@/lib/db/schema";
 import {
   sendTelegram,
   telegramConfig,
@@ -58,24 +58,78 @@ function recordDelivery(
 }
 
 /**
- * Header lines that make a message readable on a phone at 7am, and that make
- * partial coverage visible before the body rather than buried under it.
+ * Format a short, concise Telegram digest for the operator.
+ *
+ * Keeps Telegram brief and high-signal:
+ * - Immediate status ("All clear" vs "N flagged")
+ * - Bullet list of flagged/noted regulations (title + ref) without dumping full prose
+ * - Breakdown of sources checked and entries parsed
+ * - Prompts to open the Web GUI for deep dive / chat
  */
-function runHeader(runId: string): string {
+export function formatTelegramDigest(runId: string): string {
   const run = db.select().from(checkRuns).where(eq(checkRuns.id, runId)).get();
-  const results = db.select().from(sourceResults).where(eq(sourceResults.checkRunId, runId)).all();
+  const results = db
+    .select({
+      id: sourceResults.id,
+      sourceId: sourceResults.sourceId,
+      success: sourceResults.success,
+      errorMessage: sourceResults.errorMessage,
+      entriesParsed: sourceResults.entriesParsed,
+      parseWarning: sourceResults.parseWarning,
+      sourceName: sources.name,
+    })
+    .from(sourceResults)
+    .leftJoin(sources, eq(sourceResults.sourceId, sources.id))
+    .where(eq(sourceResults.checkRunId, runId))
+    .all();
   const found = db.select().from(findings).where(eq(findings.checkRunId, runId)).all();
 
-  const failed = results.filter((r) => !r.success).length;
-  const flagged = found.filter((f) => f.relevance === "flagged").length;
-  const noted = found.filter((f) => f.relevance === "noted").length;
+  const failedResults = results.filter((r) => !r.success);
+  const okCount = results.length - failedResults.length;
+  const flagged = found.filter((f) => f.relevance === "flagged");
+  const noted = found.filter((f) => f.relevance === "noted");
 
-  const lines = [
+  const lines: string[] = [
     `Cante — ${run?.jurisdiction ?? "check"} — ${new Date().toISOString().slice(0, 10)}`,
-    `${results.length - failed}/${results.length} sources OK` +
-      (failed > 0 ? ` · ${failed} FAILED (see coverage notes)` : ""),
-    `${flagged} flagged · ${noted} to look at`,
+    `${okCount}/${results.length} sources OK` +
+      (failedResults.length > 0 ? ` · ${failedResults.length} FAILED` : ""),
+    `${flagged.length} flagged · ${noted.length} to look at`,
   ];
+
+  if (flagged.length === 0 && noted.length === 0) {
+    lines.push("\n✅ Status: All clear — nothing new affecting operations today.");
+  } else {
+    lines.push(`\n⚠️ Status: ${flagged.length} flagged · ${noted.length} to look at`);
+    if (flagged.length > 0) {
+      lines.push("\nFlagged:");
+      for (const item of flagged) {
+        const label = item.regulationRef ? `${item.regulationRef} — ` : "";
+        lines.push(`• ${label}${item.title}`);
+      }
+    }
+    if (noted.length > 0) {
+      lines.push("\nWorth a look:");
+      for (const item of noted) {
+        const label = item.regulationRef ? `${item.regulationRef} — ` : "";
+        lines.push(`• ${label}${item.title}`);
+      }
+    }
+    lines.push("\n(Open Web GUI to inspect details or ask questions in Chat)");
+  }
+
+  if (results.length > 0) {
+    lines.push("\nSources checked:");
+    for (const r of results) {
+      const name = r.sourceName || r.sourceId;
+      if (r.success) {
+        const entries = `${r.entriesParsed} ${r.entriesParsed === 1 ? "entry" : "entries"}`;
+        lines.push(`✓ ${name}: ${entries}`);
+      } else {
+        lines.push(`✗ ${name}: FAILED (${r.errorMessage ?? "error"})`);
+      }
+    }
+  }
+
   return lines.join("\n");
 }
 
@@ -113,7 +167,7 @@ export async function dispatchRun(
     };
   }
 
-  const body = `${runHeader(runId)}\n\n${alert.body}`;
+  const body = formatTelegramDigest(runId);
 
   try {
     const sent = await sendTelegram(config, body, { signal: options.signal });

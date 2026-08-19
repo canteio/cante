@@ -201,3 +201,25 @@ test("delivery health surfaces a channel that has been broken for days", async (
   assert.equal(health.consecutiveFailures, 3);
   assert.equal(health.lastDeliveredAt, null);
 });
+
+test("formatTelegramDigest renders short status and scanned sources", async () => {
+  const { customerId, dbPath } = await operatingDb();
+  const { formatTelegramDigest } = await import("@/lib/delivery/dispatch");
+  const runId = `r6-${customerId}`;
+  const alertId = `a6-${customerId}`;
+  seedRunWithAlert(dbPath, customerId, {
+    runId,
+    alertId,
+    sourcesOk: 3,
+    sourcesFailed: 1,
+  });
+
+  const digest = formatTelegramDigest(runId);
+  assert.match(digest, /Cante — Indonesia/);
+  assert.match(digest, /3\/4 sources OK · 1 FAILED/);
+  assert.match(digest, /All clear — nothing new/);
+  assert.match(digest, /Sources checked:/);
+  assert.match(digest, /✓ src: 5 entries/);
+  assert.match(digest, /✗ src2: FAILED/);
+});
+
