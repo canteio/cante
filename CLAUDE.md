@@ -45,6 +45,61 @@ already-seen / unaccounted and appends a **code-written** caveat for the last
 group. Model-written caveats can't be the only ones — the model is the thing
 being audited.
 
+### An alert that says a rule changed must say what changed (added 19 Aug 2026)
+
+`lib/checks/briefing.ts`. "PP 20/2026 — worth a look" hands the reader the
+entire job: find the new rule, find the old one, read both, work out the
+difference. Nobody does that, so the alert gets skimmed and the monitoring is
+worth nothing. The judgment provider already has `WebFetch`/`WebSearch`, and
+`lifecycle.ts` already detects that 20/2026 amends 55/2022 — so the run
+researches the delta and puts it in the alert.
+
+Output is a scannable before → after list, not prose:
+
+```
+*PP 20 Tahun 2026* — mengubah Peraturan Pemerintah Nomor 55 Tahun 2022
+Mengatur tarif PPh final 0,5% untuk usaha kecil (UMKM).
+Yang berubah:
+• CV, Firma, PT biasa: boleh pakai PPh final 0,5% → tidak boleh lagi
+• Orang pribadi, PT perorangan: batas waktu 3-7 tahun → tanpa batas waktu
+Buat kamu: …
+```
+
+Verified live against the real PP 20/2026, and independently correct — it
+matched a Gemini answer the user had on the same regulation, and additionally
+found the transition provision and the new non-deductibility of bribes.
+
+**Two things the first live run got wrong, both fixed and both worth
+remembering:**
+
+1. **It answered in English** for an Indonesian business owner. The system
+   prompt said "write for a business owner" and never named a language.
+   Language is now stated explicitly per jurisdiction. Prompts inherit English
+   by default; say the language out loud whenever output reaches a customer.
+2. **It was enormous** — multi-clause rows citing Pasal numbers. The fix was
+   not "be concise" but a hard shape: `before`/`after` are **fragments of at
+   most 8 words**, max 5 rows, enforced in the Zod descriptions *and* the system
+   prompt, with the reasoning stated ("if a row cannot be said in eight words it
+   is too detailed for this format"). Schema constraints work better than
+   adjectives.
+
+Honesty rules, because a fabricated "before" column is worse than no table —
+it reads authoritative and a customer may act on it:
+
+- Every row must come from a document actually fetched; the model is told to
+  return **fewer rows rather than guess one**.
+- `confidence: "partial"` when the older rule could not be fully read, rendered
+  **next to the table**, not in a footnote three sections away.
+- A briefing with no rows *and* no sources read is discarded rather than shown
+  as an empty comparison implying the work was done and found nothing.
+- Bounded to `flagged`/`noted` findings, max 3 per run, and every failure
+  degrades to the plain finding the alert would have carried anyway.
+
+The Telegram digest carries this section too, trimmed to ~1400 characters on a
+line boundary, via `alertBriefingExcerpt()` — which **reads it back out of
+`alert.body` rather than re-deriving it**, so the operator and the customer can
+never end up with two different accounts of the same change.
+
 ### ⚠️ The "41 unjudged entries" defect was the audit crying wolf (fixed 19 Aug 2026)
 
 Three runs reported entries as never checked and a retry that resolved 0 of
@@ -169,7 +224,7 @@ lib/sources/      registry.ts (sources + profile activation as data) · fetch.ts
 lib/screening/    csl.ts (bounded, cached exact-name matching against Trade.gov CSL bulk data)
                   persist.ts (screens as dated, auditable events; `error` is never `clear`)
 lib/chat/         attachments.ts (a dropped file is filed, not just read — documents, catalogue, memory)
-lib/checks/       judge.ts (prompt + Zod schema) · judge-batched.ts (batches + message composition) · run.ts (fetch → judge → store) · checklist.ts (living obligations)
+lib/checks/       judge.ts (prompt + Zod schema) · judge-batched.ts (batches + message composition) · briefing.ts (what actually changed, before → after) · run.ts (fetch → judge → store) · checklist.ts (living obligations)
                   facts.ts (HS/KBLI tiers — the one answer to "what is established") · coverage.ts (entries in, verdicts out)
                   lifecycle.ts (amends/revokes/supersedes links + favourable/unfavourable direction)
 lib/catalogue/    products.ts (SKUs + CSV import) · classifications.ts (tiered code history + approval)

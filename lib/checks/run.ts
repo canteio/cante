@@ -22,7 +22,8 @@ import { getProvider, type LlmProviderChoice } from "@/lib/llm";
 import { judge } from "@/lib/checks/judge";
 import { judgeAllEntries, planBatches } from "@/lib/checks/judge-batched";
 import { auditVerdictCoverage, normalizeUrlKey } from "@/lib/checks/coverage";
-import { linkRegulation } from "@/lib/checks/lifecycle";
+import { detectRegulationLinks, linkRegulation } from "@/lib/checks/lifecycle";
+import { briefFindings, renderBriefings } from "@/lib/checks/briefing";
 import { selectSourceChanges } from "@/lib/checks/source-changes";
 import { refreshChecklistForCustomer } from "@/lib/checks/checklist";
 import { fetchAllSources } from "@/lib/sources/fetch";
@@ -383,6 +384,40 @@ export async function runCheck(
     }
     if (linksStored > 0) console.log(`[lifecycle] ${linksStored} regulation link(s) stored`);
 
+    // "PP 20/2026 — worth a look" makes the reader do all the work: find the
+    // new rule, find the old one, read both, spot the delta. Nobody does that,
+    // so the alert gets skimmed. Research the difference and put it in the
+    // alert instead. Only for what a person will actually read, and never at
+    // the cost of the run.
+    let briefingBlock = "";
+    const worthBriefing = allFindings.filter(
+      (f) => f.relevance === "flagged" || f.relevance === "noted",
+    );
+    if (worthBriefing.length > 0) {
+      try {
+        const briefed = await briefFindings(
+          provider,
+          worthBriefing.map((finding) => {
+            const detected = detectRegulationLinks(
+              [finding.title, finding.summaryEn, finding.reasoning].filter(Boolean).join(" "),
+            )[0];
+            return {
+              regulationRef: finding.regulationRef,
+              title: finding.title,
+              url: finding.url,
+              amends: detected?.targetRef ?? null,
+              relation: detected?.relation ?? null,
+            };
+          }),
+          { customer: target.customer, profile: target.profile, jurisdiction },
+        );
+        briefingBlock = renderBriefings(briefed, lang);
+        console.log(`[briefing] ${briefed.length} of ${worthBriefing.length} finding(s) briefed`);
+      } catch {
+        // No briefing is a worse alert, not a failed run.
+      }
+    }
+
     const caveats = [...new Set([
       ...allCaveats,
       ...report.coverageCaveats,
@@ -390,6 +425,7 @@ export async function runCheck(
     ])];
     const body = [
       finalMessage,
+      briefingBlock,
       caveats.length
         ? `\n---\n${jurisdiction === "Indonesia" ? "Catatan cakupan" : "Coverage notes"}:\n${caveats.map((c) => `- ${c}`).join("\n")}`
         : "",

@@ -66,6 +66,33 @@ function recordDelivery(
  * - Breakdown of sources checked and entries parsed
  * - Prompts to open the Web GUI for deep dive / chat
  */
+/**
+ * The "what changed" section of this run's alert, trimmed for a phone.
+ *
+ * `runCheck()` researches the before/after for flagged and noted findings and
+ * writes it into `alert.body`. Reading it back here keeps one source of truth —
+ * the digest never re-derives or re-words it, so the operator and the customer
+ * cannot end up with two different accounts of the same change.
+ */
+function alertBriefingExcerpt(runId: string, limit = 1400): string {
+  const alert = db.select().from(alerts).where(eq(alerts.checkRunId, runId)).get();
+  if (!alert?.body) return "";
+  const marker = alert.body.match(/\n---\n(Rincian perubahan|What changed):\n/);
+  if (!marker?.index) return "";
+
+  const start = marker.index;
+  // Stop at the coverage notes; those are a separate section with their own
+  // audience, and the digest deliberately does not carry them.
+  const notes = alert.body.indexOf("\n---\n", start + marker[0].length);
+  const section = alert.body.slice(start, notes === -1 ? undefined : notes).trimEnd();
+
+  if (section.length <= limit) return `\n${section}`;
+  // Cut on a line boundary; a half-sentence about a duty change is worse than
+  // an obvious "read the rest on the dashboard".
+  const cut = section.lastIndexOf("\n", limit);
+  return `\n${section.slice(0, cut > 0 ? cut : limit)}\n… (selengkapnya di dashboard)`;
+}
+
 export function formatTelegramDigest(runId: string): string {
   const run = db.select().from(checkRuns).where(eq(checkRuns.id, runId)).get();
   const results = db
@@ -114,6 +141,12 @@ export function formatTelegramDigest(runId: string): string {
         lines.push(`• ${label}${item.title}`);
       }
     }
+    // The digest is what actually gets read, on a phone, once. A list of
+    // regulation numbers tells the reader nothing they can act on, so carry the
+    // before/after the run already researched. Truncated here rather than
+    // omitted: the full text is in the alert body on the dashboard.
+    const briefing = alertBriefingExcerpt(runId);
+    if (briefing) lines.push(briefing);
     lines.push("\n(Open Web GUI to inspect details or ask questions in Chat)");
   }
 
