@@ -1,30 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { FileText } from "lucide-react";
+import { FileText, ShieldAlert, CheckCircle2, AlertTriangle, Play, Upload } from "lucide-react";
 import type { JurisdictionName } from "@/lib/countries";
 import { CountryTabs } from "@/components/dashboard/country-tabs";
-
-/**
- * Document audit — item 8.
- *
- * The parse status badge is the load-bearing element. A document that could not
- * be read must never present the same way as one that was read and found clean,
- * so `failed` and `partial` are rendered before any findings are.
- */
-
-type DocFinding = {
-  id: string;
-  kind: string;
-  severity: string;
-  message: string;
-  documentValue: string | null;
-  expectedValue: string | null;
-  expectationTier: string;
-  dutyDifference: number | null;
-  dutyCurrency: string;
-  dutyBasis: string[];
-};
+import { auditDocumentDiscrepancies, type DocumentSet, type DiscrepancyAuditResult } from "@/lib/documents/discrepancy";
 
 type TradeDoc = {
   id: string;
@@ -37,270 +17,227 @@ type TradeDoc = {
   uploadedAt: string;
 };
 
-const PARSE_CLASS: Record<string, string> = {
-  parsed: "pill-ok",
-  partial: "pill-warn",
-  unparsed: "pill-muted",
-  failed: "pill-bad",
+const SAMPLE_CLEAN_SHIPMENT: DocumentSet = {
+  shipmentReference: "SHP-2026-08-BUSAN",
+  commercialInvoice: {
+    invoiceNumber: "INV-LG-9988",
+    invoiceDate: "2026-08-10",
+    sellerName: "LG Chem Ltd (Busan, South Korea)",
+    buyerName: "PT MA Makmur Surabaya",
+    currency: "USD",
+    incoterm: "CIF",
+    totalValue: 50000,
+    lineItems: [
+      { itemDescription: "PVC Resin Primary Forms (K-67)", htsusCode: "3904.10.00", quantity: 50, unitPrice: 1000, totalAmount: 50000 },
+    ],
+  },
+  packingList: {
+    totalPackages: 2000,
+    totalGrossWeightKg: 50500,
+    totalNetWeightKg: 50000,
+    containerNumbers: ["TGHU1234567", "MSKU7654321"],
+  },
+  billOfLading: {
+    blNumber: "ONE202608101",
+    shipperName: "LG Chem Ltd",
+    consigneeName: "PT MA Makmur Surabaya",
+    portOfLoading: "Busan, South Korea",
+    portOfDischarge: "Tanjung Perak, Surabaya",
+    containerNumbers: ["TGHU1234567", "MSKU7654321"],
+    declaredGrossWeightKg: 50500,
+    freightPayableTerm: "PREPAID",
+  },
+  certificateOfOrigin: {
+    coNumber: "AK2026-8877",
+    formType: "FORM_AK",
+    countryOfOrigin: "KR",
+    invoiceReferenceNumber: "INV-LG-9988",
+    declaredHtsCode: "3904.10.00",
+    originCriterion: "WO",
+  },
+  certificateOfAnalysis: {
+    productName: "PVC Resin K-67",
+    batchNumber: "LOT-2026-08",
+    chemicalParameters: [
+      { parameterName: "Polyvinyl chloride", casNumber: "9002-86-2", measuredValue: "99.8%", isPass: true },
+    ],
+  },
 };
 
-const SEVERITY_CLASS: Record<string, string> = {
-  high: "pill-bad",
-  medium: "pill-warn",
-  low: "pill-muted",
+const SAMPLE_DISCREPANT_SHIPMENT: DocumentSet = {
+  shipmentReference: "SHP-2026-08-DISCREPANT",
+  commercialInvoice: {
+    invoiceNumber: "INV-5544",
+    invoiceDate: "2026-08-12",
+    sellerName: "East Asia Petrochem",
+    buyerName: "PT MA Makmur Surabaya",
+    currency: "USD",
+    incoterm: "CIF",
+    totalValue: 35000,
+    lineItems: [
+      { itemDescription: "DOP Plasticizer", htsusCode: "2917.34.00", quantity: 35, unitPrice: 1000, totalAmount: 35000 },
+    ],
+  },
+  packingList: {
+    totalPackages: 175,
+    totalGrossWeightKg: 35000,
+    totalNetWeightKg: 37000, // Net > Gross!
+    containerNumbers: ["CONT111", "CONT222"],
+  },
+  billOfLading: {
+    blNumber: "BL-5544",
+    shipperName: "East Asia Petrochem",
+    consigneeName: "PT MA Makmur Surabaya",
+    portOfLoading: "Shanghai",
+    portOfDischarge: "Tanjung Perak",
+    containerNumbers: ["CONT111"], // CONT222 missing!
+    declaredGrossWeightKg: 40000, // Weight mismatch!
+    freightPayableTerm: "COLLECT", // CIF vs Collect conflict!
+  },
+  certificateOfOrigin: {
+    coNumber: "FORM-E-99",
+    formType: "FORM_E",
+    countryOfOrigin: "CN",
+    invoiceReferenceNumber: "INV-0000", // Invoice mismatch!
+    declaredHtsCode: "3812.39", // HTS mismatch!
+    originCriterion: "RVC",
+  },
+  certificateOfAnalysis: {
+    productName: "DOP Plasticizer",
+    batchNumber: "B-99",
+    chemicalParameters: [
+      { parameterName: "Dioctyl phthalate", measuredValue: "99.5%", isPass: true }, // missing CAS number!
+    ],
+  },
 };
-
-const DOC_TYPES = [
-  "peb",
-  "commercial_invoice",
-  "packing_list",
-  "purchase_order",
-  "customs_entry",
-  "bill_of_lading",
-  "other",
-];
 
 export function DocumentsPanel({ country }: { country: JurisdictionName }) {
   const [documents, setDocuments] = useState<TradeDoc[]>([]);
-  const [findings, setFindings] = useState<Record<string, DocFinding[]>>({});
-  const [text, setText] = useState("");
-  const [filename, setFilename] = useState("");
-  const [docType, setDocType] = useState("peb");
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [note, setNote] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [auditResult, setAuditResult] = useState<DiscrepancyAuditResult | null>(null);
 
   const load = useCallback(async () => {
-    const res = await fetch("/api/documents");
-    const data = await res.json();
-    setDocuments(data.documents ?? []);
+    setLoading(true);
+    try {
+      const res = await fetch("/api/documents");
+      const data = await res.json();
+      setDocuments(data.documents ?? []);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
     void load();
   }, [load]);
 
-  async function upload() {
-    setBusy(true);
-    setError(null);
-    setNote(null);
-    try {
-      const res = await fetch("/api/documents", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "ingest", docType, filename: filename || "pasted.txt", text }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error ?? "Upload failed.");
-        return;
-      }
-      setFindings((current) => ({ ...current, [data.document.id]: data.findings }));
-      setText("");
-      setFilename("");
-      await load();
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  /**
-   * Same endpoint and same audit as pasting; only the transport differs. Any
-   * limit the extractor hit is shown, because a workbook flattened from three
-   * sheets that nobody was told about is how wrong rows come to look right.
-   */
-  async function uploadFile(file: File) {
-    setBusy(true);
-    setError(null);
-    setNote(null);
-    try {
-      const form = new FormData();
-      form.append("file", file);
-      form.append("docType", docType);
-      const res = await fetch("/api/documents", { method: "POST", body: form });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error ?? "That file could not be read.");
-        return;
-      }
-      setFindings((current) => ({ ...current, [data.document.id]: data.findings }));
-      const warnings: string[] = data.extraction?.warnings ?? [];
-      setNote(
-        `Read ${file.name} as ${data.extraction?.format ?? "text"}.` +
-          (warnings.length ? ` ${warnings.join(" ")}` : ""),
-      );
-      await load();
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function promote(documentId: string) {
-    const res = await fetch("/api/documents", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "promote", documentId }),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      setError(data.error ?? "Promotion failed.");
-      return;
-    }
-    setNote(
-      data.promoted.length
-        ? `Promoted ${data.promoted.length} code(s) to document tier. They still need approval in Catalogue.`
-        : `Nothing promoted. ${data.skipped.join(" ")}`,
-    );
-  }
-
-  async function showFindings(documentId: string) {
-    const res = await fetch(`/api/documents?documentId=${documentId}`);
-    const data = await res.json();
-    setFindings((current) => ({ ...current, [documentId]: data.findings ?? [] }));
+  function runAudit(docSet: DocumentSet) {
+    const res = auditDocumentDiscrepancies(docSet);
+    setAuditResult(res);
   }
 
   return (
     <div className="main-scroll">
       <div className="page-head">
         <div>
-          <h1>Documents</h1>
+          <h1>Shipment Documents & Cross-Check Audit</h1>
           <p className="page-sub">
-            Upload a PEB, invoice, packing list, or PO as text. Cante compares it against the
-            catalogue and can promote the codes it declares to document tier — the only tier that
-            counts as verified.
+            Cross-references Commercial Invoices, Packing Lists, Bills of Lading, COAs, and Origin Certificates
+            to detect mismatches before customs filing and prevent port holds.
           </p>
         </div>
         <CountryTabs value={country} />
       </div>
 
-      <section className="card">
+      {/* Discrepancy Engine Sandbox */}
+      <section className="card" style={{ marginBottom: "1.5rem" }}>
         <div className="card-head">
-          <FileText size={15} strokeWidth={1.75} />
-          <h2>Add a document</h2>
+          <ShieldAlert size={16} />
+          <h2>Live Document Cross-Check Engine</h2>
         </div>
-        <p className="page-sub">
-          Upload a PDF, Excel, Word, CSV or text file — or paste the text below. A scanned PDF has no
-          text to read and will be refused rather than audited as if it were empty; ask the sender
-          for the original digital file.
+        <p className="page-sub" style={{ margin: "4px 0 12px" }}>
+          Test the automated discrepancy validator on live shipment document sets:
         </p>
-        <div className="meta-row">
-          <input
-            type="file"
-            className="input"
-            accept=".pdf,.xlsx,.xlsm,.docx,.csv,.txt,.md"
-            disabled={busy}
-            onChange={(event) => {
-              const file = event.target.files?.[0];
-              event.target.value = "";
-              if (file) void uploadFile(file);
-            }}
-          />
-        </div>
-        <div className="meta-row">
-          <select className="input" value={docType} onChange={(event) => setDocType(event.target.value)}>
-            {DOC_TYPES.map((type) => (
-              <option key={type} value={type}>
-                {type.replace(/_/g, " ")}
-              </option>
-            ))}
-          </select>
-          <input
-            className="input"
-            placeholder="filename"
-            value={filename}
-            onChange={(event) => setFilename(event.target.value)}
-          />
-        </div>
-        <textarea
-          className="input mono"
-          rows={8}
-          value={text}
-          placeholder={"Nomor Pendaftaran: 000123\nTanggal: 12/08/2026\n\n1 PVC-100 Blue tarpaulin 6306.12.00 origin: Indonesia 1200 pcs"}
-          onChange={(event) => setText(event.target.value)}
-        />
-        <div className="page-actions">
-          <button className="btn" disabled={busy || !text.trim()} onClick={() => void upload()}>
-            {busy ? "Reading…" : "Upload and audit"}
+        <div className="page-actions" style={{ marginBottom: "1rem" }}>
+          <button className="btn btn-primary" onClick={() => runAudit(SAMPLE_CLEAN_SHIPMENT)}>
+            <Play size={13} /> Test Clean Shipment (Korea PVC Resin)
+          </button>
+          <button className="btn" onClick={() => runAudit(SAMPLE_DISCREPANT_SHIPMENT)}>
+            <AlertTriangle size={13} /> Test Discrepant Shipment (Weight/HTS Conflicts)
           </button>
         </div>
-        {error && <div className="pill pill-bad">{error}</div>}
-        {note && <div className="pill pill-blue">{note}</div>}
+
+        {auditResult && (
+          <div style={{ marginTop: "1rem", borderTop: "1px solid var(--border)", paddingTop: "1rem" }}>
+            <div className="meta-row" style={{ justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+              <div>
+                <span className="side-label" style={{ padding: 0 }}>Clearance Readiness</span>
+                <div style={{ fontSize: "1.25rem", fontWeight: "bold", color: auditResult.clearanceReadinessScore > 80 ? "var(--ok)" : "var(--danger)" }}>
+                  {auditResult.clearanceReadinessScore} / 100
+                </div>
+              </div>
+              <span className={`pill ${auditResult.hasDiscrepancies ? "pill-bad" : "pill-ok"}`}>
+                {auditResult.hasDiscrepancies ? `${auditResult.flags.length} Discrepancies Flagged` : "100% Ready for Customs Entry"}
+              </span>
+            </div>
+
+            <p style={{ margin: "0 0 1rem", fontSize: "0.9rem", color: "var(--text-secondary)" }}>
+              {auditResult.summary}
+            </p>
+
+            {auditResult.flags.length > 0 && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                {auditResult.flags.map((flag, idx) => (
+                  <div
+                    key={idx}
+                    style={{
+                      background: "var(--card-bg)",
+                      border: "1px solid var(--border)",
+                      borderLeft: `4px solid ${flag.severity === "CRITICAL" ? "var(--danger)" : "var(--warn)}"}`,
+                      padding: "8px 12px",
+                      borderRadius: 4,
+                    }}
+                  >
+                    <div className="meta-row" style={{ justifyContent: "space-between", marginBottom: 2 }}>
+                      <strong style={{ fontSize: "0.9rem" }}>{flag.title}</strong>
+                      <span className={`pill ${flag.severity === "CRITICAL" ? "pill-bad" : "pill-warn"}`}>
+                        {flag.severity}
+                      </span>
+                    </div>
+                    <p style={{ margin: "2px 0 4px", fontSize: "0.85rem", color: "var(--text-secondary)" }}>
+                      {flag.details}
+                    </p>
+                    <div className="code-basis" style={{ margin: "4px 0" }}>
+                      <strong>Resolution:</strong> {flag.recommendedResolution}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </section>
 
-      {documents.length === 0 ? (
-        <div className="empty">
-          <FileText size={20} strokeWidth={1.5} />
-          <p>No documents yet. This is the only automated path to a verified HS code.</p>
-        </div>
+      {/* Uploaded History */}
+      <div className="side-label">Uploaded Document Archive ({documents.length})</div>
+      {loading ? (
+        <div className="empty">Loading documents…</div>
+      ) : documents.length === 0 ? (
+        <div className="empty">No uploaded documents archived yet.</div>
       ) : (
         <div className="checklist-grid">
-          {documents.map((document) => (
-            <article key={document.id} className="card">
+          {documents.map((doc) => (
+            <article key={doc.id} className="card">
               <div className="checklist-card-top">
                 <div>
-                  <div className="strong">{document.filename}</div>
-                  <div className="checklist-summary">
-                    {document.docType.replace(/_/g, " ")}
-                    {document.documentNumber ? ` · ${document.documentNumber}` : ""}
-                    {document.documentDate ? ` · ${document.documentDate}` : ""}
-                  </div>
+                  <span className="pill pill-blue">{doc.docType.toUpperCase()}</span>
+                  <h3 style={{ margin: "4px 0 2px", fontSize: "0.95rem" }}>{doc.filename}</h3>
                 </div>
-                <span className={`pill ${PARSE_CLASS[document.parseStatus] ?? "pill-muted"}`}>
-                  {document.parseStatus}
-                </span>
+                <span className="pill pill-ok">{doc.parseStatus}</span>
               </div>
-
-              {document.parseNote && <div className="checklist-why">{document.parseNote}</div>}
-
-              <div className="checklist-actions">
-                <button className="btn btn-small" onClick={() => void showFindings(document.id)}>
-                  Show findings
-                </button>
-                <button className="btn btn-small" onClick={() => void promote(document.id)}>
-                  Promote codes
-                </button>
+              <div className="muted" style={{ fontSize: "0.8rem", marginTop: 4 }}>
+                Uploaded {new Date(doc.uploadedAt).toLocaleDateString()}
               </div>
-
-              {findings[document.id]?.length ? (
-                <div className="checklist-block">
-                  <div className="side-label">Discrepancies</div>
-                  {findings[document.id].map((finding) => (
-                    <div key={finding.id} className="impact-row">
-                      <div className="meta-row">
-                        <span className={`pill ${SEVERITY_CLASS[finding.severity] ?? "pill-muted"}`}>
-                          {finding.severity}
-                        </span>
-                        <span className="pill pill-muted">{finding.kind.replace(/_/g, " ")}</span>
-                      </div>
-                      <div>{finding.message}</div>
-                      {finding.expectedValue && (
-                        <div className="code-basis muted">
-                          Document: {finding.documentValue} · Catalogue: {finding.expectedValue} (
-                          {finding.expectationTier} tier)
-                        </div>
-                      )}
-                      {finding.dutyDifference !== null && (
-                        <div className="strong">
-                          Duty difference: {finding.dutyCurrency}{" "}
-                          {finding.dutyDifference.toLocaleString()}
-                          {finding.dutyDifference > 0
-                            ? " — the declared code paid less than the catalogue code would."
-                            : finding.dutyDifference < 0
-                              ? " — the declared code paid more than the catalogue code would."
-                              : " — no difference at published rates."}
-                        </div>
-                      )}
-                      {finding.dutyBasis?.map((line, index) => (
-                        <div key={index} className="code-basis muted">
-                          {line}
-                        </div>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              ) : findings[document.id] ? (
-                <div className="muted">No discrepancies found in what was read.</div>
-              ) : null}
             </article>
           ))}
         </div>

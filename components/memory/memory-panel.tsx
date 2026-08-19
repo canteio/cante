@@ -99,8 +99,11 @@ export function MemoryPanel({ country }: { country: JurisdictionName }) {
       <div className="memory-main">
         <div className="page-head">
           <div>
-            <h1>Memory</h1>
-            <p>Customer facts that feed both chat and future compliance checks.</p>
+            <h1>Memory &amp; Verified Facts</h1>
+            <p className="page-sub">
+              Long-term customer knowledge base extracted automatically from chat exchanges and verified by compliance leads.
+              Directly grounds future regulatory checks, tariff exposure calculations, and license requirements.
+            </p>
           </div>
           <div className="page-actions">
             <div className="memory-counts">

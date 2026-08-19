@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Plus, Save, Trash2 } from "lucide-react";
+import { Check, Plus, Save, Trash2, Building2, ShieldCheck, Factory, FileCode } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { JurisdictionName } from "@/lib/countries";
 import { CountryTabs } from "@/components/dashboard/country-tabs";
@@ -60,104 +60,146 @@ export function ComplianceProfilePanel({ country }: { country: JurisdictionName 
     setSaving(true);
     setSaved(false);
     setError(null);
-    const response = await fetch("/api/profiles", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ country, profile: cleanDraft(draft) }),
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) setError(typeof data.error === "string" ? data.error : "Profile could not be saved.");
-    else {
-      setDraft(normalizeProfile(data.profile));
-      setSaved(true);
-      window.dispatchEvent(new Event("cante:checklist-updated"));
+    try {
+      const response = await fetch("/api/profiles", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ country, profile: cleanDraft(draft) }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        setError(typeof data.error === "string" ? data.error : "Profile could not be saved.");
+      } else {
+        setDraft(normalizeProfile(data.profile));
+        setSaved(true);
+        window.dispatchEvent(new Event("cante:checklist-updated"));
+      }
+    } catch (e: any) {
+      setError(e.message || "Failed to save profile.");
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
   }
 
-  if (country === "Indonesia") {
-    return (
-      <div className="main-scroll">
-        <div className="profile-main">
-          <div className="page-head">
-            <div>
-              <h1>Company profile</h1>
-              <p>Structured facts used to determine which rules actually apply.</p>
-            </div>
-            <CountryTabs value={country} />
-          </div>
-          <div className="empty">
-            Indonesia currently uses the seeded exporter profile plus confirmed Memory facts for
-            HS, KBLI, products, markets, and location.
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const isId = country === "Indonesia";
 
   return (
     <div className="main-scroll">
       <div className="profile-main">
         <div className="page-head">
           <div>
-            <h1>United States profile</h1>
-            <p>The evidence base for domestic, distribution, and export compliance.</p>
+            <h1>{isId ? "Indonesia Company Profile" : "United States Company Profile"}</h1>
+            <p className="page-sub">
+              {isId
+                ? "Your company identity, registered KBLI codes, factory locations, and raw materials used to evaluate Bea Cukai, INSW, and Ministry regulations."
+                : "The evidence base used to screen Federal Register, CBP 19 CFR, EPA TSCA, and US trade remedy rules."}
+            </p>
           </div>
-          <CountryTabs value={country} />
+          <div className="page-actions">
+            <button className="btn btn-primary" onClick={save} disabled={saving}>
+              {saving ? "Saving…" : saved ? <><Check size={14} /> Saved</> : <><Save size={14} /> Save Profile</>}
+            </button>
+            <CountryTabs value={country} />
+          </div>
         </div>
+
+        {error && <div className="pill pill-bad" style={{ marginBottom: "1rem" }}>{error}</div>}
 
         {loading ? (
           <div className="empty">Loading profile...</div>
         ) : (
           <div className="profile-form">
-            <ProfileSection title="Company and facilities" eyebrow="Identity">
+            {/* Identity Section */}
+            <ProfileSection
+              title="Company Identity & Facilities"
+              eyebrow="Corporate Entity"
+              description={isId ? "Legal name, NIB, and manufacturing plant locations in Indonesia." : "Legal corporate entity name and U.S. facility locations."}
+            >
               <TextField
-                label="Legal name"
+                label="Legal Entity Name"
                 value={draft.legalName}
-                placeholder="Legal entity name"
+                placeholder={isId ? "PT MA Makmur Surabaya" : "MA Plastics USA LLC"}
                 onChange={(legalName) => setDraft((current) => ({ ...current, legalName }))}
               />
               <ListField
-                label="Facilities and warehouses"
+                label={isId ? "Factory & Warehouse Locations (Kabupaten/Kota)" : "Facilities and Warehouses"}
                 values={draft.facilityAddresses}
-                placeholder="Street, city, state, ZIP - activity at site"
+                placeholder={isId ? "Jl. Rungkut Industri No. 88, Kota Surabaya, Jawa Timur" : "1200 Industrial Blvd, Houston, TX 77001"}
                 onChange={(facilityAddresses) => setDraft((current) => ({ ...current, facilityAddresses }))}
               />
+            </ProfileSection>
+
+            {/* Industry Classifications */}
+            <ProfileSection
+              title={isId ? "Business Licenses & KBLI Codes" : "Industry Classifications (NAICS)"}
+              eyebrow="Licensing"
+              description={isId ? "5-digit KBLI codes registered on OSS RBA (e.g. 22210 Barang Plastik Lembaran, 13992 Kain Rajutan)." : "6-digit North American Industry Classification System codes."}
+            >
               <CodeField
-                label="NAICS codes"
+                label={isId ? "KBLI Codes" : "NAICS Codes"}
                 values={draft.naicsCodes}
-                codePlaceholder="NAICS"
+                codePlaceholder={isId ? "e.g. 22210" : "e.g. 326113"}
                 onChange={(naicsCodes) => setDraft((current) => ({ ...current, naicsCodes }))}
               />
             </ProfileSection>
 
-            <ProfileSection title="Products and operations" eyebrow="Domestic manufacturing">
-              <ListField label="Products" values={draft.products} placeholder="Product or product family" onChange={(products) => setDraft((current) => ({ ...current, products }))} />
-              <ListField label="SKUs" values={draft.skus} placeholder="SKU or model" onChange={(skus) => setDraft((current) => ({ ...current, skus }))} />
-              <ListField label="Materials and chemicals" values={draft.materialsChemicals} placeholder="Material, chemical, or mixture" onChange={(materialsChemicals) => setDraft((current) => ({ ...current, materialsChemicals }))} />
-              <ListField label="Manufacturing processes" values={draft.manufacturingProcesses} placeholder="Process, equipment, or operation" onChange={(manufacturingProcesses) => setDraft((current) => ({ ...current, manufacturingProcesses }))} />
-              <ListField label="Waste streams" values={draft.wasteStreams} placeholder="Waste stream and known classification" onChange={(wasteStreams) => setDraft((current) => ({ ...current, wasteStreams }))} />
-              <ListField label="Regulated product flags" values={draft.regulatedProductFlags} placeholder="Consumer product, chemical, electronics, defense..." onChange={(regulatedProductFlags) => setDraft((current) => ({ ...current, regulatedProductFlags }))} />
+            {/* Products & Raw Materials */}
+            <ProfileSection
+              title="Products & Raw Materials"
+              eyebrow="Operations"
+              description="Manufactured finished products and input materials monitored for tariffs, LARTAS quotas, and substance restrictions."
+            >
+              <ListField
+                label="Manufactured Products"
+                values={draft.products}
+                placeholder={isId ? "PVC Tarpaulin Sheeting, Vinyl Coated Fabrics" : "PVC Liners, Industrial Tarps"}
+                onChange={(products) => setDraft((current) => ({ ...current, products }))}
+              />
+              <ListField
+                label="Raw Materials & Chemical Additives"
+                values={draft.materialsChemicals}
+                placeholder={isId ? "PVC Resin (K-67), DOP Plasticizer (CAS 117-81-7), Calcium Zinc Stabilizers" : "PVC Resin, DINP Plasticizer, DecaBDE"}
+                onChange={(materialsChemicals) => setDraft((current) => ({ ...current, materialsChemicals }))}
+              />
+              <ListField
+                label="Manufacturing Processes"
+                values={draft.manufacturingProcesses}
+                placeholder="Calendering, Extrusion Coating, High-Frequency Welding"
+                onChange={(manufacturingProcesses) => setDraft((current) => ({ ...current, manufacturingProcesses }))}
+              />
+              <ListField
+                label="Waste Streams (B3 / EPA)"
+                values={draft.wasteStreams}
+                placeholder={isId ? "Sludge IPAL, Oli Bekas B3, Scrap Plastik PVC" : "Wastewater sludge, Spent solvents"}
+                onChange={(wasteStreams) => setDraft((current) => ({ ...current, wasteStreams }))}
+              />
             </ProfileSection>
 
-            <ProfileSection title="Distribution" eyebrow="Where products go">
-              <ListField label="Distribution states" values={draft.distributionStates} placeholder="State" onChange={(distributionStates) => setDraft((current) => ({ ...current, distributionStates }))} />
-              <ListField label="Labels and marketing claims" values={draft.labelsClaims} placeholder="Made in USA, recyclable, performance, safety..." onChange={(labelsClaims) => setDraft((current) => ({ ...current, labelsClaims }))} />
+            {/* Tariff & Trade Classifications */}
+            <ProfileSection
+              title={isId ? "HS Codes & Trade Lanes" : "Harmonized Tariff (HTSUS) & Export Controls"}
+              eyebrow="Customs & Tariffs"
+              description="Tariff lines used to calculate exact import taxes (Bea Masuk, PPN, PPh 22), US Section 301 tariffs, and export controls."
+            >
+              <CodeField
+                label={isId ? "Raw Material HS Codes (BTKI)" : "HTSUS / Schedule B Codes"}
+                values={draft.htsScheduleBCodes}
+                codePlaceholder="e.g. 3904.10.00"
+                onChange={(htsScheduleBCodes) => setDraft((current) => ({ ...current, htsScheduleBCodes }))}
+              />
+              <ListField
+                label="Import / Sourcing Origin Countries"
+                values={draft.exportCountries}
+                placeholder="South Korea (KR), China (CN), Taiwan (TW), United States (US)"
+                onChange={(exportCountries) => setDraft((current) => ({ ...current, exportCountries }))}
+              />
+              <ListField
+                label="Regulatory Certifications & Standards"
+                values={draft.regulatedProductFlags}
+                placeholder={isId ? "SNI Wajib, TKDN Kemenperin, Halal, KLHK Non-B3" : "EPA TSCA Section 8, CA Prop 65, OSHA SDS"}
+                onChange={(regulatedProductFlags) => setDraft((current) => ({ ...current, regulatedProductFlags }))}
+              />
             </ProfileSection>
-
-            <ProfileSection title="Exports" eyebrow="Trade controls">
-              <CodeField label="HTS and Schedule B" values={draft.htsScheduleBCodes} codePlaceholder="HTS / Schedule B" onChange={(htsScheduleBCodes) => setDraft((current) => ({ ...current, htsScheduleBCodes }))} />
-              <CodeField label="ECCN or EAR99" values={draft.exportClassifications} codePlaceholder="ECCN / EAR99" onChange={(exportClassifications) => setDraft((current) => ({ ...current, exportClassifications }))} />
-              <ListField label="Export countries" values={draft.exportCountries} placeholder="Destination country" onChange={(exportCountries) => setDraft((current) => ({ ...current, exportCountries }))} />
-            </ProfileSection>
-
-            <div className="profile-savebar">
-              <div>{error ? <span className="form-error">{error}</span> : saved ? <span className="form-saved"><Check size={13} /> Saved and checklist refreshed</span> : null}</div>
-              <button className="btn" onClick={save} disabled={saving}>
-                <Save size={14} />
-                {saving ? "Saving..." : "Save profile"}
-              </button>
-            </div>
           </div>
         )}
       </div>
@@ -165,30 +207,221 @@ export function ComplianceProfilePanel({ country }: { country: JurisdictionName 
   );
 }
 
-function ProfileSection({ title, eyebrow, children }: { title: string; eyebrow: string; children: React.ReactNode }) {
-  return <section className="profile-section"><div className="profile-section-head"><span>{eyebrow}</span><h2>{title}</h2></div><div className="profile-fields">{children}</div></section>;
+function ProfileSection({
+  title,
+  eyebrow,
+  description,
+  children,
+}: {
+  title: string;
+  eyebrow: string;
+  description?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="card">
+      <div className="card-head">
+        <div>
+          <span className="side-label" style={{ padding: 0 }}>{eyebrow}</span>
+          <h2 style={{ margin: "2px 0 0" }}>{title}</h2>
+          {description && <p className="page-sub" style={{ margin: "4px 0 0" }}>{description}</p>}
+        </div>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginTop: "1rem" }}>
+        {children}
+      </div>
+    </section>
+  );
 }
 
-function TextField({ label, value, placeholder, onChange }: { label: string; value: string; placeholder: string; onChange: (value: string) => void }) {
-  return <label className="profile-field"><span>{label}</span><input value={value} placeholder={placeholder} onChange={(event) => onChange(event.target.value)} /></label>;
+function TextField({
+  label,
+  value,
+  placeholder,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  placeholder: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div>
+      <label className="side-label" style={{ padding: 0, marginBottom: 4, display: "block" }}>{label}</label>
+      <input
+        className="input"
+        type="text"
+        value={value}
+        placeholder={placeholder}
+        onChange={(event) => onChange(event.target.value)}
+      />
+    </div>
+  );
 }
 
-function ListField({ label, values, placeholder, onChange }: { label: string; values: string[]; placeholder: string; onChange: (values: string[]) => void }) {
-  function update(index: number, value: string) { onChange(values.map((entry, entryIndex) => entryIndex === index ? value : entry)); }
-  return <div className="profile-field"><span>{label}</span><div className="profile-list">{values.map((value, index) => <div className="profile-list-row" key={`${label}-${index}`}><input value={value} placeholder={placeholder} onChange={(event) => update(index, event.target.value)} /><button type="button" className="icon-btn subtle" aria-label={`Remove ${label} row`} onClick={() => onChange(values.filter((_, entryIndex) => entryIndex !== index))}><Trash2 size={13} /></button></div>)}<button type="button" className="add-row" onClick={() => onChange([...values, ""])}><Plus size={13} /> Add</button></div></div>;
+function ListField({
+  label,
+  values,
+  placeholder,
+  onChange,
+}: {
+  label: string;
+  values: string[];
+  placeholder: string;
+  onChange: (values: string[]) => void;
+}) {
+  const [draft, setDraft] = useState("");
+
+  function append() {
+    const trimmed = draft.trim();
+    if (!trimmed) return;
+    onChange([...values, trimmed]);
+    setDraft("");
+  }
+
+  return (
+    <div>
+      <label className="side-label" style={{ padding: 0, marginBottom: 4, display: "block" }}>{label}</label>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: values.length ? "0.5rem" : 0 }}>
+        {values.map((item, index) => (
+          <span key={index} className="pill pill-muted" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            {item}
+            <button
+              type="button"
+              style={{ background: "none", border: "none", cursor: "pointer", padding: 0, color: "var(--danger)" }}
+              onClick={() => onChange(values.filter((_, i) => i !== index))}
+            >
+              ×
+            </button>
+          </span>
+        ))}
+      </div>
+      <div style={{ display: "flex", gap: "0.5rem" }}>
+        <input
+          className="input"
+          type="text"
+          value={draft}
+          placeholder={placeholder}
+          onChange={(event) => setDraft(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              append();
+            }
+          }}
+        />
+        <button type="button" className="btn btn-small" onClick={append}>
+          <Plus size={14} /> Add
+        </button>
+      </div>
+    </div>
+  );
 }
 
-function CodeField({ label, values, codePlaceholder, onChange }: { label: string; values: CodeRow[]; codePlaceholder: string; onChange: (values: CodeRow[]) => void }) {
-  function update(index: number, patch: Partial<CodeRow>) { onChange(values.map((entry, entryIndex) => entryIndex === index ? { ...entry, ...patch } : entry)); }
-  return <div className="profile-field"><span>{label}</span><div className="profile-list">{values.map((value, index) => <div className="profile-code-row" key={`${label}-${index}`}><input value={value.code} placeholder={codePlaceholder} onChange={(event) => update(index, { code: event.target.value })} /><input value={value.basis} placeholder="Evidence or classification basis" onChange={(event) => update(index, { basis: event.target.value })} /><label className="confirm-code"><input type="checkbox" checked={value.confirmed} onChange={(event) => update(index, { confirmed: event.target.checked })} /> Confirmed</label><button type="button" className="icon-btn subtle" aria-label={`Remove ${label} row`} onClick={() => onChange(values.filter((_, entryIndex) => entryIndex !== index))}><Trash2 size={13} /></button></div>)}<button type="button" className="add-row" onClick={() => onChange([...values, { code: "", basis: "", confirmed: false }])}><Plus size={13} /> Add</button></div></div>;
+function CodeField({
+  label,
+  values,
+  codePlaceholder,
+  onChange,
+}: {
+  label: string;
+  values: CodeRow[];
+  codePlaceholder: string;
+  onChange: (values: CodeRow[]) => void;
+}) {
+  const [code, setCode] = useState("");
+  const [basis, setBasis] = useState("");
+
+  function append() {
+    const trimmedCode = code.trim();
+    if (!trimmedCode) return;
+    onChange([...values, { code: trimmedCode, basis: basis.trim() || "User stated in profile", confirmed: true }]);
+    setCode("");
+    setBasis("");
+  }
+
+  return (
+    <div>
+      <label className="side-label" style={{ padding: 0, marginBottom: 4, display: "block" }}>{label}</label>
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem", marginBottom: values.length ? "0.5rem" : 0 }}>
+        {values.map((item, index) => (
+          <div key={index} className="meta-row" style={{ justifyContent: "space-between", background: "var(--card-bg)", padding: "4px 8px", borderRadius: 4, border: "1px solid var(--border)" }}>
+            <span className="mono strong" style={{ fontSize: "0.85rem" }}>{item.code}</span>
+            <span className="muted" style={{ fontSize: "0.8rem" }}>{item.basis}</span>
+            <button
+              type="button"
+              style={{ background: "none", border: "none", cursor: "pointer", padding: 0, color: "var(--danger)" }}
+              onClick={() => onChange(values.filter((_, i) => i !== index))}
+            >
+              <Trash2 size={13} />
+            </button>
+          </div>
+        ))}
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "140px 1fr auto", gap: "0.5rem" }}>
+        <input
+          className="input mono"
+          type="text"
+          value={code}
+          placeholder={codePlaceholder}
+          onChange={(e) => setCode(e.target.value)}
+        />
+        <input
+          className="input"
+          type="text"
+          value={basis}
+          placeholder="Description or classification basis"
+          onChange={(e) => setBasis(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              append();
+            }
+          }}
+        />
+        <button type="button" className="btn btn-small" onClick={append}>
+          <Plus size={14} /> Add
+        </button>
+      </div>
+    </div>
+  );
 }
 
-function cleanDraft(draft: ProfileDraft): ProfileDraft {
-  const strings = (values: string[]) => values.map((value) => value.trim()).filter(Boolean);
-  const codes = (values: CodeRow[]) => values.map((value) => ({ ...value, code: value.code.trim(), basis: value.basis.trim() || "entered in profile" })).filter((value) => value.code);
-  return { ...draft, legalName: draft.legalName.trim(), facilityAddresses: strings(draft.facilityAddresses), naicsCodes: codes(draft.naicsCodes), products: strings(draft.products), skus: strings(draft.skus), materialsChemicals: strings(draft.materialsChemicals), manufacturingProcesses: strings(draft.manufacturingProcesses), wasteStreams: strings(draft.wasteStreams), distributionStates: strings(draft.distributionStates), labelsClaims: strings(draft.labelsClaims), htsScheduleBCodes: codes(draft.htsScheduleBCodes), exportClassifications: codes(draft.exportClassifications), exportCountries: strings(draft.exportCountries), regulatedProductFlags: strings(draft.regulatedProductFlags) };
+function normalizeProfile(profile: any): ProfileDraft {
+  if (!profile || typeof profile !== "object") return EMPTY;
+  return {
+    legalName: profile.legalName ?? "",
+    facilityAddresses: Array.isArray(profile.facilityAddresses) ? profile.facilityAddresses : [],
+    naicsCodes: Array.isArray(profile.naicsCodes) ? profile.naicsCodes : [],
+    products: Array.isArray(profile.products) ? profile.products : [],
+    skus: Array.isArray(profile.skus) ? profile.skus : [],
+    materialsChemicals: Array.isArray(profile.materialsChemicals) ? profile.materialsChemicals : [],
+    manufacturingProcesses: Array.isArray(profile.manufacturingProcesses) ? profile.manufacturingProcesses : [],
+    wasteStreams: Array.isArray(profile.wasteStreams) ? profile.wasteStreams : [],
+    distributionStates: Array.isArray(profile.distributionStates) ? profile.distributionStates : [],
+    labelsClaims: Array.isArray(profile.labelsClaims) ? profile.labelsClaims : [],
+    htsScheduleBCodes: Array.isArray(profile.htsScheduleBCodes) ? profile.htsScheduleBCodes : [],
+    exportClassifications: Array.isArray(profile.exportClassifications) ? profile.exportClassifications : [],
+    exportCountries: Array.isArray(profile.exportCountries) ? profile.exportCountries : [],
+    regulatedProductFlags: Array.isArray(profile.regulatedProductFlags) ? profile.regulatedProductFlags : [],
+  };
 }
 
-function normalizeProfile(profile: Partial<ProfileDraft> | null | undefined): ProfileDraft {
-  return { ...EMPTY, ...(profile ?? {}), legalName: profile?.legalName ?? "" };
+function cleanDraft(draft: ProfileDraft): Record<string, unknown> {
+  return {
+    legalName: draft.legalName || null,
+    facilityAddresses: draft.facilityAddresses,
+    naicsCodes: draft.naicsCodes,
+    products: draft.products,
+    skus: draft.skus,
+    materialsChemicals: draft.materialsChemicals,
+    manufacturingProcesses: draft.manufacturingProcesses,
+    wasteStreams: draft.wasteStreams,
+    distributionStates: draft.distributionStates,
+    labelsClaims: draft.labelsClaims,
+    htsScheduleBCodes: draft.htsScheduleBCodes,
+    exportClassifications: draft.exportClassifications,
+    exportCountries: draft.exportCountries,
+    regulatedProductFlags: draft.regulatedProductFlags,
+  };
 }

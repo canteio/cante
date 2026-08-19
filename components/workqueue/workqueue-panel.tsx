@@ -134,23 +134,23 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
     <div className="main-scroll">
       <div className="page-head">
         <div>
-          <h1>Work queue</h1>
+          <h1>Action Work Queue &amp; Broker Dispatch</h1>
           <p className="page-sub">
-            Findings the monitor raised, what has been done about them, and what they are estimated
-            to cost. Every figure is shown with the assumptions behind it.
+            Flagged regulatory changes affecting your specific products and materials, financial exposure estimates,
+            and 1-click communication drafts for your customs broker (PPJK), operations team, or foreign suppliers.
           </p>
         </div>
         <CountryTabs value={country} />
       </div>
 
-      <div className="meta-row">
+      <div className="meta-row" style={{ flexWrap: "wrap", gap: "0.5rem" }}>
         {Object.entries(summary).map(([state, count]) => (
           <span key={state} className={`pill ${STATE_CLASS[state] ?? "pill-muted"}`}>
             {state.replace(/_/g, " ")}: {count}
           </span>
         ))}
         <button className="btn btn-small" onClick={() => setIncludeResolved((value) => !value)}>
-          {includeResolved ? "Hide resolved" : "Show resolved"}
+          {includeResolved ? "Hide Resolved Tasks" : "Show All (Including Resolved)"}
         </button>
       </div>
 

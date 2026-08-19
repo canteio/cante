@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, CheckCircle2, CircleHelp, RefreshCw } from "lucide-react";
+import { AlertTriangle, CheckCircle2, CircleHelp, RefreshCw, Filter, Check, Clock } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import type { JurisdictionName } from "@/lib/countries";
 import { CountryTabs } from "@/components/dashboard/country-tabs";
@@ -37,46 +37,47 @@ const STATUS_CLASS: Record<string, string> = {
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
-  kbli: "KBLI",
-  national: "National law",
-  oss: "OSS",
-  sni: "SNI",
-  tax_customs: "Tax & customs",
-  trade: "Trade",
-  regional: "Regional",
-  document: "Documents",
-  memory: "Memory",
-  other: "Other",
-  business: "Business",
-  product: "Product",
-  environment: "Environment",
-  safety: "Workplace safety",
-  labeling: "Labels and claims",
-  distribution: "Distribution",
-  export: "Export controls",
+  all: "All Obligations",
+  tax_customs: "Tax & Customs",
+  kbli: "KBLI & Licensing",
+  oss: "OSS RBA",
+  trade: "Trade & Quotas",
+  sni: "SNI Standards",
+  environment: "Environmental (DLH/KLHK)",
+  safety: "Workplace Safety (K3)",
+  national: "National Regulations",
+  regional: "Regional / Local Perda",
+  export: "Export Controls",
 };
 
 export function ChecklistPanel({ country }: { country: JurisdictionName }) {
   const [items, setItems] = useState<ChecklistItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string>("all");
 
   async function load() {
     setLoading(true);
-    const data = await fetch(`/api/checklist?country=${encodeURIComponent(country)}`).then((r) => r.json());
-    setItems(data.items ?? []);
-    setLoading(false);
+    try {
+      const data = await fetch(`/api/checklist?country=${encodeURIComponent(country)}`).then((r) => r.json());
+      setItems(data.items ?? []);
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function refresh() {
     setRefreshing(true);
-    const data = await fetch("/api/checklist", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ country }),
-    }).then((r) => r.json());
-    setItems(data.items ?? []);
-    setRefreshing(false);
+    try {
+      const data = await fetch("/api/checklist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ country }),
+      }).then((r) => r.json());
+      setItems(data.items ?? []);
+    } finally {
+      setRefreshing(false);
+    }
   }
 
   async function setStatus(item: ChecklistItem, status: string) {
@@ -96,14 +97,27 @@ export function ChecklistPanel({ country }: { country: JurisdictionName }) {
     return () => window.removeEventListener("cante:checklist-updated", onChanged);
   }, [country]);
 
+  const categories = useMemo(() => {
+    const cats = new Set<string>(["all"]);
+    for (const item of items) {
+      if (item.category) cats.add(item.category);
+    }
+    return Array.from(cats);
+  }, [items]);
+
+  const filteredItems = useMemo(() => {
+    if (activeCategory === "all") return items;
+    return items.filter((i) => i.category === activeCategory);
+  }, [items, activeCategory]);
+
   const counts = useMemo(() => {
     const closed = ["completed", "not_required", "verified", "not_applicable"];
     const open = items.filter((item) => !closed.includes(item.status)).length;
     const high = items.filter(
       (item) => item.priority === "high" && !closed.includes(item.status),
     ).length;
-    const verified = items.filter((item) => item.confidence === "verified").length;
-    return { open, high, verified };
+    const completed = items.filter((item) => closed.includes(item.status)).length;
+    return { open, high, completed };
   }, [items]);
 
   return (
@@ -111,31 +125,51 @@ export function ChecklistPanel({ country }: { country: JurisdictionName }) {
       <div className="checklist-main">
         <div className="page-head">
           <div>
-            <h1>Checklist</h1>
-            <p>Living compliance tasks generated from customer profile, memory, and source coverage.</p>
+            <h1>Compliance Checklist & Permits</h1>
+            <p className="page-sub">
+              Mandatory legal obligations, operating permits, and certifications required to clear customs,
+              prevent factory fines, and maintain full statutory compliance.
+            </p>
           </div>
           <div className="page-actions">
             <button className="btn" onClick={refresh} disabled={refreshing}>
               <RefreshCw size={14} className={refreshing ? "spin" : ""} />
-              Refresh
+              {refreshing ? "Recalculating…" : "Recalculate"}
             </button>
             <CountryTabs value={country} />
           </div>
         </div>
 
+        {/* Summary Row */}
         <div className="checklist-summary">
-          <SummaryCell label="Open" value={counts.open} tone="warn" />
-          <SummaryCell label="High priority" value={counts.high} tone="bad" />
-          <SummaryCell label="Verified" value={counts.verified} tone="ok" />
+          <SummaryCell label="Action Required" value={counts.open} tone="warn" />
+          <SummaryCell label="High Priority Gaps" value={counts.high} tone="bad" />
+          <SummaryCell label="Fulfilled & Verified" value={counts.completed} tone="ok" />
+        </div>
+
+        {/* Category Filters */}
+        <div className="meta-row" style={{ marginTop: "1rem", marginBottom: "0.5rem", flexWrap: "wrap" }}>
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              className={`pill ${activeCategory === cat ? "pill-blue" : "pill-muted"}`}
+              style={{ cursor: "pointer", border: "none", padding: "6px 12px" }}
+              onClick={() => setActiveCategory(cat)}
+            >
+              {CATEGORY_LABELS[cat] ?? cat.replace(/_/g, " ")} (
+              {cat === "all" ? items.length : items.filter((i) => i.category === cat).length}
+              )
+            </button>
+          ))}
         </div>
 
         {loading ? (
-          <div className="empty">Loading checklist...</div>
-        ) : items.length === 0 ? (
-          <div className="empty">No checklist rows yet. Add a customer and refresh.</div>
+          <div className="empty">Loading checklist…</div>
+        ) : filteredItems.length === 0 ? (
+          <div className="empty">No checklist rows for this filter.</div>
         ) : (
           <div className="checklist-grid">
-            {items.map((item) => (
+            {filteredItems.map((item) => (
               <article
                 key={item.id}
                 className={`checklist-card priority-${item.priority}`}
@@ -144,56 +178,78 @@ export function ChecklistPanel({ country }: { country: JurisdictionName }) {
                 <div className="checklist-card-top">
                   <div>
                     <span className="checklist-category">
-                      {CATEGORY_LABELS[item.category] ?? item.category.replace("_", " ")}
+                      {CATEGORY_LABELS[item.category] ?? item.category.replace(/_/g, " ")}
                     </span>
-                    <h2>{item.title}</h2>
+                    <h2 style={{ fontSize: "1rem", marginTop: 2 }}>{item.title}</h2>
                   </div>
                   <span className={`pill ${STATUS_CLASS[item.status] ?? "pill-muted"}`}>
-                    {item.status.replace("_", " ")}
+                    {item.status.replace(/_/g, " ")}
                   </span>
                 </div>
 
-                {item.whyApplies && <p className="checklist-why">{item.whyApplies}</p>}
-
-                <div className="checklist-meta-row">
-                  <span className="pill pill-muted">{item.priority} priority</span>
-                  <span className="pill pill-muted">{item.sourceHealth.replace("_", " ")}</span>
-                  <span className="pill pill-muted">{item.confidence}</span>
-                </div>
-
-                {item.linkedFacts.length > 0 && (
-                  <div className="checklist-block">
-                    <strong>Facts</strong>
-                    {item.linkedFacts.slice(0, 4).map((fact) => (
-                      <span key={fact}>{fact}</span>
-                    ))}
-                  </div>
-                )}
-
-                {item.openQuestions.length > 0 && (
-                  <div className="checklist-block checklist-questions">
-                    <strong>Open questions</strong>
-                    {item.openQuestions.map((question) => (
-                      <span key={question}>{question}</span>
-                    ))}
+                {item.whyApplies && (
+                  <div style={{ background: "var(--card-bg)", padding: "8px 10px", borderRadius: 4, margin: "8px 0", borderLeft: "3px solid var(--accent)" }}>
+                    <div className="side-label" style={{ padding: 0, marginBottom: 2 }}>Legal Rationale</div>
+                    <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-secondary)" }}>{item.whyApplies}</p>
                   </div>
                 )}
 
                 {item.evidenceRequired && (
-                  <div className="checklist-evidence">
+                  <div className="checklist-evidence" style={{ margin: "8px 0" }}>
                     <CircleHelp size={14} />
-                    <span>{item.evidenceRequired}</span>
+                    <span><strong>Required Evidence:</strong> {item.evidenceRequired}</span>
                   </div>
                 )}
 
-                <div className="checklist-actions">
-                  <button className="btn" onClick={() => setStatus(item, "completed")}>
+                {item.linkedFacts.length > 0 && (
+                  <div className="checklist-block" style={{ margin: "8px 0", maxWidth: "100%" }}>
+                    <div className="side-label" style={{ padding: 0, marginBottom: 4 }}>Triggered by Profile Data</div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                      {item.linkedFacts.map((fact, idx) => (
+                        <div
+                          key={idx}
+                          style={{
+                            fontSize: "0.75rem",
+                            color: "var(--text-secondary)",
+                            background: "var(--app-surface-active)",
+                            border: "1px solid var(--border)",
+                            borderRadius: 6,
+                            padding: "5px 8px",
+                            wordBreak: "break-word",
+                            whiteSpace: "normal",
+                            lineHeight: 1.35,
+                          }}
+                        >
+                          {fact}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="checklist-actions" style={{ marginTop: "1rem", paddingTop: "0.5rem", borderTop: "1px solid var(--border)" }}>
+                  <button
+                    className="btn btn-small"
+                    style={{ color: "var(--ok)" }}
+                    onClick={() => setStatus(item, "completed")}
+                  >
                     <CheckCircle2 size={13} />
-                    Complete
+                    Mark Fulfilled
                   </button>
-                  <button className="btn" onClick={() => setStatus(item, "needs_review")}>
-                    <AlertTriangle size={13} />
-                    Review
+                  <button
+                    className="btn btn-small"
+                    style={{ color: "var(--warn)" }}
+                    onClick={() => setStatus(item, "needs_review")}
+                  >
+                    <Clock size={13} />
+                    Needs Review
+                  </button>
+                  <button
+                    className="btn btn-small"
+                    style={{ color: "var(--text-muted)" }}
+                    onClick={() => setStatus(item, "not_applicable")}
+                  >
+                    N/A
                   </button>
                 </div>
               </article>

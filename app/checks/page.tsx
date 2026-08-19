@@ -21,8 +21,10 @@ export default async function ChecksPage({ searchParams }: { searchParams: Promi
           <div className="main-inner">
             <div className="page-head">
               <div>
-                <h1>Checks</h1>
-                <p>Every run, and what each source actually did.</p>
+                <h1>Daily Checks &amp; Regulatory Feeds</h1>
+                <p className="page-sub">
+                  Automated monitoring across official government gazettes (JDIH, INSW, Federal Register, eCFR, and Trade.gov CSL) to detect amendments affecting your operations.
+                </p>
               </div>
               <div className="page-actions">
                 <CountryTabs value={jurisdiction} />
