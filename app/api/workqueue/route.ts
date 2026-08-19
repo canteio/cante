@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import { findings } from "@/lib/db/schema";
-import { getDefaultCustomerId } from "@/lib/db/queries";
+import { getCustomerWithProfile, getDefaultCustomerId } from "@/lib/db/queries";
 import {
   listWorkQueue,
   transition,
@@ -15,16 +15,17 @@ import {
   listImpactForFinding,
   storeImpact,
 } from "@/lib/impact/assess";
+import { generateActionDrafts } from "@/lib/workflow/draft";
+import { normalizeJurisdiction } from "@/lib/countries";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
- * The action workflow (item 4) joined to impact (item 5).
+ * The action workflow (item 4) joined to impact (item 5) and action drafts.
  *
  * They are served together because that is how the question is actually asked:
- * "what needs doing, and how much does it matter". Impact is attached
- * per-finding so a queue row carries its own exposure figures and their basis.
+ * "what needs doing, how much does it matter, and what do I say to my broker/supplier".
  */
 
 export async function GET(request: Request) {
@@ -32,10 +33,22 @@ export async function GET(request: Request) {
   const customerId = url.searchParams.get("customerId") ?? (await getDefaultCustomerId());
   if (!customerId) return Response.json({ queue: [], summary: {} });
 
+  const jurisdiction = normalizeJurisdiction(url.searchParams.get("country"));
+  const target = await getCustomerWithProfile(customerId);
   const includeResolved = url.searchParams.get("includeResolved") === "true";
   const queue = listWorkQueue(customerId, { includeResolved }).map((row) => ({
     ...row,
     impact: listImpactForFinding(row.finding.id),
+    drafts: generateActionDrafts(
+      {
+        customerName: target?.customer.name ?? "Customer",
+        productDescription: target?.profile.productDescription ?? "Industrial Manufacturing",
+        regulationRef: row.finding.regulationRef ?? row.finding.title,
+        title: row.finding.title,
+        sideOfTrade: (target?.profile.sideOfTrade as any) ?? "import",
+      },
+      jurisdiction,
+    ),
   }));
 
   return Response.json({ queue, summary: workQueueSummary(customerId) });

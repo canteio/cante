@@ -573,6 +573,40 @@ The block tells the model that memory is database-backed and automatic, and
 forbids mentioning file tools or agent internals. Keep that pairing in mind —
 denying a tool changes what the model *says*, not just what it can do.
 
+### Trade Compliance Action Suite & Sourcing Architecture (added 19 Aug 2026)
+
+**1. Customer Profile Shift & Sourcing Reality (`config/customer.json`)**
+MA is configured as `side_of_trade: "import"` — an industrial manufacturer that imports raw material polymers and chemicals (PVC resin `3904.10`, DOP plasticizer `2917.34`, stabilizers `3812.39`, coated textiles `5903.10`), buys local domestic inputs (fillers, domestic additives, packaging), manufactures finished goods in Surabaya, and sells domestically.
+- **PEB Parked:** PEB (Pemberitahuan Ekspor Barang) export declaration logic is preserved in code and safely parked until international export lanes activate.
+- **Domestic + Import Coexistence:** The engine evaluates both import rules (INSW LARTAS, PI quotas, LS inspection, B3 exemptions) on foreign inputs, and domestic factory rules (Surabaya DLH wastewater, UKL-UPL, K3 chemical safety, Faktur Pajak PPN 11%, Kemenperin TKDN local content scoring) on local operations.
+
+**2. INSW / NTR (National Tariff Repository) & LARTAS (`lib/tariff/insw.ts`)**
+Maps BTKI / HS codes to authoritative duty rates and restrictions:
+- **Taxes & Tariffs:** Bea Masuk (BM MFN and FTA preferential rates), PPN (11%), PPh Pasal 22 Import (2.5% with API / 7.5% without API), and Bea Keluar (BK).
+- **LARTAS Restrictions:** PI TPT, PI B2 (Bahan Berbahaya), Laporan Surveyor (LS Import), Surat Pengecualian B3 / KLHK non-hazardous letters, and Border vs Post-Border inspection tracking.
+- **Import Tax Calculator:** Computes exact landed tax exposure:
+  $$\text{Bea Masuk} = \text{CIF} \times \text{BM}\%$$
+  $$\text{Nilai Impor} = \text{CIF} + \text{Bea Masuk}$$
+  $$\text{PPN} = \text{Nilai Impor} \times 11\%$$
+  $$\text{PPh 22} = \text{Nilai Impor} \times 2.5\% \text{ (or } 7.5\%\text{)}$$
+  $$\text{Total Pajak Impor} = \text{BM} + \text{PPN} + \text{PPh 22}$$
+
+**3. Automated Action Drafter (`lib/workflow/draft.ts`)**
+Generates 3 communication drafts for any flagged finding or regulatory change:
+- **📱 PPJK (Customs Broker) WhatsApp Draft:** Natural Bahasa Indonesia message citing regulation reference, HS code, and specific operational verification questions (PI quota validity, surveyor inspection at port of origin, PIB billing adjustments).
+- **📋 Internal Ops Checklist (No PPJK):** Step-by-step checklist for factories managing clearance directly without a broker (verifying OSS/INSW quota balance, supplier technical document readiness before vessel departure, and customs billing).
+- **✉️ Foreign Supplier Inquiry:** Formal English inquiry requesting updated Certificate of Analysis (COA), Certificate of Origin (Form E/AK/D), Non-B3 statement, or SDS with chemical CAS numbers.
+
+**4. US Trade Controls & Remedies (`lib/screening/us-trade-controls.ts`)**
+Evaluates US shipments against:
+- **Section 301 / 232:** Additional 7.5% - 25% China tariffs on polymers, textiles, and chemicals.
+- **AD/CVD Scope:** Antidumping and countervailing duty orders on PVC sheeting, vinyl flooring, and polyester yarns from East/Southeast Asia.
+- **UFLPA:** Rebuttable presumption forced labor screening on PVC polymers and synthetic textile supply chains.
+- **PGA:** EPA TSCA Section 6/13 positive certification statements and CPSC flammability compliance.
+
+**5. Work Queue UI Integration (`components/workqueue/workqueue-panel.tsx`, `app/api/workqueue/route.ts`)**
+- Added 1-click copy buttons (`📱 Copy PPJK WhatsApp`, `📋 Copy Ops Checklist`, `✉️ Copy Supplier Inquiry`) to each finding card in the work queue.
+
 ### Setting it up
 
 Secrets live in **`.env`**, which is gitignored. `scripts/load-env.ts` is

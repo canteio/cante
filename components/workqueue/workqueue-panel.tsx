@@ -36,6 +36,11 @@ type QueueRow = {
   overdue: boolean;
   action: { assignee: string | null; forwardedTo: string | null; dueAt: string | null; brokerDecision: string | null; note: string | null } | null;
   impact: Impact[];
+  drafts?: {
+    brokerDraft: { recipient: string; channel: string; subject?: string; body: string };
+    internalOpsDraft: { title: string; checklist: string[]; body: string };
+    supplierDraft: { recipient: string; subject: string; body: string };
+  };
 };
 
 const STATE_CLASS: Record<string, string> = {
@@ -61,14 +66,22 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
   const [includeResolved, setIncludeResolved] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
+  const copyDraft = (key: string, text: string) => {
+    void navigator.clipboard.writeText(text);
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(null), 2000);
+  };
+
   const load = useCallback(async () => {
     setLoading(true);
-    const res = await fetch(`/api/workqueue?includeResolved=${includeResolved}`);
+    const res = await fetch(`/api/workqueue?includeResolved=${includeResolved}&country=${encodeURIComponent(country)}`);
     const data = await res.json();
     setQueue(data.queue ?? []);
     setSummary(data.summary ?? {});
     setLoading(false);
-  }, [includeResolved]);
+  }, [includeResolved, country]);
 
   useEffect(() => {
     void load();
@@ -251,7 +264,31 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
                     </div>
                   ))
                 )}
-              </div>
+              {row.drafts && (
+                <div className="checklist-block">
+                  <div className="side-label">Action Drafts</div>
+                  <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginTop: "0.25rem" }}>
+                    <button
+                      className="btn btn-small"
+                      onClick={() => copyDraft(`ppjk-${row.finding.id}`, row.drafts!.brokerDraft.body)}
+                    >
+                      {copiedKey === `ppjk-${row.finding.id}` ? "✓ Copied PPJK Draft!" : "📱 Copy PPJK WhatsApp"}
+                    </button>
+                    <button
+                      className="btn btn-small"
+                      onClick={() => copyDraft(`ops-${row.finding.id}`, row.drafts!.internalOpsDraft.body)}
+                    >
+                      {copiedKey === `ops-${row.finding.id}` ? "✓ Copied Ops Checklist!" : "📋 Copy Ops Checklist"}
+                    </button>
+                    <button
+                      className="btn btn-small"
+                      onClick={() => copyDraft(`sup-${row.finding.id}`, row.drafts!.supplierDraft.body)}
+                    >
+                      {copiedKey === `sup-${row.finding.id}` ? "✓ Copied Supplier Inquiry!" : "✉️ Copy Supplier Inquiry"}
+                    </button>
+                  </div>
+                </div>
+              )}
 
               <div className="checklist-actions">
                 <button className="btn btn-small" onClick={() => void act(row.finding.id, "acknowledged")}>

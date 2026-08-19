@@ -91,11 +91,13 @@ Two properties of the source that can't be engineered away, so the judgment stag
 ```
 lib/llm/          types.ts (the seam) · claude-code.ts (works) · api.ts (stub) · index.ts
 lib/sources/      registry.ts (sources + profile activation) · fetch.ts (JSON/RSS/HTML/CSV parsers)
-lib/screening/    csl.ts (Trade.gov CSL exact-name matching)
-lib/checks/       judge.ts · run.ts (fetch → judge → store) · checklist.ts
+lib/screening/    csl.ts (Trade.gov CSL) · us-trade-controls.ts (Section 301/232, AD/CVD, UFLPA, PGA)
+lib/tariff/       insw.ts (INSW / NTR Bea Masuk, PPN, PPh 22, LARTAS) · usitc.ts
+lib/workflow/     actions.ts (state machine) · draft.ts (PPJK, Internal Ops, Supplier action drafts)
+lib/checks/       judge.ts · judge-batched.ts · briefing.ts · run.ts · checklist.ts
 lib/db/           schema.ts · client.ts · queries.ts
-app/              page.tsx (Checks) · checklist/ · chat/ · memory/ · api/{checks,checklist,chat,customers,memories,screening}
-components/       dashboard/ · checklist/ · memory/ · chat/
+app/              page.tsx (Checks) · workqueue/ · checklist/ · chat/ · memory/ · api/{checks,workqueue,checklist,chat,customers,memories,screening}
+components/       dashboard/ · workqueue/ · checklist/ · memory/ · chat/
 scripts/          seed.ts (sources + country source packs + MA) · run-check.ts
 config/           customer.json — read at seed time only
 ```
