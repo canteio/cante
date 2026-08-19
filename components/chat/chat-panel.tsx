@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ChevronDown, Globe, Square } from "lucide-react";
+import { ArrowRight, ChevronDown, Globe, Paperclip, Square, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Markdown } from "@/components/chat/markdown";
@@ -11,6 +11,14 @@ import {
 } from "@/lib/countries";
 
 type SearchResult = { title: string; url: string; hostname: string };
+
+/** An uploaded file after `/api/files/extract` turned it into text. */
+type Attachment = {
+  filename: string;
+  format: string;
+  text: string;
+  warnings?: string[];
+};
 
 /**
  * One entry in the message timeline, in the order it actually happened.
@@ -43,7 +51,7 @@ type TimelineItem =
     };
 
 type Message =
-  | { role: "user"; text: string }
+  | { role: "user"; text: string; attachments?: { filename: string; format: string }[] }
   | {
       role: "agent";
       text: string;
@@ -131,6 +139,44 @@ export function ChatPanel({
   const abortRef = useRef<AbortController | null>(null);
   const [now, setNow] = useState(() => Date.now());
 
+  // Files dropped on the composer, already turned into text server-side. They
+  // are attached to the next message only — nothing is filed or stored as
+  // evidence by asking a question about it.
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [dragging, setDragging] = useState(false);
+  const [reading, setReading] = useState(false);
+  // dragenter/dragleave fire for every child element, so a plain boolean
+  // flickers as the pointer crosses the textarea. Counting entries is what
+  // keeps the highlight stable.
+  const dragDepth = useRef(0);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  async function attachFiles(files: File[]) {
+    if (files.length === 0) return;
+    setReading(true);
+    setError(null);
+    for (const file of files) {
+      try {
+        const form = new FormData();
+        form.append("file", file);
+        const res = await fetch("/api/files/extract", { method: "POST", body: form });
+        const data = await res.json();
+        if (!res.ok) {
+          // A refusal is the useful answer here — say which file and why.
+          setError(`${file.name}: ${data.error ?? "could not be read."}`);
+          continue;
+        }
+        setAttachments((current) => [
+          ...current.filter((a) => a.filename !== data.filename),
+          data as Attachment,
+        ]);
+      } catch {
+        setError(`${file.name} could not be uploaded.`);
+      }
+    }
+    setReading(false);
+  }
+
   useEffect(() => {
     const el = textareaRef.current;
     if (!el) return;
@@ -199,17 +245,24 @@ export function ChatPanel({
 
   async function send() {
     const question = input.trim();
-    if (!question || busy) return;
+    // A dropped file with no typed question is a valid ask on its own.
+    if ((!question && attachments.length === 0) || busy || reading) return;
 
     const abortController = new AbortController();
     abortRef.current = abortController;
+    const sending = attachments;
 
     setInput("");
+    setAttachments([]);
     setBusy(true);
     setError(null);
     setMessages((m) => [
       ...m,
-      { role: "user", text: question },
+      {
+        role: "user",
+        text: question,
+        attachments: sending.map((a) => ({ filename: a.filename, format: a.format })),
+      },
       { role: "agent", text: "", timeline: [], streaming: true, startedAt: Date.now() },
     ]);
 
@@ -217,7 +270,13 @@ export function ChatPanel({
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question, customerId, conversationId, country }),
+        body: JSON.stringify({
+          question,
+          attachments: sending,
+          customerId,
+          conversationId,
+          country,
+        }),
         signal: abortController.signal,
       });
 
@@ -354,6 +413,16 @@ export function ChatPanel({
           {messages.map((m, i) =>
             m.role === "user" ? (
               <div key={i} className="msg-user">
+                {m.attachments?.length ? (
+                  <div className="msg-attachments">
+                    {m.attachments.map((a) => (
+                      <span key={a.filename} className="attachment-chip is-sent">
+                        <Paperclip size={11} />
+                        <span className="attachment-name">{a.filename}</span>
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
                 {m.text}
               </div>
             ) : (
@@ -411,14 +480,82 @@ export function ChatPanel({
             </p>
           </div>
 
-          <div className="composer">
+          <div
+            className="composer"
+            data-dragging={dragging || undefined}
+            onDragEnter={(e) => {
+              if (!e.dataTransfer.types.includes("Files")) return;
+              e.preventDefault();
+              dragDepth.current += 1;
+              setDragging(true);
+            }}
+            onDragOver={(e) => {
+              if (e.dataTransfer.types.includes("Files")) e.preventDefault();
+            }}
+            onDragLeave={() => {
+              dragDepth.current = Math.max(0, dragDepth.current - 1);
+              if (dragDepth.current === 0) setDragging(false);
+            }}
+            onDrop={(e) => {
+              if (!e.dataTransfer.types.includes("Files")) return;
+              e.preventDefault();
+              dragDepth.current = 0;
+              setDragging(false);
+              void attachFiles(Array.from(e.dataTransfer.files));
+            }}
+          >
+            {dragging && (
+              <div className="composer-drop">
+                <Paperclip size={14} /> Drop to attach — PDF, Excel, Word, CSV or text
+              </div>
+            )}
+            {attachments.length > 0 && (
+              <div className="composer-attachments">
+                {attachments.map((attachment) => (
+                  <span key={attachment.filename} className="attachment-chip">
+                    <Paperclip size={11} />
+                    <span className="attachment-name">{attachment.filename}</span>
+                    <small>{attachment.format}</small>
+                    {attachment.warnings?.length ? (
+                      <small className="attachment-warn" title={attachment.warnings.join(" ")}>
+                        · partial
+                      </small>
+                    ) : null}
+                    <button
+                      type="button"
+                      aria-label={`Remove ${attachment.filename}`}
+                      onClick={() =>
+                        setAttachments((current) =>
+                          current.filter((a) => a.filename !== attachment.filename),
+                        )
+                      }
+                    >
+                      <X size={11} />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
             <div className="composer-field">
               <textarea
                 ref={textareaRef}
                 rows={1}
                 value={input}
-                placeholder="Ask about the checks, or anything that needs looking up…"
+                placeholder={
+                  attachments.length
+                    ? "Ask about the attached file, or just send…"
+                    : "Ask about the checks, or drop a file in…"
+                }
                 onChange={(e) => setInput(e.target.value)}
+                onPaste={(e) => {
+                  // Pasting a file (screenshot, copied document) should behave
+                  // like dropping one.
+                  const files = Array.from(e.clipboardData.files);
+                  if (files.length) {
+                    e.preventDefault();
+                    void attachFiles(files);
+                  }
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
@@ -464,15 +601,43 @@ export function ChatPanel({
                   </div>
                 )}
               </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                hidden
+                accept=".pdf,.xlsx,.xlsm,.docx,.csv,.txt,.md"
+                onChange={(e) => {
+                  const files = Array.from(e.target.files ?? []);
+                  e.target.value = "";
+                  void attachFiles(files);
+                }}
+              />
+              <button
+                type="button"
+                className="icon-btn composer-attach"
+                aria-label="Attach a file"
+                title="Attach a file"
+                disabled={busy || reading}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Paperclip size={14} />
+              </button>
               <span className="composer-hint">
-                <Globe size={11} /> Can search the web
+                {reading ? (
+                  <>Reading file…</>
+                ) : (
+                  <>
+                    <Globe size={11} /> Can search the web
+                  </>
+                )}
               </span>
               <button
                 type="button"
                 className="icon-btn"
                 aria-label={busy ? "Stop response" : "Send message"}
                 onClick={busy ? stop : send}
-                disabled={!busy && !input.trim()}
+                disabled={!busy && !input.trim() && attachments.length === 0}
               >
                 {busy ? (
                   <Square size={14} fill="currentColor" strokeWidth={0} />

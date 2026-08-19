@@ -6,6 +6,7 @@ import {
   upsertProduct,
 } from "@/lib/catalogue/products";
 import { listClassifications } from "@/lib/catalogue/classifications";
+import { extractTextFromFile, FileExtractionError } from "@/lib/documents/extract-file";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -32,6 +33,41 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  // An .xlsx of SKUs and HS codes is the realistic way a catalogue arrives.
+  // It is converted to CSV text and handed to the same importer, so the tier
+  // rule still holds: a spreadsheet can only ever produce `lead` codes.
+  if (request.headers.get("content-type")?.includes("multipart/form-data")) {
+    let form: FormData;
+    try {
+      form = await request.formData();
+    } catch {
+      return Response.json({ error: "That upload could not be read." }, { status: 400 });
+    }
+    const file = form.get("file");
+    if (!(file instanceof File)) {
+      return Response.json({ error: "No file was attached." }, { status: 400 });
+    }
+    const customerId = (form.get("customerId") as string) || (await getDefaultCustomerId());
+    if (!customerId) return Response.json({ error: "No customer." }, { status: 400 });
+
+    try {
+      const extracted = await extractTextFromFile(
+        file.name,
+        new Uint8Array(await file.arrayBuffer()),
+      );
+      const summary = importProductsCsv(customerId, extracted.text);
+      return Response.json({
+        summary,
+        extraction: { format: extracted.format, warnings: extracted.warnings },
+      });
+    } catch (error) {
+      if (error instanceof FileExtractionError) {
+        return Response.json({ error: error.message }, { status: 400 });
+      }
+      throw error;
+    }
+  }
+
   let body: unknown;
   try {
     body = await request.json();

@@ -118,6 +118,7 @@ lib/sources/      registry.ts (sources + profile activation as data) · fetch.ts
                   *.test.ts (incremental windows, pagination, source-field contracts)
 lib/screening/    csl.ts (bounded, cached exact-name matching against Trade.gov CSL bulk data)
                   persist.ts (screens as dated, auditable events; `error` is never `clear`)
+lib/chat/         attachments.ts (a dropped file is filed, not just read — documents, catalogue, memory)
 lib/checks/       judge.ts (prompt + Zod schema) · run.ts (fetch → judge → store) · checklist.ts (living obligations)
                   facts.ts (HS/KBLI tiers — the one answer to "what is established") · coverage.ts (entries in, verdicts out)
                   lifecycle.ts (amends/revokes/supersedes links + favourable/unfavourable direction)
@@ -129,6 +130,7 @@ lib/tariff/       duty-expression.ts (rate strings → numbers, or an honest ref
 lib/substances/   bom.ts (components, declared substances, restriction lists, four-verdict assessment)
 lib/impact/       assess.ts (finding → affected SKUs/lanes → exposure, or an honest null; + tariff enrichment)
 lib/documents/    audit.ts (PEB/invoice text → line items → discrepancies → document-tier promotion)
+                  extract-file.ts (uploaded .pdf/.xlsx/.docx/.csv → text, or an honest refusal; no OCR)
 lib/workflow/     actions.ts (finding → human response, kept separate from the evidence)
 lib/suppliers/    evidence.ts (certificate status, gaps, expiry horizon)
 lib/test-support/ operating-db.ts (throwaway SQLite + per-test tenant isolation)
@@ -1449,6 +1451,146 @@ Two things the parser must keep doing:
   `9903.*` is where Section 301/232 duties are declared, so rejecting them would
   blind the parser to the measures the US pack cares most about.
 
+### File upload (added 18 Aug 2026)
+
+Until now a PEB or a catalogue had to be **copy-pasted as text**, which is the
+single most annoying thing about using this product. `lib/documents/extract-file.ts`
+adds the one missing step — getting text *out of a file* — and changes nothing
+downstream: `ingestDocument()`, `importProductsCsv()`, the audit and the tier
+rules never learn that files exist.
+
+| Format | Support |
+|---|---|
+| `.xlsx` / `.xlsm` | full — shared strings resolved, all sheets read |
+| `.docx` | full — runs joined within a paragraph, paragraphs kept apart |
+| `.pdf` | **text layer only** — a scan is refused |
+| `.csv` / `.txt` / `.md` | passthrough |
+| `.xls` / `.doc` | refused, with the "re-save as…" fix named |
+
+Two endpoints accept `multipart/form-data` alongside their existing JSON:
+`POST /api/documents` (a PEB or invoice) and `POST /api/products` (a catalogue
+of SKUs and HS codes). The documents page has a file picker.
+
+**Dependencies were chosen to stay small**: `.xlsx` and `.docx` are ZIP archives
+of XML, so `fflate` (~30KB) unzips and **`cheerio`, already a dependency**, reads
+the XML — one small library between two formats rather than a spreadsheet
+framework. `unpdf` reads a PDF text layer. Neither does OCR nor calls a network
+service, so rule 1 is untouched.
+
+⚠️ **The failure this module exists to prevent: a scanned PEB extracting to `""`
+would sail through the audit and come back with no discrepancies — identical to a
+document that was read and found correct.** Most Indonesian PEBs *are* scans, so
+this path fires often. `extractPdf()` therefore checks for an empty text layer
+explicitly and throws, rather than letting an empty string flow onward. Every
+refusal names the reason and, where one exists, the fix.
+
+Verified end to end over HTTP, 18 Aug 2026: a real text-layer PDF ingested with
+`documentNumber: 000123` and `documentDate: 2026-08-12`; a no-text PDF was
+refused with **HTTP 400** and the OCR explanation; an `.xlsx` of SKUs imported
+and its code landed **`lead`/`proposed`** — the spreadsheet-is-not-evidence rule
+holding through a new transport. Probe rows were deleted afterwards.
+
+**A multi-sheet workbook is flattened in sheet order and says so** in
+`extraction.warnings`, surfaced in the UI. Silently concatenating sheets nobody
+mentioned is how the wrong rows come to look right.
+
+### ⚠️ Rule 5: the tier discipline points at the monitor, not at the customer
+
+Found the hard way, 18 Aug 2026. The customer uploaded their own KBLI and HS
+codes and the chat replied that it could not confirm them. Every instruction it
+followed was one this file had written — and the result was a product telling
+a paying customer it did not believe their own registration documents. The user
+called it "unprofessional and embarrassing", and they were right.
+
+**The mistake was mine, not the model's.** `origin: "chat"` → `confirmed: false`
+exists because the model *infers* facts from conversation, and an inference is
+not evidence. An upload is a different act entirely: the customer is asserting
+their own facts and attaching the paperwork. That is precisely what the `human`
+tier in `lib/checks/facts.ts` already meant — "a person asserts it; better than
+a guess, still not a PEB". Applying the chat rule to it was a category error.
+
+So the rule, stated properly: **scepticism belongs in what the monitor claims
+about itself, never in what the customer says about their own business.** Never
+tell a source it failed when it didn't; never tell a customer you cannot verify
+who they are. The two are not the same discipline, and conflating them makes
+the product worse in both directions.
+
+Concretely, `lib/chat/attachments.ts`:
+
+- Facts extracted from an upload are stored `origin: "upload"`, **`confirmed:
+  true`** — the human tier, usable by judgment immediately.
+- They are still **not** promoted to `document` tier.
+  `promoteCodesFromDocument()` continues to demand a readable document number
+  *and* date, so a spreadsheet can never manufacture customs evidence. That
+  distinction is the one that is genuinely real, and the prompt now says it
+  **once, briefly**, instead of as a standing disclaimer.
+- Code extraction is **regex, not a model call**. It decides what gets stored
+  as confirmed, so it has to be inspectable and unable to invent a code. An HS
+  code must be labelled to count — an unlabelled 8-digit number in a
+  spreadsheet is as likely to be an invoice number as a tariff code.
+
+### Chat attachments are acted on, not just read (added 18 Aug 2026)
+
+The first version put the file's text in the prompt and nothing else, so a
+dropped document never reached the Documents screen, the catalogue or Memory.
+`fileAttachments()` now runs **before** the answer is generated, and the model
+reports what was done rather than telling the customer to go do it:
+
+| Attachment | What happens |
+|---|---|
+| Spreadsheet with a `sku` column | `importProductsCsv()` — catalogue rows, codes as leads |
+| Anything else | `ingestDocument()` + `auditDocument()` + `promoteCodesFromDocument()` |
+| Any file | labelled KBLI/HS codes saved to Memory, confirmed; checklist refreshed |
+
+`renderAttachmentOutcomes()` renders the completed actions into the prompt with
+an explicit instruction not to contradict them. That instruction is load-bearing
+and there is a test for the exact sentence a live run produced before it existed
+("logged as a lead, not a confirmed fact") while the database said `confirmed=1`.
+
+Verified live, 18 Aug 2026: an `.xlsx` of two KBLI and two HS codes was filed as
+a document, saved four confirmed memories, refreshed the checklist, and the
+answer opened *"the KBLI/HS codes from kbli.xlsx are now recorded"* — then
+caught a genuine conflict (`6306.12.00` against the previously recorded
+`6306.19.90`, different subheadings of the same tarpaulin heading) and asked
+which is current. That question is the useful one; asking the customer to
+re-confirm what they had just supplied was not. Probe data was deleted after.
+
+⚠️ **Failures are absorbed, never raised.** A filing error becomes a caveat the
+model reads out; the conversation must not break because an import failed.
+
+### Drag and drop in chat (added 18 Aug 2026)
+
+Files can be dropped, pasted, or picked on the chat composer. `POST
+/api/files/extract` turns one into text with the same extractor; the composer
+holds it as a chip and `POST /api/chat` takes an `attachments` array. Verified
+live: an `.xlsx` dropped with **no typed question** streamed back a correct
+reading of the SKU and its HS code.
+
+Four decisions worth keeping:
+
+1. **`/api/files/extract` itself stores nothing** — it only converts a file to
+   text. The filing is a separate, deliberate step in `fileAttachments()`; see
+   rule 5 above. Keeping extraction pure is what lets the same endpoint serve
+   the composer without deciding anything about evidence.
+2. **Attachment text is fenced and labelled as data.** The prompt block states
+   it is document content and that imperative wording inside is to be reported
+   on, never obeyed — a trade document is untrusted input, and a chat that will
+   read arbitrary uploaded files is exactly where prompt injection would land.
+3. **History stores the typed question plus `[Attached: name]`, not the dump.**
+   The model gets the full text for that turn; a reopened conversation stays
+   readable instead of replaying a whole spreadsheet.
+4. **Text is capped at 20,000 characters and truncation is disclosed** in the
+   attachment's warnings. A model answering from the first half of a document
+   with no sign the rest existed is the same failure as a source that silently
+   parsed only its first page.
+
+`dragDepth` counts dragenter/dragleave rather than using a boolean, because
+those events fire for every child element and the highlight otherwise flickers
+as the pointer crosses the textarea. CSS is at the end of `globals.css`; every
+token it uses was checked to exist — an earlier draft used `--accent` and
+`--surface`, neither of which is defined in this project (`--blue`/`--azure`
+and `--app-surface` are).
+
 ### Impact may not invent precision
 
 `lib/impact/assess.ts` is the file most able to damage credibility, because a
@@ -1481,8 +1623,9 @@ one transition that destroys information, so it costs a sentence.
 Stated here because each is a place where looking finished would be worse than
 the gap:
 
-- **No OCR or PDF extraction.** `ingestDocument()` takes text and says so in its
-  error rather than accepting a scan and producing an empty, clean-looking audit.
+- **No OCR.** File upload now exists (see below) and reads a PDF's text layer,
+  but a *scanned* PDF is still refused rather than accepted and turned into an
+  empty, clean-looking audit.
 - **No supplier outreach delivery.** `requestEvidence()` records that a request
   was made and returns a draft message with `delivered: false`. Sending needs the
   delivery infrastructure item 1 defers; the UI must never render this as "sent".

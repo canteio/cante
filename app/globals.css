@@ -2203,3 +2203,103 @@ textarea.input {
 .import-row.muted {
   color: var(--text-faint);
 }
+
+/* --- Chat file attachments -------------------------------------------------
+   Drag and drop onto the composer. The composer keeps its liquid-glass recipe;
+   these only add the drop affordance and the chips, using existing tokens. */
+
+.composer {
+  position: relative;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.composer[data-dragging] {
+  border-color: var(--blue);
+  box-shadow:
+    0 0 0 3px rgba(var(--azure), 0.16),
+    0 4px 10px rgba(15, 23, 42, 0.12);
+}
+
+/* Sits over the field so the whole composer reads as one target. */
+.composer-drop {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 21px;
+  background: rgba(var(--azure), 0.07);
+  color: var(--blue);
+  font-size: 13px;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.composer-attachments,
+.msg-attachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 14px 0;
+}
+
+.msg-attachments {
+  padding: 0 0 6px;
+}
+
+.attachment-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 260px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--app-surface);
+  font-size: 12px;
+  color: var(--text);
+}
+
+.attachment-chip .attachment-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attachment-chip small {
+  color: var(--text-faint);
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+
+/* A partially-read file must stay visible as partial, not blend into the chip. */
+.attachment-chip .attachment-warn {
+  color: var(--warn);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.attachment-chip button {
+  display: inline-flex;
+  align-items: center;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--text-faint);
+}
+
+.attachment-chip button:hover {
+  color: var(--text);
+}
+
+.attachment-chip.is-sent {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.composer-attach {
+  margin-right: 2px;
+}

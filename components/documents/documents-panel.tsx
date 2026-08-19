@@ -104,6 +104,37 @@ export function DocumentsPanel({ country }: { country: JurisdictionName }) {
     }
   }
 
+  /**
+   * Same endpoint and same audit as pasting; only the transport differs. Any
+   * limit the extractor hit is shown, because a workbook flattened from three
+   * sheets that nobody was told about is how wrong rows come to look right.
+   */
+  async function uploadFile(file: File) {
+    setBusy(true);
+    setError(null);
+    setNote(null);
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      form.append("docType", docType);
+      const res = await fetch("/api/documents", { method: "POST", body: form });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "That file could not be read.");
+        return;
+      }
+      setFindings((current) => ({ ...current, [data.document.id]: data.findings }));
+      const warnings: string[] = data.extraction?.warnings ?? [];
+      setNote(
+        `Read ${file.name} as ${data.extraction?.format ?? "text"}.` +
+          (warnings.length ? ` ${warnings.join(" ")}` : ""),
+      );
+      await load();
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function promote(documentId: string) {
     const res = await fetch("/api/documents", {
       method: "POST",
@@ -148,9 +179,23 @@ export function DocumentsPanel({ country }: { country: JurisdictionName }) {
           <h2>Add a document</h2>
         </div>
         <p className="page-sub">
-          Text only. PDF extraction and OCR are not implemented, so paste the text or upload a text
-          export rather than a scan.
+          Upload a PDF, Excel, Word, CSV or text file — or paste the text below. A scanned PDF has no
+          text to read and will be refused rather than audited as if it were empty; ask the sender
+          for the original digital file.
         </p>
+        <div className="meta-row">
+          <input
+            type="file"
+            className="input"
+            accept=".pdf,.xlsx,.xlsm,.docx,.csv,.txt,.md"
+            disabled={busy}
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              event.target.value = "";
+              if (file) void uploadFile(file);
+            }}
+          />
+        </div>
         <div className="meta-row">
           <select className="input" value={docType} onChange={(event) => setDocType(event.target.value)}>
             {DOC_TYPES.map((type) => (
