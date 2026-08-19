@@ -9,6 +9,9 @@ next-env.d.ts
 cante.db
 cante.db-shm
 cante.db-wal
+# Any copy, backup or export of the database carries real customer data.
+cante.db.*
+*.db.backup*
 
 .claude/.docs-reminded
 
