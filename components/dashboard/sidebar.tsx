@@ -8,6 +8,7 @@ import {
   Inbox,
   ListChecks,
   MessageSquare,
+  Sparkles,
   Truck,
 } from "lucide-react";
 import { cookies } from "next/headers";
@@ -18,11 +19,11 @@ import { normalizeProviderChoice, PROVIDER_COOKIE } from "@/lib/llm";
 import { DEFAULT_JURISDICTION, type JurisdictionName } from "@/lib/countries";
 
 /**
- * Sidebar in Mike's shape: brand mark, nav rows, a customer block, and status
- * pinned to the bottom. Staggered fade-in copied from its .sidebar-fade-in.
- *
- * The provider status stays here even though Mike has no equivalent — whether
- * the model is reachable is the one fact that decides if a check can run.
+ * Enterprise Navigation Sidebar:
+ * 1. AI Copilot (Primary Chat & Assistant)
+ * 2. Regulatory Compliance (Checklist, Work Queue, Daily Checks)
+ * 3. Company & Operations (Profile, Catalogue, Documents, Suppliers)
+ * 4. Intelligence (Memory & Facts, Provider Switcher)
  */
 export async function Sidebar({
   active,
@@ -53,57 +54,65 @@ export async function Sidebar({
         <div className="brand-name">Cante</div>
       </div>
 
-      <nav className="nav fade-1">
-        <Link href={`/${countryQuery}`} data-active={active === "checks"}>
-          <ListChecks size={15} strokeWidth={1.75} />
-          Checks
-        </Link>
-        <Link href={`/checklist${countryQuery}`} data-active={active === "checklist"}>
-          <ClipboardCheck size={15} strokeWidth={1.75} />
-          Checklist
-        </Link>
-        <Link href={`/chat${countryQuery}`} data-active={active === "chat"}>
-          <MessageSquare size={15} strokeWidth={1.75} />
-          Chat
-        </Link>
-        {active === "chat" && (
-          <ChatNav activeId={activeConversationId} jurisdiction={jurisdiction} />
-        )}
-        <Link href={`/profile${countryQuery}`} data-active={active === "profile"}>
-          <Building2 size={15} strokeWidth={1.75} />
-          Profile
-        </Link>
-      </nav>
-
-      {/*
-        Operating data, kept as its own group. Everything in the nav above
-        describes regulations; everything here describes the customer's own
-        business, and a regulation only becomes an alert when the two meet.
-      */}
-      <div className="side-section fade-2">
-        <div className="side-label">Operations</div>
+      {/* Primary AI Assistant */}
+      <div className="side-section fade-1" style={{ paddingTop: 0 }}>
+        <div className="side-label">AI Assistant</div>
         <nav className="nav">
+          <Link href={`/chat${countryQuery}`} data-active={active === "chat"}>
+            <Sparkles size={15} strokeWidth={1.75} />
+            AI Copilot
+          </Link>
+          {active === "chat" && (
+            <ChatNav activeId={activeConversationId} jurisdiction={jurisdiction} />
+          )}
+        </nav>
+      </div>
+
+      {/* Regulatory Compliance & Action */}
+      <div className="side-section fade-2">
+        <div className="side-label">Compliance & Action</div>
+        <nav className="nav">
+          <Link href={`/checklist${countryQuery}`} data-active={active === "checklist"}>
+            <ClipboardCheck size={15} strokeWidth={1.75} />
+            Checklist & Permits
+          </Link>
           <Link href={`/workqueue${countryQuery}`} data-active={active === "workqueue"}>
             <Inbox size={15} strokeWidth={1.75} />
-            Work queue
+            Action Work Queue
           </Link>
-          <Link href={`/catalogue${countryQuery}`} data-active={active === "catalogue"}>
-            <Boxes size={15} strokeWidth={1.75} />
-            Catalogue
-          </Link>
-          <Link href={`/documents${countryQuery}`} data-active={active === "documents"}>
-            <FileText size={15} strokeWidth={1.75} />
-            Documents
-          </Link>
-          <Link href={`/suppliers${countryQuery}`} data-active={active === "suppliers"}>
-            <Truck size={15} strokeWidth={1.75} />
-            Suppliers
+          <Link href={`/checks${countryQuery}`} data-active={active === "checks"}>
+            <ListChecks size={15} strokeWidth={1.75} />
+            Daily Checks & Feeds
           </Link>
         </nav>
       </div>
 
+      {/* Company & Operations */}
       <div className="side-section fade-2">
-        <div className="side-label">Customers</div>
+        <div className="side-label">Company & Operations</div>
+        <nav className="nav">
+          <Link href={`/profile${countryQuery}`} data-active={active === "profile"}>
+            <Building2 size={15} strokeWidth={1.75} />
+            Company Profile
+          </Link>
+          <Link href={`/catalogue${countryQuery}`} data-active={active === "catalogue"}>
+            <Boxes size={15} strokeWidth={1.75} />
+            Product Catalogue
+          </Link>
+          <Link href={`/documents${countryQuery}`} data-active={active === "documents"}>
+            <FileText size={15} strokeWidth={1.75} />
+            Shipment Documents
+          </Link>
+          <Link href={`/suppliers${countryQuery}`} data-active={active === "suppliers"}>
+            <Truck size={15} strokeWidth={1.75} />
+            Suppliers & Evidence
+          </Link>
+        </nav>
+      </div>
+
+      {/* Active Customer Context */}
+      <div className="side-section fade-2">
+        <div className="side-label">Active Customer</div>
         {customers.length === 0 ? (
           <div style={{ padding: "0 10px", fontSize: "0.8125rem", color: "var(--text-muted)" }}>
             None yet — run <code className="mono">npm run db:seed</code>
@@ -124,6 +133,7 @@ export async function Sidebar({
         )}
       </div>
 
+      {/* Bottom Footer: Memory & LLM Provider */}
       <div className="sidebar-foot fade-3">
         <Link
           href={`/memory${countryQuery}`}
@@ -131,7 +141,7 @@ export async function Sidebar({
           data-active={active === "memory"}
         >
           <Brain size={14} strokeWidth={1.75} />
-          Memory
+          Memory & Facts
         </Link>
         <ProviderSwitcher initialProvider={selectedProvider} />
       </div>

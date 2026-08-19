@@ -619,7 +619,16 @@ Evaluates US shipments against:
 - **Live Quota & Permit Ledger ([`lib/tariff/quota-ledger.ts`](file:///Users/a/Desktop/cante/lib/tariff/quota-ledger.ts))**: Tracks government-allocated import/export quotas (PI Bahan Baku, PI TPT, PI B2), deducts realized shipments, calculates monthly burn rates, and issues 60/30/14-day renewal alerts.
 - **Customs Post-Clearance Audit Vault ([`lib/workflow/audit-vault.ts`](file:///Users/a/Desktop/cante/lib/workflow/audit-vault.ts))**: Compiles 1-click sealed "Reasonable Care" defense dossiers for Bea Cukai Audit Pabean and US CBP Focused Assessments.
 
-**8. Future Enterprise Roadmap (Deferred External Connectors)**
+**8. UI/UX Architecture & Chat Auto-Sync Engine**
+- **AI Copilot Landing as Primary Entry**: Root `/` routes directly to the AI Copilot (`/chat`), welcoming users with an interactive, context-grounded conversational agent.
+- **Categorized Sidebar Hierarchy ([`components/dashboard/sidebar.tsx`](file:///Users/a/Desktop/cante/components/dashboard/sidebar.tsx))**:
+  - *AI Assistant*: AI Copilot (`/chat`)
+  - *Compliance & Action*: Checklist & Permits (`/checklist`), Action Work Queue (`/workqueue`), Daily Checks & Feeds (`/checks`)
+  - *Company & Operations*: Company Profile (`/profile`), Product Catalogue (`/catalogue`), Shipment Documents (`/documents`), Suppliers & Evidence (`/suppliers`)
+  - *Intelligence*: Memory & Facts (`/memory`)
+- **Chat Auto-Sync (`lib/checks/remember.ts`)**: Automatically extracts durable facts stated in chat and populates them directly into `products` (Catalogue), `kbliRecords`, `suppliers`, and triggers immediate `refreshChecklistForCustomer`.
+
+**9. Future Enterprise Roadmap (Deferred External Connectors)**
 - **ERP & PO Sync Connectors**: Direct webhooks and ingestors for SAP, NetSuite, Oracle, and Indonesian ERPs (Accurate, Jurnal) to evaluate purchase orders before issuance.
 - **Direct Push Notification Connectors**: Interactive Slack App, Microsoft Teams bot, and official WhatsApp Cloud API integration for operational approvals.
 - **Cloud SaaS Migration**: PostgreSQL / AWS RDS migration, SSO (Okta, Azure AD SAML), and SOC 2 Type II compliance audit trails.

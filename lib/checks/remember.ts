@@ -1,8 +1,11 @@
+import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { addMemory } from "@/lib/db/queries";
 import { refreshChecklistForCustomer } from "@/lib/checks/checklist";
 import { completeJson, getProvider, type LlmProviderChoice } from "@/lib/llm";
-import type { Memory } from "@/lib/db/schema";
+import { db } from "@/lib/db/client";
+import { kbliRecords, suppliers, type Memory } from "@/lib/db/schema";
+import { upsertProduct } from "@/lib/catalogue/products";
 import type { JurisdictionName } from "@/lib/countries";
 
 /**
@@ -12,9 +15,8 @@ import type { JurisdictionName } from "@/lib/countries";
  * failures are swallowed — missing a memory is a small loss, a broken chat is
  * not.
  *
- * Everything it produces lands `confirmed: false`. The model is inferring from
- * conversation, and this project's whole discipline is that inferred and
- * verified must stay visibly apart. A human promotes it on the Memory page.
+ * Automatically populates the Customer Profile, Checklist, Catalogue, and
+ * Operations records with facts stated during chat conversations.
  */
 
 const ExtractionSchema = z.object({
@@ -41,32 +43,34 @@ const ExtractionSchema = z.object({
           "contact",
           "operational",
           "preference",
+          "supplier",
           "other",
         ]),
         content: z
           .string()
           .describe("The fact, in one short sentence, written to be read months from now."),
-        source: z.string().describe('Where it came from, e.g. "user said in chat".'),
+        source: z.string().describe("Where it came from, e.g. \"user said in chat\"."),
         statedByUser: z
           .boolean()
           .describe(
             "True when the USER stated this fact about their own business, or asked for it to be " +
               "remembered. False when you inferred or derived it, or when it came from the " +
-              "assistant's own research rather than from the customer.",
+              "assistant\x27s own research rather than from the customer.",
           ),
       }),
     )
     .describe("Empty array if nothing durable was established. That is the common case."),
 });
 
-const SYSTEM = `You extract durable facts about a customer from a chat exchange, for a compliance-monitoring tool's long-term memory.
+const SYSTEM = `You extract durable facts about a customer from a chat exchange, for a compliance-monitoring tool\x27s long-term memory.
 
 Save only what would still matter in three months and would change how future checks are run or explained:
-- the customer's real HS codes, product details, destination markets
+- the customer\x27s real HS codes, product details, destination markets
 - U.S. NAICS, facility addresses, materials/SDS, processes, waste streams, distribution states
 - labels/claims, HTS/Schedule B, ECCN/EAR99, export destinations, and regulated-product flags
 - KBLI, OSS/NIB/licensing status, SNI certificates or product-standard exposure
 - factory/legal entity location for regional Perda monitoring
+- suppliers, vendors, and raw material origins
 - who to contact and how
 - how they operate (shipping terms, certifications, licences, their broker)
 - standing preferences about how they want to be told things
@@ -106,22 +110,76 @@ export async function extractMemories(input: {
 
     let changed = false;
     for (const m of value.memories) {
-      // A fact the customer stated about their own business is theirs to
-      // assert — the `human` tier in facts.ts, same reasoning as an uploaded
-      // document (rule 5). Only genuinely *inferred* facts stay unconfirmed,
-      // which is what the unconfirmed tier was always for. Before this, a
-      // customer could say "our KBLI is 22292" and the monitor would keep
-      // treating it as a guess forever unless they also clicked confirm.
       const inserted = await addMemory({
         customerId: input.customerId,
         jurisdiction: input.jurisdiction,
-        kind: m.kind,
+        kind: m.kind === "supplier" ? "contact" : m.kind,
         content: m.content,
         source: m.source,
         origin: m.statedByUser ? "user-stated" : "chat",
         confirmed: m.statedByUser === true,
       });
-      if (inserted) changed = true;
+      if (inserted) {
+        changed = true;
+
+        // Auto-sync into operations tables if stated by user
+        if (m.statedByUser) {
+          // 1. Sync Products and Raw Materials into Catalogue
+          if (m.kind === "product" || m.kind === "material") {
+            try {
+              const skuSeed = m.content.slice(0, 12).replace(/[^a-zA-Z0-9]/g, "-").toUpperCase();
+              const sku = skuSeed.length >= 3 ? skuSeed : `SKU-${Date.now().toString().slice(-4)}`;
+              upsertProduct(input.customerId, {
+                sku,
+                name: m.content,
+                materials: m.kind === "material" ? [m.content] : undefined,
+              });
+            } catch {
+              // Non-blocking
+            }
+          }
+
+          // 2. Sync KBLI records
+          if (m.kind === "kbli") {
+            try {
+              const codeMatch = m.content.match(/\b\d{5}\b/);
+              if (codeMatch) {
+                db.insert(kbliRecords)
+                  .values({
+                    id: randomUUID(),
+                    customerId: input.customerId,
+                    code: codeMatch[0],
+                    title: m.content,
+                    confirmed: true,
+                    status: "confirmed",
+                    source: "chat",
+                  })
+                  .onConflictDoNothing()
+                  .run();
+              }
+            } catch {
+              // Non-blocking
+            }
+          }
+
+          // 3. Sync Suppliers
+          if (m.kind === "supplier" || m.content.toLowerCase().includes("supplier")) {
+            try {
+              db.insert(suppliers)
+                .values({
+                  id: randomUUID(),
+                  customerId: input.customerId,
+                  name: m.content.slice(0, 60),
+                  country: input.jurisdiction === "Indonesia" ? "ID" : "US",
+                })
+                .onConflictDoNothing()
+                .run();
+            } catch {
+              // Non-blocking
+            }
+          }
+        }
+      }
     }
     if (changed) await refreshChecklistForCustomer(input.customerId, input.jurisdiction);
   } catch {
