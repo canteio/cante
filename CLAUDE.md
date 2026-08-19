@@ -45,8 +45,58 @@ already-seen / unaccounted and appends a **code-written** caveat for the last
 group. Model-written caveats can't be the only ones — the model is the thing
 being audited.
 
+### ⚠️ The "41 unjudged entries" defect was the audit crying wolf (fixed 19 Aug 2026)
+
+Three runs reported entries as never checked and a retry that resolved 0 of
+them every time — 0 of 1, 0 of 3, then **0 of 41**. It was recorded here as the
+largest defect in the system and diagnosed as the model refusing to complete
+large batches. That diagnosis was wrong, and the way it broke is worth keeping.
+
+**First fix, on the wrong cause.** Batching the judgment stage looked obvious:
+62 entries in, 20 verdicts back. `lib/checks/judge-batched.ts` splits entries
+into batches of 15 and composes the customer message in one small separate call
+(each batch would otherwise write a message about its own slice). That work is
+sound and stays — but the very next live run put **8 entries in one batch and
+got 3 verdicts back**, which killed the hypothesis outright. Batch size was
+never the problem.
+
+**The actual cause: one regulation, two portals, two URLs.** The five
+"unchecked" entries were PP 31/2026, PP 27/2026, Permenaker 11/2026 and two
+Keputusan Dirjen — every one of which had *already been judged in an earlier
+run*, fetched then from `jdih.kemnaker.go.id` and now from Setneg under a
+different URL. The model saw them in the seen log and correctly declined to
+re-litigate. `auditVerdictCoverage()` keyed only on exact URL, so it called
+them never checked. **The model was right and the audit was wrong**, and it had
+been generating false alarms for three runs — including one that cried wolf
+over 41 entries at once. In a product whose entire value is that a disclosure
+means something, a coverage warning nobody should act on is a serious defect,
+not a cosmetic one.
+
+**`regulationIdentityKey()` is the fix**: instrument type + number + year, so
+"PP 27 Tahun 2026" and "Peraturan Pemerintah Nomor 27 Tahun 2026" resolve to
+the same `pp|27|2026`. Three properties are load-bearing:
+
+- **Type is part of the identity, never dropped.** PP 11/2026, Perpres 11/2026
+  and Permenaker 11/2026 are three different regulations sharing a number and a
+  year. Matching on number alone would silently suppress two real ones — a far
+  worse failure than the one being fixed.
+- **The instrument is read only from text *before* the number.** Titles cite
+  other regulations constantly; "PP 20/2026 tentang Perubahan atas PP 55 Tahun
+  2022" must key on 20/2026, not 55/2022.
+- **An unparseable citation returns `null` and never matches.** Absorbing a
+  title it could not read would hide a genuinely unjudged entry, which is the
+  original failure inverted.
+
+Composite decree numbers needed their own branch: Keputusan Dirjen numbers look
+like `3/1920/PK.01.02/III/2026`, carrying the year inside the number with no
+"Tahun" anywhere, and were still reported unchecked after the first fix.
+
+Verified against the real database: replaying all five entries that the last two
+runs reported as unchecked now yields **0 unaccounted**, and the caveat says
+they were "sudah dinilai dari sumber lain". 176 tests pass.
+
 **Disclosure alone isn't the fix for that gap — `runCheck()` also retries it
-(added 18 Aug 2026).** `judge()`'s prompt explicitly instructs the model to
+(added 18 Aug 2026, now a long stop rather than the main mechanism).** `judge()`'s prompt explicitly instructs the model to
 return a verdict for every entry, but on a large batch it does not always fully
 comply: a real run (`dfd33ac5`, 18 Aug 2026, the day the East Java sources above
 went live) put 54 entries into judgment and got verdicts back for only 36–37,
@@ -119,7 +169,7 @@ lib/sources/      registry.ts (sources + profile activation as data) · fetch.ts
 lib/screening/    csl.ts (bounded, cached exact-name matching against Trade.gov CSL bulk data)
                   persist.ts (screens as dated, auditable events; `error` is never `clear`)
 lib/chat/         attachments.ts (a dropped file is filed, not just read — documents, catalogue, memory)
-lib/checks/       judge.ts (prompt + Zod schema) · run.ts (fetch → judge → store) · checklist.ts (living obligations)
+lib/checks/       judge.ts (prompt + Zod schema) · judge-batched.ts (batches + message composition) · run.ts (fetch → judge → store) · checklist.ts (living obligations)
                   facts.ts (HS/KBLI tiers — the one answer to "what is established") · coverage.ts (entries in, verdicts out)
                   lifecycle.ts (amends/revokes/supersedes links + favourable/unfavourable direction)
 lib/catalogue/    products.ts (SKUs + CSV import) · classifications.ts (tiered code history + approval)
@@ -430,6 +480,43 @@ unescaped `_`, `*`, `[` and `.`, which appear constantly in regulation numbers
 and URLs, and one parse error would drop the whole alert. Long alerts chunk on
 line boundaries at the 4096-character ceiling — a truncated coverage caveat is
 worse than a second message.
+
+### What Telegram actually receives is a digest, not the alert
+
+`dispatchRun()` sends `formatTelegramDigest(runId)`, **not** `alert.body`. They
+are different documents and the distinction matters:
+
+| | Telegram digest | `alert.body` (dashboard) |
+|---|---|---|
+| Audience | the operator | the customer, after manual forwarding |
+| Language | English | Indonesian (or English for US) |
+| Content | run header, flagged/noted titles, per-source ✓/✗ list | the model's message **plus every coverage caveat** |
+
+This fits the pilot shape already described above — Telegram notifies the
+operator, the operator forwards on WhatsApp — and the digest does carry the
+thing that matters most operationally: **every failed source is listed with its
+error**, so a broken feed is visible at a glance.
+
+⚠️ **The digest omits coverage caveats, so it must never be forwarded to a
+customer as-is.** On run `4a28d566` the digest read "17/18 sources OK · 0
+flagged · 1 to look at", which is true and still substantially more complete
+than the run was: the alert body for the same run disclosed **41 of 62 fetched
+entries went unjudged**. Nothing in the digest says so. That is acceptable for
+an operator who opens the dashboard, and actively misleading if pasted onward.
+Either keep forwarding from the dashboard, or teach the digest to carry the
+unaccounted count before anyone forwards it directly.
+
+### Chat: the model must not talk about its own tooling
+
+`app/api/chat/route.ts` carries a "Memory and Persistent Facts" block in both
+system prompts. It exists because rule 3 denies the spawned CLI every write
+tool, so when a user said "remember this", the model correctly found it had no
+`Write` tool and said so — surfacing Claude Code internals to a customer and
+implying the fact was lost. Both are wrong: `extractMemories()` persists facts
+to SQLite after the turn, and the CLI's own file tools were never the mechanism.
+The block tells the model that memory is database-backed and automatic, and
+forbids mentioning file tools or agent internals. Keep that pairing in mind —
+denying a tool changes what the model *says*, not just what it can do.
 
 ### Setting it up
 
@@ -1515,6 +1602,14 @@ tell a source it failed when it didn't; never tell a customer you cannot verify
 who they are. The two are not the same discipline, and conflating them makes
 the product worse in both directions.
 
+The same correction reaches chat memory (19 Aug 2026). `extractMemories()`
+saved everything as `origin: "chat", confirmed: false`, so a customer could say
+"our KBLI is 22292" and the monitor would treat it as a guess forever unless
+they also went and clicked confirm. The extraction schema now carries
+`statedByUser`, and a fact the customer asserted about their own business is
+stored `origin: "user-stated", confirmed: true` — the human tier. Only genuinely
+*inferred* facts stay unconfirmed, which is what that tier was always for.
+
 Concretely, `lib/chat/attachments.ts`:
 
 - Facts extracted from an upload are stored `origin: "upload"`, **`confirmed:
@@ -1715,17 +1810,23 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
 
 - Fetch, judgment, storage, dashboard, and chat all working locally, verified
   against the expanded live source set.
-- **Open bug, reproduced twice: the judgment completion retry resolves nothing.**
-  Run `98922259` retried 1 unaccounted entry and resolved 0; run `725945ce`
-  retried 3 and resolved 0. Both printed `Pemeriksaan lanjutan: 0 dari N`. The
-  disclosure is working exactly as intended — the alert names the unjudged
-  entries and says to treat them as unchecked — but the mechanism meant to
-  close the gap has never once succeeded, so it is currently disclosure with no
-  repair behind it. The three misses in `725945ce` (PP 27/2026, Permenaker
-  11/2026, Permenakertrans PER.02/MEN/1982) came from established Setneg and
-  Kemnaker sources, not the new pasal.id one. Not yet diagnosed; the retry
-  prompt, the `normalizeUrlKey()` match, and whether the model returns those
-  URLs at all are the three places to look.
+- **FIXED 19 Aug 2026 — the "unjudged entries" defect was a false alarm in the
+  audit, not a model failure.** See the section below; the retry had nothing to
+  resolve because the entries had already been judged.
+- **FIXED 19 Aug 2026 — lifecycle links are now stored.** `runCheck()` calls
+  `linkRegulation()` for each `flagged`/`noted` finding as it is inserted, so
+  "PP 20/2026 — Perubahan atas PP 55 Tahun 2022" records its `amends` edge.
+  `clear` verdicts are skipped deliberately: nobody is tracking the lifecycle of
+  a rule that was ruled irrelevant. Failures are swallowed — a missing amendment
+  link must not cost a run.
+- **First unattended cron run with the new sources: `4a28d566`, 19 Aug 2026,
+  delivered to Telegram.** 17 of 18 sources OK. pasal.id Kemenperin returned 23
+  entries in a real scheduled run, not a probe; Kemenkeu recovered on its own
+  (7 entries) so the fallback correctly did not fire; all four East Java rows
+  worked; Surabaya rose 135 → 148, so incremental discovery is working. BSN
+  PESTA was the single failure and is listed as such in the digest. One `noted`
+  finding (PP 20/2026, income tax) and 21 `clear`. The 41-unjudged defect above
+  is from this same run.
 - **Kemenperin coverage exists for the first time (18 Aug 2026), via pasal.id.**
   122 tests pass (up from 111: 9 new pasal tests, 2 new lifecycle regressions),
   `npx tsc --noEmit` clean. Live end-to-end through `fetchAllSources()` parsed

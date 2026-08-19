@@ -20,7 +20,9 @@ import {
 } from "@/lib/db/queries";
 import { getProvider, type LlmProviderChoice } from "@/lib/llm";
 import { judge } from "@/lib/checks/judge";
+import { judgeAllEntries, planBatches } from "@/lib/checks/judge-batched";
 import { auditVerdictCoverage, normalizeUrlKey } from "@/lib/checks/coverage";
+import { linkRegulation } from "@/lib/checks/lifecycle";
 import { selectSourceChanges } from "@/lib/checks/source-changes";
 import { refreshChecklistForCustomer } from "@/lib/checks/checklist";
 import { fetchAllSources } from "@/lib/sources/fetch";
@@ -219,7 +221,9 @@ export async function runCheck(
       url: s.url,
       relevance: s.relevance,
     }));
-    const judgment = await judge(provider, {
+    // Batched, because one large batch is exactly what was going unjudged —
+    // 62 entries in, 20 verdicts back. See lib/checks/judge-batched.ts.
+    const judgment = await judgeAllEntries(provider, {
       customer: target.customer,
       profile: target.profile,
       jurisdiction,
@@ -229,18 +233,17 @@ export async function runCheck(
       lastRunAt: previousRun?.completedAt ?? null,
       memories: memoryRows,
     });
+    console.log(
+      `[judgment] ${report.regulations.length} entries in ${judgment.batches} batch(es) — ` +
+        `${judgment.findings.length} verdicts, ${judgment.failedBatches} batch failure(s)`,
+    );
 
     // --- Completion pass -----------------------------------------------------
-    // judge()'s prompt explicitly instructs the model to return a verdict for
-    // every entry — but on a large batch it does not always fully comply, and
-    // auditVerdictCoverage() is exactly what catches that. Disclosing the gap
-    // is necessary but not sufficient: retry once against only the entries the
-    // first pass missed. A much smaller batch is far more likely to get full
-    // compliance. Bounded to a single retry, so worst case is two model calls,
-    // never an open-ended loop chasing a model that may never fully finish. A
-    // retry failure must not fail a run that otherwise succeeded — it falls
-    // back to the same honest "unaccounted" disclosure the first pass would
-    // have produced alone.
+    // Batching the first pass is the actual fix for entries going unjudged, so
+    // this is now a genuine long stop rather than the main mechanism: it exists
+    // for whatever a batch still drops. It re-asks in batches too, because the
+    // old single-large-batch retry is precisely what resolved 0 of 41.
+    // A retry failure must never fail a run that otherwise succeeded.
     const lang = jurisdiction === "United States" ? "en" : "id";
     let allFindings = judgment.findings;
     let allCaveats = judgment.coverageCaveats;
@@ -251,6 +254,9 @@ export async function runCheck(
       allFindings.map((f) => f.url),
       seen.map((s) => s.url),
       lang,
+      // The same regulation reaches us from two portals under two URLs. Without
+      // its citation the audit calls the second copy "never checked".
+      seen.map((s) => s.regulationRef ?? s.title),
     );
 
     if (firstPassCoverage.unaccounted.length > 0) {
@@ -264,24 +270,31 @@ export async function runCheck(
             relevance: f.relevance,
           })),
         ];
-        const retryJudgment = await judge(provider, {
-          customer: target.customer,
-          profile: target.profile,
-          jurisdiction,
-          jurisdictionProfile,
-          report: { ...report, regulations: firstPassCoverage.unaccounted },
-          seen: retrySeen,
-          lastRunAt: previousRun?.completedAt ?? null,
-          memories: memoryRows,
-        });
-
-        // Only accept verdicts for entries actually in the missed set — the
-        // model choosing to re-litigate something already judged does not
-        // count as completing the retry.
         const missedUrls = new Set(firstPassCoverage.unaccounted.map((e) => normalizeUrlKey(e.url)));
-        const validRetryFindings = retryJudgment.findings.filter((f) =>
-          missedUrls.has(normalizeUrlKey(f.url)),
-        );
+        const validRetryFindings: typeof allFindings = [];
+
+        for (const batch of planBatches(firstPassCoverage.unaccounted)) {
+          try {
+            const retryJudgment = await judge(provider, {
+              customer: target.customer,
+              profile: target.profile,
+              jurisdiction,
+              jurisdictionProfile,
+              report: { ...report, regulations: batch },
+              seen: retrySeen,
+              lastRunAt: previousRun?.completedAt ?? null,
+              memories: memoryRows,
+            });
+            // Only accept verdicts for entries actually in the missed set — the
+            // model re-litigating something already judged does not count as
+            // completing the retry.
+            for (const finding of retryJudgment.findings) {
+              if (missedUrls.has(normalizeUrlKey(finding.url))) validRetryFindings.push(finding);
+            }
+          } catch {
+            // One failed retry batch must not abandon the others.
+          }
+        }
         allFindings = [...allFindings, ...validRetryFindings];
 
         const newlySurfaced = validRetryFindings.filter(
@@ -321,15 +334,20 @@ export async function runCheck(
       allFindings.map((f) => f.url),
       seen.map((s) => s.url),
       lang,
+      // The same regulation reaches us from two portals under two URLs. Without
+      // its citation the audit calls the second copy "never checked".
+      seen.map((s) => s.regulationRef ?? s.title),
     );
     console.log(
       `[coverage] ${coverage.totalEntries} entries — ${coverage.judged} judged, ` +
         `${coverage.alreadySeen} already seen, ${coverage.unaccounted.length} unaccounted`,
     );
+    let linksStored = 0;
     for (const finding of allFindings) {
+      const findingId = randomUUID();
       db.insert(findings)
         .values({
-          id: randomUUID(),
+          id: findingId,
           checkRunId: runId,
           customerId,
           sourceId: finding.sourceId ?? null,
@@ -343,7 +361,27 @@ export async function runCheck(
           reasoning: finding.reasoning,
         })
         .run();
+
+      // "Permendag 12/2026 is the fifth amendment to 23/2023" is the single most
+      // useful fact about a finding, and lifecycle.ts has been able to read it
+      // for a while — nothing ever called it, so regulation_links stayed empty
+      // no matter what ran. Only worth doing for findings a person will read;
+      // a `clear` verdict is not a rule anyone is tracking.
+      if (finding.relevance === "flagged" || finding.relevance === "noted") {
+        try {
+          linksStored += linkRegulation(customerId, {
+            id: findingId,
+            title: finding.title,
+            summaryEn: finding.summaryEn,
+            reasoning: finding.reasoning,
+            regulationRef: finding.regulationRef,
+          }).length;
+        } catch {
+          // A missing amendment link is a lost nicety; it must not cost the run.
+        }
+      }
     }
+    if (linksStored > 0) console.log(`[lifecycle] ${linksStored} regulation link(s) stored`);
 
     const caveats = [...new Set([
       ...allCaveats,

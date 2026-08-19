@@ -47,6 +47,13 @@ const ExtractionSchema = z.object({
           .string()
           .describe("The fact, in one short sentence, written to be read months from now."),
         source: z.string().describe('Where it came from, e.g. "user said in chat".'),
+        statedByUser: z
+          .boolean()
+          .describe(
+            "True when the USER stated this fact about their own business, or asked for it to be " +
+              "remembered. False when you inferred or derived it, or when it came from the " +
+              "assistant's own research rather than from the customer.",
+          ),
       }),
     )
     .describe("Empty array if nothing durable was established. That is the common case."),
@@ -69,6 +76,8 @@ Do NOT save:
 - one-off questions, or facts about regulations rather than about the customer
 - anything the user did not actually assert — no guessing, no inference from a question
 - restatements of something in the existing memory list
+
+Set statedByUser truthfully — it decides whether the fact is trusted immediately or waits for a human to confirm it. The customer is the authority on their own business, so anything they told you about themselves is true: their codes, their locations, their markets, their products, and anything they asked you to remember. Set it false only when the fact came from your own inference or research rather than from them.
 
 Returning an empty array is the correct and common answer. Never invent a fact to seem useful.`;
 
@@ -97,14 +106,20 @@ export async function extractMemories(input: {
 
     let changed = false;
     for (const m of value.memories) {
+      // A fact the customer stated about their own business is theirs to
+      // assert — the `human` tier in facts.ts, same reasoning as an uploaded
+      // document (rule 5). Only genuinely *inferred* facts stay unconfirmed,
+      // which is what the unconfirmed tier was always for. Before this, a
+      // customer could say "our KBLI is 22292" and the monitor would keep
+      // treating it as a guess forever unless they also clicked confirm.
       const inserted = await addMemory({
         customerId: input.customerId,
         jurisdiction: input.jurisdiction,
         kind: m.kind,
         content: m.content,
         source: m.source,
-        origin: "chat",
-        confirmed: false,
+        origin: m.statedByUser ? "user-stated" : "chat",
+        confirmed: m.statedByUser === true,
       });
       if (inserted) changed = true;
     }

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { auditVerdictCoverage, normalizeUrlKey } from "@/lib/checks/coverage";
+import { auditVerdictCoverage, normalizeUrlKey, regulationIdentityKey } from "@/lib/checks/coverage";
 import type { RegulationEntry } from "@/lib/sources/fetch";
 
 function entry(url: string, label = url): RegulationEntry {
@@ -90,4 +90,67 @@ test("caveat lists at most 5 unaccounted examples and says 'and others' beyond t
   assert.ok(detail);
   assert.ok(detail!.includes("dan lainnya"));
   assert.ok(!detail!.includes("Reg 5"));
+});
+
+test("the same regulation from a second portal is not reported as never checked", () => {
+  // The real failure: Setneg and Kemnaker both carry PP 27/2026 under different
+  // URLs. The model judged it once, and the audit called the second copy
+  // unchecked — three runs running, including one that cried wolf over 41.
+  const regs = [entry("https://jdih.setneg.go.id/x/1", "Peraturan Pemerintah 27 Tahun 2026")];
+  const coverage = auditVerdictCoverage(regs, [], [], "id", ["PP 27 Tahun 2026"]);
+
+  assert.equal(coverage.unaccounted.length, 0, "an already-judged regulation is not unchecked");
+  assert.equal(coverage.alreadySeen, 1);
+  assert.ok(coverage.caveats.some((c) => c.includes("sudah dinilai dari sumber lain")));
+});
+
+test("instrument type is part of a regulation's identity, so lookalikes stay separate", () => {
+  // PP 11/2026, Perpres 11/2026 and Permenaker 11/2026 are three different
+  // regulations. Matching on number and year alone would silently suppress two.
+  const regs = [entry("https://a.go.id/1", "Peraturan Presiden Nomor 11 Tahun 2026")];
+  const coverage = auditVerdictCoverage(regs, [], [], "id", ["Permenaker 11 Tahun 2026"]);
+
+  assert.equal(coverage.unaccounted.length, 1, "a different instrument is a different regulation");
+});
+
+test("abbreviated and spelled-out citations resolve to the same identity", () => {
+  assert.equal(regulationIdentityKey("PP 27 Tahun 2026"), regulationIdentityKey("Peraturan Pemerintah Nomor 27 Tahun 2026"));
+  assert.equal(
+    regulationIdentityKey("Permenaker 11 Tahun 2026"),
+    regulationIdentityKey("Peraturan Menteri Ketenagakerjaan Nomor 11 Tahun 2026"),
+  );
+});
+
+test("an unreadable citation yields null and is never treated as a match", () => {
+  // Absorbing an unparseable title would hide a genuinely unjudged entry.
+  assert.equal(regulationIdentityKey("Pengumuman dokumen lingkungan"), null);
+  assert.equal(regulationIdentityKey(""), null);
+  assert.equal(regulationIdentityKey(null), null);
+
+  const regs = [entry("https://a.go.id/1", "Pengumuman tanpa nomor")];
+  const coverage = auditVerdictCoverage(regs, [], [], "id", ["Pengumuman tanpa nomor"]);
+  assert.equal(coverage.unaccounted.length, 1, "no citation means no match, so it stays unaccounted");
+});
+
+test("a regulation cited inside another rule's subject does not steal its identity", () => {
+  // "Perubahan atas PP 55 Tahun 2022" must key on the amending rule, not on 55/2022.
+  assert.equal(
+    regulationIdentityKey("Peraturan Pemerintah Nomor 20 Tahun 2026 tentang Perubahan atas PP 55 Tahun 2022"),
+    "pp|20|2026",
+  );
+});
+
+test("a composite decree number carrying its own year is still an identity", () => {
+  // Keputusan Dirjen numbers look like 3/1920/PK.01.02/III/2026 — the year is
+  // inside the number, so none of the "Tahun YYYY" shapes match. These were
+  // judged and still reported as unchecked until this was handled.
+  assert.equal(
+    regulationIdentityKey("Keputusan Dirjen Nomor 3/1920/PK.01.02/III/2026"),
+    regulationIdentityKey("Keputusan Dirjen 3/1920/PK.01.02/III/2026"),
+  );
+  assert.notEqual(
+    regulationIdentityKey("Keputusan Dirjen 3/1920/PK.01.02/III/2026"),
+    regulationIdentityKey("Keputusan Dirjen 3/1919/PK.01.02/III/2026"),
+    "two different decrees must not collapse into one identity",
+  );
 });
