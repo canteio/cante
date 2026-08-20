@@ -83,6 +83,11 @@ feeds, unmonitored tracks — instead of showing green.
 
 ## The market, briefly
 
+> Full analysis — competitor evidence, differentiation, and TAM with
+> verified-vs-assumed labels — is in `market.md` (researched 20 Aug 2026).
+> That file supersedes the pricing and positioning notes below where they
+> disagree; the $500/month target in particular is revisited there.
+
 - **Big platforms** (Descartes, E2open, CargoWise) — customs filing for large
   importers. Not competitors; losing there costs nothing.
 - **Specialists** (Assent = materials/BOM, Quickcode = classification) — sold to
@@ -119,6 +124,7 @@ meetings than any feature.
 
 ## Where the rest lives
 
+- **Market, competitors, TAM:** `market.md`
 - **Plan (30 days to first revenue):** https://claude.ai/code/artifact/00a4c1ff-fe52-4eb7-b8cc-755f6dedd8ae
 - **US lead list (28 real importers + method):** https://claude.ai/code/artifact/e2595400-e357-4a54-b431-5e7ca69392de
 - **Code, sources, verified-vs-assumed claims:** `CLAUDE.md`

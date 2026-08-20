@@ -2112,6 +2112,7 @@ worse than none, because the next agent trusts it.
 |---|---|
 | Anything in `lib/`, `app/`, schema, or commands | `CLAUDE.md` (this file) |
 | Architecture decisions, or the plan changes | `appplan.md` |
+| Positioning, competitors, pricing, or TAM | `market.md` |
 | Source reliability, status, or next steps | `readme.md` |
 | Scope, sequencing, what's in/out of v1 | `plan.md` |
 
