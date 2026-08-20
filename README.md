@@ -1,4 +1,8 @@
-# Cante — Manufacturer Compliance Monitor
+# Cante — Autonomous Compliance OS ("Compliance Done For You")
+
+> **Vision**: An autonomous AI compliance workforce that monitors 52+ official government gazettes, audits 5-way shipping documents, and handles customs defense so the CEO can sleep peacefully.
+>
+> 📖 **Read the Strategy & Positioning Doc**: [`AGENTIC-COMPLIANCE-POSITIONING.md`](./AGENTIC-COMPLIANCE-POSITIONING.md)
 
 A country-scoped monitor of official regulatory sources, matched against one
 manufacturer's actual products and operations. **Export is optional** — a purely
@@ -11,7 +15,7 @@ flagship pack; the United States pack keeps domestic manufacturing,
 distribution, and exports as separate coverage tracks. It alerts **only when
 something genuinely relevant changed**.
 
-First customer: **MA**, PVC tarpaulin manufacturer, Surabaya. Real, live, in progress.
+First customer: **PT MA**, PVC manufacturer, Surabaya. Real, live, in progress.
 
 **v1 costs nothing to run.** It uses the Claude Code login already on the machine instead of an API key. That's a hard constraint, not a preference: nothing bills until the live test says the idea is worth paying for.
 

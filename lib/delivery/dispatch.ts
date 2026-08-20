@@ -117,37 +117,41 @@ export function formatTelegramDigest(runId: string): string {
   const noted = found.filter((f) => f.relevance === "noted");
 
   const lines: string[] = [
-    `Cante — ${run?.jurisdiction ?? "check"} — ${new Date().toISOString().slice(0, 10)}`,
+    `🛡️ Cante — ${run?.jurisdiction ?? "Indonesia"} — ${new Date().toISOString().slice(0, 10)}`,
     `${okCount}/${results.length} sources OK` +
       (failedResults.length > 0 ? ` · ${failedResults.length} FAILED` : ""),
-    `${flagged.length} flagged · ${noted.length} to look at`,
   ];
 
   if (flagged.length === 0 && noted.length === 0) {
     lines.push("\n✅ Status: All clear — nothing new affecting operations today.");
+  } else if (flagged.length === 0 && noted.length > 0) {
+    lines.push("\n✅ Status: All clear (No action required today)");
+    lines.push(`Zero regulatory risks or restrictions affecting operations. ${noted.length} general law(s) were published and reviewed:`);
+    lines.push("\nℹ️ Monitored updates (Informational only — no direct impact):");
+    for (const item of noted) {
+      const label = item.regulationRef ? `${item.regulationRef} — ` : "";
+      lines.push(`• ${label}${item.title}`);
+    }
+    const briefing = alertBriefingExcerpt(runId);
+    if (briefing) lines.push(briefing);
+    lines.push("\n👉 Open Cante Copilot to inspect details or ask questions.");
   } else {
-    lines.push(`\n⚠️ Status: ${flagged.length} flagged · ${noted.length} to look at`);
-    if (flagged.length > 0) {
-      lines.push("\nFlagged:");
-      for (const item of flagged) {
-        const label = item.regulationRef ? `${item.regulationRef} — ` : "";
-        lines.push(`• ${label}${item.title}`);
-      }
+    lines.push(`\n🚨 Status: Action Required (${flagged.length} item${flagged.length === 1 ? "" : "s"} need attention)`);
+    lines.push("\n⚠️ Flagged for your company:");
+    for (const item of flagged) {
+      const label = item.regulationRef ? `${item.regulationRef} — ` : "";
+      lines.push(`• ${label}${item.title}`);
     }
     if (noted.length > 0) {
-      lines.push("\nWorth a look:");
+      lines.push("\nℹ️ Also monitored (Informational):");
       for (const item of noted) {
         const label = item.regulationRef ? `${item.regulationRef} — ` : "";
         lines.push(`• ${label}${item.title}`);
       }
     }
-    // The digest is what actually gets read, on a phone, once. A list of
-    // regulation numbers tells the reader nothing they can act on, so carry the
-    // before/after the run already researched. Truncated here rather than
-    // omitted: the full text is in the alert body on the dashboard.
     const briefing = alertBriefingExcerpt(runId);
     if (briefing) lines.push(briefing);
-    lines.push("\n(Open Web GUI to inspect details or ask questions in Chat)");
+    lines.push("\n👉 Open Cante Copilot to review pre-drafted broker and supplier actions.");
   }
 
   if (results.length > 0) {
