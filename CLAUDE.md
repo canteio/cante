@@ -24,10 +24,7 @@ small to hire someone for it.
 
 ## The two rules that govern everything
 
-**1. No API spend.** v1 runs entirely on the local Claude Code login. `CANTE_LLM`
-defaults to `claude-code`, so an unset variable can never start billing. Do not
-implement `lib/llm/api.ts`, do not add `@anthropic-ai/sdk`, and do not suggest a
-deploy that needs a key — until the user explicitly says they're ready to pay.
+**1. Flexible LLM Provider Options.** `CANTE_LLM` defaults to `claude-code` (using local Claude Code CLI), `codex-cli` (local Codex CLI), or `gemini` (Google Gemini 2.5 Flash / Pro with native Google Search grounding via `GEMINI_API_KEY` / `GOOGLE_API_KEY`). An unset variable defaults to local `claude-code`.
 
 **2. Honest failure beats useful-looking output.** A fetch that failed and a
 regulation that isn't relevant are different facts, and neither may be rendered as

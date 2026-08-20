@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Truck, ShieldCheck, ShieldAlert, Plus, Search, FileCheck, RefreshCw } from "lucide-react";
+import { Truck, ShieldCheck, ShieldAlert, Plus, Search, FileCheck, RefreshCw, CheckCircle2, AlertTriangle, Play } from "lucide-react";
 import type { JurisdictionName } from "@/lib/countries";
 import { CountryTabs } from "@/components/dashboard/country-tabs";
 
@@ -29,14 +29,6 @@ type Supplier = {
   latestScreening: Screening | null;
 };
 
-type Gap = {
-  supplier: { id: string; name: string };
-  docType: string;
-  status: string;
-  detail: string;
-  severity: string;
-};
-
 type Coverage = {
   totalSuppliers: number;
   neverScreened: string[];
@@ -62,12 +54,13 @@ const SCREEN_CLASS: Record<string, string> = {
 
 export function SuppliersPanel({ country }: { country: JurisdictionName }) {
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
-  const [gaps, setGaps] = useState<Gap[]>([]);
   const [coverage, setCoverage] = useState<Coverage | null>(null);
+  const [search, setSearch] = useState("");
   const [name, setName] = useState("");
   const [supplierCountry, setSupplierCountry] = useState("South Korea");
   const [role, setRole] = useState("Raw Material Manufacturer");
   const [busy, setBusy] = useState(false);
+  const [batchBusy, setBatchBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
 
@@ -76,7 +69,6 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
       const res = await fetch("/api/suppliers");
       const data = await res.json();
       setSuppliers(data.suppliers ?? []);
-      setGaps(data.gaps ?? []);
       setCoverage(data.screeningCoverage ?? null);
     } catch (e: any) {
       setError(e.message);
@@ -118,88 +110,134 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
     const data = await post({ action: "screen", supplierId });
     if (data && data.screening) {
       setNote("Screening completed for supplier: outcome is " + ((data.screening as any).outcome || "clear") + ".");
+      setTimeout(() => setNote(null), 3000);
     }
   }
+
+  async function screenAllSuppliers() {
+    setBatchBusy(true);
+    setError(null);
+    try {
+      for (const s of suppliers) {
+        await fetch("/api/suppliers", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "screen", supplierId: s.id }),
+        });
+      }
+      setNote("Batch screening finished across all " + suppliers.length + " suppliers.");
+      setTimeout(() => setNote(null), 4000);
+      await load();
+    } finally {
+      setBatchBusy(false);
+    }
+  }
+
+  const filteredSuppliers = suppliers.filter((s) => {
+    if (!search.trim()) return true;
+    const q = search.toLowerCase();
+    return s.name.toLowerCase().includes(q) || (s.country && s.country.toLowerCase().includes(q)) || s.role.toLowerCase().includes(q);
+  });
 
   return (
     <div className="main-scroll">
       <div className="page-head">
         <div>
-          <h1>Suppliers & Vendor Due Diligence</h1>
+          <h1>Suppliers &amp; Vendor Due Diligence</h1>
           <p className="page-sub">
-            Track overseas raw material suppliers, missing Certificates of Analysis (COA), Form E/AK origin certificates,
-            and screen counterparties against official US/UN sanctions lists.
+            Track overseas and domestic raw material vendors, supplier Certificates of Analysis (COA), Form E/AK origin certificates,
+            and screen counterparties against official US/UN sanctions watchlists.
           </p>
         </div>
-        <CountryTabs value={country} />
+        <div className="page-actions">
+          <button className="btn btn-primary" onClick={screenAllSuppliers} disabled={batchBusy || suppliers.length === 0}>
+            <RefreshCw size={13} className={batchBusy ? "spin" : ""} />
+            {batchBusy ? "Screening Watchlists…" : "Screen All Suppliers"}
+          </button>
+          <CountryTabs value={country} />
+        </div>
       </div>
 
       {error && <div className="pill pill-bad" style={{ marginBottom: "1rem" }}>{error}</div>}
       {note && <div className="pill pill-ok" style={{ marginBottom: "1rem" }}>{note}</div>}
 
-      {/* Add Supplier Form */}
-      <section className="card" style={{ marginBottom: "1.5rem" }}>
-        <div className="card-head">
-          <Plus size={15} strokeWidth={1.75} />
-          <h2>Add New Supplier</h2>
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1.5fr auto", gap: "0.5rem", marginTop: "0.5rem" }}>
-          <input
-            className="input"
-            placeholder="Supplier Legal Name (e.g. LG Chem Ltd)"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <input
-            className="input"
-            placeholder="Country (e.g. South Korea, China, Taiwan)"
-            value={supplierCountry}
-            onChange={(e) => setSupplierCountry(e.target.value)}
-          />
-          <input
-            className="input"
-            placeholder="Role (e.g. PVC Resin Manufacturer)"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-          />
-          <button className="btn btn-primary" disabled={busy || !name.trim()} onClick={addSupplier}>
-            {busy ? "Adding…" : "Add Supplier"}
-          </button>
-        </div>
-      </section>
-
-      {/* Screening & Gaps Overview */}
+      {/* Overview Cards */}
       {coverage && (
-        <section className="card" style={{ marginBottom: "1.5rem" }}>
-          <div className="card-head">
-            <ShieldCheck size={16} />
-            <h2>Sanctions & Evidence Coverage</h2>
+        <div className="checklist-summary" style={{ marginBottom: "1.5rem" }}>
+          <div className="checklist-summary-cell tone-ok">
+            <span>Total Vendors</span>
+            <strong>{coverage.totalSuppliers}</strong>
           </div>
-          <div className="meta-row" style={{ marginTop: "0.25rem" }}>
-            <span className="pill pill-muted">{coverage.totalSuppliers} Total Suppliers</span>
-            {coverage.neverScreened.length > 0 ? (
-              <span className="pill pill-warn">{coverage.neverScreened.length} Not Screened Yet</span>
-            ) : (
-              <span className="pill pill-ok">100% Screened</span>
-            )}
-            {coverage.currentMatches.length > 0 && (
-              <span className="pill pill-bad">{coverage.currentMatches.length} Sanction Matches!</span>
-            )}
+          <div className="checklist-summary-cell tone-warn">
+            <span>Unscreened</span>
+            <strong>{coverage.neverScreened.length}</strong>
           </div>
-        </section>
+          <div className="checklist-summary-cell tone-bad">
+            <span>Sanction Matches</span>
+            <strong>{coverage.currentMatches.length}</strong>
+          </div>
+        </div>
       )}
 
-      {/* Supplier Grid */}
-      <div className="side-label">Active Vendors ({suppliers.length})</div>
-      {suppliers.length === 0 ? (
+      {/* Add Supplier & Search Controls */}
+      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "1rem", marginBottom: "1.5rem" }}>
+        <section className="card">
+          <div className="card-head">
+            <Plus size={15} strokeWidth={1.75} />
+            <h2>Register Vendor</h2>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr auto", gap: "0.5rem", marginTop: "0.5rem" }}>
+            <input
+              className="input"
+              placeholder="Vendor Name (e.g. LG Chem Ltd)"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <input
+              className="input"
+              placeholder="Country"
+              value={supplierCountry}
+              onChange={(e) => setSupplierCountry(e.target.value)}
+            />
+            <input
+              className="input"
+              placeholder="Role"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+            />
+            <button className="btn btn-primary" disabled={busy || !name.trim()} onClick={addSupplier}>
+              {busy ? "Adding…" : "Add"}
+            </button>
+          </div>
+        </section>
+
+        <section className="card">
+          <div className="card-head">
+            <Search size={15} strokeWidth={1.75} />
+            <h2>Search Vendors</h2>
+          </div>
+          <div style={{ marginTop: "0.5rem" }}>
+            <input
+              className="input"
+              placeholder="Filter by vendor name, country, or role…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+        </section>
+      </div>
+
+      {/* Vendor Cards Grid */}
+      <div className="side-label">Active Suppliers ({filteredSuppliers.length})</div>
+      {filteredSuppliers.length === 0 ? (
         <div className="empty">
           <Truck size={24} strokeWidth={1.5} style={{ marginBottom: 8 }} />
-          <p>No suppliers registered yet. Add a vendor above or tell the AI Copilot in chat.</p>
+          <p>No matching suppliers found. Add a vendor above or tell the AI Copilot in chat.</p>
         </div>
       ) : (
         <div className="checklist-grid">
-          {suppliers.map((s) => (
-            <article key={s.id} className="card">
+          {filteredSuppliers.map((s) => (
+            <article key={s.id} className="card" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
               <div className="checklist-card-top">
                 <div>
                   <h3 style={{ margin: 0, fontSize: "1rem" }}>{s.name}</h3>
@@ -216,9 +254,9 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
                 )}
               </div>
 
-              {/* Certificate Documents */}
-              <div style={{ marginTop: "0.5rem", paddingTop: "0.5rem", borderTop: "1px solid var(--border)" }}>
-                <div className="side-label" style={{ padding: 0, marginBottom: 4 }}>Certificates & Evidence</div>
+              {/* Certificate Checklist */}
+              <div style={{ marginTop: "0.25rem", paddingTop: "0.5rem", borderTop: "1px solid var(--border)" }}>
+                <div className="side-label" style={{ padding: 0, marginBottom: 4 }}>Certificates &amp; Evidence</div>
                 {s.documents.length === 0 ? (
                   <div className="muted" style={{ fontSize: "0.8rem" }}>No certificates on file.</div>
                 ) : (
@@ -233,7 +271,7 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
                 )}
               </div>
 
-              <div className="checklist-actions" style={{ marginTop: "0.75rem" }}>
+              <div className="checklist-actions" style={{ marginTop: "auto", paddingTop: "0.5rem", borderTop: "1px solid var(--border)" }}>
                 <button className="btn btn-small" onClick={() => screenSupplier(s.id)}>
                   <Search size={12} /> Screen Sanctions
                 </button>

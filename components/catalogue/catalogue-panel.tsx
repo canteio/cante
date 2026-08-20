@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Boxes, Check, Plus, Upload, X, Tag, FileText } from "lucide-react";
+import { Boxes, Check, Plus, Upload, X, Tag, Search, LayoutGrid, List } from "lucide-react";
 import type { JurisdictionName } from "@/lib/countries";
 import { CountryTabs } from "@/components/dashboard/country-tabs";
 
@@ -46,8 +46,8 @@ const TIER_CLASS: Record<string, string> = {
 };
 
 const TIER_LABEL: Record<string, string> = {
-  document: "Document Verified (PIB/PEB/7501)",
-  human: "Human Confirmed",
+  document: "Document-Verified (PIB/PEB/7501)",
+  human: "Human-Confirmed",
   lead: "Lead / Declared",
   guess: "Seed / Guess",
 };
@@ -55,6 +55,8 @@ const TIER_LABEL: Record<string, string> = {
 export function CataloguePanel({ country }: { country: JurisdictionName }) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
   const [csv, setCsv] = useState("");
   const [summary, setSummary] = useState<ImportSummary | null>(null);
   const [busy, setBusy] = useState(false);
@@ -87,7 +89,7 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
     setBusy(true);
     setError(null);
     try {
-      const csvContent = `sku,name,hs_code,materials\n"${sku.trim()}","${name.trim()}","${hsCode.trim()}","${materials.trim()}"`;
+      const csvContent = "sku,name,hs_code,materials\n\"" + sku.trim() + "\",\"" + name.trim() + "\",\"" + hsCode.trim() + "\",\"" + materials.trim() + "\"";
       const res = await fetch("/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -129,13 +131,21 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
     }
   }
 
+  const filteredProducts = products.filter((p) => {
+    if (!search.trim()) return true;
+    const q = search.toLowerCase();
+    const matchesHts = p.classifications.some((c) => c.code.toLowerCase().includes(q));
+    const matchesMaterials = p.materials.some((m) => m.toLowerCase().includes(q));
+    return p.sku.toLowerCase().includes(q) || p.name.toLowerCase().includes(q) || matchesHts || matchesMaterials;
+  });
+
   return (
     <div className="main-scroll">
       <div className="page-head">
         <div>
-          <h1>Product Catalogue & Materials</h1>
+          <h1>Product Catalogue &amp; Materials</h1>
           <p className="page-sub">
-            Your manufactured goods and imported raw materials. Classifications determine import taxes (Bea Masuk, PPN, PPh 22), LARTAS quotas, and export rules.
+            Your manufactured finished goods and imported raw materials. Classifications determine import taxes (Bea Masuk, PPN, PPh 22), LARTAS quotas, and export rules.
           </p>
         </div>
         <div className="page-actions">
@@ -150,7 +160,7 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
 
       {/* Quick Add Modal/Form */}
       {showAddForm && (
-        <section className="card" style={{ marginBottom: "1.5rem", borderLeft: "4px solid var(--accent)" }}>
+        <section className="card" style={{ marginBottom: "1.5rem", borderLeft: "4px solid var(--accent-primary, #0284c7)" }}>
           <div className="card-head">
             <Tag size={16} />
             <h2>Add Single Product or Raw Material</h2>
@@ -184,7 +194,7 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
               />
             </div>
             <div>
-              <label className="side-label" style={{ padding: 0, marginBottom: 2 }}>Materials / Chemistry</label>
+              <label className="side-label" style={{ padding: 0, marginBottom: 2 }}>Materials / Chemical Composition</label>
               <input
                 className="input"
                 placeholder="e.g. Polyvinyl Chloride (CAS 9002-86-2)"
@@ -202,52 +212,105 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
         </section>
       )}
 
-      {/* CSV Bulk Ingest Accordion */}
-      <section className="card" style={{ marginBottom: "1.5rem" }}>
-        <div className="card-head">
-          <Upload size={15} strokeWidth={1.75} />
-          <h2>Bulk CSV Import</h2>
+      {/* Search & Bulk CSV Row */}
+      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "1rem", marginBottom: "1.5rem" }}>
+        <section className="card">
+          <div className="card-head">
+            <Search size={15} strokeWidth={1.75} />
+            <h2>Search Catalogue</h2>
+          </div>
+          <div style={{ marginTop: "0.5rem" }}>
+            <input
+              className="input"
+              placeholder="Search by SKU, item name, HS code, or chemical ingredient…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+        </section>
+
+        <section className="card">
+          <div className="card-head">
+            <Upload size={15} strokeWidth={1.75} />
+            <h2>Bulk CSV</h2>
+          </div>
+          <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.5rem" }}>
+            <input
+              className="input mono"
+              placeholder="sku,name,hs_code"
+              value={csv}
+              onChange={(e) => setCsv(e.target.value)}
+            />
+            <button className="btn" disabled={busy || !csv.trim()} onClick={() => void importCsv()}>
+              {busy ? "…" : "Import"}
+            </button>
+          </div>
+        </section>
+      </div>
+
+      {summary && (
+        <div className="import-summary" style={{ marginBottom: "1rem" }}>
+          <div className="meta-row">
+            <span className="pill pill-ok">{summary.created} created</span>
+            <span className="pill pill-blue">{summary.updated} updated</span>
+            <span className="pill pill-muted">{summary.unchanged} unchanged</span>
+          </div>
         </div>
-        <p className="page-sub" style={{ margin: "4px 0 8px" }}>
-          Paste CSV rows with headers: <code className="mono">sku, name, hs_code, materials, unit_price</code>
-        </p>
-        <textarea
-          className="input mono"
-          rows={3}
-          value={csv}
-          placeholder={"sku,name,hs_code,materials\nRM-DOP-01,DOP Plasticizer,2917.34.00,Dioctyl phthalate"}
-          onChange={(event) => setCsv(event.target.value)}
-        />
-        <div style={{ marginTop: "0.5rem", display: "flex", justifyContent: "flex-end" }}>
-          <button className="btn" disabled={busy || !csv.trim()} onClick={() => void importCsv()}>
-            {busy ? "Importing…" : "Import CSV"}
+      )}
+
+      {/* Product Grid */}
+      <div className="meta-row" style={{ justifyContent: "space-between", marginBottom: "0.5rem" }}>
+        <div className="side-label" style={{ padding: 0 }}>Registered Items ({filteredProducts.length})</div>
+        <div style={{ display: "flex", gap: 4 }}>
+          <button className={"btn btn-small " + (viewMode === "grid" ? "btn-primary" : "")} onClick={() => setViewMode("grid")}>
+            <LayoutGrid size={13} />
+          </button>
+          <button className={"btn btn-small " + (viewMode === "table" ? "btn-primary" : "")} onClick={() => setViewMode("table")}>
+            <List size={13} />
           </button>
         </div>
+      </div>
 
-        {summary && (
-          <div className="import-summary" style={{ marginTop: "0.75rem" }}>
-            <div className="meta-row">
-              <span className="pill pill-ok">{summary.created} created</span>
-              <span className="pill pill-blue">{summary.updated} updated</span>
-              <span className="pill pill-muted">{summary.unchanged} unchanged</span>
-            </div>
-          </div>
-        )}
-      </section>
-
-      {/* Product List */}
-      <div className="side-label">Registered Items ({products.length})</div>
       {loading ? (
         <div className="empty">Loading catalogue…</div>
-      ) : products.length === 0 ? (
-        <div className="empty">No products in catalogue yet. Add your first item above or chat with the AI Copilot.</div>
+      ) : filteredProducts.length === 0 ? (
+        <div className="empty">No matching items in catalogue. Add a product above or state it in chat.</div>
+      ) : viewMode === "table" ? (
+        <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem" }}>
+            <thead>
+              <tr style={{ background: "var(--app-surface-active)", borderBottom: "1px solid var(--border)", textAlign: "left" }}>
+                <th style={{ padding: "8px 12px" }}>SKU</th>
+                <th style={{ padding: "8px 12px" }}>Name</th>
+                <th style={{ padding: "8px 12px" }}>Tariff HS Codes</th>
+                <th style={{ padding: "8px 12px" }}>Materials</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredProducts.map((p) => (
+                <tr key={p.id} style={{ borderBottom: "1px solid var(--border)" }}>
+                  <td style={{ padding: "8px 12px", fontFamily: "var(--font-mono)", fontWeight: 600, color: "var(--accent-primary, #0284c7)" }}>{p.sku}</td>
+                  <td style={{ padding: "8px 12px", fontWeight: 500 }}>{p.name}</td>
+                  <td style={{ padding: "8px 12px" }}>
+                    {p.classifications.map((c) => (
+                      <span key={c.id} className={"pill " + (TIER_CLASS[c.tier] ?? "pill-muted")} style={{ marginRight: 4 }}>
+                        {c.code}
+                      </span>
+                    ))}
+                  </td>
+                  <td style={{ padding: "8px 12px", color: "var(--text-secondary)" }}>{p.materials.join(", ") || "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
         <div className="checklist-grid">
-          {products.map((p) => (
-            <article key={p.id} className="card">
+          {filteredProducts.map((p) => (
+            <article key={p.id} className="card" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
               <div className="checklist-card-top">
                 <div>
-                  <span className="mono strong" style={{ color: "var(--accent)" }}>{p.sku}</span>
+                  <span className="mono strong" style={{ color: "var(--accent-primary, #0284c7)" }}>{p.sku}</span>
                   <h3 style={{ margin: "2px 0 4px", fontSize: "1rem" }}>{p.name}</h3>
                 </div>
                 {p.unitValue !== null && (
@@ -258,7 +321,7 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
               </div>
 
               {p.materials.length > 0 && (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 4, margin: "6px 0" }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 4, margin: "4px 0" }}>
                   {p.materials.map((m, idx) => (
                     <span key={idx} className="pill pill-muted" style={{ fontSize: "0.75rem" }}>{m}</span>
                   ))}
@@ -266,15 +329,15 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
               )}
 
               {/* Classifications */}
-              <div style={{ marginTop: "0.5rem", paddingTop: "0.5rem", borderTop: "1px solid var(--border)" }}>
+              <div style={{ marginTop: "auto", paddingTop: "0.5rem", borderTop: "1px solid var(--border)" }}>
                 <div className="side-label" style={{ padding: 0, marginBottom: 4 }}>Tariff Classifications</div>
                 {p.classifications.length === 0 ? (
                   <span className="muted" style={{ fontSize: "0.8rem" }}>No tariff codes attached yet.</span>
                 ) : (
                   p.classifications.map((c) => (
-                    <div key={c.id} className="meta-row" style={{ marginTop: 2 }}>
+                    <div key={c.id} className="meta-row" style={{ marginTop: 2, justifyContent: "space-between" }}>
                       <span className="mono strong">{c.code}</span>
-                      <span className={`pill ${TIER_CLASS[c.tier] ?? "pill-muted"}`}>
+                      <span className={"pill " + (TIER_CLASS[c.tier] ?? "pill-muted")}>
                         {TIER_LABEL[c.tier] ?? c.tier}
                       </span>
                     </div>

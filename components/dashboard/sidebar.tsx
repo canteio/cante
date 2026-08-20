@@ -19,11 +19,7 @@ import { normalizeProviderChoice, PROVIDER_COOKIE } from "@/lib/llm";
 import { DEFAULT_JURISDICTION, type JurisdictionName } from "@/lib/countries";
 
 /**
- * Enterprise Navigation Sidebar:
- * 1. AI Copilot (Primary Chat & Assistant)
- * 2. Regulatory Compliance (Checklist, Work Queue, Daily Checks)
- * 3. Company & Operations (Profile, Catalogue, Documents, Suppliers)
- * 4. Intelligence (Memory & Facts, Provider Switcher)
+ * Enterprise Navigation Sidebar (Linear / Stripe / Salesforce inspired)
  */
 export async function Sidebar({
   active,
@@ -49,9 +45,15 @@ export async function Sidebar({
 
   return (
     <aside className="sidebar">
-      <div className="brand fade-1">
-        <div className="brand-mark serif">C</div>
-        <div className="brand-name">Cante</div>
+      {/* Brand Header */}
+      <div className="brand fade-1" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div className="brand-mark serif">C</div>
+          <div>
+            <div className="brand-name" style={{ lineHeight: 1.1 }}>Cante</div>
+            <div style={{ fontSize: "0.6875rem", color: "var(--text-muted)", letterSpacing: "0.02em", textTransform: "uppercase" }}>Compliance OS</div>
+          </div>
+        </div>
       </div>
 
       {/* Primary AI Assistant */}
@@ -110,22 +112,26 @@ export async function Sidebar({
         </nav>
       </div>
 
-      {/* Active Customer Context */}
-      <div className="side-section fade-2">
-        <div className="side-label">Active Customer</div>
+      {/* Active Customer Workspace */}
+      <div className="side-section fade-2" style={{ marginTop: "auto" }}>
+        <div className="side-label">Active Workspace</div>
         {customers.length === 0 ? (
           <div style={{ padding: "0 10px", fontSize: "0.8125rem", color: "var(--text-muted)" }}>
             None yet — run <code className="mono">npm run db:seed</code>
           </div>
         ) : (
           customers.map((c) => (
-            <div key={c.id} className="customer-row">
-              <div className="avatar">{c.name.slice(0, 1)}</div>
+            <div key={c.id} className="customer-row" style={{ background: "var(--app-surface-active)", borderRadius: 6, border: "1px solid var(--border)" }}>
+              <div className="avatar" style={{ background: "var(--accent-primary, #0284c7)", color: "#fff", fontWeight: 600 }}>
+                {c.name.slice(0, 1)}
+              </div>
               <div style={{ minWidth: 0 }}>
-                <strong>{c.name}</strong>
-                <small>
-                  {c.city ? `${c.city}, ` : ""}
-                  {c.country}
+                <strong style={{ display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {c.name}
+                </strong>
+                <small style={{ color: "var(--text-muted)", display: "flex", alignItems: "center", gap: 4 }}>
+                  <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "var(--ok)" }} />
+                  {c.city ? `${c.city}, ` : ""}{c.country}
                 </small>
               </div>
             </div>

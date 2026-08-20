@@ -1,4 +1,4 @@
-export type LlmProviderChoice = "claude-code" | "codex-cli" | "api";
+export type LlmProviderChoice = "claude-code" | "codex-cli" | "antigravity" | "api";
 
 export const PROVIDER_COOKIE = "cante_llm";
 
@@ -21,6 +21,12 @@ export const PROVIDER_OPTIONS: {
     description: "Local Codex CLI signed in with ChatGPT/OpenAI. No API key.",
   },
   {
+    id: "antigravity",
+    label: "Antigravity / Gemini",
+    shortLabel: "Antigravity",
+    description: "Local Antigravity (agy) session signed in with Google. No API key.",
+  },
+  {
     id: "api",
     label: "Hosted API",
     shortLabel: "API",
@@ -31,6 +37,7 @@ export const PROVIDER_OPTIONS: {
 export function normalizeProviderChoice(value: unknown): LlmProviderChoice {
   const choice = String(value ?? "").toLowerCase();
   if (choice === "codex" || choice === "openai" || choice === "chatgpt") return "codex-cli";
-  if (choice === "codex-cli" || choice === "claude-code" || choice === "api") return choice;
+  if (choice === "antigravity" || choice === "agy" || choice === "gemini" || choice === "google") return "antigravity";
+  if (choice === "codex-cli" || choice === "claude-code" || choice === "antigravity" || choice === "api") return choice;
   return "claude-code";
 }

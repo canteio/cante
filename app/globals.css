@@ -116,7 +116,10 @@ a:hover {
   background: var(--app-background);
   border-right: 1px solid var(--border);
   height: 100vh;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: sticky;
+  top: 0;
 }
 
 .brand {
@@ -303,6 +306,7 @@ a:hover {
   margin-top: auto;
   padding: 10px;
   border-top: 1px solid var(--border);
+  flex-shrink: 0;
 }
 
 @media (max-width: 720px) {
@@ -1312,36 +1316,72 @@ a:hover {
   }
 }
 
-/* ─── Buttons ──────────────────────────────────────────────────── */
+/* ─── Modern Enterprise Buttons ────────────────────────────────── */
 
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  justify-content: center;
+  gap: 6px;
   height: 32px;
-  padding: 0 14px;
-  border: 0;
-  border-radius: 11px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   font-size: 0.8125rem;
   font-weight: 500;
-  color: #fff;
-  background: linear-gradient(to bottom, #404040, #000);
-  box-shadow:
-    0 3px 9px rgba(15, 23, 42, 0.1),
-    inset 1px 1px 0 rgba(255, 255, 255, 0.22),
-    inset -1px -1px 0 rgba(255, 255, 255, 0.1),
-    inset -4px -4px 9px rgba(15, 23, 42, 0.2);
-  transition: all 0.15s;
+  color: var(--text);
+  background: var(--app-surface);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--app-surface-active);
+  border-color: #cbd5e1;
 }
 
 .btn:active:not(:disabled) {
-  transform: scale(0.97);
+  transform: translateY(1px);
+  box-shadow: none;
 }
 
 .btn:disabled {
-  cursor: default;
-  background: linear-gradient(to bottom, #525252, #000);
-  opacity: 0.55;
+  cursor: not-allowed;
+  opacity: 0.5;
+  background: var(--app-surface);
+}
+
+.btn-primary {
+  color: #fff;
+  background: #0284c7;
+  border-color: #0369a1;
+  box-shadow: 0 1px 2px rgba(2, 132, 199, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #0369a1;
+  border-color: #075985;
+}
+
+.btn-small {
+  height: 26px;
+  padding: 0 8px;
+  font-size: 0.75rem;
+  border-radius: var(--radius-sm);
+}
+
+.btn-danger,
+.btn-destructive {
+  color: #dc2626;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.btn-danger:hover:not(:disabled),
+.btn-destructive:hover:not(:disabled) {
+  background: #fee2e2;
+  border-color: #fca5a5;
 }
 
 .icon-btn {
@@ -1351,20 +1391,21 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 0;
-  border-radius: 11px;
-  color: #fff;
-  background: linear-gradient(to bottom, #404040, #000);
-  box-shadow:
-    0 3px 9px rgba(15, 23, 42, 0.1),
-    inset 1px 1px 0 rgba(255, 255, 255, 0.22),
-    inset -1px -1px 0 rgba(255, 255, 255, 0.1),
-    inset -4px -4px 9px rgba(15, 23, 42, 0.2);
-  transition: all 0.15s;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  background: var(--app-surface);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: all 0.15s ease;
+}
+
+.icon-btn:hover:not(:disabled) {
+  background: var(--app-surface-active);
+  color: var(--text);
 }
 
 .icon-btn:active:not(:disabled) {
-  transform: scale(0.95);
+  transform: translateY(1px);
 }
 
 .icon-btn:disabled {

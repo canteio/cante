@@ -1,51 +1,57 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Inbox } from "lucide-react";
+import { Inbox, CheckCircle2, Send, X, Clock, ExternalLink, AlertCircle, Copy, Check } from "lucide-react";
 import type { JurisdictionName } from "@/lib/countries";
 import { CountryTabs } from "@/components/dashboard/country-tabs";
-
-/**
- * Work queue (item 4) with impact (item 5).
- *
- * Two display rules carry the project's discipline into the UI:
- *   - an exposure figure is never shown without its basis;
- *   - "not calculable" is rendered as its own state, never as a zero.
- */
+import type { GeneratedActionDrafts } from "@/lib/workflow/draft";
 
 type Impact = {
   id: string;
+  findingId: string;
   matchKind: string;
-  matchReason: string;
+  confidence: string;
   effectiveOn: string | null;
-  nextAffectedShipmentAt: string | null;
+  annualDutyAtRisk: number | null;
   estimatedAnnualExposure: number | null;
   estimatedMonthlyExposure: number | null;
-  annualDutyAtRisk: number | null;
-  tariffCode: string | null;
-  tariffBasis: string | null;
   currency: string;
   delayRisk: string;
   basis: string[];
-  confidence: string;
+  tariffBasis: string | null;
+  tariffCode: string | null;
+  matchReason: string;
 };
 
 type QueueRow = {
-  finding: { id: string; title: string; url: string | null; relevance: string; summaryEn: string | null };
-  state: string;
-  overdue: boolean;
-  action: { assignee: string | null; forwardedTo: string | null; dueAt: string | null; brokerDecision: string | null; note: string | null } | null;
-  impact: Impact[];
-  drafts?: {
-    brokerDraft: { recipient: string; channel: string; subject?: string; body: string };
-    internalOpsDraft: { title: string; checklist: string[]; body: string };
-    supplierDraft: { recipient: string; subject: string; body: string };
+  finding: {
+    id: string;
+    title: string;
+    summaryEn: string | null;
+    summaryId: string | null;
+    regulationRef: string;
+    enactedOn: string | null;
+    url: string | null;
+    relevance: string;
+    reasoning: string | null;
   };
+  state: string;
+  action: {
+    assignee: string | null;
+    dueAt: string | null;
+    forwardedTo: string | null;
+    note: string | null;
+    brokerDecision: string | null;
+    updatedAt: string | null;
+  } | null;
+  impact: Impact[];
+  overdue: boolean;
+  drafts?: GeneratedActionDrafts;
 };
 
 const STATE_CLASS: Record<string, string> = {
   new: "pill-warn",
-  acknowledged: "pill-blue",
+  acknowledged: "pill-muted",
   assigned: "pill-blue",
   forwarded_to_broker: "pill-blue",
   evidence_requested: "pill-warn",
@@ -55,70 +61,140 @@ const STATE_CLASS: Record<string, string> = {
 
 const CONFIDENCE_CLASS: Record<string, string> = {
   verified: "pill-ok",
-  estimated: "pill-blue",
-  indicative: "pill-warn",
+  stated: "pill-blue",
+  lead: "pill-warn",
+  assumed: "pill-muted",
 };
+
+interface ActionModalState {
+  findingId: string;
+  state: string;
+  title: string;
+  primaryLabel: string;
+  primaryPlaceholder: string;
+  primaryValue: string;
+  secondaryLabel?: string;
+  secondaryPlaceholder?: string;
+  secondaryValue?: string;
+}
 
 export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
   const [queue, setQueue] = useState<QueueRow[]>([]);
   const [summary, setSummary] = useState<Record<string, number>>({});
-  const [loading, setLoading] = useState(true);
   const [includeResolved, setIncludeResolved] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
-
-  const copyDraft = (key: string, text: string) => {
-    void navigator.clipboard.writeText(text);
-    setCopiedKey(key);
-    setTimeout(() => setCopiedKey(null), 2000);
-  };
+  const [actionModal, setActionModal] = useState<ActionModalState | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
-    const res = await fetch(`/api/workqueue?includeResolved=${includeResolved}&country=${encodeURIComponent(country)}`);
-    const data = await res.json();
-    setQueue(data.queue ?? []);
-    setSummary(data.summary ?? {});
-    setLoading(false);
-  }, [includeResolved, country]);
+    try {
+      const res = await fetch(
+        `/api/workqueue?includeResolved=${includeResolved}&country=${encodeURIComponent(country)}`,
+      );
+      const data = await res.json();
+      setQueue(data.queue ?? []);
+      setSummary(data.summary ?? {});
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [country, includeResolved]);
 
   useEffect(() => {
     void load();
   }, [load]);
 
-  async function act(findingId: string, state: string) {
-    setError(null);
-    const body: Record<string, unknown> = { findingId, state };
+  async function copyDraft(key: string, text: string) {
+    await navigator.clipboard.writeText(text);
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(null), 2000);
+  }
 
+  function openActionModal(findingId: string, state: string) {
+    if (state === "acknowledged") {
+      void submitAction({ findingId, state });
+      return;
+    }
     if (state === "assigned") {
-      const assignee = window.prompt("Assign to whom?");
-      if (!assignee) return;
-      body.assignee = assignee;
-      body.dueAt = window.prompt("Due date (YYYY-MM-DD), optional") || null;
+      setActionModal({
+        findingId,
+        state,
+        title: "Assign Finding to Team Member",
+        primaryLabel: "Assignee Name / Email *",
+        primaryPlaceholder: "e.g. Budi Santoso (Compliance Lead)",
+        primaryValue: "",
+        secondaryLabel: "Target Due Date (Optional)",
+        secondaryPlaceholder: "YYYY-MM-DD",
+        secondaryValue: "",
+      });
+      return;
     }
     if (state === "forwarded_to_broker") {
-      const forwardedTo = window.prompt("Forward to which broker?");
-      if (!forwardedTo) return;
-      body.forwardedTo = forwardedTo;
+      setActionModal({
+        findingId,
+        state,
+        title: "Forward Finding to Customs Broker (PPJK / CHB)",
+        primaryLabel: "Broker / PPJK Agency Name *",
+        primaryPlaceholder: "e.g. PT Trans Samudera PPJK Surabaya",
+        primaryValue: "",
+      });
+      return;
+    }
+    if (state === "evidence_requested") {
+      setActionModal({
+        findingId,
+        state,
+        title: "Request Evidence from Supplier",
+        primaryLabel: "Supplier / Counterparty Name *",
+        primaryPlaceholder: "e.g. LG Chem Ltd (Korea)",
+        primaryValue: "",
+      });
+      return;
     }
     if (state === "irrelevant") {
-      const note = window.prompt("Why is this irrelevant? (required — it is recorded)");
-      if (!note) return;
-      body.note = note;
+      setActionModal({
+        findingId,
+        state,
+        title: "Mark Finding as Irrelevant",
+        primaryLabel: "Rationale / Justification (Recorded for Audit) *",
+        primaryPlaceholder: "e.g. Facility does not use imported solvent grade covered by this regulation.",
+        primaryValue: "",
+      });
+      return;
     }
     if (state === "closed") {
-      body.brokerDecision = window.prompt("Record the decision, if any") || null;
+      setActionModal({
+        findingId,
+        state,
+        title: "Close Finding & Record Resolution",
+        primaryLabel: "Final Resolution / Broker Ruling *",
+        primaryPlaceholder: "e.g. PPJK confirmed PI Bahan Baku quota is sufficient; clearance completed.",
+        primaryValue: "",
+      });
+      return;
     }
+  }
 
-    const res = await fetch("/api/workqueue", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    const data = await res.json();
-    if (!res.ok) setError(data.error ?? "Could not update.");
-    else await load();
+  async function submitAction(body: Record<string, unknown>) {
+    setError(null);
+    try {
+      const res = await fetch("/api/workqueue", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (!res.ok) setError(data.error ?? "Could not update task.");
+      else {
+        setActionModal(null);
+        await load();
+      }
+    } catch (e: any) {
+      setError(e.message);
+    }
   }
 
   async function assess(findingId: string) {
@@ -136,13 +212,14 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
         <div>
           <h1>Action Work Queue &amp; Broker Dispatch</h1>
           <p className="page-sub">
-            Flagged regulatory changes affecting your specific products and materials, financial exposure estimates,
-            and 1-click communication drafts for your customs broker (PPJK), operations team, or foreign suppliers.
+            Regulatory amendments matched against your specific products and materials, financial duty exposure calculations,
+            and 1-click communication drafts for your customs broker (PPJK), operations team, or suppliers.
           </p>
         </div>
         <CountryTabs value={country} />
       </div>
 
+      {/* Task Summary Badges */}
       <div className="meta-row" style={{ flexWrap: "wrap", gap: "0.5rem" }}>
         {Object.entries(summary).map(([state, count]) => (
           <span key={state} className={`pill ${STATE_CLASS[state] ?? "pill-muted"}`}>
@@ -154,172 +231,188 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
         </button>
       </div>
 
-      {error && <div className="pill pill-bad">{error}</div>}
+      {error && <div className="pill pill-bad" style={{ margin: "1rem 0" }}>{error}</div>}
+
+      {/* Modal Action Sheet */}
+      {actionModal && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 16 }}>
+          <div className="card" style={{ maxWidth: 520, width: "100%", background: "var(--app-surface)", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.2)" }}>
+            <div className="card-head" style={{ justifyContent: "space-between" }}>
+              <h2 style={{ fontSize: "1.1rem" }}>{actionModal.title}</h2>
+              <button className="icon-btn" onClick={() => setActionModal(null)}><X size={14} /></button>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginTop: "1rem" }}>
+              <div>
+                <label className="side-label" style={{ padding: 0, marginBottom: 4, display: "block" }}>{actionModal.primaryLabel}</label>
+                <input
+                  className="input"
+                  placeholder={actionModal.primaryPlaceholder}
+                  value={actionModal.primaryValue}
+                  onChange={(e) => setActionModal({ ...actionModal, primaryValue: e.target.value })}
+                  autoFocus
+                />
+              </div>
+              {actionModal.secondaryLabel && (
+                <div>
+                  <label className="side-label" style={{ padding: 0, marginBottom: 4, display: "block" }}>{actionModal.secondaryLabel}</label>
+                  <input
+                    className="input"
+                    placeholder={actionModal.secondaryPlaceholder}
+                    value={actionModal.secondaryValue || ""}
+                    onChange={(e) => setActionModal({ ...actionModal, secondaryValue: e.target.value })}
+                  />
+                </div>
+              )}
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem", marginTop: "1rem" }}>
+                <button className="btn" onClick={() => setActionModal(null)}>Cancel</button>
+                <button
+                  className="btn btn-primary"
+                  disabled={!actionModal.primaryValue.trim()}
+                  onClick={() => {
+                    const body: Record<string, unknown> = {
+                      findingId: actionModal.findingId,
+                      state: actionModal.state,
+                    };
+                    if (actionModal.state === "assigned") {
+                      body.assignee = actionModal.primaryValue.trim();
+                      body.dueAt = actionModal.secondaryValue?.trim() || null;
+                    }
+                    if (actionModal.state === "forwarded_to_broker") {
+                      body.forwardedTo = actionModal.primaryValue.trim();
+                    }
+                    if (actionModal.state === "evidence_requested") {
+                      body.note = `Evidence requested from ${actionModal.primaryValue.trim()}`;
+                    }
+                    if (actionModal.state === "irrelevant") {
+                      body.note = actionModal.primaryValue.trim();
+                    }
+                    if (actionModal.state === "closed") {
+                      body.brokerDecision = actionModal.primaryValue.trim();
+                    }
+                    void submitAction(body);
+                  }}
+                >
+                  Confirm &amp; Update
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {loading ? (
-        <div className="empty">Loading…</div>
+        <div className="empty">Loading tasks…</div>
       ) : queue.length === 0 ? (
         <div className="empty">
-          <Inbox size={20} strokeWidth={1.5} />
-          <p>Nothing open. A quiet queue is the product working, not failing.</p>
+          <Inbox size={24} strokeWidth={1.5} style={{ marginBottom: 8 }} />
+          <p>No open compliance tasks. Your operations are currently 100% compliant with active regulations.</p>
         </div>
       ) : (
         <div className="checklist-grid">
           {queue.map((row) => (
-            <article key={row.finding.id} className="card">
+            <article key={row.finding.id} className="card" style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
               <div className="checklist-card-top">
                 <div>
-                  <div className="strong">{row.finding.title}</div>
+                  <div className="mono" style={{ fontSize: "0.8rem", color: "var(--accent-primary, #0284c7)" }}>
+                    {row.finding.regulationRef} {row.finding.enactedOn ? `• Enacted ${row.finding.enactedOn}` : ""}
+                  </div>
+                  <h3 style={{ margin: "2px 0 4px", fontSize: "1rem" }}>{row.finding.title}</h3>
                   {row.finding.summaryEn && (
-                    <div className="checklist-summary">{row.finding.summaryEn}</div>
+                    <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-secondary)" }}>{row.finding.summaryEn}</p>
                   )}
                 </div>
                 <div className="meta-row">
                   <span className={`pill ${STATE_CLASS[row.state] ?? "pill-muted"}`}>
                     {row.state.replace(/_/g, " ")}
                   </span>
-                  {row.overdue && <span className="pill pill-bad">overdue</span>}
+                  {row.overdue && <span className="pill pill-bad">Overdue</span>}
                 </div>
               </div>
 
-              {row.action && (
-                <div className="checklist-meta-row">
+              {/* Assignment & State Notes */}
+              {row.action && (row.action.assignee || row.action.forwardedTo || row.action.dueAt || row.action.brokerDecision) && (
+                <div style={{ background: "var(--app-surface-active)", padding: "8px 10px", borderRadius: 6, border: "1px solid var(--border)" }}>
                   {row.action.assignee && (
-                    <span className="pill pill-muted">assigned: {row.action.assignee}</span>
+                    <div style={{ fontSize: "0.8rem" }}><strong>Assigned to:</strong> {row.action.assignee} {row.action.dueAt ? `(Due: ${row.action.dueAt})` : ""}</div>
                   )}
                   {row.action.forwardedTo && (
-                    <span className="pill pill-muted">broker: {row.action.forwardedTo}</span>
+                    <div style={{ fontSize: "0.8rem" }}><strong>Forwarded to Broker:</strong> {row.action.forwardedTo}</div>
                   )}
-                  {row.action.dueAt && (
-                    <span className="pill pill-muted">due {row.action.dueAt}</span>
+                  {row.action.brokerDecision && (
+                    <div style={{ fontSize: "0.8rem", color: "var(--ok)", marginTop: 2 }}><strong>Resolution:</strong> {row.action.brokerDecision}</div>
                   )}
                 </div>
               )}
-              {row.action?.brokerDecision && (
-                <div className="checklist-block">
-                  <div className="side-label">Broker decision</div>
-                  <div>{row.action.brokerDecision}</div>
-                </div>
-              )}
-              {row.action?.note && <div className="checklist-why">{row.action.note}</div>}
 
-              <div className="checklist-block">
-                <div className="side-label">Impact</div>
+              {/* Financial Exposure & Legal Basis */}
+              <div style={{ borderTop: "1px solid var(--border)", paddingTop: "0.5rem" }}>
+                <div className="side-label" style={{ padding: 0, marginBottom: 4 }}>Financial Exposure Assessment</div>
                 {row.impact.length === 0 ? (
-                  <div className="muted">
-                    Not assessed yet.{" "}
-                    <button className="btn btn-small" onClick={() => void assess(row.finding.id)}>
-                      Assess
-                    </button>
+                  <div className="muted" style={{ fontSize: "0.8rem" }}>
+                    Exposure not calculated yet. <button className="btn btn-small" onClick={() => void assess(row.finding.id)}>Calculate Now</button>
                   </div>
                 ) : (
-                  row.impact.map((impact) => (
-                    <div key={impact.id} className="impact-row">
-                      <div className="meta-row">
-                        <span className="pill pill-muted">
-                          {impact.matchKind.replace(/_/g, " ")}
+                  row.impact.map((imp) => (
+                    <div key={imp.id} style={{ background: "var(--card-bg)", padding: "6px 8px", borderRadius: 4, marginBottom: 4 }}>
+                      <div className="meta-row" style={{ justifyContent: "space-between" }}>
+                        <span className="strong" style={{ fontSize: "0.85rem", color: imp.estimatedAnnualExposure ? "var(--danger)" : "var(--text)" }}>
+                          {imp.estimatedAnnualExposure ? `${imp.currency} ${imp.estimatedAnnualExposure.toLocaleString()} / year` : (imp.annualDutyAtRisk ? `Duty at risk: ${imp.currency} ${imp.annualDutyAtRisk.toLocaleString()}/yr` : "Unquantified regulatory scope")}
                         </span>
-                        <span className={`pill ${CONFIDENCE_CLASS[impact.confidence] ?? "pill-muted"}`}>
-                          {impact.confidence}
-                        </span>
-                        {impact.effectiveOn && (
-                          <span className="pill pill-blue">effective {impact.effectiveOn}</span>
-                        )}
-                        {impact.delayRisk !== "none" && (
-                          <span className="pill pill-warn">delay risk: {impact.delayRisk}</span>
-                        )}
+                        <span className={`pill ${CONFIDENCE_CLASS[imp.confidence] ?? "pill-muted"}`}>{imp.confidence}</span>
                       </div>
-                      {impact.annualDutyAtRisk !== null && (
-                        <div className="strong">
-                          Duty at risk: {impact.currency}{" "}
-                          {impact.annualDutyAtRisk.toLocaleString()}/year
-                          {impact.tariffBasis ? ` · ${impact.tariffBasis}` : ""}
-                          {impact.tariffCode ? ` (${impact.tariffCode})` : ""}
-                        </div>
-                      )}
-                      <div className="strong">
-                        {impact.estimatedAnnualExposure === null ? (
-                          impact.annualDutyAtRisk === null
-                            ? "Exposure not calculable from what is on file."
-                            : "Rate change not quantified — the figure above is the duty currently flowing through this lane, not the delta."
-                        ) : (
-                          <>
-                            {impact.currency} {impact.estimatedAnnualExposure.toLocaleString()}/year
-                            {impact.estimatedMonthlyExposure !== null && (
-                              <>
-                                {" · "}
-                                {impact.currency}{" "}
-                                {impact.estimatedMonthlyExposure.toLocaleString()}/month
-                              </>
-                            )}
-                          </>
-                        )}
-                      </div>
-                      <div className="code-basis">{impact.matchReason}</div>
-                      {impact.basis.map((line, index) => (
-                        <div key={index} className="code-basis muted">
-                          {line}
-                        </div>
-                      ))}
+                      <div className="code-basis" style={{ margin: "4px 0 0" }}>{imp.matchReason}</div>
                     </div>
                   ))
                 )}
               </div>
 
+              {/* 1-Click Action Drafts */}
               {row.drafts && (
-                <div className="checklist-block">
-                  <div className="side-label">Action Drafts</div>
-                  <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginTop: "0.25rem" }}>
+                <div style={{ borderTop: "1px solid var(--border)", paddingTop: "0.5rem" }}>
+                  <div className="side-label" style={{ padding: 0, marginBottom: 4 }}>1-Click Communication Drafts</div>
+                  <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
                     <button
                       className="btn btn-small"
                       onClick={() => copyDraft(`ppjk-${row.finding.id}`, row.drafts!.brokerDraft.body)}
                     >
-                      {copiedKey === `ppjk-${row.finding.id}` ? "✓ Copied PPJK Draft!" : "📱 Copy PPJK WhatsApp"}
+                      {copiedKey === `ppjk-${row.finding.id}` ? <><Check size={12} /> Copied PPJK Draft!</> : "📱 Copy PPJK WhatsApp"}
                     </button>
                     <button
                       className="btn btn-small"
                       onClick={() => copyDraft(`ops-${row.finding.id}`, row.drafts!.internalOpsDraft.body)}
                     >
-                      {copiedKey === `ops-${row.finding.id}` ? "✓ Copied Ops Checklist!" : "📋 Copy Ops Checklist"}
+                      {copiedKey === `ops-${row.finding.id}` ? <><Check size={12} /> Copied Ops Checklist!</> : "📋 Copy Ops Checklist"}
                     </button>
                     <button
                       className="btn btn-small"
                       onClick={() => copyDraft(`sup-${row.finding.id}`, row.drafts!.supplierDraft.body)}
                     >
-                      {copiedKey === `sup-${row.finding.id}` ? "✓ Copied Supplier Inquiry!" : "✉️ Copy Supplier Inquiry"}
+                      {copiedKey === `sup-${row.finding.id}` ? <><Check size={12} /> Copied Supplier Email!</> : "✉️ Copy Supplier Email"}
                     </button>
                   </div>
                 </div>
               )}
 
-              <div className="checklist-actions">
-                <button className="btn btn-small" onClick={() => void act(row.finding.id, "acknowledged")}>
+              {/* Workflow Actions */}
+              <div className="checklist-actions" style={{ marginTop: "auto", paddingTop: "0.5rem", borderTop: "1px solid var(--border)", flexWrap: "wrap" }}>
+                <button className="btn btn-small" onClick={() => openActionModal(row.finding.id, "acknowledged")}>
                   Acknowledge
                 </button>
-                <button className="btn btn-small" onClick={() => void act(row.finding.id, "assigned")}>
+                <button className="btn btn-small" onClick={() => openActionModal(row.finding.id, "assigned")}>
                   Assign
                 </button>
-                <button
-                  className="btn btn-small"
-                  onClick={() => void act(row.finding.id, "forwarded_to_broker")}
-                >
-                  Forward to broker
+                <button className="btn btn-small" onClick={() => openActionModal(row.finding.id, "forwarded_to_broker")}>
+                  Forward to Broker
                 </button>
-                <button
-                  className="btn btn-small"
-                  onClick={() => void act(row.finding.id, "evidence_requested")}
-                >
-                  Request evidence
+                <button className="btn btn-small" onClick={() => openActionModal(row.finding.id, "closed")}>
+                  Close &amp; Resolve
                 </button>
-                <button className="btn btn-small" onClick={() => void act(row.finding.id, "irrelevant")}>
-                  Mark irrelevant
-                </button>
-                <button className="btn btn-small" onClick={() => void act(row.finding.id, "closed")}>
-                  Close
+                <button className="btn btn-small btn-destructive" onClick={() => openActionModal(row.finding.id, "irrelevant")}>
+                  Mark Irrelevant
                 </button>
                 {row.finding.url && (
                   <a className="btn btn-small" href={row.finding.url} target="_blank" rel="noreferrer noopener">
-                    Source
+                    Source <ExternalLink size={11} style={{ display: "inline" }} />
                   </a>
                 )}
               </div>

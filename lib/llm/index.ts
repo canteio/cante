@@ -1,3 +1,4 @@
+import { AntigravityCliProvider } from "@/lib/llm/antigravity-cli";
 import { ApiProvider } from "@/lib/llm/api";
 import { ClaudeCodeProvider } from "@/lib/llm/claude-code";
 import { CodexCliProvider } from "@/lib/llm/codex-cli";
@@ -26,6 +27,8 @@ export function getProvider(choice?: string | null): LlmProvider {
       return new ClaudeCodeProvider();
     case "codex-cli":
       return new CodexCliProvider();
+    case "antigravity":
+      return new AntigravityCliProvider();
     case "api":
       return new ApiProvider();
     default:
