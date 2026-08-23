@@ -804,9 +804,13 @@ a:hover {
 }
 
 .landing-wordmark,
-.login-wordmark { border: 0; color: inherit; font-size: 1.08rem; font-weight: 750; line-height: 1; }
+.login-wordmark { display: inline-flex; align-items: center; gap: 10px; border: 0; color: inherit; font-family: var(--font-serif), Georgia, serif; font-size: 1.5rem; font-weight: 600; line-height: 1; }
 .landing-wordmark:hover,
 .login-wordmark:hover { border: 0; }
+.landing-wordmark .cante-mark,
+.login-wordmark .cante-mark { width: 27px; height: 27px; }
+.cante-mark { display: block; object-fit: contain; }
+.landing-wordmark .cante-mark { filter: invert(1); }
 
 .landing-signin {
   height: auto;
@@ -835,7 +839,7 @@ a:hover {
 
 .landing-pitch { width: 100%; max-width: 920px; }
 .landing-kicker { margin: 0 0 clamp(20px,3vh,30px); color: rgba(255,255,255,0.52); font-size: 0.72rem; font-weight: 650; letter-spacing: 0.1em; text-transform: uppercase; }
-.landing-title { margin: 0; color: #f5f5f2; font-family: var(--font-public),sans-serif; font-size: clamp(54px,6.4vw,94px); font-weight: 490; line-height: 1.02; letter-spacing: 0; }
+.landing-title { margin: 0; color: #f5f5f2; font-family: var(--font-serif),Georgia,serif; font-size: clamp(44px,4.8vw,70px); font-weight: 500; line-height: 0.98; letter-spacing: 0; }
 .landing-title span { white-space: normal; }
 .landing-copy { width: min(100%,590px); margin: clamp(24px,3.6vh,34px) auto 0; color: rgba(255,255,255,0.68); font-size: clamp(15px,1.25vw,17px); line-height: 1.68; opacity: 1; }
 .landing-actions { flex-direction: column; justify-content: center; gap: 10px; margin-top: clamp(28px,4vh,40px); }
@@ -901,7 +905,7 @@ a:hover {
 @media (max-width: 720px) {
   .landing-page { padding: 24px 22px 12px; }
   .landing-hero { padding: 42px 0 144px; }
-  .landing-title { font-size: clamp(40px,11.2vw,54px); line-height: 1.04; }
+  .landing-title { font-size: clamp(34px,8.8vw,40px); line-height: 1; }
   .landing-copy { margin-top: 20px; font-size: 15px; line-height: 1.6; }
   .landing-kicker { margin-bottom: 16px; }
   .landing-actions { margin-top: 24px; }
@@ -920,7 +924,9 @@ a:hover {
   .landing-actions { margin-top: 24px; }
 }
 
-@media (prefers-reduced-motion: reduce) { .landing-stream-track { animation: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .landing-stream-track { animation: none; }
+}
 
 /* ─── Mike's liquid glass ──────────────────────────────────────── */
 
@@ -973,25 +979,17 @@ a:hover {
 }
 
 .brand-mark {
-  width: 26px;
-  height: 26px;
-  border-radius: 8px;
-  background: linear-gradient(to bottom, #404040, #000);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: 15px;
-  box-shadow:
-    0 3px 9px rgba(15, 23, 42, 0.1),
-    inset 1px 1px 0 rgba(255, 255, 255, 0.22);
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
 }
 
 .brand-name {
-  font-size: 0.9375rem;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.22rem;
   font-weight: 600;
-  letter-spacing: -0.01em;
+  line-height: 1;
+  letter-spacing: 0;
 }
 
 .side-label {

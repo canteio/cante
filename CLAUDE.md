@@ -341,15 +341,28 @@ Zilla Slab) is gone; don't reintroduce it.
 
 **`/` is now the public landing page, not the app shell.** Added 21 Aug 2026
 and refined the same day into a precision-minimal treatment: muted video, the
-centred two-line promise "The rule changed. You already know.", one white CTA,
+centred, compact serif two-line promise "Build the AI compliance team you don't
+have.", one white CTA,
 and an unframed source-event stream rising quietly from the bottom. Do not
 replace it with mesh backgrounds, green gradients, agent cards, country
 switchers, metrics, feature sections, or a multi-section "Compliance OS"
 landing page. The visible explanation is intentionally one short sentence;
 descriptive compliance-monitoring terms live in page metadata without changing
-the hero composition. The illustrative stream uses U.S. examples (Federal
+the hero composition. The supporting line is "Cante checks official sources
+daily and tells you which changes affect your operations." so the product's
+monitoring mechanism and relevance filtering are explicit. The
+illustrative stream uses U.S. examples (Federal
 Register, USITC HTS, and EPA TSCA) because U.S. prospects are the current public
 audience. Public surfaces use Manrope; the app keeps Inter + EB Garamond.
+The public, authentication, and dashboard wordmarks use the same restrained
+beagle sentinel mark: a one-color side profile whose long folded ear creates the
+signature negative-space sweep. It has a genuinely transparent background and
+no tile, gray fill, shading, color cast, or animation. `public/cante-beagle.png`
+is the single black artwork used by `components/brand-mark.tsx`; the dark
+landing page inverts that same asset to white, while light product and auth
+surfaces render it in black. `app/icon.png` is the matching browser favicon.
+Keep the image fit set to `contain` so the silhouette is never cropped. Do not
+reintroduce facial animation or let those surfaces drift into separate logos.
 from the MotionSites "AI Runtime" direction: a single-viewport, full-bleed
 CloudFront video background, rounded white nav, invite-only CTA, and Cante copy
 for daily regulatory monitoring. The live app remains on `/chat`,

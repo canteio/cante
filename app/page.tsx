@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { ArrowRight } from "lucide-react";
+import { BrandMark } from "@/components/brand-mark";
 
 type LandingStyle = CSSProperties & { "--d": string };
 
@@ -24,18 +25,22 @@ export default function LandingPage() {
       </div>
 
       <header className="landing-header">
-        <Link className="landing-wordmark" href="/" aria-label="Cante home">Cante</Link>
+        <Link className="landing-wordmark" href="/" aria-label="Cante home">
+          <BrandMark />
+          <span>Cante</span>
+        </Link>
         <Link className="landing-signin" href={loginHref}>Sign in</Link>
       </header>
 
       <section className="landing-hero" aria-labelledby="landing-title">
         <div className="landing-pitch">
-          <p className="landing-kicker anim" style={{ "--d": "0.1s" } as LandingStyle}>Private regulatory intelligence</p>
           <h1 id="landing-title" className="landing-title">
-            <span style={{ "--d": "0.14s" } as LandingStyle}>The rule changed.</span>
-            <span style={{ "--d": "0.24s" } as LandingStyle}>You already know.</span>
+            <span style={{ "--d": "0.14s" } as LandingStyle}>Build the AI compliance team{" "}</span>
+            <span style={{ "--d": "0.24s" } as LandingStyle}>you don't have.</span>
           </h1>
-          <p className="landing-copy anim" style={{ "--d": "0.32s" } as LandingStyle}>Cante checks official sources daily and tells you which changes affect your operations.</p>
+          <p className="landing-copy anim" style={{ "--d": "0.32s" } as LandingStyle}>
+            Cante checks official sources daily and tells you which changes affect your operations.
+          </p>
           <div className="landing-actions anim" style={{ "--d": "0.43s" } as LandingStyle}>
             <Link className="landing-cta" href="/request-access">Request private access <ArrowRight size={16} strokeWidth={2} /></Link>
             <span className="landing-access-note">Access is reviewed personally.</span>

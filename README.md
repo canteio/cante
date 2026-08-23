@@ -41,12 +41,20 @@ read what it finds, and store the result. Takes a few minutes — it fetches
 listings first, then detail pages for plausible candidates.
 
 The public surface is intentionally minimal: a muted video backdrop, the
-centred "The rule changed. You already know." hero, one access button, and an
+centred, compact serif "Build the AI compliance team you don't have." hero, one
+access button, and an
 unframed daily-scan stream rising from the bottom. It deliberately has no mesh,
 agent cards, metrics, feature grid, or dashboard preview. Search-oriented
 compliance-monitoring language stays in metadata so it does not distort the
 visual composition. The illustrative scan currently uses U.S. source examples:
 Federal Register, USITC HTS, and EPA TSCA.
+
+The public, authentication, and dashboard wordmarks use the same restrained
+beagle sentinel mark: a one-color side profile whose long ear creates a strong
+negative-space sweep on a transparent background. `public/cante-beagle.png` is
+the shared static artwork and `app/icon.png` is its matching browser favicon.
+The dark landing page inverts the same asset to white; light surfaces render it
+in black. There is no tile, gray fill, or logo animation.
 
 For the temporary PT MA demo gate, open `/login` and use:
 

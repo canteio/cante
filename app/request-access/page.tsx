@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
+import { BrandMark } from "@/components/brand-mark";
 
 export default function RequestAccessPage() {
   const [company, setCompany] = useState("");
@@ -28,7 +29,8 @@ export default function RequestAccessPage() {
     <main className="login-page request-page">
       <header className="login-header">
         <Link className="login-wordmark" href="/" aria-label="Cante home">
-          Cante
+          <BrandMark />
+          <span>Cante</span>
         </Link>
       </header>
 

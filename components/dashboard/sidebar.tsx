@@ -12,6 +12,7 @@ import {
   Truck,
 } from "lucide-react";
 import { cookies } from "next/headers";
+import { BrandMark } from "@/components/brand-mark";
 import { ChatNav } from "@/components/dashboard/chat-nav";
 import { ProviderSwitcher } from "@/components/dashboard/provider-switcher";
 import { listCustomers } from "@/lib/db/queries";
@@ -48,11 +49,8 @@ export async function Sidebar({
       {/* Brand Header */}
       <div className="brand fade-1" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div className="brand-mark serif">C</div>
-          <div>
-            <div className="brand-name" style={{ lineHeight: 1.1 }}>Cante</div>
-            <div style={{ fontSize: "0.6875rem", color: "var(--text-muted)", letterSpacing: "0.02em", textTransform: "uppercase" }}>Compliance OS</div>
-          </div>
+          <BrandMark className="brand-mark" />
+          <div className="brand-name">Cante</div>
         </div>
       </div>
 

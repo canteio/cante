@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
+import { BrandMark } from "@/components/brand-mark";
 import { createClient } from "@/lib/supabase/client";
 
 const authMode = process.env.NEXT_PUBLIC_CANTE_AUTH_MODE === "supabase" ? "supabase" : "demo";
@@ -70,7 +71,8 @@ export default function LoginPage() {
     <main className="login-page">
       <header className="login-header">
         <Link className="login-wordmark" href="/" aria-label="Cante home">
-          Cante
+          <BrandMark />
+          <span>Cante</span>
         </Link>
       </header>
 
