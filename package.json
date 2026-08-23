@@ -13,6 +13,8 @@
     "check:scheduled": "tsx scripts/scheduled-check.ts"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.4",
+    "@supabase/supabase-js": "^2.112.3",
     "better-sqlite3": "^11.8.1",
     "cheerio": "^1.0.0",
     "drizzle-orm": "^0.38.4",

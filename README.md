@@ -3,6 +3,8 @@
 > **Vision**: An autonomous AI compliance workforce that monitors 52+ official government gazettes, audits 5-way shipping documents, and handles customs defense so the CEO can sleep peacefully.
 >
 > 📖 **Read the Strategy & Positioning Doc**: [`AGENTIC-COMPLIANCE-POSITIONING.md`](./AGENTIC-COMPLIANCE-POSITIONING.md)
+>
+> 🚀 **Supabase/Vercel prep**: [`SUPABASE_VERCEL.md`](./SUPABASE_VERCEL.md)
 
 A country-scoped monitor of official regulatory sources, matched against one
 manufacturer's actual products and operations. **Export is optional** — a purely
@@ -32,9 +34,41 @@ npm run db:seed     # seed the sources + MA
 npm run dev         # http://localhost:3000
 ```
 
-Open localhost:3000 and press **Run check now**. It fetches the monitored
-source set for the selected country, reads what it finds, and stores the result. Takes a few
-minutes — it fetches listings first, then detail pages for plausible candidates.
+Open localhost:3000 for the public landing page. The operational app is at
+`/chat`, `/checks`, `/checklist`, and `/profile`; open `/checks` and press
+**Run check now** to fetch the monitored source set for the selected country,
+read what it finds, and store the result. Takes a few minutes — it fetches
+listings first, then detail pages for plausible candidates.
+
+The public surface is intentionally minimal: a muted video backdrop, the
+centred "The rule changed. You already know." hero, one access button, and an
+unframed daily-scan stream rising from the bottom. It deliberately has no mesh,
+agent cards, metrics, feature grid, or dashboard preview. Search-oriented
+compliance-monitoring language stays in metadata so it does not distort the
+visual composition. The illustrative scan currently uses U.S. source examples:
+Federal Register, USITC HTS, and EPA TSCA.
+
+For the temporary PT MA demo gate, open `/login` and use:
+
+```txt
+username: ptma
+password: ptma
+```
+
+This only sets a local demo cookie. It is not production authentication.
+Both `/login` and `/request-access` use the same minimal light-background form
+layout; the latter prepares a prefilled access-request email.
+
+To prepare Supabase later, copy `envexample` into your real environment and
+switch both auth variables together:
+
+```txt
+CANTE_AUTH_MODE=supabase
+NEXT_PUBLIC_CANTE_AUTH_MODE=supabase
+```
+
+Then set the Supabase URL, publishable key, service role key, and
+`CANTE_ALLOWED_EMAILS`. See `SUPABASE_VERCEL.md`.
 
 ### Other commands
 
@@ -102,7 +136,7 @@ lib/documents/    discrepancy.ts (Doc Cross-Check & OCR Engine) · extract-file.
 lib/workflow/     actions.ts · draft.ts (PPJK, Ops, Supplier) · us-cbp-response.ts · audit-vault.ts
 lib/checks/       judge.ts · judge-batched.ts · briefing.ts · run.ts · checklist.ts
 lib/db/           schema.ts · client.ts · queries.ts
-app/              page.tsx (Checks) · workqueue/ · checklist/ · chat/ · memory/ · api/{checks,workqueue,checklist,chat,customers,memories,screening}
+app/              page.tsx (public landing) · login/ · request-access/ · pending/ · logout/ · workqueue/ · checklist/ · chat/ · memory/ · api/{checks,workqueue,checklist,chat,customers,memories,screening}
 components/       dashboard/ · workqueue/ · checklist/ · memory/ · chat/
 scripts/          seed.ts (sources + country source packs + MA) · run-check.ts
 config/           customer.json — read at seed time only
@@ -175,6 +209,22 @@ to the alert as code-written coverage caveats.
 
 ## Status
 
+- **Public landing page added (21 Aug 2026).** `/` is now a single-viewport
+  invite-only landing page adapted from the MotionSites AI Runtime visual
+  direction: full-bleed video background, compact rounded nav, request-invite
+  CTA, and compliance-monitoring copy.
+- **Temporary PT MA login gate added (21 Aug 2026).** `/login` accepts
+  `ptma` / `ptma`, sets an HTTP-only `cante_demo_session` cookie, and middleware
+  redirects protected app screens there when the cookie is missing. Landing app
+  links now pass through login and default to Indonesia / PT MA. This is only
+  placeholder navigation logic until Supabase Auth and user-to-customer mapping
+  are added.
+- **Supabase/Vercel prep added (21 Aug 2026).** The app now has Supabase SSR
+  client helpers, dual-mode middleware (`demo` or `supabase`), `/pending`,
+  `/logout`, `/request-access`, expanded env placeholders, and a deployment note
+  in `SUPABASE_VERCEL.md`. Supabase mode still requires env vars and uses
+  `CANTE_ALLOWED_EMAILS` as a temporary access bridge until tenant tables are
+  wired.
 - **Working end to end locally.** Dashboard → Run check now → expanded live fetch, judgment, stored result, rendered alert. Chat Q&A grounded in stored run data also works.
 - **US federal tax and customs are now monitored (16 Aug 2026).** The US pack had
   thirteen agency feeds and no tax authority at all, while Indonesia has watched

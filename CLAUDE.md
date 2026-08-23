@@ -237,7 +237,7 @@ lib/workflow/     actions.ts (finding → human response, kept separate from the
 lib/suppliers/    evidence.ts (certificate status, gaps, expiry horizon)
 lib/test-support/ operating-db.ts (throwaway SQLite + per-test tenant isolation)
 lib/db/           schema.ts · client.ts · queries.ts
-app/              page.tsx (Checks) · checklist/ · chat/ · memory/ · catalogue/ · documents/ · workqueue/ · suppliers/
+app/              page.tsx (public landing) · login/ · request-access/ · pending/ · logout/ · checklist/ · chat/ · memory/ · catalogue/ · documents/ · workqueue/ · suppliers/
                   api/{checks,checklist,chat,customers,memories,screening,products,classifications,lanes,documents,workqueue,suppliers,tariff,substances}
 components/       dashboard/ · checklist/ · memory/ · chat/ (chat-panel.tsx reads the SSE stream · markdown.tsx renders answers)
                   catalogue/ · documents/ · workqueue/ · suppliers/ (the Operations screens)
@@ -338,6 +338,54 @@ Written in **plain CSS** in `app/globals.css` — Mike runs Tailwind v4 + shadcn
 and matching the look didn't justify that dependency surface. `lucide-react` is
 the one dependency taken from it. The earlier warm-paper palette (#F6F3EC, rust,
 Zilla Slab) is gone; don't reintroduce it.
+
+**`/` is now the public landing page, not the app shell.** Added 21 Aug 2026
+and refined the same day into a precision-minimal treatment: muted video, the
+centred two-line promise "The rule changed. You already know.", one white CTA,
+and an unframed source-event stream rising quietly from the bottom. Do not
+replace it with mesh backgrounds, green gradients, agent cards, country
+switchers, metrics, feature sections, or a multi-section "Compliance OS"
+landing page. The visible explanation is intentionally one short sentence;
+descriptive compliance-monitoring terms live in page metadata without changing
+the hero composition. The illustrative stream uses U.S. examples (Federal
+Register, USITC HTS, and EPA TSCA) because U.S. prospects are the current public
+audience. Public surfaces use Manrope; the app keeps Inter + EB Garamond.
+from the MotionSites "AI Runtime" direction: a single-viewport, full-bleed
+CloudFront video background, rounded white nav, invite-only CTA, and Cante copy
+for daily regulatory monitoring. The live app remains on `/chat`,
+`/checks`, `/checklist`, `/profile`, and the Operations routes. The landing
+page is deliberately auth-free for now: `Request invite` is a `mailto:` CTA.
+Keep landing CSS scoped under
+`.landing-*` in `app/globals.css`; do not let the dark marketing palette leak
+into the operational dashboard.
+
+**Login is a dummy PT MA gate, not real auth.** Added 21 Aug 2026 so the site
+has login flow before Supabase exists. `/login` posts to `/api/demo-login`;
+username `ptma` and password `ptma` set an HTTP-only `cante_demo_session=ptma`
+cookie for 12 hours. `middleware.ts` redirects the app pages (`/chat`,
+`/checks`, `/checklist`, `/profile`, `/memory`, `/catalogue`, `/documents`,
+`/workqueue`, `/suppliers`) to `/login?next=...` when the cookie is absent.
+Landing `Sign in`, `Open app`, `Product`, and `Sources` route through this gate
+and default to the Indonesia / PT MA workspace. This is only a prototype of the
+navigation logic; replace it with Supabase Auth + user-to-customer mapping
+before exposing real customer data.
+
+`/login` and `/request-access` deliberately share one minimal light treatment:
+small Cante wordmark, centred form, 6px controls, no video, icons, badges,
+marketing panel, or glass card. The access form currently opens a prefilled
+email and includes the company description in its body.
+
+**Supabase/Vercel prep exists but is not a production migration.** Added 21 Aug
+2026: `@supabase/ssr` / `@supabase/supabase-js`, `lib/supabase/{client,server,
+middleware}.ts`, `lib/auth/config.ts`, `/request-access`, `/pending`, `/logout`,
+and expanded `envexample`. `CANTE_AUTH_MODE=demo` remains the default. Setting
+both `CANTE_AUTH_MODE=supabase` and `NEXT_PUBLIC_CANTE_AUTH_MODE=supabase` makes
+middleware validate Supabase Auth claims and makes `/login` call
+`signInWithPassword()`. Until real tenant tables are wired, Supabase mode also
+requires `CANTE_ALLOWED_EMAILS`; authenticated emails not on that comma-separated
+list land on `/pending`. See `SUPABASE_VERCEL.md` before deploying. Vercel still
+must not run the daily checker: SQLite persistence and local Claude/Codex CLI
+providers remain local-runner concerns.
 
 **Jurisdiction switching is real state, not decoration.** The chat composer has
 a compact ID/US selector. Changing it starts a fresh country-scoped chat and

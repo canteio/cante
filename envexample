@@ -1,3 +1,33 @@
-TELEGRAM_BOT_TOKEN=21312312313
-TELEGRAM_CHAT_ID=123123132132
-CANTE_HEARTBEAT_URL=https://hc-ping.com/your-uuid
+# Local app
+CANTE_APP_URL=http://localhost:3000
+
+# Auth
+# demo = local ptma/ptma cookie gate
+# supabase = Supabase email/password auth via @supabase/ssr
+CANTE_AUTH_MODE=demo
+NEXT_PUBLIC_CANTE_AUTH_MODE=demo
+
+# Supabase, needed when CANTE_AUTH_MODE=supabase
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+# Keep service role server-only. Do not expose it as NEXT_PUBLIC_*.
+SUPABASE_SERVICE_ROLE_KEY=
+# Temporary bridge until tenant tables are wired. Comma-separated emails that
+# can enter protected app routes after Supabase login.
+CANTE_ALLOWED_EMAILS=
+
+# LLM provider
+# claude-code = local Claude Code CLI, codex-cli = local Codex CLI, gemini = Google Gemini
+CANTE_LLM=claude-code
+CLAUDE_BIN=
+CODEX_BIN=
+GEMINI_API_KEY=
+GOOGLE_API_KEY=
+
+# SQLite, local runner, and local development
+CANTE_DB_PATH=
+
+# Scheduled delivery / operator alerts
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=
+CANTE_HEARTBEAT_URL=
