@@ -1,7 +1,7 @@
 import { z } from "zod";
 import {
-  getDefaultCustomerId,
   getJurisdictionProfile,
+  resolveCustomerId,
   upsertJurisdictionProfile,
 } from "@/lib/db/queries";
 import { refreshChecklistForCustomer } from "@/lib/checks/checklist";
@@ -35,7 +35,7 @@ const ProfileSchema = z.object({
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const customerId = url.searchParams.get("customerId") ?? (await getDefaultCustomerId());
+  const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
   if (!customerId) return Response.json({ profile: null });
   const country = normalizeJurisdiction(url.searchParams.get("country"));
   return Response.json({ country, profile: await getJurisdictionProfile(customerId, country) });
@@ -43,7 +43,7 @@ export async function GET(request: Request) {
 
 export async function PUT(request: Request) {
   const body = await request.json().catch(() => ({}));
-  const customerId: string | null = body.customerId ?? (await getDefaultCustomerId());
+  const customerId = await resolveCustomerId(body.customerId);
   if (!customerId) return Response.json({ error: "No customer." }, { status: 404 });
   const country = normalizeJurisdiction(body.country);
   const parsed = ProfileSchema.safeParse(body.profile);

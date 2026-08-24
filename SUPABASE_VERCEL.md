@@ -1,91 +1,169 @@
-# Supabase + Vercel Readiness
+# Supabase + Vercel Production Runbook
 
-This repo is prepared for a staged deploy, but the production switch is still
-deliberate. The local daily runner still depends on SQLite plus the local
-Claude/Codex CLI providers; do not move check execution to Vercel until hosted
-LLM usage is accepted.
-
-## Current Staged Architecture
+## Architecture
 
 ```txt
-Vercel
-  - public landing page
-  - login / request-access / pending / logout pages
-  - authenticated app UI
+Browser -> Vercel Next.js -> Supabase (session + RLS + production data)
+                       \-> OpenAI or Anthropic API (deployed chat only)
 
-Supabase
-  - email/password identity
-  - later: customer_users / tenant mapping
-  - later: app data mirror or Postgres migration
-
-Always-on Mac
-  - scheduled check runner
-  - local SQLite source ledger for now
-  - local Claude/Codex CLI providers
+Always-on Mac -> official sources -> local SQLite ledger -> Supabase sync + verification
+              \-> local Claude/Codex/Antigravity CLI
 ```
 
-## Environment Variables
+Supabase is what the deployed app reads and writes. SQLite remains the trusted
+worker ledger because a source run takes minutes, uses local CLI logins, and
+keeps a raw evidence trail. A completed run is not reported healthy until its
+optional production sync also succeeds.
 
-Local demo mode:
+The model does not receive a Supabase credential. The Next.js server resolves
+the authenticated workspace, retrieves only rows allowed by that user's
+Supabase session and RLS, and places those bounded excerpts in the model prompt.
+
+## 1. Apply The Schema
+
+In Supabase SQL Editor, run the complete file:
+
+`supabase/migrations/202608230001_cante_production.sql`
+
+It creates the operational tables, tenant membership policies, keyword/vector
+retrieval functions, and indexes. It is idempotent, so rerunning it is safe.
+
+Confirm the existing user is still linked:
+
+```sql
+select c.name as customer, u.email, cu.role
+from public.customer_users cu
+join public.customers c on c.id = cu.customer_id
+join auth.users u on u.id = cu.user_id;
+```
+
+The expected row is `MA / cante@cante.cante / owner`.
+
+## 2. Import SQLite Once
+
+Put the Supabase secret key in the local Mac's `.env` temporarily. This is the
+only process that needs it:
+
+```txt
+NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+SUPABASE_SECRET_KEY=sb_secret_...
+CANTE_SUPABASE_CUSTOMER_SLUG=pt-ma
+```
+
+Never prefix the secret with `NEXT_PUBLIC_`, commit it, or add it to Vercel.
+
+Run:
+
+```bash
+npm run db:cloud:dry-run
+npm run db:cloud:sync
+npm run db:cloud:verify
+```
+
+The importer preserves record IDs and maps the local MA customer to the
+existing Supabase customer with slug `pt-ma`, so the existing owner membership
+continues to authorize the imported rows. Upserts make the process resumable.
+Verification proves that every local record ID exists in Supabase; it
+deliberately allows additional cloud-created chats, memories, products, and
+uploads.
+
+## 3. Configure The Local Worker
+
+Keep the existing local variables and add:
 
 ```txt
 CANTE_AUTH_MODE=demo
-NEXT_PUBLIC_CANTE_AUTH_MODE=demo
+CANTE_DATA_BACKEND=sqlite
+CANTE_LLM=claude-code
+CANTE_SYNC_SUPABASE=true
+NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+SUPABASE_SECRET_KEY=sb_secret_...
+CANTE_SUPABASE_CUSTOMER_SLUG=pt-ma
 ```
 
-Supabase mode:
+`npm run check:scheduled` will run locally, verify the result, sync all rows to
+Supabase, verify local IDs, then send delivery/heartbeat success. Before the
+check starts, it pulls live profiles, memory, KBLI, checklist, catalogue,
+supplier, lane, and document inputs back into SQLite so judgment never runs
+against a stale company profile. A failed pull or push produces a failure
+notification instead of letting stale data look current.
+
+## 4. Configure Vercel
+
+Set these for Production and Preview as appropriate:
 
 ```txt
+CANTE_APP_URL=https://YOUR_DOMAIN
 CANTE_AUTH_MODE=supabase
 NEXT_PUBLIC_CANTE_AUTH_MODE=supabase
-NEXT_PUBLIC_SUPABASE_URL=...
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=...
-SUPABASE_SERVICE_ROLE_KEY=...
-CANTE_ALLOWED_EMAILS=you@domain.com,client@company.com
+CANTE_DATA_BACKEND=supabase
+NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+CANTE_LLM=api
+CANTE_LLM_LOCKED=true
+CANTE_HOSTED_PROVIDER=openai
+OPENAI_API_KEY=...
+OPENAI_MODEL=gpt-5
 ```
 
-`CANTE_ALLOWED_EMAILS` is a temporary bridge. In Supabase mode, a user must be
-signed in **and** their email must be listed there or middleware sends them to
-`/pending`. Replace this with a real `customer_users` lookup before hosting real
-customer data.
+For Claude instead of OpenAI:
 
-## Supabase Setup Later
+```txt
+CANTE_HOSTED_PROVIDER=anthropic
+ANTHROPIC_API_KEY=...
+ANTHROPIC_MODEL=claude-sonnet-4-20250514
+```
 
-1. Create a Supabase project.
-2. Enable email/password auth.
-3. Add the Supabase URL and publishable key to Vercel env vars.
-4. Add allowed pilot emails to `CANTE_ALLOWED_EMAILS`.
-5. Create Supabase Auth users or invite them through the dashboard.
-6. Set `CANTE_AUTH_MODE=supabase` and `NEXT_PUBLIC_CANTE_AUTH_MODE=supabase`.
-7. Deploy.
+Do **not** add `SUPABASE_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, local CLI
+paths, Telegram credentials, or `CANTE_DB_PATH` to Vercel.
 
-## What Is Ready
+## 5. Supabase Auth URLs
 
-- `@supabase/ssr` and `@supabase/supabase-js` are installed.
-- `lib/supabase/client.ts` creates the browser client.
-- `lib/supabase/server.ts` creates the server client.
-- `lib/supabase/middleware.ts` refreshes/verifies SSR auth via `getClaims()`.
-- `middleware.ts` protects app routes in demo or Supabase mode.
-- `/login` uses demo credentials today and Supabase email/password when
-  `NEXT_PUBLIC_CANTE_AUTH_MODE=supabase`.
-- `/logout` clears demo and Supabase sessions.
-- `/pending` exists for signed-in users without workspace access.
-- `/request-access` works without keys by preparing an email.
+In Supabase Authentication -> URL Configuration:
 
-## What Is Not Ready Yet
+- Site URL: the production domain.
+- Redirect URLs: `https://YOUR_DOMAIN/**` and the exact Vercel preview pattern
+  you intend to test.
+- Disable public signups for invite-only operation, or keep them enabled only
+  if `/pending` is the intended holding area. A session without a
+  `customer_users` membership cannot enter the app or operational APIs.
 
-- The app still reads operational data from `cante.db`.
-- Vercel cannot run `better-sqlite3` as a durable production database.
-- Vercel cannot shell out to the local `claude` or `codex` CLIs.
-- There is no Supabase `customer_users` table wired into app authorization yet.
-- The Mac runner does not push check results to Supabase yet.
+## 6. Deploy And Smoke Test
 
-## Correct Next Cut
+```bash
+npm test
+npx tsc --noEmit
+npm run build
+```
 
-Keep the daily runner local. Use Supabase first for identity and read-only pilot
-access, then decide whether to:
+Then verify in production:
 
-- mirror selected alert/check data from SQLite into Supabase, or
-- migrate the operational schema to Postgres, or
-- keep the deployed app as landing/login only until a paying customer justifies
-  the migration.
+1. An anonymous visit to `/chat` redirects to `/login`.
+2. The owner can sign in and sees MA's migrated checks, memory, and chat.
+3. A signed-in user without membership lands on `/pending`.
+4. Chat answers from the locked hosted provider.
+5. An uploaded text document appears in Supabase `trade_documents` and its
+   excerpts are retrievable on the next related chat question.
+6. `POST /api/checks` returns `409`; production checks must run on the trusted
+   local scheduler.
+
+## Security Boundary
+
+- Supabase publishable keys are safe in the browser because every operational
+  table has RLS.
+- The Supabase secret bypasses RLS and belongs only to the local sync process.
+- AI keys are server-only Vercel variables.
+- API routes are authenticated in middleware; unsafe cookie-authenticated
+  requests also require a same-origin `Origin` header when one is present.
+- Tenant IDs from request bodies are never trusted. They are resolved against
+  `customer_users`, and Supabase RLS independently enforces the same boundary.
+- OpenAI requests set `store: false`. Private context is bounded before it is
+  sent to either hosted model.
+
+## Current Honest Boundary
+
+Checks, profiles, checklist, memory, conversations, chat history, findings,
+alerts, sources, and uploaded chat documents are cloud-backed. The mature
+customs document audit, tariff enrichment, screening, BOM assessment, and
+check execution remain worker-side workflows. Their tables are migrated and
+visible after sync, but those heavy mutations are not moved into Vercel.

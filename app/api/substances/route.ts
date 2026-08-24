@@ -1,4 +1,4 @@
-import { getDefaultCustomerId } from "@/lib/db/queries";
+import { resolveCustomerId } from "@/lib/db/queries";
 import {
   addComponent,
   assessRestrictions,
@@ -21,7 +21,7 @@ export const dynamic = "force-dynamic";
  */
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const customerId = url.searchParams.get("customerId") ?? (await getDefaultCustomerId());
+  const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
   if (!customerId) return Response.json({ hits: [], undeclaredComponents: [], caveats: [] });
 
   const productId = url.searchParams.get("productId");

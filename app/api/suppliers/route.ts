@@ -1,4 +1,4 @@
-import { getDefaultCustomerId } from "@/lib/db/queries";
+import { resolveCustomerId } from "@/lib/db/queries";
 import { listSuppliers, upsertSupplier } from "@/lib/catalogue/lanes";
 import {
   EvidenceError,
@@ -24,7 +24,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const customerId = url.searchParams.get("customerId") ?? (await getDefaultCustomerId());
+  const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
   if (!customerId) return Response.json({ suppliers: [] });
 
   const suppliers = listSuppliers(customerId).map((supplier) => ({
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "Request body must be valid JSON." }, { status: 400 });
   }
   const payload = body as Record<string, unknown>;
-  const customerId = (payload.customerId as string) ?? (await getDefaultCustomerId());
+  const customerId = await resolveCustomerId(payload.customerId as string | undefined);
   if (!customerId) return Response.json({ error: "No customer." }, { status: 400 });
 
   const action = (payload.action as string) ?? "upsert";

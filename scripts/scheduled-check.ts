@@ -5,6 +5,7 @@ import { getDefaultCustomerId, getRunHistory } from "../lib/db/queries";
 import { normalizeJurisdiction } from "../lib/countries";
 import { dispatchRun, notifyRunFailure } from "../lib/delivery/dispatch";
 import { telegramConfig, verifyTelegram } from "../lib/delivery/telegram";
+import { spawn } from "node:child_process";
 
 /**
  * The cron entrypoint: run the check, send the result, exit with a code cron
@@ -66,6 +67,27 @@ function log(message: string): void {
   console.log(`[${timestamp()}] ${message}`);
 }
 
+async function runCloudDataCommand(script: "db:cloud:pull" | "db:cloud:sync"): Promise<void> {
+  if (process.env.CANTE_SYNC_SUPABASE !== "true") return;
+  log(script === "db:cloud:pull" ? "Pulling production customer inputs..." : "Syncing the completed local run to Supabase...");
+  await new Promise<void>((resolve, reject) => {
+    const child = spawn("npm", ["run", script], {
+      cwd: process.cwd(),
+      env: process.env,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    let output = "";
+    child.stdout.on("data", (chunk) => (output += chunk.toString()));
+    child.stderr.on("data", (chunk) => (output += chunk.toString()));
+    child.once("error", reject);
+    child.once("close", (code) => {
+      if (code === 0) resolve();
+      else reject(new Error(output.trim().slice(-2_000) || `cloud sync exited ${code}`));
+    });
+  });
+  log(script === "db:cloud:pull" ? "Production inputs updated locally." : "Supabase sync verified.");
+}
+
 async function main(): Promise<number> {
   if (process.argv.includes("--verify")) {
     const config = telegramConfig();
@@ -79,8 +101,21 @@ async function main(): Promise<number> {
     return health.ok ? 0 : 1;
   }
 
-  const customerId = process.env.CANTE_CUSTOMER_ID ?? (await getDefaultCustomerId());
   const jurisdiction = normalizeJurisdiction(process.env.CANTE_COUNTRY);
+  try {
+    await runCloudDataCommand("db:cloud:pull");
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    log(`SUPABASE INPUT PULL FAILED: ${detail}`);
+    const notice = await notifyRunFailure(
+      `${jurisdiction} check did not start because production customer inputs could not be pulled:\n${detail}`,
+    );
+    log(notice.detail);
+    await heartbeat("fail", `Supabase input pull failed: ${detail}`);
+    return 2;
+  }
+
+  const customerId = process.env.CANTE_CUSTOMER_ID ?? (await getDefaultCustomerId());
   if (!customerId) {
     log("No customer in the database. Run `npm run db:seed` first.");
     return 1;
@@ -124,6 +159,19 @@ async function main(): Promise<number> {
     );
     log(notice.detail);
     await heartbeat("fail", `run ${runId} status ${entry.run.status}`);
+    return 2;
+  }
+
+  try {
+    await runCloudDataCommand("db:cloud:sync");
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    log(`SUPABASE SYNC FAILED: ${detail}`);
+    const notice = await notifyRunFailure(
+      `${jurisdiction} run ${runId} completed locally, but the production Supabase sync failed:\n${detail}`,
+    );
+    log(notice.detail);
+    await heartbeat("fail", `Supabase sync failed after run ${runId}: ${detail}`);
     return 2;
   }
 

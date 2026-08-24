@@ -7,6 +7,8 @@ import { db } from "@/lib/db/client";
 import { kbliRecords, suppliers, type Memory } from "@/lib/db/schema";
 import { upsertProduct } from "@/lib/catalogue/products";
 import type { JurisdictionName } from "@/lib/countries";
+import { getDataBackend } from "@/lib/auth/config";
+import { createClient } from "@/lib/supabase/server";
 
 /**
  * Pulls durable facts about the customer out of a finished chat exchange.
@@ -123,7 +125,62 @@ export async function extractMemories(input: {
         changed = true;
 
         // Auto-sync into operations tables if stated by user
-        if (m.statedByUser) {
+        if (m.statedByUser && getDataBackend() === "supabase") {
+          try {
+            const supabase = await createClient();
+            if (m.kind === "product" || m.kind === "material") {
+              const skuSeed = m.content.slice(0, 12).replace(/[^a-zA-Z0-9]/g, "-").toUpperCase();
+              const sku = skuSeed.length >= 3 ? skuSeed : `SKU-${Date.now().toString().slice(-4)}`;
+              const { data: existing } = await supabase
+                .from("products")
+                .select("id")
+                .eq("customer_id", input.customerId)
+                .eq("sku", sku)
+                .maybeSingle();
+              if (!existing) {
+                await supabase.from("products").insert({
+                  id: randomUUID(),
+                  customer_id: input.customerId,
+                  sku,
+                  name: m.content,
+                  materials: m.kind === "material" ? [m.content] : [],
+                });
+              }
+            }
+            if (m.kind === "kbli") {
+              const code = m.content.match(/\b\d{5}\b/)?.[0];
+              if (code) {
+                const { data: existing } = await supabase
+                  .from("kbli_records")
+                  .select("id")
+                  .eq("customer_id", input.customerId)
+                  .eq("code", code)
+                  .maybeSingle();
+                if (!existing) {
+                  await supabase.from("kbli_records").insert({
+                    id: randomUUID(),
+                    customer_id: input.customerId,
+                    code,
+                    title: m.content,
+                    confirmed: true,
+                    status: "confirmed",
+                    source: "chat",
+                  });
+                }
+              }
+            }
+            if (m.kind === "supplier" || m.content.toLowerCase().includes("supplier")) {
+              await supabase.from("suppliers").insert({
+                id: randomUUID(),
+                customer_id: input.customerId,
+                name: m.content.slice(0, 60),
+                country: input.jurisdiction === "Indonesia" ? "ID" : "US",
+              });
+            }
+          } catch {
+            // The memory itself is already durable; operations sync is best effort.
+          }
+        } else if (m.statedByUser) {
           // 1. Sync Products and Raw Materials into Catalogue
           if (m.kind === "product" || m.kind === "material") {
             try {
@@ -181,7 +238,9 @@ export async function extractMemories(input: {
         }
       }
     }
-    if (changed) await refreshChecklistForCustomer(input.customerId, input.jurisdiction);
+    if (changed && getDataBackend() === "sqlite") {
+      await refreshChecklistForCustomer(input.customerId, input.jurisdiction);
+    }
   } catch {
     // Best effort by design — see the note above.
   }

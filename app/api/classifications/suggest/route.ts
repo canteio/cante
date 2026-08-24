@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { getDefaultCustomerId } from "@/lib/db/queries";
+import { resolveCustomerId } from "@/lib/db/queries";
 import { getProvider, normalizeProviderChoice, PROVIDER_COOKIE } from "@/lib/llm";
 import {
   adoptSuggestion,
@@ -24,7 +24,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const customerId = url.searchParams.get("customerId") ?? (await getDefaultCustomerId());
+  const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
   if (!customerId) return Response.json({ pending: [] });
   return Response.json({ pending: pendingSuggestions(customerId) });
 }
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "Request body must be valid JSON." }, { status: 400 });
   }
   const payload = body as Record<string, unknown>;
-  const customerId = (payload.customerId as string) ?? (await getDefaultCustomerId());
+  const customerId = await resolveCustomerId(payload.customerId as string | undefined);
   const sku = payload.sku as string;
   if (!customerId || !sku) {
     return Response.json({ error: "sku is required." }, { status: 400 });

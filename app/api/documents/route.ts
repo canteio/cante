@@ -1,4 +1,4 @@
-import { getDefaultCustomerId } from "@/lib/db/queries";
+import { resolveCustomerId } from "@/lib/db/queries";
 import {
   auditDocument,
   DocumentInputError,
@@ -10,9 +10,24 @@ import {
   promoteCodesFromDocument,
 } from "@/lib/documents/audit";
 import { extractTextFromFile, FileExtractionError } from "@/lib/documents/extract-file";
+import { getDataBackend } from "@/lib/auth/config";
+import { createClient } from "@/lib/supabase/server";
+import { fileAttachments } from "@/lib/chat/attachments";
+import { normalizeJurisdiction } from "@/lib/countries";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+function camel(value: any): any {
+  if (Array.isArray(value)) return value.map(camel);
+  if (!value || typeof value !== "object") return value;
+  return Object.fromEntries(
+    Object.entries(value).map(([key, item]) => [
+      key.replace(/_([a-z])/g, (_, letter: string) => letter.toUpperCase()),
+      camel(item),
+    ]),
+  );
+}
 
 /**
  * Document audit — item 8.
@@ -26,13 +41,42 @@ export const dynamic = "force-dynamic";
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const documentId = url.searchParams.get("documentId");
+  if (getDataBackend() === "supabase") {
+    const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
+    if (!customerId) return Response.json({ documents: [] });
+    const supabase = await createClient();
+    if (documentId) {
+      const { data: document, error } = await supabase
+        .from("trade_documents")
+        .select("*")
+        .eq("customer_id", customerId)
+        .eq("id", documentId)
+        .maybeSingle();
+      if (error) return Response.json({ error: error.message }, { status: 500 });
+      if (!document) return Response.json({ error: "Document not found." }, { status: 404 });
+      const { data: findings, error: findingsError } = await supabase
+        .from("document_findings")
+        .select("*")
+        .eq("document_id", documentId)
+        .order("created_at");
+      if (findingsError) return Response.json({ error: findingsError.message }, { status: 500 });
+      return Response.json({ document: camel(document), findings: camel(findings ?? []) });
+    }
+    const { data, error } = await supabase
+      .from("trade_documents")
+      .select("*")
+      .eq("customer_id", customerId)
+      .order("uploaded_at", { ascending: false });
+    if (error) return Response.json({ error: error.message }, { status: 500 });
+    return Response.json({ documents: camel(data ?? []) });
+  }
   if (documentId) {
     const document = getDocument(documentId);
     if (!document) return Response.json({ error: "Document not found." }, { status: 404 });
     return Response.json({ document, findings: listDocumentFindings(documentId) });
   }
 
-  const customerId = url.searchParams.get("customerId") ?? (await getDefaultCustomerId());
+  const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
   if (!customerId) return Response.json({ documents: [] });
   return Response.json({ documents: listDocuments(customerId) });
 }
@@ -52,7 +96,7 @@ export async function POST(request: Request) {
     if (!(file instanceof File)) {
       return Response.json({ error: "No file was attached." }, { status: 400 });
     }
-    const customerId = (form.get("customerId") as string) || (await getDefaultCustomerId());
+    const customerId = await resolveCustomerId(form.get("customerId") as string | null);
     if (!customerId) return Response.json({ error: "No customer." }, { status: 400 });
 
     let extracted;
@@ -66,6 +110,29 @@ export async function POST(request: Request) {
     }
 
     try {
+      if (getDataBackend() === "supabase") {
+        const [outcome] = await fileAttachments(
+          customerId,
+          normalizeJurisdiction(form.get("country") as string | null),
+          [{ filename: file.name, format: extracted.format, text: extracted.text }],
+        );
+        if (!outcome.documentId) {
+          return Response.json({ error: outcome.caveats.join(" ") }, { status: 400 });
+        }
+        const supabase = await createClient();
+        const { data: document, error } = await supabase
+          .from("trade_documents")
+          .select("*")
+          .eq("id", outcome.documentId)
+          .single();
+        if (error) return Response.json({ error: error.message }, { status: 500 });
+        return Response.json({
+          document: camel(document),
+          findings: [],
+          extraction: { format: extracted.format, warnings: extracted.warnings },
+          caveats: outcome.caveats,
+        });
+      }
       const document = ingestDocument({
         customerId,
         docType: (form.get("docType") as string) ?? "other",
@@ -95,11 +162,40 @@ export async function POST(request: Request) {
     return Response.json({ error: "Request body must be valid JSON." }, { status: 400 });
   }
   const payload = body as Record<string, unknown>;
-  const customerId = (payload.customerId as string) ?? (await getDefaultCustomerId());
+  const customerId = await resolveCustomerId(payload.customerId as string | undefined);
   if (!customerId) return Response.json({ error: "No customer." }, { status: 400 });
 
   try {
     const action = (payload.action as string) ?? "ingest";
+
+    if (getDataBackend() === "supabase") {
+      if (action !== "ingest") {
+        return Response.json(
+          { error: "Customs-grade audit, pricing, and code promotion run on the trusted worker." },
+          { status: 409 },
+        );
+      }
+      const [outcome] = await fileAttachments(
+        customerId,
+        normalizeJurisdiction(payload.country as string | undefined),
+        [{
+          filename: (payload.filename as string) ?? "pasted.txt",
+          format: "text",
+          text: (payload.text as string) ?? "",
+        }],
+      );
+      if (!outcome.documentId) {
+        return Response.json({ error: outcome.caveats.join(" ") }, { status: 400 });
+      }
+      const supabase = await createClient();
+      const { data: document, error } = await supabase
+        .from("trade_documents")
+        .select("*")
+        .eq("id", outcome.documentId)
+        .single();
+      if (error) return Response.json({ error: error.message }, { status: 500 });
+      return Response.json({ document: camel(document), findings: [], caveats: outcome.caveats });
+    }
 
     if (action === "ingest") {
       const document = ingestDocument({

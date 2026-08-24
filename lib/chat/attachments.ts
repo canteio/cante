@@ -1,7 +1,5 @@
-import { randomUUID } from "node:crypto";
-import { db } from "@/lib/db/client";
-import { memories } from "@/lib/db/schema";
-import { and, eq } from "drizzle-orm";
+import { createHash, randomUUID } from "node:crypto";
+import { getDataBackend } from "@/lib/auth/config";
 import {
   auditDocument,
   DocumentInputError,
@@ -9,8 +7,11 @@ import {
   promoteCodesFromDocument,
 } from "@/lib/documents/audit";
 import { importProductsCsv } from "@/lib/catalogue/products";
+import { parseCsv } from "@/lib/catalogue/csv";
 import { refreshChecklistForCustomer } from "@/lib/checks/checklist";
 import type { JurisdictionName } from "@/lib/countries";
+import { addMemory } from "@/lib/db/queries";
+import { createClient } from "@/lib/supabase/server";
 
 /**
  * What actually happens when a customer drops a file into the chat.
@@ -63,40 +64,121 @@ function looksLikeCatalogue(text: string): boolean {
   return hasSku && firstLine.includes(",");
 }
 
-function saveUploadedFact(
+async function saveUploadedFact(
   customerId: string,
   jurisdiction: JurisdictionName,
   content: string,
   filename: string,
-): boolean {
+): Promise<boolean> {
   const trimmed = content.trim();
   if (!trimmed) return false;
-  const existing = db
-    .select()
-    .from(memories)
-    .where(and(eq(memories.customerId, customerId), eq(memories.jurisdiction, jurisdiction)))
-    .all();
-  // Cheap duplicate guard: the same fact re-uploaded should not stack up.
-  const normalized = trimmed.toLowerCase().replace(/\s+/g, " ");
-  if (existing.some((row) => row.content.toLowerCase().replace(/\s+/g, " ") === normalized)) {
-    return false;
-  }
+  const inserted = await addMemory({
+    customerId,
+    jurisdiction,
+    kind: trimmed.toUpperCase().startsWith("KBLI") ? "kbli" : "hs_code",
+    content: trimmed,
+    origin: "upload",
+    source: `Uploaded by the customer in chat: ${filename}`,
+    confirmed: true,
+  });
+  return inserted !== null;
+}
 
-  db.insert(memories)
-    .values({
-      id: randomUUID(),
-      customerId,
-      jurisdiction,
-      content: trimmed,
-      // A customer-supplied document is a person asserting a fact, which is the
-      // `human` tier — not a model guess from chat, and not paperwork either.
-      origin: "upload",
-      source: `Uploaded by the customer in chat: ${filename}`,
-      confirmed: true,
-      createdAt: new Date().toISOString(),
-    })
-    .run();
-  return true;
+function chunks(text: string, maxLength = 1_800): string[] {
+  const result: string[] = [];
+  let current = "";
+  for (const paragraph of text.split(/\n\s*\n/).map((part) => part.trim()).filter(Boolean)) {
+    if (current && current.length + paragraph.length + 2 > maxLength) {
+      result.push(current);
+      current = "";
+    }
+    if (paragraph.length <= maxLength) {
+      current = current ? `${current}\n\n${paragraph}` : paragraph;
+      continue;
+    }
+    if (current) result.push(current);
+    for (let start = 0; start < paragraph.length; start += maxLength) {
+      result.push(paragraph.slice(start, start + maxLength));
+    }
+  }
+  if (current) result.push(current);
+  return result;
+}
+
+async function fileCloudDocument(
+  customerId: string,
+  jurisdiction: JurisdictionName,
+  attachment: AttachmentInput,
+): Promise<string> {
+  const supabase = await createClient();
+  const documentId = randomUUID();
+  const { error: documentError } = await supabase.from("trade_documents").insert({
+    id: documentId,
+    customer_id: customerId,
+    doc_type: "other",
+    filename: attachment.filename,
+    parse_status: "partial",
+    parse_note: "Text extracted in chat; no customs-grade audit has run in the hosted app.",
+    extracted: { format: attachment.format },
+    raw_text: attachment.text,
+  });
+  if (documentError) throw new Error(`Supabase document filing failed: ${documentError.message}`);
+
+  const rows = chunks(attachment.text).map((content, chunkIndex) => ({
+    customer_id: customerId,
+    document_id: documentId,
+    jurisdiction,
+    chunk_index: chunkIndex,
+    content,
+    content_hash: createHash("sha256").update(content).digest("hex"),
+  }));
+  if (rows.length) {
+    const { error } = await supabase.from("document_chunks").insert(rows);
+    if (error) throw new Error(`Supabase document indexing failed: ${error.message}`);
+  }
+  return documentId;
+}
+
+export async function importCloudCatalogue(customerId: string, text: string) {
+  const supabase = await createClient();
+  const table = parseCsv(text);
+  const skuHeader = ["sku", "product_code", "item_code", "part_number"].find((key) =>
+    table.headers.includes(key),
+  );
+  if (!skuHeader) throw new Error("The catalogue has no SKU, product_code, item_code, or part_number column.");
+
+  let created = 0;
+  let updated = 0;
+  for (const row of table.rows) {
+    const sku = row[skuHeader]?.trim();
+    if (!sku) continue;
+    const { data: existing, error: readError } = await supabase
+      .from("products")
+      .select("id")
+      .eq("customer_id", customerId)
+      .eq("sku", sku)
+      .maybeSingle();
+    if (readError) throw new Error(`Supabase catalogue lookup failed: ${readError.message}`);
+    const values = {
+      customer_id: customerId,
+      sku,
+      name: row.name || row.product_name || row.description || sku,
+      description: row.description || null,
+      materials: (row.materials || "").split(/[;|]/).map((value) => value.trim()).filter(Boolean),
+      origin_country: row.origin_country || row.country_of_origin || null,
+      unit_of_measure: row.unit_of_measure || row.uom || null,
+      notes: row.notes || null,
+      updated_at: new Date().toISOString(),
+    };
+    const query = existing
+      ? supabase.from("products").update(values).eq("id", existing.id)
+      : supabase.from("products").insert({ id: randomUUID(), ...values });
+    const { error } = await query;
+    if (error) throw new Error(`Supabase catalogue write failed for ${sku}: ${error.message}`);
+    if (existing) updated += 1;
+    else created += 1;
+  }
+  return { created, updated };
 }
 
 /**
@@ -140,13 +222,23 @@ export async function fileAttachments(
 
     try {
       if (looksLikeCatalogue(attachment.text)) {
-        const summary = importProductsCsv(customerId, attachment.text);
+        const summary =
+          getDataBackend() === "supabase"
+            ? await importCloudCatalogue(customerId, attachment.text)
+            : importProductsCsv(customerId, attachment.text);
         outcome.actions.push(
           `Imported into the product catalogue: ${summary.created} created, ${summary.updated} updated.`,
         );
-        if (summary.caveats?.length) outcome.caveats.push(...summary.caveats);
+        const caveats = "caveats" in summary ? (summary.caveats as string[] | undefined) : undefined;
+        if (caveats?.length) outcome.caveats.push(...caveats);
         outcome.caveats.push(
           "Codes from a spreadsheet are recorded as leads on each SKU. Approving them as the declared code still needs a person on the Catalogue screen.",
+        );
+      } else if (getDataBackend() === "supabase") {
+        outcome.documentId = await fileCloudDocument(customerId, jurisdiction, attachment);
+        outcome.actions.push("Filed on the Documents screen and indexed for tenant-scoped chat retrieval.");
+        outcome.caveats.push(
+          "The hosted app stored and indexed the extracted text, but customs-grade document auditing still runs in the local worker.",
         );
       } else {
         const document = ingestDocument({
@@ -178,12 +270,12 @@ export async function fileAttachments(
       const stated = extractStatedCodes(attachment.text);
       const saved: string[] = [];
       for (const code of stated.kbli) {
-        if (saveUploadedFact(customerId, jurisdiction, `KBLI ${code}`, attachment.filename)) {
+        if (await saveUploadedFact(customerId, jurisdiction, `KBLI ${code}`, attachment.filename)) {
           saved.push(`KBLI ${code}`);
         }
       }
       for (const code of stated.hs) {
-        if (saveUploadedFact(customerId, jurisdiction, `HS code ${code}`, attachment.filename)) {
+        if (await saveUploadedFact(customerId, jurisdiction, `HS code ${code}`, attachment.filename)) {
           saved.push(`HS ${code}`);
         }
       }
@@ -202,7 +294,7 @@ export async function fileAttachments(
     outcomes.push(outcome);
   }
 
-  if (touchedChecklist) {
+  if (touchedChecklist && getDataBackend() === "sqlite") {
     try {
       await refreshChecklistForCustomer(customerId, jurisdiction);
     } catch {

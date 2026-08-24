@@ -200,10 +200,60 @@ npm run check:scheduled            # the cron entrypoint: run, deliver, exit wit
 npm run check:scheduled -- --verify # confirm the Telegram bot and chat work
 npm run db:push    # apply lib/db/schema.ts to cante.db
 npm run db:seed    # seed sources + MA from config/customer.json
+npm run db:cloud:dry-run # inventory the SQLite -> Supabase migration, no writes
+npm run db:cloud:sync    # upsert the local ledger with a local-only Supabase secret
+npm run db:cloud:verify  # compare local and cloud counts
 npm test           # focused source-window/parser regression tests
 npm run build      # must stay clean
 npx tsc --noEmit   # must stay clean
 ```
+
+## Production runtime (added 23 Aug 2026)
+
+Production is intentionally hybrid. Vercel serves the authenticated Next.js
+app and reads/writes tenant data in Supabase; the always-on Mac remains the
+trusted source-check worker and keeps SQLite as its evidence/seen ledger. With
+`CANTE_SYNC_SUPABASE=true`, `check:scheduled` first pulls cloud-owned customer
+inputs (profiles, memory, KBLI, catalogue, suppliers, lanes, documents), then
+syncs and verifies Supabase after a completed run and before reporting success.
+A pull or sync failure sends the same
+failure notice as a broken check, because stale production data must not look
+current. Verification checks that every local record ID is present rather than
+requiring equal counts, because production chat/memory/upload rows legitimately
+exist only in Supabase.
+
+`supabase/migrations/202608230001_cante_production.sql` contains the complete
+Postgres schema, pgvector/FTS document retrieval, and RLS. `customer_users` is
+the tenant authority. Middleware protects operational pages and APIs;
+`resolveCustomerId()` validates every requested customer against membership;
+RLS repeats the boundary in Postgres. The publishable key is used by the signed-
+in app. `SUPABASE_SECRET_KEY` bypasses RLS and belongs only in the local sync
+worker, never Vercel and never a `NEXT_PUBLIC_*` variable.
+
+The hosted model never connects to Supabase and never receives a database key.
+`app/api/chat/route.ts` uses the signed-in Supabase session to call
+`search_cante_context`, then puts only those bounded tenant excerpts in the
+prompt. Chat uploads write `trade_documents` and `document_chunks` through the
+same user/RLS session. This is the memory architecture: structured durable facts
+in `memories`, document evidence in chunks, retrieval at request time, and no
+whole-database prompt dumps.
+
+The vector RPC keeps `search_path = ''` because it is part of the tenant
+security boundary. Consequently, pgvector's cosine operator must be written as
+`OPERATOR(extensions.<=>)` in both the similarity expression and `order by`.
+An unqualified `<=>` fails on Supabase with PostgreSQL error 42883 even though
+both operands display as `extensions.vector`; do not remove that qualification.
+
+`lib/llm/api.ts` is now implemented for OpenAI Responses and Anthropic Messages,
+with server-side web tools. Hosted spend remains explicit: Vercel sets
+`CANTE_LLM=api` and `CANTE_LLM_LOCKED=true`; local checks continue to default to
+the CLI. The API keys are server-only. OpenAI calls set `store: false`.
+
+The exact migration and Vercel environment sequence is in
+`SUPABASE_VERCEL.md`. The honest boundary remains: heavy check execution,
+customs document audit, tariff enrichment, screening, and BOM assessment still
+run on the worker. Their tables are migrated, but Vercel does not pretend to run
+those long/local workflows; `POST /api/checks` returns 409 in cloud mode.
 
 A full check takes several minutes: the profile first selects applicable source
 packs, then the judgment stage may fetch detail pages. `npm run check` is the

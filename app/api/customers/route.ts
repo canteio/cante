@@ -7,7 +7,11 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const selectedProvider = normalizeProviderChoice((await cookies()).get(PROVIDER_COOKIE)?.value);
+  const selectedProvider = normalizeProviderChoice(
+    process.env.CANTE_LLM_LOCKED === "true"
+      ? process.env.CANTE_LLM
+      : (await cookies()).get(PROVIDER_COOKIE)?.value,
+  );
   const provider = getProvider(selectedProvider);
   return NextResponse.json({
     customers: await listCustomers(),

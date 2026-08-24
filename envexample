@@ -7,22 +7,30 @@ CANTE_APP_URL=http://localhost:3000
 CANTE_AUTH_MODE=demo
 NEXT_PUBLIC_CANTE_AUTH_MODE=demo
 
-# Supabase, needed when CANTE_AUTH_MODE=supabase
+# Supabase auth + production data
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
-# Keep service role server-only. Do not expose it as NEXT_PUBLIC_*.
-SUPABASE_SERVICE_ROLE_KEY=
-# Temporary bridge until tenant tables are wired. Comma-separated emails that
-# can enter protected app routes after Supabase login.
-CANTE_ALLOWED_EMAILS=
+CANTE_DATA_BACKEND=sqlite
+# Local sync worker only. Never add this to Vercel or expose it as NEXT_PUBLIC_*.
+SUPABASE_SECRET_KEY=
+CANTE_SUPABASE_CUSTOMER_SLUG=pt-ma
+CANTE_SYNC_SUPABASE=false
 
 # LLM provider
-# claude-code = local Claude Code CLI, codex-cli = local Codex CLI, gemini = Google Gemini
+# Local: claude-code / codex-cli / antigravity. Vercel: api.
 CANTE_LLM=claude-code
+CANTE_LLM_LOCKED=false
 CLAUDE_BIN=
 CODEX_BIN=
 GEMINI_API_KEY=
 GOOGLE_API_KEY=
+# Hosted production provider. Set one key, server-side only.
+CANTE_HOSTED_PROVIDER=openai
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-5
+ANTHROPIC_API_KEY=
+ANTHROPIC_MODEL=claude-sonnet-4-20250514
+CANTE_LLM_MAX_OUTPUT_TOKENS=16000
 
 # SQLite, local runner, and local development
 CANTE_DB_PATH=

@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { runCheck } from "@/lib/checks/run";
-import { getDefaultCustomerId, getRunHistory } from "@/lib/db/queries";
+import { getRunHistory, resolveCustomerId } from "@/lib/db/queries";
 import { normalizeProviderChoice, PROVIDER_COOKIE } from "@/lib/llm";
 import { normalizeJurisdiction } from "@/lib/countries";
+import { getDataBackend } from "@/lib/auth/config";
 
 export const runtime = "nodejs";
 // The judgment stage shells out to the Claude Code CLI and can run for
@@ -13,7 +14,7 @@ export const maxDuration = 800;
 /** GET /api/checks — run history for a customer. */
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const customerId = url.searchParams.get("customerId") ?? (await getDefaultCustomerId());
+  const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
   const jurisdiction = normalizeJurisdiction(url.searchParams.get("country"));
   if (!customerId) {
     return NextResponse.json({ error: "No customers. Run `npm run db:seed`." }, { status: 404 });
@@ -27,10 +28,20 @@ export async function GET(request: Request) {
 
 /** POST /api/checks — trigger a check run. A scheduler can call this unchanged. */
 export async function POST(request: Request) {
+  if (getDataBackend() === "supabase") {
+    return NextResponse.json(
+      {
+        ok: false,
+        error:
+          "Production checks run on the trusted local scheduler and sync to Supabase after verification.",
+      },
+      { status: 409 },
+    );
+  }
   let customerId: string | null = null;
   try {
     const body = await request.json().catch(() => ({}));
-    customerId = body.customerId ?? (await getDefaultCustomerId());
+    customerId = await resolveCustomerId(body.customerId);
     if (!customerId) {
       return NextResponse.json({ error: "No customers. Run `npm run db:seed`." }, { status: 404 });
     }

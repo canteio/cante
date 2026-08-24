@@ -10,7 +10,18 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const selected = normalizeProviderChoice((await cookies()).get(PROVIDER_COOKIE)?.value);
+  const locked = process.env.CANTE_LLM_LOCKED === "true";
+  const selected = normalizeProviderChoice(
+    locked ? process.env.CANTE_LLM : (await cookies()).get(PROVIDER_COOKIE)?.value,
+  );
+  if (locked) {
+    const option = PROVIDER_OPTIONS.find((item) => item.id === selected)!;
+    return Response.json({
+      selected,
+      locked: true,
+      providers: [{ ...option, selected: true, ...(await getProvider(selected).available()) }],
+    });
+  }
   const providers = await Promise.all(
     PROVIDER_OPTIONS.map(async (option) => {
       const provider = getProvider(option.id);
@@ -26,6 +37,12 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  if (process.env.CANTE_LLM_LOCKED === "true") {
+    return Response.json(
+      { error: "The production AI provider is fixed by server configuration." },
+      { status: 409 },
+    );
+  }
   const body = await request.json().catch(() => ({}));
   const selected = normalizeProviderChoice(body.provider);
   const provider = getProvider(selected);

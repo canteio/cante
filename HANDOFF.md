@@ -11,9 +11,7 @@ Written 18 Aug 2026. If the dates below are weeks old, ask before trusting the
 
 ## The one-line state
 
-**The software works. Nobody has ever paid for it, and the operating tables are
-empty.** 211 findings and 12 alerts of real monitoring history; 0 products,
-0 lanes, 0 suppliers, 0 documents.
+**The software works and the production migration is implemented, but the remote data import still requires the local Supabase secret.** The local ledger currently has 211 findings, 12 alerts, 18 conversations, 51 chat messages, 6 memories, and 2 documents.
 
 The bottleneck has not been engineering for some time.
 
@@ -49,11 +47,11 @@ machines — divergent seen-logs mean the customer gets the same regulation twic
 | Decision | Why |
 |---|---|
 | Mac + launchd, **not** GitHub Actions | Actions can't use the local Claude Code login (breaks rule 1) and runners are ephemeral, which destroys `cante.db` and the seen-log |
-| Not Vercel | SQLite doesn't persist on serverless, the check exceeds function timeouts, and the `claude` CLI can't run there |
+| Vercel for the authenticated app, not the daily runner | Supabase is the deployed system of record. The long-running source check remains on the Mac and syncs verified results after each run. |
 | Telegram for the **operator**, WhatsApp for the customer | Indonesian businesses live on WhatsApp; the Business API needs Meta verification and per-message fees, which don't belong in a pilot |
 | Secrets in `.env`, loaded by `scripts/load-env.ts` | A LaunchAgent inherits no shell environment; without the loader a scheduled run silently loses the token and marks alerts `skipped` |
 | Not export-only | `sideOfTrade` gates the cross-border packs. All 13 Indonesian sources and 29 of 52 US sources apply to a domestic-only factory |
-| Rule 1 still stands | The check runs on the local CLI. Moving to a server means implementing `lib/llm/api.ts` and ~$4/month of API spend — **the user has not decided this** |
+| Hosted API is approved for deployed chat | `lib/llm/api.ts` supports OpenAI or Anthropic. The local check still defaults to the CLI; Vercel uses `CANTE_LLM=api` and locks the selector. |
 
 ---
 

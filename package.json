@@ -8,6 +8,10 @@
     "start": "next start",
     "db:push": "drizzle-kit push",
     "db:seed": "tsx scripts/seed.ts",
+    "db:cloud:dry-run": "tsx scripts/sync-supabase.ts --dry-run",
+    "db:cloud:sync": "tsx scripts/sync-supabase.ts",
+    "db:cloud:pull": "tsx scripts/sync-supabase.ts --pull-inputs",
+    "db:cloud:verify": "tsx scripts/sync-supabase.ts --verify",
     "check": "tsx scripts/run-check.ts",
     "test": "tsx --test lib/**/*.test.ts",
     "check:scheduled": "tsx scripts/scheduled-check.ts"

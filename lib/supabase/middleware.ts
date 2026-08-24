@@ -30,6 +30,15 @@ export async function updateSupabaseSession(request: NextRequest) {
 
   const { data, error } = await supabase.auth.getClaims();
   const claims = data?.claims;
+  const userId = typeof claims?.sub === "string" ? claims.sub : null;
+  const { data: membership, error: membershipError } = userId
+    ? await supabase
+        .from("customer_users")
+        .select("customer_id, role")
+        .eq("user_id", userId)
+        .limit(1)
+        .maybeSingle()
+    : { data: null, error: null };
   return {
     email:
       typeof claims?.email === "string"
@@ -42,5 +51,9 @@ export async function updateSupabaseSession(request: NextRequest) {
           : null,
     response,
     userIsAuthenticated: Boolean(claims && !error),
+    workspace:
+      membership && !membershipError
+        ? { customerId: membership.customer_id as string, role: membership.role as string }
+        : null,
   };
 }

@@ -1,6 +1,6 @@
 import {
-  getDefaultCustomerId,
   listChecklistItems,
+  resolveCustomerId,
   updateChecklistItemStatus,
 } from "@/lib/db/queries";
 import { refreshChecklistForCustomer } from "@/lib/checks/checklist";
@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const customerId = url.searchParams.get("customerId") ?? (await getDefaultCustomerId());
+  const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
   const jurisdiction = normalizeJurisdiction(url.searchParams.get("country"));
   if (!customerId) return Response.json({ items: [] });
 
@@ -25,7 +25,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
-  const customerId: string | null = body.customerId ?? (await getDefaultCustomerId());
+  const customerId = await resolveCustomerId(body.customerId);
   if (!customerId) return Response.json({ error: "No customer." }, { status: 404 });
   const jurisdiction = normalizeJurisdiction(body.country);
 

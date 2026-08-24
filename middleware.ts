@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   DEMO_SESSION_COOKIE,
   DEMO_SESSION_VALUE,
-  emailIsAllowed,
   getAuthMode,
 } from "@/lib/auth/config";
 import { updateSupabaseSession } from "@/lib/supabase/middleware";
@@ -21,18 +20,35 @@ const PROTECTED_PREFIXES = [
 
 export async function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
-  const isProtected = PROTECTED_PREFIXES.some(
+  const isProtectedPage = PROTECTED_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
+  const isProtectedApi =
+    pathname.startsWith("/api/") &&
+    pathname !== "/api/demo-login" &&
+    pathname !== "/api/logout";
+  const isProtected = isProtectedPage || isProtectedApi;
 
   if (!isProtected) {
     return NextResponse.next();
   }
 
   if (getAuthMode() === "supabase") {
-    const { email, response, userIsAuthenticated } = await updateSupabaseSession(request);
-    if (userIsAuthenticated && emailIsAllowed(email)) {
+    const { response, userIsAuthenticated, workspace } = await updateSupabaseSession(request);
+    if (userIsAuthenticated && workspace) {
+      if (isProtectedApi && !["GET", "HEAD", "OPTIONS"].includes(request.method)) {
+        const origin = request.headers.get("origin");
+        if (origin && origin !== request.nextUrl.origin) {
+          return NextResponse.json({ error: "Cross-origin request rejected." }, { status: 403 });
+        }
+      }
       return response;
+    }
+    if (isProtectedApi) {
+      return NextResponse.json(
+        { error: userIsAuthenticated ? "No workspace access." : "Authentication required." },
+        { status: userIsAuthenticated ? 403 : 401 },
+      );
     }
     if (userIsAuthenticated) {
       const pendingUrl = request.nextUrl.clone();
@@ -44,6 +60,9 @@ export async function middleware(request: NextRequest) {
     const session = request.cookies.get(DEMO_SESSION_COOKIE)?.value;
     if (session === DEMO_SESSION_VALUE) {
       return NextResponse.next();
+    }
+    if (isProtectedApi) {
+      return NextResponse.json({ error: "Authentication required." }, { status: 401 });
     }
   }
 
@@ -65,5 +84,6 @@ export const config = {
     "/profile/:path*",
     "/suppliers/:path*",
     "/workqueue/:path*",
+    "/api/:path*",
   ],
 };

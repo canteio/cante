@@ -30,7 +30,7 @@ export const PROVIDER_OPTIONS: {
     id: "api",
     label: "Hosted API",
     shortLabel: "API",
-    description: "Intentionally disabled until API spend is approved.",
+    description: "OpenAI or Anthropic API for the deployed app.",
   },
 ];
 

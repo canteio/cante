@@ -19,7 +19,7 @@ something genuinely relevant changed**.
 
 First customer: **PT MA**, PVC manufacturer, Surabaya. Real, live, in progress.
 
-**v1 costs nothing to run.** It uses the Claude Code login already on the machine instead of an API key. That's a hard constraint, not a preference: nothing bills until the live test says the idea is worth paying for.
+The daily monitor still uses the signed-in local Claude/Codex CLI, so that high-volume job does not require a hosted key. The deployed chat uses an explicitly configured OpenAI or Anthropic API because Vercel cannot run a desktop CLI. API spend starts only when `CANTE_LLM=api` is set.
 
 ---
 
@@ -67,16 +67,20 @@ This only sets a local demo cookie. It is not production authentication.
 Both `/login` and `/request-access` use the same minimal light-background form
 layout; the latter prepares a prefilled access-request email.
 
-To prepare Supabase later, copy `envexample` into your real environment and
-switch both auth variables together:
+For production, apply the Supabase migration and one-time SQLite import described in [`SUPABASE_VERCEL.md`](./SUPABASE_VERCEL.md), then set:
 
 ```txt
 CANTE_AUTH_MODE=supabase
 NEXT_PUBLIC_CANTE_AUTH_MODE=supabase
+CANTE_DATA_BACKEND=supabase
+CANTE_LLM=api
+CANTE_LLM_LOCKED=true
 ```
+Vercel receives the Supabase URL/publishable key and one hosted AI key. The Supabase secret key belongs only on the trusted local sync worker and must not be added to Vercel.
 
-Then set the Supabase URL, publishable key, service role key, and
-`CANTE_ALLOWED_EMAILS`. See `SUPABASE_VERCEL.md`.
+The migration qualifies pgvector's cosine operator through the `extensions`
+schema so its retrieval function remains compatible with the hardened empty
+Postgres search path.
 
 ### Other commands
 
@@ -90,10 +94,14 @@ Then set the Supabase URL, publishable key, service role key, and
 | `npm run build` | Production build. |
 | `npm run db:push` | Apply `lib/db/schema.ts` to `cante.db`. |
 | `npm run db:seed` | Seed sources + customer from `config/customer.json`. |
+| `npm run db:cloud:dry-run` | Inventory and validate the SQLite rows without network writes. |
+| `npm run db:cloud:sync` | Upsert the complete SQLite history into Supabase with the local secret. |
+| `npm run db:cloud:pull` | Pull live profile, memory, catalogue, lane, and document inputs into the worker ledger. |
+| `npm run db:cloud:verify` | Compare local and cloud table counts after migration. |
 
 ### Where things are stored
 
-**One SQLite file, `cante.db`, at the repo root.** No database server, nothing to start — the app opens the file directly. Delete it and rebuild with `db:push && db:seed`; you lose run history, not code. `raw/` holds the fetched source HTML from the last run as an evidence trail. Both are gitignored.
+The trusted daily worker keeps `cante.db` as its fetch/judgment ledger. Supabase Postgres is the deployed app's tenant-scoped system of record. With `CANTE_SYNC_SUPABASE=true`, a scheduled check first pulls live customer inputs, then runs, upserts the result, and verifies the cloud copy before its success heartbeat. `raw/` remains the worker's local evidence trail.
 
 ### If it can't find the model
 
@@ -113,11 +121,10 @@ Two stages, kept separate because a **fetch failure** and a **bad judgment call*
 
 **2. Judge — `lib/checks/judge.ts`.** Reads the parsed entries plus the customer profile and the dedup log, and judges relevance the way a person would — not keyword matching, since most relevant regulations won't contain "PVC" or "tarpaulin" in the title. Returns a Zod-validated verdict per regulation (`flagged` / `noted` / `baseline` / `clear`) plus a ready-to-send message.
 
-The model sits behind a provider seam in `lib/llm/`. The working default shells
-out to the local `claude` CLI. The sidebar can also select a local Codex /
-ChatGPT CLI provider when `codex --version` is healthy. `lib/llm/api.ts` is a
-deliberate hosted-API stub — switching to paid API usage later is an explicit
-decision, not something an unset variable can trigger. Validation lives *above*
+The model sits behind a provider seam in `lib/llm/`. Local runs can use Claude
+Code, Codex/ChatGPT, or Antigravity CLI sessions. `lib/llm/api.ts` implements
+the Vercel-compatible OpenAI Responses API and Anthropic Messages API paths,
+including server-side web tools. Validation lives *above*
 the seam (providers return raw text; one Zod schema parses it), so they can't
 drift into accepting different shapes.
 

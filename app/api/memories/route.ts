@@ -1,9 +1,9 @@
 import {
   addMemory,
   deleteMemory,
-  getDefaultCustomerId,
   getMemory,
   listMemories,
+  resolveCustomerId,
   setMemoryConfirmed,
 } from "@/lib/db/queries";
 import { refreshChecklistForCustomer } from "@/lib/checks/checklist";
@@ -37,7 +37,7 @@ const KINDS = [
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const customerId = url.searchParams.get("customerId") ?? (await getDefaultCustomerId());
+  const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
   if (!customerId) return Response.json({ memories: [] });
   const jurisdiction = normalizeJurisdiction(url.searchParams.get("country"));
   return Response.json({ jurisdiction, memories: await listMemories(customerId, jurisdiction) });
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
   const content: string | undefined = body.content?.trim();
   if (!content) return Response.json({ error: "Empty memory." }, { status: 400 });
 
-  const customerId: string | null = body.customerId ?? (await getDefaultCustomerId());
+  const customerId = await resolveCustomerId(body.customerId);
   if (!customerId) return Response.json({ error: "No customer." }, { status: 404 });
 
   const kind = KINDS.includes(body.kind) ? body.kind : "other";

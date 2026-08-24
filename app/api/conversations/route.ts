@@ -1,8 +1,8 @@
 import {
   deleteConversation,
   getConversation,
-  getDefaultCustomerId,
   listConversations,
+  resolveCustomerId,
 } from "@/lib/db/queries";
 import { normalizeJurisdiction } from "@/lib/countries";
 
@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     return Response.json(found);
   }
 
-  const customerId = url.searchParams.get("customerId") ?? (await getDefaultCustomerId());
+  const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
   if (!customerId) return Response.json({ conversations: [] });
   const jurisdiction = normalizeJurisdiction(url.searchParams.get("country"));
   return Response.json({
