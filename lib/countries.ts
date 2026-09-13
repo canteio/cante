@@ -17,7 +17,10 @@ export const SUPPORTED_JURISDICTIONS = [
 
 export type JurisdictionName = (typeof SUPPORTED_JURISDICTIONS)[number]["name"];
 
-export const DEFAULT_JURISDICTION: JurisdictionName = "Indonesia";
+// US is Cante's primary go-to-market jurisdiction; default new/unset
+// records to US rather than Indonesia so untagged data doesn't silently
+// fall into the deprioritized market.
+export const DEFAULT_JURISDICTION: JurisdictionName = "United States";
 
 export function normalizeJurisdiction(value: unknown): JurisdictionName {
   if (typeof value !== "string") return DEFAULT_JURISDICTION;
@@ -25,7 +28,10 @@ export function normalizeJurisdiction(value: unknown): JurisdictionName {
   if (["us", "usa", "united states", "united states of america"].includes(normalized)) {
     return "United States";
   }
-  return "Indonesia";
+  if (["id", "indonesia"].includes(normalized)) {
+    return "Indonesia";
+  }
+  return DEFAULT_JURISDICTION;
 }
 
 export function jurisdictionCode(name: JurisdictionName): "ID" | "US" {
