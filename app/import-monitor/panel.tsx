@@ -46,7 +46,13 @@ export function ImportMonitorPanel() {
         {source.dataAsOf && ` Data as of ${source.dataAsOf.slice(0, 10)}.`}
       </p>)}
       <details open={data.status !== "current"}><summary>Coverage and interpretation</summary><ul>{data.caveats.map(c => <li key={c}>{c}</li>)}</ul></details>
-      <p>{data.total} matching shipment–recall pairs.</p>
+      {/* Prior copy only ever said "N matching pairs" with no indication of which
+          slice of N the visible cards represent, so paging past page 1 gave no
+          way to tell where you were (or that "Next" being disabled meant you'd
+          reached the end) without counting cards by eye. Show the 1-based
+          visible range alongside the total, matching the Previous/Next below. */}
+      <p>{data.total === 0 ? "0 matching shipment–recall pairs." :
+        `Showing ${offset + 1}\u2013${Math.min(offset + data.results.length, data.total)} of ${data.total} matching shipment\u2013recall pairs.`}</p>
       {data.results.length === 0 && <p>No matches in the available evidence. Check coverage above before drawing conclusions.</p>}
       {data.results.map(row => <article key={row.id} className="import-monitor-result">
         <h2>{row.importer}</h2>
