@@ -20,6 +20,12 @@ manifest data those products resell. Full research and legal basis:
   function over shipment rows (shipperCountryCode, hsChapter, cargo/consignee
   substring match, redaction exclusion). Not yet backed by a real DB query —
   same "no live feed yet" blocker as fetch/match.
+- `search/load-live-recalls.ts` — bridges `queryShipmentsWithRecallMatches()`
+  to Cante's EXISTING live CPSC recall feed (`lib/sources/registry.ts`
+  `us-cpsc-recalls`), so the *recalls* half of step 3's data-source gap is
+  already closed — only the manifest/shipment side (step 1) is still
+  blocked. Split into a pure `findCpscRecallSource()` (unit-tested) and a
+  thin `loadLiveCpscRecalls()` network wrapper.
 - `scripts/` — reserved for future CLI entry points (e.g. a one-shot import
   of a delivered manifest export file).
 
