@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import type { searchMonitor } from "@/pipelines/import-manifest/monitor/query";
 
 type Results = ReturnType<typeof searchMonitor>;
@@ -9,6 +9,7 @@ export function ImportMonitorPanel() {
   const [busy, setBusy] = useState(false);
   const [query, setQuery] = useState("");
   const [offset, setOffset] = useState(0);
+  const formRef = useRef<HTMLFormElement>(null);
   useEffect(() => {
     const controller = new AbortController();
     setBusy(true); setError(""); setData(null);
@@ -28,8 +29,17 @@ export function ImportMonitorPanel() {
     for (const [key, value] of fields) if (String(value).trim()) params.set(key, String(value).trim());
     setOffset(0); setQuery(params.toString());
   }
+  // UI/UX friction: once any filter (cargo/country/importer/hsChapter/kind) was
+  // set, there was no way back to the unfiltered default view short of manually
+  // clearing every field by hand — the two selects in particular don't have an
+  // obvious "empty" option to click back to for country. A single Reset button
+  // clears the DOM form back to its defaults and re-fires the default query.
+  function reset() {
+    formRef.current?.reset();
+    setOffset(0); setQuery("");
+  }
   return <section className="import-monitor">
-    <form onSubmit={search} className="import-monitor-form">
+    <form ref={formRef} onSubmit={search} className="import-monitor-form">
       <label>Cargo<input name="cargo" placeholder="e.g. baby stroller" maxLength={200} /></label>
       <label>Shipper country<select name="country"><option value="">All countries</option><option value="CN">China</option><option value="ID">Indonesia</option></select></label>
       <label>Importer<input name="importer" placeholder="Company name" maxLength={200} /></label>
@@ -39,6 +49,7 @@ export function ImportMonitorPanel() {
       <label>HS chapter<input name="hsChapter" placeholder="e.g. 95" pattern="\d{2}" maxLength={2} title="Two-digit HS chapter code, e.g. 95" /></label>
       <label>Evidence<select name="kind"><option value="named_importer">Named in CPSC recall</option><option value="commodity_candidate">Commodity overlap only</option><option value="all">Both</option></select></label>
       <button className="btn btn-primary" disabled={busy}>Search</button>
+      <button type="button" className="btn" disabled={busy || query === ""} onClick={reset}>Reset</button>
     </form>
     {busy && <p role="status">Loading monitoring results…</p>}
     {error && <p role="alert">{error}</p>}
