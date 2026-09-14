@@ -45,6 +45,20 @@ export const importShipments = sqliteTable("import_shipments", {
   // distinguish.
   shipperName: text("shipper_name"),
   shipperAddress: text("shipper_address"),
+  // First-class queryable field (added 2026-09-14, "foreign-shipper mirror"
+  // sub-feature). China and Indonesia do NOT publish company-level customs
+  // data themselves (GACC only releases enterprise-TYPE aggregates; no
+  // Indonesian official portal exists at all — see docs/import-data-pipeline.md
+  // "International customs data legal landscape"). The only LEGAL way to
+  // surface a Chinese/Indonesian company's name is as the foreign shipper on
+  // a US inward manifest — that disclosure is squarely covered by the same
+  // 19 CFR 103.31(a)(3) public-release rule as the rest of this table. We
+  // derive this from shipperAddress (see deriveShipperCountryCode in
+  // fetch/fetch-manifests.ts) so it can be indexed/filtered directly instead
+  // of requiring every caller to re-parse the free-text address, e.g.
+  // Marketing querying "Chinese companies shipping X into the US" becomes a
+  // plain `WHERE shipper_country_code = 'CN'` instead of a LIKE scan.
+  shipperCountryCode: text("shipper_country_code"), // ISO 3166-1 alpha-2, e.g. "CN", "ID"
   consigneeName: text("consignee_name"),
   consigneeAddress: text("consignee_address"),
   dataRedacted: integer("data_redacted", { mode: "boolean" })

@@ -77,6 +77,54 @@ data; the resellers' business model is repackaging it, not owning it.
   paid/ToS-restricted derivative products; Cante goes to the primary CBP
   source instead.
 
+## The officially sanctioned way to get Chinese/Indonesian company names ("foreign-shipper mirror")
+
+Added 2026-09-14. Cante ran a full 20-country legal review of customs-data
+disclosure regimes (see gbrain `cante/company-plan`) and confirmed: **China**
+and **Indonesia** do NOT have any legal public company-level customs data
+source of their own.
+
+- China: GACC (the customs authority) only ever publishes enterprise-TYPE
+  aggregates (state-owned / foreign-invested / private-owned breakdowns),
+  never individual company names or shipment records.
+- Indonesia: no official government portal publishing company-level customs
+  or shipment data exists at all, despite marketing claims from resellers
+  implying otherwise.
+
+Scraping either country's customs system to work around that would be
+illegal there, and Cante will not do it — full stop, do not attempt this.
+
+**The legal alternative is the US CBP pipeline this repo already builds.**
+Every US inward ocean manifest discloses the foreign SHIPPER name and
+address (the exporting factory/company) directly alongside the US
+consignee, and that disclosure is public under the exact same
+`19 CFR 103.31(a)(3)` rule documented above — it is the same record, same
+legal basis, no separate authorization needed. So instead of trying to read
+China's or Indonesia's customs data (illegal / doesn't exist), Cante reads
+the US side of the same transaction, which is legal, and asks "which
+Chinese/Indonesian company shipped this into the US?" — a mirror image of
+the same fact, sourced entirely from public US government data.
+
+Implementation, this run:
+
+- `schema/shipments.ts` — added `shipperCountryCode` (ISO 3166-1 alpha-2) as
+  a first-class indexed/queryable column, so a query like "Chinese companies
+  shipping baby products into the US" is a plain
+  `WHERE shipper_country_code = 'CN'` instead of a free-text LIKE scan over
+  `shipperAddress`.
+- `fetch/fetch-manifests.ts` — added `deriveShipperCountryCode()`, a small
+  explicit token-lookup over the free-text shipper address (deliberately not
+  a geocoding call — CAMIR address text is inconsistent enough that a wrong
+  automated guess would misattribute a company's country, which is worse
+  than leaving the field null). Covers CN/ID today; extend the lookup table
+  as more countries become relevant to the ICP.
+- Tests: `fetch/fetch-manifests.test.ts` covers CN match, ID match, no-match,
+  and null-input cases.
+
+This does not require the FOIA bulk-data decision below to be resolved
+first — `shipperCountryCode` populates from whatever shipper-address text
+the eventual data source provides, live feed or FOIA delivery alike.
+
 ## Next steps (future runs)
 
 1. Decide whether to actually file the CBP FOIA/SecureRelease bulk request

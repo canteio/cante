@@ -1,6 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseM01VesselLine, parseP01PortLine } from "./fetch-manifests";
+import {
+  parseM01VesselLine,
+  parseP01PortLine,
+  deriveShipperCountryCode,
+} from "./fetch-manifests";
 
 // Sample line built from the CBP CAMIR M01 spec: pos 1-3 "M01", 4-7 SCAC,
 // 8-9 mode, 10-11 country, 12-34 vessel name, 35-39 voyage number.
@@ -36,4 +40,33 @@ test("parseP01PortLine extracts SCAC and port of unlading", () => {
   const parsed = parseP01PortLine(line);
   assert.equal(parsed.carrierScac, "MAEU");
   assert.equal(parsed.portOfUnladingCode, "4601");
+});
+
+// "Foreign-shipper mirror" — see fetch-manifests.ts for the legal rationale
+// (China/Indonesia have no legal public company-level customs data of their
+// own; the US inward manifest's shipper field is the legal substitute).
+test("deriveShipperCountryCode identifies a Chinese shipper address", () => {
+  assert.equal(
+    deriveShipperCountryCode("No. 88 Wenzhou Road, Ningbo, China"),
+    "CN"
+  );
+});
+
+test("deriveShipperCountryCode identifies an Indonesian shipper address", () => {
+  assert.equal(
+    deriveShipperCountryCode("Jl. Industri Raya 12, Tangerang, Indonesia"),
+    "ID"
+  );
+});
+
+test("deriveShipperCountryCode returns null for an unrecognized/US address", () => {
+  assert.equal(
+    deriveShipperCountryCode("400 Main St, Newark, NJ, USA"),
+    null
+  );
+});
+
+test("deriveShipperCountryCode returns null for missing address", () => {
+  assert.equal(deriveShipperCountryCode(null), null);
+  assert.equal(deriveShipperCountryCode(undefined), null);
 });

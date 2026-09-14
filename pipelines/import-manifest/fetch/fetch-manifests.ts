@@ -71,6 +71,49 @@ export function parseP01PortLine(line: string): {
   return { carrierScac, portOfUnladingCode };
 }
 
+/**
+ * "Foreign-shipper mirror" sub-feature (added 2026-09-14).
+ *
+ * China and Indonesia do not publish company-level customs data of their
+ * own — GACC (China) only releases enterprise-TYPE aggregates (SOE/FIE/POE),
+ * never named companies, and no official Indonesian portal exists at all
+ * (see docs/import-data-pipeline.md, "International customs data legal
+ * landscape"). Scraping either country's customs system to get around that
+ * would be illegal there and is explicitly out of scope for Cante.
+ *
+ * The legal way to surface those company names: every US inward ocean
+ * manifest already discloses the foreign SHIPPER name/address next to the
+ * US consignee, and that disclosure is public under 19 CFR 103.31(a)(3) —
+ * same legal basis as the rest of this pipeline. This function derives a
+ * normalized ISO 3166-1 alpha-2 country code from the free-text shipper
+ * address so `shipperCountryCode` (schema/shipments.ts) can be populated
+ * and queried directly, e.g. "Chinese companies shipping X into the US" is
+ * then just `WHERE shipper_country_code = 'CN'` against our own legally
+ * sourced US-side data.
+ *
+ * Intentionally a small explicit lookup rather than a geocoding call: CAMIR
+ * shipper-address free text is inconsistent, and a wrong guess here would
+ * misattribute a company's country, which is worse than leaving it null.
+ * Extend the table as new countries become relevant to the ICP.
+ */
+const SHIPPER_COUNTRY_TOKENS: Record<string, string> = {
+  CHINA: "CN",
+  " PRC": "CN", // "People's Republic of China" abbreviated in freight addresses
+  "P.R.C": "CN",
+  INDONESIA: "ID",
+};
+
+export function deriveShipperCountryCode(
+  shipperAddress: string | null | undefined
+): string | null {
+  if (!shipperAddress) return null;
+  const upper = ` ${shipperAddress.toUpperCase()} `;
+  for (const [token, code] of Object.entries(SHIPPER_COUNTRY_TOKENS)) {
+    if (upper.includes(token)) return code;
+  }
+  return null;
+}
+
 /** Placeholder — no live source is wired up yet. See docs/import-data-pipeline.md. */
 export async function loadRawManifestText(): Promise<string> {
   throw new Error(
