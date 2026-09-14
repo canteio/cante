@@ -24,6 +24,11 @@
  */
 
 import type { ImportShipmentRow } from "../schema/shipments";
+import type { RegulationEntry } from "@/lib/sources/fetch";
+import {
+  rankRecallMatches,
+  type RecallMatch,
+} from "../match/match-shipment-recalls";
 
 /**
  * Filters map directly onto shipment columns. All fields are optional and
@@ -90,4 +95,46 @@ function containsCaseInsensitive(
 ): boolean {
   if (!haystack) return false;
   return haystack.toLowerCase().includes(needle.toLowerCase());
+}
+
+/**
+ * One shipment row plus every CPSC recall that overlapped it, ranked
+ * strongest-first. This is the bridge between step 2 (match) and step 3
+ * (search): a caller (e.g. Marketing's agent) can now run one call —
+ * `queryShipmentsWithRecallMatches(rows, query, recalls)` — instead of
+ * manually looping queryShipments() output through rankRecallMatches()
+ * itself. Kept as a thin composition of the two existing pure functions
+ * (no new matching logic) so step 2/3's independently-tested behavior is
+ * reused as-is rather than duplicated.
+ */
+export interface ShipmentWithRecallMatches {
+  shipment: ImportShipmentRow;
+  recallMatches: RecallMatch[];
+}
+
+/**
+ * Filter shipments by ShipmentQuery, then rank CPSC recall overlap for
+ * each surviving row. `recalls` is the caller-supplied live CPSC feed
+ * (see lib/sources/fetch.ts parseCpscRecallsJson) — this function does no
+ * fetching itself, matching the "pure function, caller owns I/O" posture
+ * of queryShipments/rankRecallMatches.
+ *
+ * onlyWithMatches (default true) drops shipments with zero recall overlap
+ * so a caller building a lead list doesn't have to filter empty arrays
+ * itself — set false to see the full filtered shipment set regardless of
+ * recall overlap.
+ */
+export function queryShipmentsWithRecallMatches(
+  rows: ImportShipmentRow[],
+  query: ShipmentQuery,
+  recalls: RegulationEntry[],
+  options: { onlyWithMatches?: boolean } = {},
+): ShipmentWithRecallMatches[] {
+  const onlyWithMatches = options.onlyWithMatches ?? true;
+  return queryShipments(rows, query)
+    .map((shipment) => ({
+      shipment,
+      recallMatches: rankRecallMatches(shipment, recalls),
+    }))
+    .filter((row) => !onlyWithMatches || row.recallMatches.length > 0);
 }

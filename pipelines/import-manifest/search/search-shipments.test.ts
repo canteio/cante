@@ -1,7 +1,30 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { ImportShipmentRow } from "../schema/shipments";
-import { queryShipments } from "./search-shipments";
+import type { RegulationEntry } from "@/lib/sources/fetch";
+import { queryShipments, queryShipmentsWithRecallMatches } from "./search-shipments";
+
+/** Minimal valid RegulationEntry for test fixtures (mirrors
+ * match/match-shipment-recalls.test.ts's fixture shape). */
+function recall(overrides: Partial<RegulationEntry> = {}): RegulationEntry {
+  return {
+    sourceId: "us-cpsc-recalls",
+    sourceName: "CPSC - recent product recalls",
+    domain: "www.saferproducts.gov",
+    regulationType: "standards",
+    label: "CPSC recall 26-404",
+    number: "26-404",
+    year: 2026,
+    listingTitle: "Supernova Butane Torch Lighters Recalled",
+    truncated: false,
+    fullTitle:
+      "Supernova and Typhoon butane torch lighters recalled for lacking " +
+      "required child-resistant mechanism. Recall date 2026-04-09.",
+    url: "https://www.cpsc.gov/Recalls/2026/recall-26-404",
+    foundInViews: ["cpsc-recalls"],
+    ...overrides,
+  };
+}
 
 /** Minimal fixture builder — fills required non-nullable columns, lets
  * callers override just the fields a given test cares about. */
@@ -96,4 +119,42 @@ test("queryShipments treats null fields as non-matching for substring filters", 
   const rows = [makeRow({ id: "null-desc", cargoDescription: null })];
   const result = queryShipments(rows, { cargoDescriptionContains: "baby" });
   assert.deepEqual(result, []);
+});
+
+test("queryShipmentsWithRecallMatches filters then ranks recall overlap, dropping zero-match rows by default", () => {
+  const rows = [
+    makeRow({
+      id: "lighter-importer",
+      shipperCountryCode: "CN",
+      cargoDescription: "Butane torch lighters, child-resistant mechanism",
+    }),
+    makeRow({
+      id: "unrelated-importer",
+      shipperCountryCode: "CN",
+      cargoDescription: "Steel fasteners and hardware",
+    }),
+  ];
+  const recalls = [recall()];
+  const result = queryShipmentsWithRecallMatches(
+    rows,
+    { shipperCountryCode: "CN" },
+    recalls,
+  );
+  assert.deepEqual(result.map((r) => r.shipment.id), ["lighter-importer"]);
+  assert.equal(result[0].recallMatches.length, 1);
+  assert.equal(result[0].recallMatches[0].recall.number, "26-404");
+});
+
+test("queryShipmentsWithRecallMatches keeps zero-match rows when onlyWithMatches is false", () => {
+  const rows = [
+    makeRow({ id: "unrelated", cargoDescription: "Steel fasteners" }),
+  ];
+  const result = queryShipmentsWithRecallMatches(
+    rows,
+    {},
+    [recall()],
+    { onlyWithMatches: false },
+  );
+  assert.deepEqual(result.map((r) => r.shipment.id), ["unrelated"]);
+  assert.equal(result[0].recallMatches.length, 0);
 });
