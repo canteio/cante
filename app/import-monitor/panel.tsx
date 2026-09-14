@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import type { searchMonitor } from "@/pipelines/import-manifest/monitor/query";
+import { describeSourceStatus } from "@/pipelines/import-manifest/monitor/status-labels";
 
 type Results = ReturnType<typeof searchMonitor>;
 export function ImportMonitorPanel() {
@@ -66,8 +67,13 @@ export function ImportMonitorPanel() {
     {data && <>
       <p role="status"><strong>{data.status === "never_run" ? "Monitoring has not run yet" : data.status === "current" ? "Current within configured coverage" : "Incomplete or stale coverage"}</strong>
         {data.updatedAt && ` · Last refresh ${new Date(data.updatedAt).toLocaleString()}`}</p>
+      {/* UI/UX friction: raw machine status tokens ("blocked", "error",
+          "sample") were shown verbatim to a signed-in customer with zero
+          explanation of what they mean or imply for trustworthiness of the
+          results below. describeSourceStatus() gives plain-English copy
+          instead (see status-labels.ts). */}
       {data.sources && Object.entries(data.sources).map(([name, source]) => <p key={name}>
-        <strong>{name === "shipments" ? "Shipments" : "CPSC recalls"}: {source.status}</strong> · {source.count} records · {source.message}
+        <strong>{name === "shipments" ? "Shipments" : "CPSC recalls"}: {describeSourceStatus(source.status)}</strong> · {source.count} records · {source.message}
         {source.dataAsOf && ` Data as of ${source.dataAsOf.slice(0, 10)}.`}
       </p>)}
       <details open={data.status !== "current"}><summary>Coverage and interpretation</summary><ul>{data.caveats.map(c => <li key={c}>{c}</li>)}</ul></details>
