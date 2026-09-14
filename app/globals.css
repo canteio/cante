@@ -3187,3 +3187,11 @@ textarea.input {
 .composer-attach {
   margin-right: 2px;
 }
+
+/* Import monitoring uses existing app tokens; coverage stays next to results. */
+.import-monitor-form { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin-bottom: 24px; }
+.import-monitor-form label { display: grid; gap: 6px; font-size: 13px; }
+.import-monitor-form input, .import-monitor-form select { padding: 9px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--app-surface, white); color: inherit; font: inherit; max-width: 100%; }
+.import-monitor-result { padding: 20px 0; border-top: 1px solid var(--border); }
+.import-monitor-result h2 { font-size: 18px; }
+.import-monitor p, .import-monitor li { line-height: 1.6; }

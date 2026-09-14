@@ -36,7 +36,8 @@ export async function Sidebar({
     | "catalogue"
     | "documents"
     | "workqueue"
-    | "suppliers";
+    | "suppliers"
+    | "import-monitor";
   activeConversationId?: string | null;
   jurisdiction?: JurisdictionName;
 }) {
@@ -102,6 +103,10 @@ export async function Sidebar({
           <Link href={`/documents${countryQuery}`} data-active={active === "documents"}>
             <FileText size={15} strokeWidth={1.75} />
             Shipment Documents
+          </Link>
+          <Link href="/import-monitor" data-active={active === "import-monitor"}>
+            <Truck size={15} strokeWidth={1.75} />
+            Import Monitoring
           </Link>
           <Link href={`/suppliers${countryQuery}`} data-active={active === "suppliers"}>
             <Truck size={15} strokeWidth={1.75} />

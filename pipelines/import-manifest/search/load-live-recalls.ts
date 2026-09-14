@@ -39,10 +39,8 @@ export function findCpscRecallSource(
  * Fetch the live CPSC recall feed and return just the parsed entries,
  * ready to pass straight into queryShipmentsWithRecallMatches()'s `recalls`
  * argument. Throws if the source definition is missing from the registry
- * (a real bug, not a network hiccup) but returns an empty array (not a
- * throw) on a fetch/parse failure — matching fetchAllSources' own
- * "record the failure, don't crash the caller" posture, since a transient
- * CPSC outage shouldn't take down a lead-scoring run.
+ * or fetching/parsing fails. Callers can retain prior evidence, but must not
+ * interpret an outage as an empty successful recall check.
  */
 export async function loadLiveCpscRecalls(
   rawDir: string,
@@ -54,5 +52,10 @@ export async function loadLiveCpscRecalls(
     );
   }
   const report = await fetchAllSources([source], rawDir);
+  const outcome = report.outcomes.find(item => item.sourceId === source.id);
+  // A failed feed must not become a successful empty match set.
+  if (!outcome?.success || outcome.parseWarning || (outcome.entriesParsed === 0 && !outcome.validEmpty)) {
+    throw new Error(outcome?.errorMessage ?? outcome?.parseWarning ?? "CPSC recall coverage unavailable");
+  }
   return report.regulations;
 }

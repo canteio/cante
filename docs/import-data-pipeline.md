@@ -125,14 +125,86 @@ This does not require the FOIA bulk-data decision below to be resolved
 first — `shipperCountryCode` populates from whatever shipper-address text
 the eventual data source provides, live feed or FOIA delivery alike.
 
-## Next steps (future runs)
+## Implementation update — 14 September 2026
 
-1. Decide whether to actually file the CBP FOIA/SecureRelease bulk request
-   (business decision, needs J's sign-off — has an ongoing cost).
-2. Flesh out `pipelines/import-manifest/fetch/` with a real parser for the
-   M01/P01/H01 CAMIR record layout once a sample data file is available.
-3. Wire the schema in `pipelines/import-manifest/schema/` into
-   `lib/db/schema.ts` as first-class Drizzle tables once the data source is
-   confirmed.
-4. Add a Cante adapter entry to `free-trade-data-apis.md` once this graduates
-   past "researched, not implemented."
+**Steps 4–5 are implemented in this repository; step 1's automated public
+shipment feed remains blocked.** The worker can consume an authorized normalized
+JSON delivery today. CPSC recalls use a real free government API. Nothing in
+this change files FOIA, buys data or creates synthetic "live" shipments.
+
+### Free-source investigation
+
+- **ImportYeti / keyless search:** its [API getting-started guide](https://docs.importyeti.com/docs/getting-started)
+  requires an API key and credits for company queries. Its
+  [data-use policy](https://www.importyeti.com/policies/data-use) distinguishes
+  purchased API/subscription data from the free website and says continuous
+  full-database delivery requires a separate agreement. A human-accessible
+  search page is not evidence of a permitted keyless automated shipment feed.
+  No undocumented endpoints, CAPTCHA bypass or reseller scraping were used.
+- **Census AES / USA Trade Online:** the
+  [Census trade tools description](https://www.census.gov/content/dam/Census/topics/business-and-economy/flyers/Trade_Data_Tools_flyer_v6.pdf)
+  describes free statistical trade tools. Census's
+  [trade security guidelines](https://www.census.gov/foreign-trade/reference/guides/ftdsecurity2019.pdf)
+  explain confidentiality of identifiable records. These aggregate datasets
+  cannot answer "which named importer received this shipment" and are not
+  substituted for shipment data here.
+- **CBP public portals:** no recurring free shipment feed was established.
+  Direct reading-room access returned HTTP 403 in this research session, so
+  this is not a claim that every released attachment has been inventoried.
+  Public technical layouts describe a format, not access to the actual
+  manifests. The FOIA/data-delivery choice remains with J; the historical
+  fee estimates above are not a verified current price or subscription offer.
+- **CPSC:** the [official API documentation](https://www.cpsc.gov/s3fs-public/RecallRetrievalWebServicesProgrammersGuide20180917.pdf)
+  exposes recall dates, product descriptions and importer names. This is the
+  free live source used for the recall half, **not shipment records**. The
+  scheduled adapter requests a rolling 180-day window and preserves named
+  importers instead of the older alert adapter's 30-record summary cap.
+  Direct live fetch verification failed in this restricted environment;
+  the adapter is tested using representative official-schema responses.
+
+This establishes a data-access blocker, not proof that no free record could
+exist anywhere. A future source must demonstrate shipment-level provenance,
+permission for automated reuse and an actual accessible endpoint/delivery
+before it can be called live.
+
+### What was built
+
+- `loadRawManifestText()` now loads a configured local CAMIR file. The existing
+  M01/P01 header parser remains tested; complete B/L/party/cargo decoding is
+  still absent and must be implemented against an actual delivery if needed.
+- `monitor/sources.ts` validates authorized normalized shipment exports and
+  fetches CPSC recalls. Synthetic exports carry `sample_fixture` and cannot
+  produce importer discoveries. Missing access is recorded as blocked.
+- `scripts/refresh-import-monitor.ts` is the in-repo scheduled worker, exposed
+  as `npm run imports:refresh`. It persists each refresh, retains evidence
+  through outages, tracks source freshness and detects new importer/recall
+  pairs without re-announcing each new bill of lading.
+- `lib/db/schema.ts` and the new Supabase migration persist a tenant-scoped,
+  atomic snapshot of shipment rows, recalls, matches and discovery history.
+  The existing standalone shipment schema supplies the row shape. This is a
+  bounded 5,000-shipment workspace store, not a national archive index.
+- `/import-monitor` and `/api/import-monitor` expose authenticated search,
+  evidence links, recent activity, named-importer versus commodity-candidate
+  filters, pagination and explicit coverage warnings. Shared commodity words
+  alone do not establish that a specific importer was recalled.
+
+See [pipeline setup and contract](../pipelines/import-manifest/README.md) for
+migration commands, environment variables, the daily cron template, sample
+format, API parameters, failure codes and test coverage.
+
+### Human next steps
+
+1. J decides how to obtain an authorized shipment source; no fee or filing has
+   been authorized or attempted. A licensed normalized export can use the
+   implemented adapter immediately. Raw CAMIR delivery requires the remaining
+   shipment decoder after its real format is available.
+2. The worker operator restores the SQLite native dependency or selects the
+   existing Supabase backend, applies the matching migration, configures the
+   existing customer ID and source path, and runs `npm run imports:refresh`.
+3. Verify the CPSC request on the network-enabled worker, then install the
+   checked-in cron example with the correct absolute paths. The schedule is
+   provided but was not installed on the host by this development session.
+
+Until shipment access is resolved, automation refreshes recalls and reports
+shipment coverage as blocked; it cannot surface verified active importer leads
+from an absent shipment feed.

@@ -1,7 +1,7 @@
 /**
- * Stub fetcher for CBP AMS ocean manifest data.
+ * Local file loader and partial CAMIR header parser for CBP ocean manifests.
  *
- * This is intentionally NOT functional yet. There are two real paths
+ * Automated public live access remains blocked. There are two paths
  * documented in docs/import-data-pipeline.md:
  *
  *   1. A CBP FOIA/SecureRelease bulk-data subscription (what ImportYeti says
@@ -13,10 +13,8 @@
  *      (M01/P01/H01), which we CAN build and test today against sample
  *      records without needing live access yet.
  *
- * This stub implements the shape of (2): given raw CAMIR-format manifest
- * text, parse it into rows matching pipelines/import-manifest/schema/shipments.ts.
- * Wire in a real fetch source (FOIA delivery drop, AMS feed, etc.) by
- * replacing `loadRawManifestText`.
+ * This module parses M01/P01 headers only, not complete bills of lading.
+ * The monitoring worker separately accepts validated normalized JSON exports.
  */
 
 export interface RawManifestRecord {
@@ -114,16 +112,18 @@ export function deriveShipperCountryCode(
   return null;
 }
 
-/** Placeholder — no live source is wired up yet. See docs/import-data-pipeline.md. */
-export async function loadRawManifestText(): Promise<string> {
-  throw new Error(
-    "No manifest data source configured yet. This requires either a CBP " +
-      "FOIA/SecureRelease bulk subscription or a sample CAMIR export file. " +
-      "See docs/import-data-pipeline.md for the two documented paths."
-  );
+/** Read an explicitly supplied local CAMIR delivery or sample. Missing access
+ * stays a failure; M01/P01 alone cannot produce shipment-level importer rows. */
+export async function loadRawManifestText(file = process.env.CANTE_CAMIR_FILE): Promise<string> {
+  if (!file) throw new Error("No CAMIR file configured. Set CANTE_CAMIR_FILE to an authorized delivery or sample; live shipment access remains blocked.");
+  const { readFile, stat } = await import("node:fs/promises");
+  if ((await stat(file)).size > 20_000_000) throw new Error("CAMIR file exceeds 20 MB");
+  const raw = await readFile(file, "utf8");
+  if (!raw.trim()) throw new Error("CAMIR file is empty");
+  return raw;
 }
 
-/** Entry point placeholder — run via `tsx pipelines/import-manifest/fetch/fetch-manifests.ts`. */
+/** Inspect an explicitly configured local file — run via `tsx pipelines/import-manifest/fetch/fetch-manifests.ts`. */
 async function main() {
   const raw = await loadRawManifestText();
   console.log("Loaded raw manifest text, length:", raw.length);

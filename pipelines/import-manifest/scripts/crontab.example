@@ -1,0 +1,5 @@
+# Install with the worker operator's crontab after replacing the two absolute
+# paths. The process reads .env from the repo; create raw/ before scheduling.
+# Daily 07:20 in the worker's timezone. Exit 2 means incomplete/stale coverage;
+# exit 1 means setup/storage failure. No email/Telegram/customer messages sent.
+20 7 * * * cd /ABSOLUTE/PATH/TO/cante && /ABSOLUTE/PATH/TO/node --import tsx scripts/refresh-import-monitor.ts >> raw/import-monitor.log 2>&1
