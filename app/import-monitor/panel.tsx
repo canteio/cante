@@ -33,6 +33,10 @@ export function ImportMonitorPanel() {
       <label>Cargo<input name="cargo" placeholder="e.g. baby stroller" maxLength={200} /></label>
       <label>Shipper country<select name="country"><option value="">All countries</option><option value="CN">China</option><option value="ID">Indonesia</option></select></label>
       <label>Importer<input name="importer" placeholder="Company name" maxLength={200} /></label>
+      {/* API's monitorQuery has long supported hsChapter filtering (see query.ts)
+          but no form field ever exposed it, so a real user had no way to reach
+          a working, documented filter short of hand-editing the URL. */}
+      <label>HS chapter<input name="hsChapter" placeholder="e.g. 95" pattern="\d{2}" maxLength={2} title="Two-digit HS chapter code, e.g. 95" /></label>
       <label>Evidence<select name="kind"><option value="named_importer">Named in CPSC recall</option><option value="commodity_candidate">Commodity overlap only</option><option value="all">Both</option></select></label>
       <button className="btn btn-primary" disabled={busy}>Search</button>
     </form>
