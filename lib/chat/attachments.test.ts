@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { renderAttachmentOutcomes, type AttachmentOutcome } from "@/lib/chat/attachments";
+import {
+  extractStatedCodes,
+  looksLikeCatalogue,
+  renderAttachmentOutcomes,
+  type AttachmentOutcome,
+} from "@/lib/chat/attachments";
 
 /**
  * The failure these guard against is a real one, seen in a live chat: the
@@ -62,4 +67,51 @@ test("a file that could not be filed says so rather than going quiet", () => {
 
 test("no attachments renders nothing at all", () => {
   assert.equal(renderAttachmentOutcomes([]), "");
+});
+
+/**
+ * The fork these two functions drive (catalogue import vs. document filing,
+ * and which codes get written to Memory as confirmed facts) previously had no
+ * direct coverage — only the exported entry point above was tested, and that
+ * only through `renderAttachmentOutcomes`. Both are plain, DB-free functions,
+ * so they're covered here directly rather than only through the DB-backed
+ * `fileAttachments` (which this test file can't exercise without sqlite).
+ */
+
+test("looksLikeCatalogue recognises a SKU header with commas", () => {
+  assert.equal(looksLikeCatalogue("sku,name,hs_code\nA-1,Widget,1234.56\n"), true);
+  assert.equal(looksLikeCatalogue("product_code,description\nA-1,Widget\n"), true);
+});
+
+test("looksLikeCatalogue rejects prose and headers with no comma", () => {
+  assert.equal(looksLikeCatalogue("Invoice No. 12345\nDate: 2026-01-01\n"), false);
+  assert.equal(looksLikeCatalogue("sku name hs_code\n"), false);
+});
+
+test("looksLikeCatalogue only looks at the first line", () => {
+  const text = "Bill of lading\nsku,name\nA-1,Widget\n";
+  assert.equal(looksLikeCatalogue(text), false, "a catalogue header two lines down doesn't count");
+});
+
+test("extractStatedCodes finds a labelled KBLI code", () => {
+  const { kbli, hs } = extractStatedCodes("Our KBLI code is 46209 for this line of business.");
+  assert.deepEqual(kbli, ["46209"]);
+  assert.deepEqual(hs, []);
+});
+
+test("extractStatedCodes finds labelled HS codes in dotted and undotted form", () => {
+  const { hs } = extractStatedCodes("HS 6306.12.00 for the tarp, and HS code 62034200 for the jacket.");
+  assert.deepEqual(hs, ["6306.12.00", "62034200"]);
+});
+
+test("extractStatedCodes ignores unlabelled numbers", () => {
+  // An invoice number or quantity must never be mistaken for a tariff code.
+  const { kbli, hs } = extractStatedCodes("Invoice 12345678, qty 4620900, total 46209.00 USD.");
+  assert.deepEqual(kbli, []);
+  assert.deepEqual(hs, []);
+});
+
+test("extractStatedCodes de-duplicates repeated mentions of the same code", () => {
+  const { hs } = extractStatedCodes("HS 6306.12.00 appears here and again as HS code 6306.12.00.");
+  assert.deepEqual(hs, ["6306.12.00"]);
 });

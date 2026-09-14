@@ -77,8 +77,12 @@ const HIDDEN_TOOLS = new Set(["ToolSearch"]);
  * for every WebSearch, so the UI rendered three government favicons regardless
  * of what was searched or what came back. Real favicons come from
  * `parseSearchResults()` once the search actually returns.
+ *
+ * Exported for unit testing: this and `parseSearchResults` below are the only
+ * pure, dependency-free logic in this file (everything else needs a spawned
+ * `claude` process), so they are the part worth testing directly.
  */
-function describeTool(
+export function describeTool(
   name: string,
   input: Record<string, unknown>,
 ): { detail: string; url?: string; hostname?: string } {
@@ -123,7 +127,7 @@ function toolResultText(content: unknown): string {
  * tool_result text. These are the actual pages the model saw, which is what
  * the UI shows favicons for — anything else would be decoration.
  */
-function parseSearchResults(content: unknown): SearchResult[] {
+export function parseSearchResults(content: unknown): SearchResult[] {
   const text = toolResultText(content);
   const start = text.indexOf("Links: [");
   if (start === -1) return [];
