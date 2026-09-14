@@ -12,7 +12,7 @@
  * docs/import-data-pipeline.md). Once a data source is live, merge these
  * tables into lib/db/schema.ts and run `npm run db:push`.
  */
-import { sql } from "drizzle-orm";
+import { sql, type InferSelectModel } from "drizzle-orm";
 import { integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 const now = sql`(strftime('%Y-%m-%dT%H:%M:%fZ','now'))`;
@@ -83,3 +83,13 @@ export const importShipments = sqliteTable("import_shipments", {
   sourceFileRef: text("source_file_ref"),
   ingestedAt: text("ingested_at").notNull().default(now),
 });
+
+/**
+ * Row type inferred from the table definition above. Exported so downstream
+ * pure-logic modules (e.g. search/search-shipments.ts, step 3 of the
+ * Volza-replacement build sequence) can type against real shipment shape
+ * without importing Drizzle's table object itself or depending on a live
+ * DB connection — keeps those modules unit-testable with plain fixture
+ * arrays, same posture as match/match-shipment-recalls.ts.
+ */
+export type ImportShipmentRow = InferSelectModel<typeof importShipments>;
