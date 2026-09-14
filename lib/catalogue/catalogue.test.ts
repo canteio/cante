@@ -137,6 +137,86 @@ test("approval refuses lead-tier codes, requires a rationale, and supersedes the
   assert.equal(superseded?.supersededBy, doc.id);
 });
 
+// Added: upsertProduct's normalisation defaults (currency, product class,
+// numeric parsing) had no direct coverage — only exercised indirectly through
+// the CSV import tests above. A regression here (e.g. losing the currency
+// default or the invalid-class fallback) would previously slip through green.
+test("upsertProduct defaults currency to USD and falls back to unknown for an invalid product class", async () => {
+  const { customerId } = await operatingDb();
+  const { upsertProduct } = await import("@/lib/catalogue/products");
+
+  const { product } = upsertProduct(customerId, {
+    sku: "PVC-300",
+    name: "Grey tarp",
+    productClass: "not-a-real-class",
+  });
+  assert.equal(product.currency, "USD", "currency defaults to USD when omitted");
+  assert.equal(
+    product.productClass,
+    "unknown",
+    "an unrecognised product class must never be stored verbatim",
+  );
+
+  const { product: withCurrency } = upsertProduct(customerId, {
+    sku: "PVC-301",
+    name: "Black tarp",
+    currency: "eur",
+    productClass: "industrial",
+  });
+  assert.equal(withCurrency.currency, "EUR", "currency is upper-cased");
+  assert.equal(withCurrency.productClass, "industrial", "a valid class is kept as-is");
+});
+
+// Added: parseNumber (used for unit_value on CSV import) strips currency
+// symbols and thousands separators — untested, and the exact regex is easy to
+// break silently (e.g. dropping the minus sign or a lone decimal point).
+test("CSV import parses unit_value through currency symbols and thousands separators", async () => {
+  const { customerId } = await operatingDb();
+  const { importProductsCsv, getProductBySku } = await import("@/lib/catalogue/products");
+
+  importProductsCsv(
+    customerId,
+    'sku,name,unit_value\nPVC-400,Red tarp,"$1,234.56"\nPVC-401,Torn label,-\n',
+  );
+
+  const withValue = getProductBySku(customerId, "PVC-400");
+  assert.equal(withValue?.unitValue, 1234.56);
+
+  const withoutValue = getProductBySku(customerId, "PVC-401");
+  assert.equal(withoutValue?.unitValue, null, "a bare dash is not a number");
+});
+
+// Added: deleteProduct had zero test coverage despite touching two tables
+// (products + classifications) inside a transaction — the exact shape of bug
+// (orphaned classification rows, or a false "success" on a missing id) that a
+// missing test lets through.
+test("deleteProduct removes the product and its classification history, and reports false for an unknown id", async () => {
+  const { customerId } = await operatingDb();
+  const { upsertProduct, deleteProduct, getProductBySku } = await import(
+    "@/lib/catalogue/products"
+  );
+  const { recordClassification, listClassifications } = await import(
+    "@/lib/catalogue/classifications"
+  );
+
+  const { product } = upsertProduct(customerId, { sku: "PVC-500", name: "White tarp" });
+  recordClassification({
+    productId: product.id,
+    system: "hs",
+    code: "6306.12.00",
+    tier: "lead",
+    basis: "test fixture",
+  });
+  assert.equal(listClassifications(product.id).length, 1);
+
+  assert.equal(deleteProduct(customerId, "not-a-real-id"), false);
+
+  const removed = deleteProduct(customerId, product.id);
+  assert.equal(removed, true);
+  assert.equal(getProductBySku(customerId, "PVC-500"), undefined);
+  assert.equal(listClassifications(product.id).length, 0, "classification history is cleaned up too");
+});
+
 test("a stronger tier upgrades an existing code without inventing approval", async () => {
   const { customerId } = await operatingDb();
   const { upsertProduct } = await import("@/lib/catalogue/products");
