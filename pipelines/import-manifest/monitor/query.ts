@@ -11,6 +11,21 @@ export const monitorQuery = z.object({
   offset: z.coerce.number().int().min(0).max(100000).default(0),
   limit: z.coerce.number().int().min(1).max(100).default(50),
 });
+
+// Machine-readable parameter docs so an AI agent probing GET /api/import-monitor
+// with bad/no params (its first likely move) gets enough to self-correct from the
+// 400 body alone, instead of having to go read this source file or the README.
+// Kept as plain data (not derived from the zod schema) so it stays a stable,
+// prose-friendly contract even if the schema's internal validation shape changes.
+export const monitorQueryDocs = {
+  cargo: { type: "string", max: 200, example: "stroller", note: "Substring match against cargo description." },
+  country: { type: "string", pattern: "^[A-Z]{2}$", example: "CN", note: "ISO-3166 alpha-2 shipper country, e.g. CN, ID." },
+  importer: { type: "string", max: 200, example: "Acme Imports", note: "Substring match against consignee/importer name." },
+  hsChapter: { type: "string", pattern: "^\\d{2}$", example: "95", note: "Two-digit HS chapter code." },
+  kind: { type: "enum", values: ["named_importer", "commodity_candidate", "all"], default: "named_importer" },
+  offset: { type: "integer", min: 0, max: 100000, default: 0 },
+  limit: { type: "integer", min: 1, max: 100, default: 50 },
+} as const;
 export function searchMonitor(state: MonitorState | null, rawQuery: unknown, now = new Date().toISOString()) {
   const query = monitorQuery.parse(rawQuery);
   const caveats = [
