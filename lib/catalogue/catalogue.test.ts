@@ -217,6 +217,60 @@ test("deleteProduct removes the product and its classification history, and repo
   assert.equal(listClassifications(product.id).length, 0, "classification history is cleaned up too");
 });
 
+// Added: rejectClassification previously ran an unconditional UPDATE with no
+// existence check, no superseded guard, and no reason check — rejecting an
+// unknown id silently did nothing, and rejecting an already-superseded row
+// would overwrite its supersededAt timestamp, destroying the record of when
+// it actually left current. Covering the same three guards approveClassification
+// already had, now that rejectClassification enforces them too.
+test("rejectClassification refuses an unknown id, an empty reason, and a row that is already superseded", async () => {
+  const { customerId } = await operatingDb();
+  const { upsertProduct } = await import("@/lib/catalogue/products");
+  const {
+    recordClassification,
+    rejectClassification,
+    approveClassification,
+    ClassificationApprovalError,
+  } = await import("@/lib/catalogue/classifications");
+
+  const { product } = upsertProduct(customerId, { sku: "PVC-600", name: "Tan tarp" });
+
+  assert.throws(
+    () => rejectClassification("not-a-real-id", "wrong code"),
+    (error: Error) => error instanceof ClassificationApprovalError && /not found/.test(error.message),
+  );
+
+  const human = recordClassification({
+    productId: product.id,
+    system: "hs",
+    code: "6306.12.00",
+    tier: "human",
+    basis: "broker email",
+  });
+  assert.throws(
+    () => rejectClassification(human.id, "   "),
+    (error: Error) => error instanceof ClassificationApprovalError && /reason/.test(error.message),
+  );
+
+  approveClassification(human.id, "j", "Confirmed with broker.");
+  const doc = recordClassification({
+    productId: product.id,
+    system: "hs",
+    code: "6306.19.90",
+    tier: "document",
+    basis: "PEB 000456",
+  });
+  approveClassification(doc.id, "j", "Read off PEB 000456.");
+  // `human` is now superseded by `doc`'s approval — rejecting it after the
+  // fact must not be allowed to rewrite its supersededAt.
+  assert.throws(
+    () => rejectClassification(human.id, "trying to reject a superseded row"),
+    (error: Error) => error instanceof ClassificationApprovalError && /superseded/.test(error.message),
+  );
+
+  rejectClassification(doc.id, "wrong HS heading, corrected on re-audit");
+});
+
 test("a stronger tier upgrades an existing code without inventing approval", async () => {
   const { customerId } = await operatingDb();
   const { upsertProduct } = await import("@/lib/catalogue/products");
