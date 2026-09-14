@@ -29,5 +29,11 @@ test("HTTP distinguishes invalid filters from unavailable storage", async () => 
   assert.equal(invalid.status, 400);
   const failed = await respondToMonitorQuery(new Request("https://cante.test/api/import-monitor"), "tenant", async () => { throw new Error("test database offline"); });
   assert.equal(failed.status, 503);
-  assert.deepEqual(await failed.json(), { error: "Import monitoring storage is unavailable." });
+  const failedBody = await failed.json();
+  assert.equal(failedBody.error, "Import monitoring storage is unavailable.");
+  // 503 is a transient storage outage, not a bad request: an agent should be
+  // able to tell from the body alone that retrying the same params is right,
+  // and still get the param contract without a second round trip.
+  assert.equal(failedBody.retryable, true);
+  assert.ok(failedBody.params.limit.max === 100, "params doc should also be present on the 503 path");
 });

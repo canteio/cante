@@ -19,6 +19,12 @@ export async function respondToMonitorQuery(
     return Response.json(searchMonitor(await readState(customerId), parsed.data), { headers });
   } catch (error) {
     console.error("Import monitor read failed", error);
-    return Response.json({ error: "Import monitoring storage is unavailable." }, { status: 503, headers });
+    // params doc was missing on this one error path (401/400/200 all include
+    // it already) — an agent that got a valid request past validation and
+    // then hit a transient 503 had no way to tell "your params were fine,
+    // retry the same request" from "go re-derive the contract from scratch".
+    // Retryable is explicit too, since 503 here is a storage outage, not a
+    // client error the agent should try to fix before retrying.
+    return Response.json({ error: "Import monitoring storage is unavailable.", retryable: true, params: monitorQueryDocs }, { status: 503, headers });
   }
 }

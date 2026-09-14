@@ -6,22 +6,24 @@ type Results = ReturnType<typeof searchMonitor>;
 export function ImportMonitorPanel() {
   const [data, setData] = useState<Results | null>(null);
   const [error, setError] = useState("");
+  const [retryable, setRetryable] = useState(false);
+  const [retryToken, setRetryToken] = useState(0);
   const [busy, setBusy] = useState(false);
   const [query, setQuery] = useState("");
   const [offset, setOffset] = useState(0);
   const formRef = useRef<HTMLFormElement>(null);
   useEffect(() => {
     const controller = new AbortController();
-    setBusy(true); setError(""); setData(null);
+    setBusy(true); setError(""); setRetryable(false); setData(null);
     fetch(`/api/import-monitor?${query}&offset=${offset}`, { signal: controller.signal })
       .then(async response => {
         const result = await response.json();
-        if (!response.ok) throw new Error(result.error ?? "Monitoring query failed");
+        if (!response.ok) { setRetryable(Boolean(result.retryable)); throw new Error(result.error ?? "Monitoring query failed"); }
         setData(result);
       }).catch(e => { if (!controller.signal.aborted) setError(e.message); })
       .finally(() => { if (!controller.signal.aborted) setBusy(false); });
     return () => controller.abort();
-  }, [query, offset]);
+  }, [query, offset, retryToken]);
   function search(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const fields = new FormData(event.currentTarget);
@@ -52,7 +54,15 @@ export function ImportMonitorPanel() {
       <button type="button" className="btn" disabled={busy || query === ""} onClick={reset}>Reset</button>
     </form>
     {busy && <p role="status">Loading monitoring results…</p>}
-    {error && <p role="alert">{error}</p>}
+    {error && <p role="alert">{error}
+      {/* UI/UX friction: a 503 storage outage rendered identically to a bad
+          filter, so a user had no way to tell "fix your search" from "this
+          will probably work if you just try again" without reading source.
+          The API now flags retryable 503s explicitly; surface that as an
+          actual retry button instead of leaving the user to guess and
+          re-click Search by hand. */}
+      {retryable && <button type="button" className="btn" disabled={busy} onClick={() => setRetryToken(t => t + 1)}> Retry</button>}
+    </p>}
     {data && <>
       <p role="status"><strong>{data.status === "never_run" ? "Monitoring has not run yet" : data.status === "current" ? "Current within configured coverage" : "Incomplete or stale coverage"}</strong>
         {data.updatedAt && ` · Last refresh ${new Date(data.updatedAt).toLocaleString()}`}</p>
