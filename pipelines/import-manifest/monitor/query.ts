@@ -34,7 +34,12 @@ export function searchMonitor(state: MonitorState | null, rawQuery: unknown, now
     "Named importer means an exact normalized CPSC importer name plus commodity overlap; verify the linked recall. It does not prove this shipment contains recalled units.",
     "Active means a manifest filed in the past 180 days, not confirmed delivery. Commodity candidates do not establish that the importer was recalled.",
   ];
-  if (!state) return { status: "never_run", updatedAt: null, sources: null, caveats, total: 0, results: [] };
+  // params is echoed on the 200 path too (not just 401/400 in http.ts) so an
+  // agent chaining queries — e.g. narrowing a "never_run"/large result set —
+  // can read the field contract straight off any response, without having to
+  // trigger an error first or go read source/README. Same "self-correct from
+  // the body alone" posture as the machine-readable 401/400 docs.
+  if (!state) return { status: "never_run", updatedAt: null, sources: null, caveats, total: 0, results: [], params: monitorQueryDocs };
   const stale = Date.parse(now) - Date.parse(state.updatedAt) > 2 * 86400000 ||
     Object.values(state.sources).some(s => s.status !== "ok" || !s.dataAsOf || Date.parse(now) - Date.parse(s.dataAsOf) > 7 * 86400000);
   if (stale) caveats.unshift("Coverage is incomplete or stale. Results may use retained evidence; an empty list does not mean no importers were recalled.");
