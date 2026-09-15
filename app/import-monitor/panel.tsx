@@ -149,7 +149,18 @@ export function ImportMonitorPanel() {
           visible range alongside the total, matching the Previous/Next below. */}
       <p>{data.total === 0 ? "0 matching shipment–recall pairs." :
         `Showing ${offset + 1}\u2013${Math.min(offset + data.results.length, data.total)} of ${data.total} matching shipment\u2013recall pairs.`}</p>
-      {data.results.length === 0 && <p>No matches in the available evidence. Check coverage above before drawing conclusions.</p>}
+      {/* UI/UX friction: a zero-result *filtered* search (e.g. a typo'd importer
+          name or an HS chapter with no matches) rendered the exact same generic
+          copy as a genuinely empty, unfiltered dataset — a user had no signal
+          that their filters were the likely cause, and no one-click way back to
+          the unfiltered view short of manually clearing each field (the Reset
+          button lives up in the form, easy to miss after scrolling to results).
+          When filters are active (query !== ""), name that explicitly and offer
+          an inline shortcut that reuses the same reset() the form's Reset
+          button calls, instead of a dead-end sentence. */}
+      {data.results.length === 0 && (query !== "" ? <p>No matches for the current filters. Try loosening or removing one — e.g. drop the HS chapter or country — or{" "}
+        <button type="button" className="btn btn-small" disabled={busy} onClick={reset}>Clear all filters</button> to see the full unfiltered set.</p>
+        : <p>No matches in the available evidence. Check coverage above before drawing conclusions.</p>)}
       {data.results.map(row => <article key={row.id} className="import-monitor-result">
         <h2>{row.importer}</h2>
         <p>{row.kind === "named_importer" ? "Named CPSC importer + commodity match" : "Research candidate: commodity overlap only"}{row.newInLatestRun ? " · New in latest refresh" : ""}</p>
