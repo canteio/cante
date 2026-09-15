@@ -30,6 +30,18 @@ export function ImportMonitorPanel() {
   // line (already aria-live for screen readers); tabIndex=-1 lets a <p> take
   // programmatic focus without adding it to the normal Tab order.
   const resultsHeadingRef = useRef<HTMLParagraphElement>(null);
+  // Keyboard-nav friction on the filter form itself (next item on the punch
+  // list after the results-paging focus fix in ddd6a5a): both Reset (in the
+  // form) and "Clear all filters" (rendered only inside the zero-results
+  // block below) call reset(). The inline "Clear all filters" button is
+  // unmounted the instant reset() clears `query` and results re-render, so a
+  // keyboard user who just activated it has focus silently dropped to
+  // <body> with no indication where they landed — same class of bug as the
+  // Previous/Next focus issue already fixed, just on the reset path instead
+  // of the paging path. Send focus to the first field (Cargo) after any
+  // reset, matching the WAI-ARIA APG guidance to move focus to a sensible,
+  // predictable target whenever the control the user activated disappears.
+  const cargoInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     const controller = new AbortController();
     setBusy(true); setError(""); setRetryable(false); setData(null);
@@ -90,10 +102,15 @@ export function ImportMonitorPanel() {
   function reset() {
     formRef.current?.reset();
     setOffset(0); setPageSize(50); setQuery("");
+    // See cargoInputRef comment above: the control that triggered reset()
+    // may not exist after this render (the inline "Clear all filters"
+    // button), so focus is explicitly parked on the first form field
+    // instead of being left to fall back to <body>.
+    cargoInputRef.current?.focus();
   }
   return <section className="import-monitor">
     <form ref={formRef} onSubmit={search} className="import-monitor-form">
-      <label>Cargo<input name="cargo" placeholder="e.g. baby stroller" maxLength={200} /></label>
+      <label>Cargo<input ref={cargoInputRef} name="cargo" placeholder="e.g. baby stroller" maxLength={200} /></label>
       {/* UI/UX friction: the API's country filter is a plain ISO alpha-2 match
           (see monitorQuery in query.ts) with no allowlist, but this select only
           ever offered CN/Indonesia — a user or agent looking for e.g. Vietnam
