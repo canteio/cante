@@ -3202,3 +3202,24 @@ textarea.input {
    one explicit instead of silently relying on (and being at the mercy of)
    whatever the browser default happens to be. */
 .import-monitor [tabindex="-1"]:focus-visible { outline: 2px solid var(--accent, #2563eb); outline-offset: 2px; border-radius: 3px; }
+
+/* UI/UX friction (mobile layout — next-undone item from company-plan): the
+   filter form's inputs/select carried no explicit width, so on a phone
+   viewport flex-wrap let short fields (Country, HS chapter) sit side-by-side
+   at their intrinsic ~fit-content size while long ones (Cargo, Importer)
+   wrapped mid-row — an inconsistent, cramped grid that's hard to scan and
+   whose 32px-tall .btn buttons (page-actions Previous/Next, and the form's
+   Search/Reset) fall below the ~44px touch-target minimum from Apple's HIG /
+   Android's Material guidance, a real tap-accuracy problem on a touchscreen.
+   Below 640px, stack every filter field to full width (one per row, easy to
+   scan top-to-bottom) and grow all .import-monitor buttons to a 44px tall
+   touch target, still catching the same class of device as the existing
+   720px/820px breakpoints above target for the rest of the shell. */
+@media (max-width: 640px) {
+  .import-monitor-form { flex-direction: column; align-items: stretch; }
+  .import-monitor-form label { width: 100%; }
+  .import-monitor-form input, .import-monitor-form select { width: 100%; }
+  .import-monitor .btn { height: 44px; padding: 0 16px; }
+  .import-monitor .page-actions { flex-direction: column; align-items: stretch; }
+  .import-monitor .page-actions .btn { width: 100%; }
+}
