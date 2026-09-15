@@ -12,6 +12,11 @@ export function ImportMonitorPanel() {
   const [busy, setBusy] = useState(false);
   const [query, setQuery] = useState("");
   const [offset, setOffset] = useState(0);
+  // Paired with the new "Results per page" field below: Previous/Next must
+  // step by whatever limit is actually in effect for the current query, not
+  // a hardcoded 50 — otherwise a non-default limit silently skips or repeats
+  // rows when paging (e.g. limit=20 + step 50 skips 30 rows every click).
+  const [pageSize, setPageSize] = useState(50);
   const formRef = useRef<HTMLFormElement>(null);
   useEffect(() => {
     const controller = new AbortController();
@@ -38,7 +43,9 @@ export function ImportMonitorPanel() {
       if (key === "country" && v) v = v.toUpperCase();
       if (v) params.set(key, v);
     }
-    setOffset(0); setQuery(params.toString());
+    setOffset(0);
+    setPageSize(Number(fields.get("limit")) || 50);
+    setQuery(params.toString());
   }
   // UI/UX friction: once any filter (cargo/country/importer/hsChapter/kind) was
   // set, there was no way back to the unfiltered default view short of manually
@@ -47,7 +54,7 @@ export function ImportMonitorPanel() {
   // clears the DOM form back to its defaults and re-fires the default query.
   function reset() {
     formRef.current?.reset();
-    setOffset(0); setQuery("");
+    setOffset(0); setPageSize(50); setQuery("");
   }
   return <section className="import-monitor">
     <form ref={formRef} onSubmit={search} className="import-monitor-form">
@@ -75,6 +82,16 @@ export function ImportMonitorPanel() {
           a working, documented filter short of hand-editing the URL. */}
       <label>HS chapter<input name="hsChapter" placeholder="e.g. 95" pattern="\d{2}" maxLength={2} title="Two-digit HS chapter code, e.g. 95" /></label>
       <label>Evidence<select name="kind"><option value="named_importer">Named in CPSC recall</option><option value="commodity_candidate">Commodity overlap only</option><option value="all">Both</option></select></label>
+      {/* UI/UX + agent-usability gap: the API has long supported a `limit`
+          param (1-100, default 50, see monitorQueryDocs in query.ts) but no
+          form field ever exposed it — a human wanting fewer/more results per
+          page, or an agent that read the machine-readable params doc and
+          tried to act on it, had no UI path to it short of hand-editing the
+          URL. Also fixes a latent pagination bug: Previous/Next below used
+          to hardcode a step of 50 regardless of the actual limit in effect,
+          so a hand-edited `&limit=20` URL would silently skip/duplicate rows
+          when paging. Both now read the same `limit` state. */}
+      <label>Results per page<input name="limit" type="number" min={1} max={100} defaultValue={50} title="1-100, matches the API's documented limit range" /></label>
       <button className="btn btn-primary" disabled={busy}>Search</button>
       <button type="button" className="btn" disabled={busy || query === ""} onClick={reset}>Reset</button>
     </form>
@@ -118,8 +135,8 @@ export function ImportMonitorPanel() {
         <p>Recall: {row.recallDate} · Shared terms: {row.terms.join(", ")}</p>
       </article>)}
       <div className="page-actions">
-        <button className="btn" disabled={busy || offset === 0} onClick={() => setOffset(Math.max(0, offset - 50))}>Previous</button>
-        <button className="btn" disabled={busy || offset + 50 >= data.total} onClick={() => setOffset(offset + 50)}>Next</button>
+        <button className="btn" disabled={busy || offset === 0} onClick={() => setOffset(Math.max(0, offset - pageSize))}>Previous</button>
+        <button className="btn" disabled={busy || offset + pageSize >= data.total} onClick={() => setOffset(offset + pageSize)}>Next</button>
       </div>
     </>}
   </section>;
