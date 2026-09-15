@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import type { searchMonitor } from "@/pipelines/import-manifest/monitor/query";
 import { describeSourceStatus } from "@/pipelines/import-manifest/monitor/status-labels";
+import { clampLimit } from "@/pipelines/import-manifest/monitor/limit-clamp";
 
 type Results = ReturnType<typeof searchMonitor>;
 export function ImportMonitorPanel() {
@@ -39,13 +40,13 @@ export function ImportMonitorPanel() {
     // falls back to 50 for pageSize, while the loop below still sent the raw
     // string "0" to the API (which the server rejects, min 1). That mismatch
     // meant Previous/Next could silently step by a size the server never
-    // actually used. Compute one clamped value up front and reuse it for
-    // both the outgoing param and the local paging state, matching the
+    // actually used. clampLimit() (pipelines/import-manifest/monitor/
+    // limit-clamp.ts) now owns this clamping logic as a pure, unit-tested
+    // function (see limit-clamp.test.ts) instead of inline arithmetic that
+    // only a browser-rendered form submission could exercise — matches the
     // server's documented 1-100 range (see monitorQueryDocs in query.ts).
     const rawLimit = Number(fields.get("limit"));
-    const limit = Number.isFinite(rawLimit) && rawLimit >= 1
-      ? Math.min(100, Math.floor(rawLimit))
-      : 50;
+    const limit = clampLimit(rawLimit);
     const params = new URLSearchParams();
     for (const [key, value] of fields) {
       if (key === "limit") continue; // set explicitly below from the clamped value
