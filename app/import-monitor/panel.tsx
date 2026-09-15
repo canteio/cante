@@ -29,7 +29,15 @@ export function ImportMonitorPanel() {
     event.preventDefault();
     const fields = new FormData(event.currentTarget);
     const params = new URLSearchParams();
-    for (const [key, value] of fields) if (String(value).trim()) params.set(key, String(value).trim());
+    for (const [key, value] of fields) {
+      let v = String(value).trim();
+      // API's country filter is a strict ^[A-Z]{2}$ match (see monitorQuery in
+      // query.ts) but a human typing "cn"/"Cn" got a silent zero-result query
+      // with no indication why — normalize case here instead of making every
+      // user discover the uppercase-only contract by trial and error.
+      if (key === "country" && v) v = v.toUpperCase();
+      if (v) params.set(key, v);
+    }
     setOffset(0); setQuery(params.toString());
   }
   // UI/UX friction: once any filter (cargo/country/importer/hsChapter/kind) was
@@ -44,7 +52,23 @@ export function ImportMonitorPanel() {
   return <section className="import-monitor">
     <form ref={formRef} onSubmit={search} className="import-monitor-form">
       <label>Cargo<input name="cargo" placeholder="e.g. baby stroller" maxLength={200} /></label>
-      <label>Shipper country<select name="country"><option value="">All countries</option><option value="CN">China</option><option value="ID">Indonesia</option></select></label>
+      {/* UI/UX friction: the API's country filter is a plain ISO alpha-2 match
+          (see monitorQuery in query.ts) with no allowlist, but this select only
+          ever offered CN/Indonesia — a user or agent looking for e.g. Vietnam
+          (VN) or Mexico (MX) shipments had no way to reach a filter the backend
+          already fully supports, short of hand-editing the URL. Switched to a
+          free-text input (like hsChapter already is) with a datalist of common
+          shipper origins as a hint, not a restriction. */}
+      <label>Shipper country<input name="country" list="country-options" placeholder="e.g. CN" pattern="[A-Za-z]{2}" maxLength={2} title="Two-letter ISO country code, e.g. CN" />
+        <datalist id="country-options">
+          <option value="CN" label="China" />
+          <option value="ID" label="Indonesia" />
+          <option value="VN" label="Vietnam" />
+          <option value="MX" label="Mexico" />
+          <option value="IN" label="India" />
+          <option value="TW" label="Taiwan" />
+        </datalist>
+      </label>
       <label>Importer<input name="importer" placeholder="Company name" maxLength={200} /></label>
       {/* API's monitorQuery has long supported hsChapter filtering (see query.ts)
           but no form field ever exposed it, so a real user had no way to reach
