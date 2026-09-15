@@ -52,8 +52,13 @@ export function searchMonitor(state: MonitorState | null, rawQuery: unknown, now
   const leads = state.leads.filter(l => byId.has(l.shipmentId) && recent(l.recallDate, now) &&
     recent(byId.get(l.shipmentId)!.manifestFiledDate, now) && (query.kind === "all" || query.kind === l.kind))
     .sort((a, b) => b.firstSeenAt.localeCompare(a.firstSeenAt) || a.id.localeCompare(b.id));
+  // params doc was only echoed on the "never_run" 200 path plus the 400/401/503
+  // error paths (see http.ts) — an agent that gets real "current"/"incomplete"
+  // results back (the common case once a workspace has data) lost the field
+  // contract exactly when it's chaining/narrowing a real query, the moment it
+  // matters most. Echo it on every 200 response, not just the empty-state one.
   return { status: stale ? "incomplete" : "current", updatedAt: state.updatedAt, sources: state.sources,
     caveats, total: leads.length, results: leads.slice(query.offset, query.offset + query.limit).map(l => ({
       ...l, newInLatestRun: state.newLeadIds.includes(l.id), shipment: byId.get(l.shipmentId)!,
-    })) };
+    })), params: monitorQueryDocs };
 }

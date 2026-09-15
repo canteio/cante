@@ -145,6 +145,11 @@ test("successful empty refresh replaces old rows; stale files and samples never 
 
 test("search combines filters, validates pagination, and expires active evidence even if worker stops", async () => {
   const { state } = await refreshMonitor("a", memoryStore(), inputs);
+  // params doc must be echoed on real "current"/"incomplete" 200 results too,
+  // not just the never_run/error paths — see query.ts comment. Regression
+  // guard for an agent that queries a live workspace and needs the field
+  // contract from the response body itself.
+  assert.ok(searchMonitor(state, {}, now).params);
   assert.equal(searchMonitor(state, { cargo: "BABY", country: "CN", importer: "example", hsChapter: "87" }, now).total, 1);
   assert.equal(searchMonitor(state, { country: "ID" }, now).total, 0);
   assert.equal(searchMonitor(state, { offset: 1 }, now).results.length, 0);
