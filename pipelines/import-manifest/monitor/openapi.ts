@@ -129,6 +129,23 @@ const okExampleCommodityCandidate = {
   ],
 };
 
+// Third worked example: "never_run" — the state a BRAND NEW workspace actually
+// gets back before the worker has populated any data yet (see query.ts: `if
+// (!state) return { status: "never_run", ... sources: null, results: [] }`).
+// This is the very first response most integrating agents will see in practice,
+// but until now the spec only showed the two populated ("current") shapes —
+// an agent could easily assume `sources` is always an object and crash on the
+// null, or treat an empty `results` as "no leads exist" instead of "not run yet".
+const okExampleNeverRun = {
+  status: "never_run",
+  updatedAt: null,
+  sources: null,
+  caveats: [],
+  total: 0,
+  results: [],
+  params: monitorQueryDocs,
+};
+
 export function buildImportMonitorOpenApiSpec() {
   return {
     openapi: "3.1.0",
@@ -159,6 +176,7 @@ export function buildImportMonitorOpenApiSpec() {
               content: { "application/json": { schema: okResponseSchema, examples: {
                 current: { summary: "One named-importer lead (synthetic)", value: okExample },
                 commodityCandidate: { summary: "One commodity-candidate lead — cargo-term overlap only, unverified importer identity (synthetic)", value: okExampleCommodityCandidate },
+                neverRun: { summary: "Fresh workspace, worker has not populated data yet — sources is null, results is empty (not \"no leads found\")", value: okExampleNeverRun },
               } } },
             },
             "400": {

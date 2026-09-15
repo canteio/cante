@@ -90,6 +90,16 @@ test("200 response also carries a worked commodity_candidate example (kind=all c
   for (const field of requiredLeadFields) assert.ok(field in lead, `commodity_candidate example lead missing required field ${field}`);
 });
 
+test("200 response also carries a worked never_run example (fresh workspace, no data yet)", () => {
+  const spec = buildImportMonitorOpenApiSpec();
+  const ok = spec.paths["/api/import-monitor"].get.responses["200"].content["application/json"];
+  const neverRunExample = ok.examples.neverRun;
+  assert.ok(neverRunExample, "200 response missing neverRun example");
+  assert.equal(neverRunExample.value.status, "never_run");
+  assert.equal(neverRunExample.value.sources, null, "never_run example should show sources: null, not a populated object");
+  assert.deepEqual(neverRunExample.value.results, []);
+});
+
 test("error responses (400/401/503) each require error + params in their schema", () => {
   const spec = buildImportMonitorOpenApiSpec();
   const responses = spec.paths["/api/import-monitor"].get.responses;
