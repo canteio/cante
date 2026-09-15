@@ -35,3 +35,36 @@ test("openapi paths declare all four documented response codes", () => {
   const responses = spec.paths["/api/import-monitor"].get.responses;
   assert.deepEqual(Object.keys(responses).sort(), ["200", "400", "401", "503"]);
 });
+
+test("every response now documents a JSON body schema, not just a prose description", () => {
+  const spec = buildImportMonitorOpenApiSpec();
+  const responses = spec.paths["/api/import-monitor"].get.responses;
+  for (const [code, response] of Object.entries(responses)) {
+    const schema = response.content?.["application/json"]?.schema;
+    assert.ok(schema, `${code} response missing content.application/json.schema`);
+    assert.equal(schema.type, "object", `${code} schema should describe a JSON object`);
+  }
+});
+
+test("200 schema's results item (lead) covers every field searchMonitor actually returns", () => {
+  const spec = buildImportMonitorOpenApiSpec();
+  const okSchema = spec.paths["/api/import-monitor"].get.responses["200"].content["application/json"].schema;
+  assert.deepEqual(Object.keys(okSchema.properties).sort(),
+    ["caveats", "params", "results", "sources", "status", "total", "updatedAt"]);
+  const leadProps = Object.keys(okSchema.properties.results.items.properties).sort();
+  for (const field of ["id", "shipmentId", "importer", "recallId", "recallUrl", "recallTitle",
+    "recallDate", "terms", "kind", "firstSeenAt", "newInLatestRun", "shipment"]) {
+    assert.ok(leadProps.includes(field), `lead schema missing ${field}`);
+  }
+});
+
+test("error responses (400/401/503) each require error + params in their schema", () => {
+  const spec = buildImportMonitorOpenApiSpec();
+  const responses = spec.paths["/api/import-monitor"].get.responses;
+  for (const code of ["400", "401", "503"] as const) {
+    const schema = responses[code].content["application/json"].schema;
+    assert.deepEqual(schema.required.slice().sort(), ["error", "params"]);
+  }
+  const schema503 = responses["503"].content["application/json"].schema;
+  assert.ok("retryable" in schema503.properties, "503 schema missing retryable");
+});
