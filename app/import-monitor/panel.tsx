@@ -124,6 +124,14 @@ export function ImportMonitorPanel() {
     {data && <>
       <p role="status"><strong>{data.status === "never_run" ? "Monitoring has not run yet" : data.status === "current" ? "Current within configured coverage" : "Incomplete or stale coverage"}</strong>
         {data.updatedAt && ` · Last refresh ${new Date(data.updatedAt).toLocaleString()}`}</p>
+      {/* UI/UX friction: a brand-new workspace (or one whose worker has never
+          run) landed on a dead end — "Monitoring has not run yet" with no
+          indication of whether that's expected, how long it takes, or what
+          to do about it. A first-time user (or an agent probing the API
+          before there's data) had to go read README/source to learn that
+          `npm run imports:refresh` is the operator action that populates
+          this view. State the concrete next step inline instead. */}
+      {data.status === "never_run" && <p>No refresh has completed for this workspace yet. Once the scheduled worker (<code>npm run imports:refresh</code>) runs for the first time, results will appear here automatically — no action needed on this page.</p>}
       {/* UI/UX friction: raw machine status tokens ("blocked", "error",
           "sample") were shown verbatim to a signed-in customer with zero
           explanation of what they mean or imply for trustworthiness of the
