@@ -147,7 +147,14 @@ export function ImportMonitorPanel() {
           way to tell where you were (or that "Next" being disabled meant you'd
           reached the end) without counting cards by eye. Show the 1-based
           visible range alongside the total, matching the Previous/Next below. */}
-      <p>{data.total === 0 ? "0 matching shipment–recall pairs." :
+      {/* Accessibility/UX friction: this line is the only indicator of which
+          page of results you're on, but it wasn't an ARIA live region — a
+          screen-reader user clicking Previous/Next got no announcement that
+          anything changed (the DOM update is silent outside the viewport),
+          so paging was effectively unusable non-visually. aria-live="polite"
+          makes assistive tech read the new range after each page change,
+          same pattern already used for the busy/error status lines above. */}
+      <p aria-live="polite">{data.total === 0 ? "0 matching shipment–recall pairs." :
         `Showing ${offset + 1}\u2013${Math.min(offset + data.results.length, data.total)} of ${data.total} matching shipment\u2013recall pairs.`}</p>
       {/* UI/UX friction: a zero-result *filtered* search (e.g. a typo'd importer
           name or an HS chapter with no matches) rendered the exact same generic
@@ -169,9 +176,14 @@ export function ImportMonitorPanel() {
         <a href={row.recallUrl} target="_blank" rel="noopener noreferrer">{row.recallTitle}</a>
         <p>Recall: {row.recallDate} · Shared terms: {row.terms.join(", ")}</p>
       </article>)}
+      {/* Accessibility/agent-usability: "Previous"/"Next" alone give no
+          indication of direction or page size to a screen reader or an
+          AI agent reading the accessible name — aria-label spells out what
+          each button actually does (which way, how many rows) so it's
+          unambiguous without visual context. */}
       <div className="page-actions">
-        <button className="btn" disabled={busy || offset === 0} onClick={() => setOffset(Math.max(0, offset - pageSize))}>Previous</button>
-        <button className="btn" disabled={busy || offset + pageSize >= data.total} onClick={() => setOffset(offset + pageSize)}>Next</button>
+        <button className="btn" aria-label={`Previous page (${pageSize} earlier results)`} disabled={busy || offset === 0} onClick={() => setOffset(Math.max(0, offset - pageSize))}>Previous</button>
+        <button className="btn" aria-label={`Next page (${pageSize} more results)`} disabled={busy || offset + pageSize >= data.total} onClick={() => setOffset(offset + pageSize)}>Next</button>
       </div>
     </>}
   </section>;
