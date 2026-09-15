@@ -4,9 +4,15 @@ import { recent, type MonitorState } from "./model";
 
 export const monitorQuery = z.object({
   cargo: z.string().trim().max(200).optional(),
-  country: z.string().regex(/^[A-Z]{2}$/).optional(),
+  // Custom messages here (instead of zod's generic "Invalid") land directly in
+  // the 400 response's `issues.fieldErrors` — an agent that posts a bad filter
+  // gets the fix ("uppercase ISO-3166 alpha-2, e.g. CN") from the error body
+  // itself, without having to cross-reference the separate `params` doc or
+  // guess from a bare "Invalid" string. Same self-correct-from-the-body-alone
+  // posture as the params echo already implemented in http.ts.
+  country: z.string().regex(/^[A-Z]{2}$/, "Must be a two-letter uppercase ISO-3166-1 alpha-2 country code, e.g. CN, VN, MX.").optional(),
   importer: z.string().trim().max(200).optional(),
-  hsChapter: z.string().regex(/^\d{2}$/).optional(),
+  hsChapter: z.string().regex(/^\d{2}$/, "Must be a two-digit HS chapter code, e.g. 95.").optional(),
   kind: z.enum(["named_importer", "commodity_candidate", "all"]).default("named_importer"),
   offset: z.coerce.number().int().min(0).max(100000).default(0),
   limit: z.coerce.number().int().min(1).max(100).default(50),
