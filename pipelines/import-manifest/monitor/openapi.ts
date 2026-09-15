@@ -108,6 +108,27 @@ const okExample = {
 };
 const errorExample = (extra: Record<string, unknown> = {}) => ({ error: "Invalid query parameters", params: monitorQueryDocs, ...extra });
 
+// Second worked example for the "commodity_candidate" kind — previously only
+// "named_importer" had a worked example, so an agent using `kind=commodity_candidate`
+// (a weaker/fuzzier match: cargo-description term overlap only, no exact importer
+// name match) had to infer the shape/meaning by reading model.ts or trial-and-error.
+// This mirrors okExample's structure but shows the distinguishing traits of a
+// commodity match: no confident importer identity, terms array is the only tie
+// to the recall, and the caveat text calls that out explicitly.
+const okExampleCommodityCandidate = {
+  ...okExample,
+  results: [{
+    id: "example-lead-id-2", shipmentId: "example-shipment-id-2", importer: "Unmatched Shipper (name not normalized to a known importer)",
+    recallId: "26-000", recallUrl: "https://www.cpsc.gov/Recalls/example", recallTitle: "Example product recalled (illustrative only)",
+    recallDate: "2026-09-01", terms: ["stroller", "child restraint"], kind: "commodity_candidate", firstSeenAt: "2026-09-10T00:00:00.000Z", newInLatestRun: false,
+    shipment: { id: "example-shipment-id-2", billOfLading: "EXAMPLE-BOL-2", shipperCountryCode: "CN", cargoDescription: "baby stroller / child restraint parts", manifestFiledDate: "2026-09-06" },
+  }],
+  caveats: [
+    ...okExample.caveats,
+    "commodity_candidate: cargo-description term overlap only, no verified importer-name match — confirm identity before treating as a lead.",
+  ],
+};
+
 export function buildImportMonitorOpenApiSpec() {
   return {
     openapi: "3.1.0",
@@ -135,7 +156,10 @@ export function buildImportMonitorOpenApiSpec() {
           responses: {
             "200": {
               description: "Current or incomplete/stale leads for the authenticated workspace.",
-              content: { "application/json": { schema: okResponseSchema, examples: { current: { summary: "One named-importer lead (synthetic)", value: okExample } } } },
+              content: { "application/json": { schema: okResponseSchema, examples: {
+                current: { summary: "One named-importer lead (synthetic)", value: okExample },
+                commodityCandidate: { summary: "One commodity-candidate lead — cargo-term overlap only, unverified importer identity (synthetic)", value: okExampleCommodityCandidate },
+              } } },
             },
             "400": {
               description: "Invalid query parameters; body includes `issues` (zod flatten) and `params`.",

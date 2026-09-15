@@ -79,6 +79,17 @@ test("200 example's results item satisfies the schema's required lead fields", (
   for (const field of requiredLeadFields) assert.ok(field in exampleLead, `example lead missing required field ${field}`);
 });
 
+test("200 response also carries a worked commodity_candidate example (kind=all consumers see both shapes)", () => {
+  const spec = buildImportMonitorOpenApiSpec();
+  const ok = spec.paths["/api/import-monitor"].get.responses["200"].content["application/json"];
+  const commodityExample = ok.examples.commodityCandidate;
+  assert.ok(commodityExample, "200 response missing commodityCandidate example");
+  const lead = commodityExample.value.results[0];
+  assert.equal(lead.kind, "commodity_candidate");
+  const requiredLeadFields = ok.schema.properties.results.items.required;
+  for (const field of requiredLeadFields) assert.ok(field in lead, `commodity_candidate example lead missing required field ${field}`);
+});
+
 test("error responses (400/401/503) each require error + params in their schema", () => {
   const spec = buildImportMonitorOpenApiSpec();
   const responses = spec.paths["/api/import-monitor"].get.responses;
