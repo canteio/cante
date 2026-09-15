@@ -981,3 +981,12 @@ export type Substance = typeof substances.$inferSelect;
 export type ComponentSubstance = typeof componentSubstances.$inferSelect;
 export type RestrictedSubstanceList = typeof restrictedSubstanceLists.$inferSelect;
 export type RestrictedSubstanceEntry = typeof restrictedSubstanceEntries.$inferSelect;
+
+/** Atomic, tenant-owned import-monitor snapshot. Bounded to 5,000 shipments;
+ * JSON keeps source evidence and the matches published together. This is a
+ * small-workspace store, not a claim to index the national manifest archive. */
+export const importMonitorState = sqliteTable("import_monitor_state", {
+  customerId: text("customer_id").primaryKey().references(() => customers.id),
+  revision: integer("revision").notNull(),
+  payload: text("payload", { mode: "json" }).$type<import("../../pipelines/import-manifest/monitor/model").MonitorState>().notNull(),
+});

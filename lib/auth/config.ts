@@ -41,5 +41,9 @@ export function emailIsAllowed(email: string | null | undefined) {
     return false;
   }
 
-  return Boolean(email && allowed.includes(email.toLowerCase()));
+  // Trim the incoming email too: allowlist entries are trimmed above, but a
+  // caller passing a value with stray leading/trailing whitespace (e.g. from
+  // a copy-pasted form field or an OAuth claim) would otherwise fail the
+  // includes() check even for an address that's clearly on the allowlist.
+  return Boolean(email && allowed.includes(email.trim().toLowerCase()));
 }

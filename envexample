@@ -39,3 +39,13 @@ CANTE_DB_PATH=
 TELEGRAM_BOT_TOKEN=
 TELEGRAM_CHAT_ID=
 CANTE_HEARTBEAT_URL=
+
+# Import monitoring: scheduled on the trusted worker, scoped to one workspace.
+# Uses CANTE_DATA_BACKEND (sqlite or supabase). Supabase requires the existing
+# worker-only SUPABASE_SECRET_KEY; never put that secret in Vercel/client env.
+CANTE_IMPORT_CUSTOMER_ID=
+# Absolute path to an authorized normalized export (see pipeline README).
+# Unset means explicitly blocked; sample_fixture rows never produce leads.
+CANTE_IMPORT_SHIPMENTS_FILE=
+# Optional local CAMIR header inspection, separate from normalized ingestion.
+CANTE_CAMIR_FILE=

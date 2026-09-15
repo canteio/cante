@@ -184,7 +184,31 @@ export function approveClassification(
   return { ...row, status: "approved", approvedBy, approvedAt: now, rationale };
 }
 
+/**
+ * Reject a classification with a written reason.
+ *
+ * Previously this ran an unconditional UPDATE: rejecting an unknown id was a
+ * silent no-op, an already-superseded row could be "rejected" again and its
+ * supersededAt timestamp overwritten (destroying when it actually left
+ * current), and an empty reason was accepted — the one piece of information a
+ * rejection exists to record. approveClassification already guards all of
+ * this; rejectClassification is the other half of the same decision and must
+ * hold itself to the same standard.
+ */
 export function rejectClassification(classificationId: string, reason: string): void {
+  const row = db
+    .select()
+    .from(productClassifications)
+    .where(eq(productClassifications.id, classificationId))
+    .get();
+  if (!row) throw new ClassificationApprovalError("Classification not found.");
+  if (row.supersededAt) {
+    throw new ClassificationApprovalError("That classification is superseded.");
+  }
+  if (!reason.trim()) {
+    throw new ClassificationApprovalError("Rejection requires a written reason.");
+  }
+
   db.update(productClassifications)
     .set({ status: "rejected", rationale: reason, supersededAt: new Date().toISOString() })
     .where(eq(productClassifications.id, classificationId))

@@ -13,8 +13,9 @@
     "db:cloud:pull": "tsx scripts/sync-supabase.ts --pull-inputs",
     "db:cloud:verify": "tsx scripts/sync-supabase.ts --verify",
     "check": "tsx scripts/run-check.ts",
-    "test": "tsx --test lib/**/*.test.ts",
-    "check:scheduled": "tsx scripts/scheduled-check.ts"
+    "test": "node --import tsx --test lib/**/*.test.ts pipelines/import-manifest/**/*.test.ts",
+    "check:scheduled": "tsx scripts/scheduled-check.ts",
+    "imports:refresh": "node --import tsx scripts/refresh-import-monitor.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",

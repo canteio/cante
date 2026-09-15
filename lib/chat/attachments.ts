@@ -57,8 +57,15 @@ export interface AttachmentOutcome {
   documentId?: string;
 }
 
-/** A spreadsheet of SKUs is a catalogue; a PEB is a document. Headers tell them apart. */
-function looksLikeCatalogue(text: string): boolean {
+/**
+ * A spreadsheet of SKUs is a catalogue; a PEB is a document. Headers tell them apart.
+ *
+ * Exported (was previously private) so it can be unit-tested directly instead
+ * of only indirectly through `fileAttachments`, which needs a live DB/Supabase
+ * backend to exercise at all. This function has no such dependency and the
+ * catalogue/document fork it drives is worth locking down on its own.
+ */
+export function looksLikeCatalogue(text: string): boolean {
   const firstLine = text.split(/\r?\n/, 1)[0]?.toLowerCase() ?? "";
   const hasSku = /\b(sku|product_code|item_code|part_number)\b/.test(firstLine);
   return hasSku && firstLine.includes(",");
@@ -186,7 +193,7 @@ export async function importCloudCatalogue(customerId: string, text: string) {
  * Deliberately regex, not a model call: this decides what gets stored as
  * confirmed, and it must be inspectable and unable to invent a code.
  */
-function extractStatedCodes(text: string): { kbli: string[]; hs: string[] } {
+export function extractStatedCodes(text: string): { kbli: string[]; hs: string[] } {
   const kbli = new Set<string>();
   const hs = new Set<string>();
 

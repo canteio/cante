@@ -1,0 +1,17 @@
+{
+  "sourceType": "sample_fixture",
+  "sourceRef": "synthetic-documentation-example-not-a-real-shipment",
+  "observedAt": "2026-09-14T00:00:00.000Z",
+  "shipments": [
+    {
+      "billOfLading": "SYNTHETIC-EXAMPLE-001",
+      "dataRedacted": false,
+      "shipperName": "Synthetic Example Factory",
+      "shipperCountryCode": "CN",
+      "consigneeName": "Synthetic Example Importer",
+      "consigneeAddress": "Example address, USA",
+      "cargoDescription": "Baby stroller",
+      "manifestFiledDate": "2026-09-01"
+    }
+  ]
+}
