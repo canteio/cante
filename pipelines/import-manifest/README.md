@@ -154,6 +154,31 @@ page and API. Requests cannot choose another tenant: the API resolves the
 session's workspace. The response includes `status`, `sources`, `updatedAt`,
 `caveats`, `total`, and paginated `results`; responses are private/no-store.
 
+Runnable curl examples (an agent still needs a logged-in session cookie —
+this is a workspace-scoped endpoint, not a public API key; swap `$COOKIE` for
+your authenticated `Cookie:` header value). These mirror the worked examples
+already embedded in `/api/import-monitor/openapi` so an agent can copy either
+one and get a consistent shape back:
+
+```sh
+# Default query: named-importer leads only, first page.
+curl -s -H "Cookie: $COOKIE" \
+  "https://<host>/api/import-monitor" | jq .
+
+# Narrow to strollers shipped from China, including commodity-overlap
+# candidates (not just exact CPSC-name matches) — see the `kind` caveat
+# in the response before treating a candidate as a confirmed lead.
+curl -s -H "Cookie: $COOKIE" \
+  "https://<host>/api/import-monitor?cargo=stroller&country=CN&kind=all" | jq .
+
+# Page 2 of up to 100 results.
+curl -s -H "Cookie: $COOKIE" \
+  "https://<host>/api/import-monitor?limit=100&offset=100" | jq .
+
+# Discover the full parameter/response contract without a session at all.
+curl -s "https://<host>/api/import-monitor/openapi" | jq .
+```
+
 ## Verification
 
 ```sh
