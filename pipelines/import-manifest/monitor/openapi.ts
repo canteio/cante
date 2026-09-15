@@ -78,6 +78,36 @@ const errorResponseSchema = (extra: Record<string, unknown> = {}) => ({
   required: ["error", "params"],
 });
 
+// Worked response examples for an AI agent consuming the spec cold: schemas alone
+// describe shape, not "what does a realistic populated response actually look
+// like" — an agent reading OpenAPI natively (per the file header above) can use
+// these directly rather than having to synthesize a mental model from `properties`
+// nesting. Values are clearly synthetic (obviously placeholder company/recall
+// names), matching the repo's standing rule that examples/fixtures must never
+// look like real discovered data (see monitor.test.ts / sources.ts sample-marker
+// pattern) — this is spec documentation, not a shipped record.
+const okExample = {
+  status: "current",
+  updatedAt: "2026-09-14T07:20:00.000Z",
+  sources: {
+    shipments: { status: "ok", checkedAt: "2026-09-14T07:20:00.000Z", dataAsOf: "2026-09-13T00:00:00.000Z", count: 412, message: "Loaded authorized export." },
+    recalls: { status: "ok", checkedAt: "2026-09-14T07:20:00.000Z", dataAsOf: "2026-09-14T06:00:00.000Z", count: 58, message: "Fetched from CPSC API." },
+  },
+  caveats: [
+    "Ocean manifests only; confidentiality redactions and unknown parties reduce coverage.",
+    "Named importer means an exact normalized CPSC importer name plus commodity overlap; verify the linked recall.",
+  ],
+  total: 1,
+  results: [{
+    id: "example-lead-id", shipmentId: "example-shipment-id", importer: "Example Imports Inc.",
+    recallId: "26-000", recallUrl: "https://www.cpsc.gov/Recalls/example", recallTitle: "Example product recalled (illustrative only)",
+    recallDate: "2026-09-01", terms: ["stroller"], kind: "named_importer", firstSeenAt: "2026-09-10T00:00:00.000Z", newInLatestRun: true,
+    shipment: { id: "example-shipment-id", billOfLading: "EXAMPLE-BOL", shipperCountryCode: "CN", cargoDescription: "baby stroller", manifestFiledDate: "2026-09-05" },
+  }],
+  params: monitorQueryDocs,
+};
+const errorExample = (extra: Record<string, unknown> = {}) => ({ error: "Invalid query parameters", params: monitorQueryDocs, ...extra });
+
 export function buildImportMonitorOpenApiSpec() {
   return {
     openapi: "3.1.0",
@@ -105,19 +135,22 @@ export function buildImportMonitorOpenApiSpec() {
           responses: {
             "200": {
               description: "Current or incomplete/stale leads for the authenticated workspace.",
-              content: { "application/json": { schema: okResponseSchema } },
+              content: { "application/json": { schema: okResponseSchema, examples: { current: { summary: "One named-importer lead (synthetic)", value: okExample } } } },
             },
             "400": {
               description: "Invalid query parameters; body includes `issues` (zod flatten) and `params`.",
-              content: { "application/json": { schema: errorResponseSchema({ issues: { type: "object" } }) } },
+              content: { "application/json": { schema: errorResponseSchema({ issues: { type: "object" } }),
+                examples: { badCountry: { summary: "country failed the ^[A-Z]{2}$ pattern", value: errorExample({ issues: { fieldErrors: { country: ["Invalid"] }, formErrors: [] } }) } } } },
             },
             "401": {
               description: "No authenticated workspace session; body includes `params`.",
-              content: { "application/json": { schema: errorResponseSchema() } },
+              content: { "application/json": { schema: errorResponseSchema(),
+                examples: { unauthenticated: { summary: "No workspace session", value: errorExample({ error: "Workspace authentication required." }) } } } },
             },
             "503": {
               description: "Storage temporarily unavailable; body includes `retryable: true` and `params`.",
-              content: { "application/json": { schema: errorResponseSchema({ retryable: { type: "boolean", const: true } }) } },
+              content: { "application/json": { schema: errorResponseSchema({ retryable: { type: "boolean", const: true } }),
+                examples: { storageOutage: { summary: "Retryable storage failure", value: errorExample({ error: "Import monitoring storage is unavailable.", retryable: true }) } } } },
             },
           },
         },

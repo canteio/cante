@@ -58,6 +58,27 @@ test("200 schema's results item (lead) covers every field searchMonitor actually
   }
 });
 
+test("every response now carries a worked JSON example, not just a schema", () => {
+  const spec = buildImportMonitorOpenApiSpec();
+  const responses = spec.paths["/api/import-monitor"].get.responses;
+  for (const [code, response] of Object.entries(responses)) {
+    const examples = response.content?.["application/json"]?.examples;
+    assert.ok(examples && Object.keys(examples).length > 0, `${code} response missing a worked example`);
+    for (const [name, example] of Object.entries(examples)) {
+      assert.ok(example.value && typeof example.value === "object", `${code}/${name} example missing a value object`);
+      assert.ok(example.summary, `${code}/${name} example missing a summary`);
+    }
+  }
+});
+
+test("200 example's results item satisfies the schema's required lead fields", () => {
+  const spec = buildImportMonitorOpenApiSpec();
+  const ok = spec.paths["/api/import-monitor"].get.responses["200"].content["application/json"];
+  const requiredLeadFields = ok.schema.properties.results.items.required;
+  const exampleLead = ok.examples.current.value.results[0];
+  for (const field of requiredLeadFields) assert.ok(field in exampleLead, `example lead missing required field ${field}`);
+});
+
 test("error responses (400/401/503) each require error + params in their schema", () => {
   const spec = buildImportMonitorOpenApiSpec();
   const responses = spec.paths["/api/import-monitor"].get.responses;
