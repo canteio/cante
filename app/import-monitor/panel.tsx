@@ -19,6 +19,17 @@ export function ImportMonitorPanel() {
   // rows when paging (e.g. limit=20 + step 50 skips 30 rows every click).
   const [pageSize, setPageSize] = useState(50);
   const formRef = useRef<HTMLFormElement>(null);
+  // Keyboard-nav friction: clicking Previous/Next swapped the result cards
+  // in place but never moved focus or scroll position. A screen-reader user
+  // got the aria-live announcement (existing fix), but a sighted keyboard
+  // user tabbing through Previous/Next had no visual cue anything changed —
+  // the button they just activated stays focused, off-screen from the new
+  // top-of-results content on a long page. Standard WAI-ARIA APG pattern for
+  // paginated content: move focus to the updated results region on page
+  // change, not just re-render it. resultsHeadingRef targets the status
+  // line (already aria-live for screen readers); tabIndex=-1 lets a <p> take
+  // programmatic focus without adding it to the normal Tab order.
+  const resultsHeadingRef = useRef<HTMLParagraphElement>(null);
   useEffect(() => {
     const controller = new AbortController();
     setBusy(true); setError(""); setRetryable(false); setData(null);
@@ -31,6 +42,14 @@ export function ImportMonitorPanel() {
       .finally(() => { if (!controller.signal.aborted) setBusy(false); });
     return () => controller.abort();
   }, [query, offset, retryToken]);
+  // Runs after `data` actually lands (separate effect, not folded into the
+  // fetch .then above) so it only fires once real results are painted, and
+  // re-fires on every offset change (Previous/Next) as well as a fresh
+  // search — skip the initial empty-state render where the ref isn't
+  // meaningfully "new content" yet.
+  useEffect(() => {
+    if (data && resultsHeadingRef.current) resultsHeadingRef.current.focus();
+  }, [data, offset]);
   function search(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const fields = new FormData(event.currentTarget);
@@ -154,7 +173,7 @@ export function ImportMonitorPanel() {
           so paging was effectively unusable non-visually. aria-live="polite"
           makes assistive tech read the new range after each page change,
           same pattern already used for the busy/error status lines above. */}
-      <p aria-live="polite">{data.total === 0 ? "0 matching shipment–recall pairs." :
+      <p aria-live="polite" tabIndex={-1} ref={resultsHeadingRef}>{data.total === 0 ? "0 matching shipment–recall pairs." :
         `Showing ${offset + 1}\u2013${Math.min(offset + data.results.length, data.total)} of ${data.total} matching shipment\u2013recall pairs.`}</p>
       {/* UI/UX friction: a zero-result *filtered* search (e.g. a typo'd importer
           name or an HS chapter with no matches) rendered the exact same generic

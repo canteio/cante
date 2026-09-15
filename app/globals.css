@@ -3195,3 +3195,10 @@ textarea.input {
 .import-monitor-result { padding: 20px 0; border-top: 1px solid var(--border); }
 .import-monitor-result h2 { font-size: 18px; }
 .import-monitor p, .import-monitor li { line-height: 1.6; }
+/* Programmatic focus target for paged results (see panel.tsx resultsHeadingRef):
+   moves keyboard-user focus to the updated status line after Previous/Next so
+   there's a visible cue, matching the aria-live announcement screen readers
+   already get. A plain <p> has no default focus ring in most resets, so make
+   one explicit instead of silently relying on (and being at the mercy of)
+   whatever the browser default happens to be. */
+.import-monitor [tabindex="-1"]:focus-visible { outline: 2px solid var(--accent, #2563eb); outline-offset: 2px; border-radius: 3px; }
