@@ -100,6 +100,23 @@ test("200 response also carries a worked never_run example (fresh workspace, no 
   assert.deepEqual(neverRunExample.value.results, []);
 });
 
+test("lead schema's shipment field is a typed object, not a bare pointer to source", () => {
+  const spec = buildImportMonitorOpenApiSpec();
+  const okSchema = spec.paths["/api/import-monitor"].get.responses["200"].content["application/json"].schema;
+  const shipmentSchema = okSchema.properties.results.items.properties.shipment;
+  assert.equal(shipmentSchema.type, "object");
+  // Every field on ImportShipmentRow (schema/shipments.ts) should be documented
+  // here so an agent never has to fall back to reading source for the shape.
+  for (const field of ["id", "billOfLading", "carrierScac", "manifestSequenceNumber",
+    "vesselName", "vesselImoCode", "voyageNumber", "portOfLadingCode", "portOfUnladingCode",
+    "shipperName", "shipperAddress", "shipperCountryCode", "consigneeName", "consigneeAddress",
+    "dataRedacted", "cargoDescription", "hsChapter", "grossWeightKg", "packageCount",
+    "containerNumbers", "estimatedArrivalDate", "manifestFiledDate", "sourceType",
+    "sourceFileRef", "ingestedAt"]) {
+    assert.ok(field in shipmentSchema.properties, `shipment schema missing ${field}`);
+  }
+});
+
 test("error responses (400/401/503) each require error + params in their schema", () => {
   const spec = buildImportMonitorOpenApiSpec();
   const responses = spec.paths["/api/import-monitor"].get.responses;

@@ -44,6 +44,46 @@ const sourceStatusSchema = {
   },
   required: ["status", "checkedAt", "dataAsOf", "count", "message"],
 } as const;
+// Previously `shipment` was documented as a bare `{ type: "object" }` with a
+// prose pointer to schema/shipments.ts — every other field in this spec is
+// fully typed for an agent to consume directly, but the one field most
+// useful for lead-gen (raw manifest detail: vessel, ports, weight, container
+// numbers, redaction flag, etc. — the fields panel.tsx itself only surfaces
+// a slice of, see its <article> rendering) forced an agent back to source.
+// Mirrors ImportShipmentRow (schema/shipments.ts) field-for-field; keep the
+// two in sync if that table gains/loses a column.
+const shipmentSchema = {
+  type: "object",
+  description: "The matched ImportShipmentRow (one CBP ocean manifest bill-of-lading record). Nullable fields reflect real manifest data: null can mean 'not present on this manifest' or 'redacted at source' — see dataRedacted to distinguish the latter.",
+  properties: {
+    id: { type: "string" },
+    billOfLading: { type: "string" },
+    carrierScac: { type: "string", nullable: true, description: "Standard Carrier Alpha Code." },
+    manifestSequenceNumber: { type: "string", nullable: true },
+    vesselName: { type: "string", nullable: true },
+    vesselImoCode: { type: "string", nullable: true },
+    voyageNumber: { type: "string", nullable: true },
+    portOfLadingCode: { type: "string", nullable: true, description: "CBP Schedule D port code." },
+    portOfUnladingCode: { type: "string", nullable: true, description: "CBP Schedule D port code." },
+    shipperName: { type: "string", nullable: true },
+    shipperAddress: { type: "string", nullable: true },
+    shipperCountryCode: { type: "string", nullable: true, pattern: "^[A-Z]{2}$", description: "ISO 3166-1 alpha-2, derived from shipperAddress." },
+    consigneeName: { type: "string", nullable: true, description: "The US importer." },
+    consigneeAddress: { type: "string", nullable: true },
+    dataRedacted: { type: "boolean", description: "True if the shipper/consignee identity was redacted at source under 19 CFR 103.31(d); distinguishes 'redacted' from 'not yet ingested' for the nullable party fields above." },
+    cargoDescription: { type: "string", nullable: true },
+    hsChapter: { type: "string", nullable: true, pattern: "^\\d{2}$" },
+    grossWeightKg: { type: "number", nullable: true },
+    packageCount: { type: "integer", nullable: true },
+    containerNumbers: { type: "array", items: { type: "string" }, nullable: true },
+    estimatedArrivalDate: { type: "string", format: "date", nullable: true, description: "Not proof of delivery — manifest ETA only." },
+    manifestFiledDate: { type: "string", format: "date", nullable: true },
+    sourceType: { type: "string", description: "Provenance, e.g. 'cbp_foia_bulk', 'sample_fixture'." },
+    sourceFileRef: { type: "string", nullable: true },
+    ingestedAt: { type: "string", format: "date-time" },
+  },
+  required: ["id", "billOfLading", "dataRedacted", "sourceType", "ingestedAt"],
+} as const;
 const leadSchema = {
   type: "object",
   description: "One shipment-recall pair.",
@@ -55,7 +95,7 @@ const leadSchema = {
     kind: { type: "string", enum: ["named_importer", "commodity_candidate"] },
     firstSeenAt: { type: "string", format: "date-time" },
     newInLatestRun: { type: "boolean" },
-    shipment: { type: "object", description: "The matched ImportShipmentRow; see pipelines/import-manifest/schema/shipments.ts." },
+    shipment: shipmentSchema,
   },
   required: ["id", "shipmentId", "importer", "recallId", "recallUrl", "recallTitle", "recallDate", "terms", "kind", "firstSeenAt"],
 } as const;
