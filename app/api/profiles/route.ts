@@ -41,14 +41,44 @@ export async function GET(request: Request) {
   return Response.json({ country, profile: await getJurisdictionProfile(customerId, country) });
 }
 
+// Machine-readable shape doc, same "self-correct from the response body
+// alone" posture as pipelines/import-manifest/monitor/query.ts's
+// monitorQueryDocs — an agent that PUTs a malformed profile body gets the
+// expected field shapes right in the 400 payload instead of having to
+// cross-reference this source file.
+const profileShapeDocs = {
+  legalName: { type: "string | null", optional: true },
+  facilityAddresses: { type: "string[]", optional: true },
+  naicsCodes: { type: "{ code: string, basis?: string, confirmed?: boolean }[]", optional: true },
+  products: { type: "string[]", optional: true },
+  skus: { type: "string[]", optional: true },
+  materialsChemicals: { type: "string[]", optional: true },
+  manufacturingProcesses: { type: "string[]", optional: true },
+  wasteStreams: { type: "string[]", optional: true },
+  distributionStates: { type: "string[]", optional: true },
+  labelsClaims: { type: "string[]", optional: true },
+  htsScheduleBCodes: { type: "{ code: string, basis?: string, confirmed?: boolean }[]", optional: true },
+  exportClassifications: { type: "{ code: string, basis?: string, confirmed?: boolean }[]", optional: true },
+  exportCountries: { type: "string[]", optional: true },
+  regulatedProductFlags: { type: "string[]", optional: true },
+} as const;
+
 export async function PUT(request: Request) {
   const body = await request.json().catch(() => ({}));
   const customerId = await resolveCustomerId(body.customerId);
-  if (!customerId) return Response.json({ error: "No customer." }, { status: 404 });
+  // "No customer." gave a caller nothing to act on; spell out the fix inline
+  // (same human/agent-fixable-error bar as the import-monitor query params)
+  // rather than making the caller go read resolveCustomerId's source.
+  if (!customerId) {
+    return Response.json(
+      { error: "No customer could be resolved. Pass a valid `customerId` in the request body, or omit it to use the default customer if one exists." },
+      { status: 404 },
+    );
+  }
   const country = normalizeJurisdiction(body.country);
   const parsed = ProfileSchema.safeParse(body.profile);
   if (!parsed.success) {
-    return Response.json({ error: parsed.error.flatten() }, { status: 400 });
+    return Response.json({ error: parsed.error.flatten(), shape: profileShapeDocs }, { status: 400 });
   }
   const profile = await upsertJurisdictionProfile(customerId, country, parsed.data);
   await refreshChecklistForCustomer(customerId, country);
