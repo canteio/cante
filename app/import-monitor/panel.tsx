@@ -33,8 +33,22 @@ export function ImportMonitorPanel() {
   function search(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const fields = new FormData(event.currentTarget);
+    // Bug fix: the old code derived the `limit` sent to the API and the local
+    // `pageSize` used to step Previous/Next from two different expressions —
+    // `Number(fields.get("limit")) || 50` treats an explicit 0 as falsy and
+    // falls back to 50 for pageSize, while the loop below still sent the raw
+    // string "0" to the API (which the server rejects, min 1). That mismatch
+    // meant Previous/Next could silently step by a size the server never
+    // actually used. Compute one clamped value up front and reuse it for
+    // both the outgoing param and the local paging state, matching the
+    // server's documented 1-100 range (see monitorQueryDocs in query.ts).
+    const rawLimit = Number(fields.get("limit"));
+    const limit = Number.isFinite(rawLimit) && rawLimit >= 1
+      ? Math.min(100, Math.floor(rawLimit))
+      : 50;
     const params = new URLSearchParams();
     for (const [key, value] of fields) {
+      if (key === "limit") continue; // set explicitly below from the clamped value
       let v = String(value).trim();
       // API's country filter is a strict ^[A-Z]{2}$ match (see monitorQuery in
       // query.ts) but a human typing "cn"/"Cn" got a silent zero-result query
@@ -43,8 +57,9 @@ export function ImportMonitorPanel() {
       if (key === "country" && v) v = v.toUpperCase();
       if (v) params.set(key, v);
     }
+    params.set("limit", String(limit));
     setOffset(0);
-    setPageSize(Number(fields.get("limit")) || 50);
+    setPageSize(limit);
     setQuery(params.toString());
   }
   // UI/UX friction: once any filter (cargo/country/importer/hsChapter/kind) was
