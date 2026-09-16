@@ -117,16 +117,34 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
   async function screenAllSuppliers() {
     setBatchBusy(true);
     setError(null);
+    // Previously this loop fired all requests and then unconditionally claimed
+    // success ("Batch screening finished…") regardless of whether individual
+    // screens actually failed (network error, 4xx/5xx) — same silent-failure
+    // class already fixed in workqueue-panel.tsx and checklist-panel.tsx.
+    // Now we track per-request outcome and surface a real error banner
+    // listing which vendors failed, instead of a false "all done" note.
+    const failed: string[] = [];
     try {
       for (const s of suppliers) {
-        await fetch("/api/suppliers", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action: "screen", supplierId: s.id }),
-        });
+        try {
+          const res = await fetch("/api/suppliers", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "screen", supplierId: s.id }),
+          });
+          if (!res.ok) failed.push(s.name);
+        } catch {
+          failed.push(s.name);
+        }
       }
-      setNote("Batch screening finished across all " + suppliers.length + " suppliers.");
-      setTimeout(() => setNote(null), 4000);
+      if (failed.length === 0) {
+        setNote("Batch screening finished across all " + suppliers.length + " suppliers.");
+        setTimeout(() => setNote(null), 4000);
+      } else {
+        setError(
+          "Batch screening finished with " + failed.length + " failure(s): " + failed.join(", ") + ". Retry those vendors individually."
+        );
+      }
       await load();
     } finally {
       setBatchBusy(false);
