@@ -63,15 +63,29 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
   const [batchBusy, setBatchBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
+  // UI/UX fix: the initial fetch used to have no loading state, so the panel
+  // showed "Active Suppliers (0)" / "No matching suppliers found" while data
+  // was still in flight — indistinguishable from a genuinely empty vendor
+  // list. Now we track `loading` and render a distinct "Loading suppliers…"
+  // state instead of a false-empty message (same friction class already
+  // fixed for silent failures elsewhere: workqueue/checklist/catalogue/etc.).
+  const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
     try {
       const res = await fetch("/api/suppliers");
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error((data.error as string) ?? `Failed to load suppliers (status ${res.status}).`);
+      }
       const data = await res.json();
       setSuppliers(data.suppliers ?? []);
       setCoverage(data.screeningCoverage ?? null);
+      setError(null);
     } catch (e: any) {
-      setError(e.message);
+      setError(e.message ?? "Failed to load suppliers.");
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -246,8 +260,15 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
       </div>
 
       {/* Vendor Cards Grid */}
-      <div className="side-label">Active Suppliers ({filteredSuppliers.length})</div>
-      {filteredSuppliers.length === 0 ? (
+      <div className="side-label">
+        {loading ? "Active Suppliers" : `Active Suppliers (${filteredSuppliers.length})`}
+      </div>
+      {loading ? (
+        <div className="empty">
+          <RefreshCw size={24} strokeWidth={1.5} className="spin" style={{ marginBottom: 8 }} />
+          <p>Loading suppliers…</p>
+        </div>
+      ) : filteredSuppliers.length === 0 ? (
         <div className="empty">
           <Truck size={24} strokeWidth={1.5} style={{ marginBottom: 8 }} />
           <p>No matching suppliers found. Add a vendor above or tell the AI Copilot in chat.</p>
