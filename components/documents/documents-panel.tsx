@@ -193,7 +193,12 @@ export function DocumentsPanel({ country }: { country: JurisdictionName }) {
                     style={{
                       background: "var(--card-bg)",
                       border: "1px solid var(--border)",
-                      borderLeft: `4px solid ${flag.severity === "CRITICAL" ? "var(--danger)" : "var(--warn)}"}`,
+                      // Bug fix: stray `}` was embedded inside the "var(--warn)" string literal,
+                      // producing an invalid CSS value ("var(--warn)}") for non-CRITICAL flags.
+                      // Browsers silently drop invalid CSS values, so WARNING-severity discrepancy
+                      // cards rendered with NO left border color at all — visually indistinguishable
+                      // from a CRITICAL flag's colored border. Fixed template literal below.
+                      borderLeft: `4px solid ${flag.severity === "CRITICAL" ? "var(--danger)" : "var(--warn)"}`,
                       padding: "8px 12px",
                       borderRadius: 4,
                     }}
