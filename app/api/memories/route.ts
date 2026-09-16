@@ -82,27 +82,49 @@ export async function POST(request: Request) {
 export async function PATCH(request: Request) {
   const body = await request.json().catch(() => ({}));
   if (!body.id) return Response.json({ error: "No id." }, { status: 400 });
-  await setMemoryConfirmed(body.id, Boolean(body.confirmed));
-  const memory = await getMemory(body.id);
-  if (memory) {
-    await refreshChecklistForCustomer(
-      memory.customerId,
-      normalizeJurisdiction(memory.jurisdiction),
+  // Route-handler error audit (2026-09-17, continuing the checklist/lanes/
+  // conversations/profiles sweep): this PATCH had zero try/catch, so a DB
+  // failure in setMemoryConfirmed/refreshChecklistForCustomer fell through
+  // to Next's generic HTML error page instead of a parseable JSON {error}
+  // body — same AI-agent-API-cleanliness fix applied everywhere else in
+  // this sweep.
+  try {
+    await setMemoryConfirmed(body.id, Boolean(body.confirmed));
+    const memory = await getMemory(body.id);
+    if (memory) {
+      await refreshChecklistForCustomer(
+        memory.customerId,
+        normalizeJurisdiction(memory.jurisdiction),
+      );
+    }
+    return Response.json({ ok: true });
+  } catch (error) {
+    return Response.json(
+      { error: error instanceof Error ? error.message : "Failed to update memory." },
+      { status: 500 },
     );
   }
-  return Response.json({ ok: true });
 }
 
 export async function DELETE(request: Request) {
   const id = new URL(request.url).searchParams.get("id");
   if (!id) return Response.json({ error: "No id." }, { status: 400 });
-  const memory = await getMemory(id);
-  await deleteMemory(id);
-  if (memory) {
-    await refreshChecklistForCustomer(
-      memory.customerId,
-      normalizeJurisdiction(memory.jurisdiction),
+  // Same try/catch fix as PATCH above — deleteMemory/refreshChecklistForCustomer
+  // failures should surface as JSON, not an HTML error page.
+  try {
+    const memory = await getMemory(id);
+    await deleteMemory(id);
+    if (memory) {
+      await refreshChecklistForCustomer(
+        memory.customerId,
+        normalizeJurisdiction(memory.jurisdiction),
+      );
+    }
+    return Response.json({ ok: true });
+  } catch (error) {
+    return Response.json(
+      { error: error instanceof Error ? error.message : "Failed to delete memory." },
+      { status: 500 },
     );
   }
-  return Response.json({ ok: true });
 }
