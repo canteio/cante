@@ -108,9 +108,19 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
   }, [load]);
 
   async function copyDraft(key: string, text: string) {
-    await navigator.clipboard.writeText(text);
-    setCopiedKey(key);
-    setTimeout(() => setCopiedKey(null), 2000);
+    // UI/UX friction: navigator.clipboard.writeText() rejects silently in
+    // browsers without clipboard permission (common in iframes/insecure
+    // contexts) or without focus — the button just did nothing and the user
+    // had no idea whether the draft was copied or the click was ignored.
+    // Surface the failure via the existing error banner instead of letting
+    // the promise rejection vanish into the console.
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey(null), 2000);
+    } catch {
+      setError("Could not copy to clipboard — your browser may be blocking clipboard access. Select and copy the text manually.");
+    }
   }
 
   function openActionModal(findingId: string, state: string) {
@@ -206,6 +216,22 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
     if (res.ok) await load();
   }
 
+  // UI/UX + accessibility friction: the action modal below had no keyboard
+  // escape hatch and no dialog semantics — a keyboard/screen-reader user had
+  // to tab all the way to the visible "Cancel" button to back out (and a
+  // screen reader announced no dialog role at all), while a mouse user
+  // clicking the dimmed backdrop got nothing, unlike every other modal
+  // pattern on the web. Standard WAI-ARIA APG dialog pattern: Escape closes,
+  // role="dialog" + aria-modal="true" + aria-labelledby announce it.
+  useEffect(() => {
+    if (!actionModal) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setActionModal(null);
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [actionModal]);
+
   return (
     <div className="main-scroll">
       <div className="page-head">
@@ -235,11 +261,14 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
 
       {/* Modal Action Sheet */}
       {actionModal && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 16 }}>
-          <div className="card" style={{ maxWidth: 520, width: "100%", background: "var(--app-surface)", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.2)" }}>
+        <div
+          style={{ position: "fixed", inset: 0, background: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 16 }}
+          onClick={(e) => { if (e.target === e.currentTarget) setActionModal(null); }}
+        >
+          <div className="card" role="dialog" aria-modal="true" aria-labelledby="action-modal-title" style={{ maxWidth: 520, width: "100%", background: "var(--app-surface)", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.2)" }}>
             <div className="card-head" style={{ justifyContent: "space-between" }}>
-              <h2 style={{ fontSize: "1.1rem" }}>{actionModal.title}</h2>
-              <button className="icon-btn" onClick={() => setActionModal(null)}><X size={14} /></button>
+              <h2 id="action-modal-title" style={{ fontSize: "1.1rem" }}>{actionModal.title}</h2>
+              <button className="icon-btn" aria-label="Close dialog" onClick={() => setActionModal(null)}><X size={14} /></button>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginTop: "1rem" }}>
               <div>
