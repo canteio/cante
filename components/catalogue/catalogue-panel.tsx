@@ -71,10 +71,23 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
 
   const load = useCallback(async () => {
     setLoading(true);
+    // Previously this had no error handling: a failed fetch (network error or
+    // non-2xx) left the user staring at "No matching items in catalogue" with
+    // no way to tell an empty catalogue apart from a broken load — same
+    // silent-failure class already fixed in workqueue/checklist/suppliers
+    // panels this cycle. Now surfaces a real error banner and keeps loading
+    // state accurate even when the request throws.
+    setError(null);
     try {
       const res = await fetch("/api/products");
       const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Failed to load catalogue.");
+        return;
+      }
       setProducts(data.products ?? []);
+    } catch {
+      setError("Failed to load catalogue. Check your connection and try again.");
     } finally {
       setLoading(false);
     }
