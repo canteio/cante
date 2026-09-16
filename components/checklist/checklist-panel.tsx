@@ -55,12 +55,24 @@ export function ChecklistPanel({ country }: { country: JurisdictionName }) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  // UI/UX friction fix: load/refresh/setStatus previously had no error
+  // handling at all — a failed fetch (network drop, 500, auth expiry) left
+  // the panel silently stuck on "Loading checklist…" or reverted a status
+  // change with zero explanation. Surface failures via a dismissible banner
+  // (same pattern as components/workqueue/workqueue-panel.tsx) instead of
+  // failing silently.
+  const [error, setError] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
     try {
-      const data = await fetch(`/api/checklist?country=${encodeURIComponent(country)}`).then((r) => r.json());
+      const res = await fetch(`/api/checklist?country=${encodeURIComponent(country)}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Could not load checklist.");
       setItems(data.items ?? []);
+      setError(null);
+    } catch (e: any) {
+      setError(e.message ?? "Could not load checklist.");
     } finally {
       setLoading(false);
     }
@@ -69,25 +81,42 @@ export function ChecklistPanel({ country }: { country: JurisdictionName }) {
   async function refresh() {
     setRefreshing(true);
     try {
-      const data = await fetch("/api/checklist", {
+      const res = await fetch("/api/checklist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ country }),
-      }).then((r) => r.json());
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Could not recalculate checklist.");
       setItems(data.items ?? []);
+      setError(null);
+    } catch (e: any) {
+      setError(e.message ?? "Could not recalculate checklist.");
     } finally {
       setRefreshing(false);
     }
   }
 
   async function setStatus(item: ChecklistItem, status: string) {
+    const previous = items;
     setItems((prev) => prev.map((row) => (row.id === item.id ? { ...row, status } : row)));
-    await fetch("/api/checklist", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: item.id, status }),
-    });
-    await load();
+    try {
+      const res = await fetch("/api/checklist", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: item.id, status }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Could not save status change.");
+      }
+      await load();
+    } catch (e: any) {
+      // Roll back the optimistic update so the UI doesn't lie about state
+      // that was never actually persisted to the server.
+      setItems(previous);
+      setError(e.message ?? "Could not save status change.");
+    }
   }
 
   useEffect(() => {
@@ -139,6 +168,12 @@ export function ChecklistPanel({ country }: { country: JurisdictionName }) {
             <CountryTabs value={country} />
           </div>
         </div>
+
+        {error && (
+          <div className="pill pill-bad" style={{ margin: "0.75rem 0" }}>
+            {error}
+          </div>
+        )}
 
         {/* Summary Row */}
         <div className="checklist-summary">
