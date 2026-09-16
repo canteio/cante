@@ -23,11 +23,26 @@ export function ProviderSwitcher({
   const [selected, setSelected] = useState<LlmProviderChoice>(initialProvider);
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  // Silent-failure fix (matches the audit already applied to every other
+  // panel in the app): a failed /api/llm fetch — network error, or a non-2xx
+  // response whose body isn't JSON — used to throw inside an un-awaited,
+  // un-caught promise. The catch never ran, providers stayed `[]` forever,
+  // and the UI was stuck showing "Checking provider…" with zero indication
+  // anything went wrong or how to recover. Track the failure explicitly and
+  // offer a retry instead of a silent dead end.
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   async function load() {
-    const data = await fetch("/api/llm").then((res) => res.json());
-    setSelected(data.selected ?? initialProvider);
-    setProviders(data.providers ?? []);
+    setLoadError(null);
+    try {
+      const res = await fetch("/api/llm");
+      if (!res.ok) throw new Error(`Failed to load providers (${res.status})`);
+      const data = await res.json();
+      setSelected(data.selected ?? initialProvider);
+      setProviders(data.providers ?? []);
+    } catch (err) {
+      setLoadError(err instanceof Error ? err.message : String(err));
+    }
   }
 
   useEffect(() => {
@@ -38,14 +53,20 @@ export function ProviderSwitcher({
     setSaving(true);
     setSelected(provider);
     setOpen(false);
-    const res = await fetch("/api/llm", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ provider }),
-    });
-    await load();
-    if (res.ok) window.dispatchEvent(new Event("cante:provider-changed"));
-    setSaving(false);
+    try {
+      const res = await fetch("/api/llm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ provider }),
+      });
+      await load();
+      if (res.ok) window.dispatchEvent(new Event("cante:provider-changed"));
+      else setLoadError(`Failed to switch provider (${res.status})`);
+    } catch (err) {
+      setLoadError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setSaving(false);
+    }
   }
 
   const active = providers.find((provider) => provider.id === selected);
@@ -88,7 +109,12 @@ export function ProviderSwitcher({
       )}
 
       <div className="provider-detail">
-        {saving ? "Switching provider…" : active?.detail ?? "Checking provider…"}
+        {saving ? "Switching provider…" : loadError ? (
+          <span className="callout callout-bad" style={{ display: "inline-flex", gap: 6, alignItems: "center" }}>
+            {loadError}
+            <button type="button" className="btn btn-small" onClick={() => void load()}>Retry</button>
+          </span>
+        ) : active?.detail ?? "Checking provider…"}
       </div>
     </div>
   );
