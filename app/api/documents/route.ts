@@ -97,7 +97,14 @@ export async function POST(request: Request) {
       return Response.json({ error: "No file was attached." }, { status: 400 });
     }
     const customerId = await resolveCustomerId(form.get("customerId") as string | null);
-    if (!customerId) return Response.json({ error: "No customer." }, { status: 400 });
+    // "No customer." gave a caller nothing to act on; same self-correct-from-response-body
+    // bar as profiles/checklist/import-monitor — name the fix, not just the failure.
+    if (!customerId) {
+      return Response.json(
+        { error: "No customer could be resolved. Include a valid `customerId` field in the multipart form data, or omit it to use the default customer if one exists." },
+        { status: 400 },
+      );
+    }
 
     let extracted;
     try {
@@ -163,7 +170,13 @@ export async function POST(request: Request) {
   }
   const payload = body as Record<string, unknown>;
   const customerId = await resolveCustomerId(payload.customerId as string | undefined);
-  if (!customerId) return Response.json({ error: "No customer." }, { status: 400 });
+  // Same fix: tell the caller exactly what to pass instead of a bare "No customer."
+  if (!customerId) {
+    return Response.json(
+      { error: "No customer could be resolved. Pass a valid `customerId` in the JSON request body, or omit it to use the default customer if one exists." },
+      { status: 400 },
+    );
+  }
 
   try {
     const action = (payload.action as string) ?? "ingest";
