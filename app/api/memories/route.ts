@@ -52,7 +52,14 @@ export async function POST(request: Request) {
   if (!content) return Response.json({ error: "Empty memory." }, { status: 400 });
 
   const customerId = await resolveCustomerId(body.customerId);
-  if (!customerId) return Response.json({ error: "No customer." }, { status: 404 });
+  // Same human/agent-fixable-error bar as profiles/checklist/documents/import-monitor:
+  // tell the caller exactly what to pass instead of a bare "No customer."
+  if (!customerId) {
+    return Response.json(
+      { error: "No customer could be resolved. Pass a valid `customerId` in the JSON request body, or omit it to use the default customer if one exists." },
+      { status: 404 }
+    );
+  }
 
   const kind = KINDS.includes(body.kind) ? body.kind : "other";
   const jurisdiction = normalizeJurisdiction(body.country);
