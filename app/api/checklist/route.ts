@@ -57,6 +57,18 @@ export async function PATCH(request: Request) {
     // alone rather than needing the source file.
     return Response.json({ error: "Missing `id` and/or `status`.", shape: checklistPatchShapeDocs }, { status: 400 });
   }
-  await updateChecklistItemStatus(body.id, String(body.status));
-  return Response.json({ ok: true });
+  // Route-handler error audit (2026-09-17, continuing the GET/profiles/lanes/
+  // conversations sweep): this PATCH had zero try/catch, so a DB failure in
+  // updateChecklistItemStatus fell through to Next's generic HTML error page
+  // instead of a parseable JSON {error} body — same AI-agent-API-cleanliness
+  // fix applied everywhere else in this sweep.
+  try {
+    await updateChecklistItemStatus(body.id, String(body.status));
+    return Response.json({ ok: true });
+  } catch (error) {
+    return Response.json(
+      { error: error instanceof Error ? error.message : "Failed to update checklist item." },
+      { status: 500 },
+    );
+  }
 }
