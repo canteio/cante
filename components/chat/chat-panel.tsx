@@ -85,8 +85,23 @@ export function ChatPanel({
 
   async function openConversation(id: string) {
     setError(null);
-    const res = await fetch(`/api/conversations?id=${id}`);
-    if (!res.ok) return;
+    // Same silent-failure class already fixed in workqueue/checklist/
+    // suppliers/catalogue/profile/memory this cycle: a failed load used to
+    // just `return`, leaving the panel blank or stuck on stale messages with
+    // no indication anything went wrong. Now it surfaces a real error so the
+    // user can tell "broken load" from "empty conversation".
+    let res: Response;
+    try {
+      res = await fetch(`/api/conversations?id=${id}`);
+    } catch {
+      setError("Could not load this conversation — check your connection and try again.");
+      return;
+    }
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setError(data.error ?? `Could not load this conversation (${res.status}).`);
+      return;
+    }
     const data = await res.json();
     setCountry(normalizeJurisdiction(data.conversation?.jurisdiction));
     setConversationId(id);
