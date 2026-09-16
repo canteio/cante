@@ -81,7 +81,14 @@ export async function POST(request: Request) {
       return Response.json({ error: "No file was attached." }, { status: 400 });
     }
     const customerId = await resolveCustomerId(form.get("customerId") as string | null);
-    if (!customerId) return Response.json({ error: "No customer." }, { status: 400 });
+    // Human/agent-fixable-error audit (final sweep): tell the caller exactly what
+    // to pass instead of a bare "No customer." — matches lanes/suppliers/workqueue/etc.
+    if (!customerId) {
+      return Response.json(
+        { error: "No customer could be resolved. Pass a valid `customerId` form field, or omit it to use the default customer if one exists." },
+        { status: 400 }
+      );
+    }
 
     try {
       const extracted = await extractTextFromFile(
@@ -113,7 +120,14 @@ export async function POST(request: Request) {
 
   const payload = body as Record<string, unknown>;
   const customerId = await resolveCustomerId(payload.customerId as string | undefined);
-  if (!customerId) return Response.json({ error: "No customer." }, { status: 400 });
+  // Human/agent-fixable-error audit (final sweep): tell the caller exactly what
+  // to pass instead of a bare "No customer." — matches lanes/suppliers/workqueue/etc.
+  if (!customerId) {
+    return Response.json(
+      { error: "No customer could be resolved. Pass a valid `customerId` in the JSON request body, or omit it to use the default customer if one exists." },
+      { status: 400 }
+    );
+  }
 
   if (typeof payload.csv === "string") {
     const summary =

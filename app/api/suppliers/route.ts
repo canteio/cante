@@ -50,7 +50,14 @@ export async function POST(request: Request) {
   }
   const payload = body as Record<string, unknown>;
   const customerId = await resolveCustomerId(payload.customerId as string | undefined);
-  if (!customerId) return Response.json({ error: "No customer." }, { status: 400 });
+  // Human/agent-fixable-error audit (final sweep): tell the caller exactly what
+  // to pass instead of a bare "No customer." — matches products/lanes/workqueue/etc.
+  if (!customerId) {
+    return Response.json(
+      { error: "No customer could be resolved. Pass a valid `customerId` in the JSON request body, or omit it to use the default customer if one exists." },
+      { status: 400 }
+    );
+  }
 
   const action = (payload.action as string) ?? "upsert";
 
