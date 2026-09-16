@@ -49,10 +49,21 @@ export function ComplianceProfilePanel({ country }: { country: JurisdictionName 
 
   useEffect(() => {
     setLoading(true);
+    setError(null);
     fetch(`/api/profiles?country=${encodeURIComponent(country)}`)
-      .then((response) => response.json())
-      .then((data) => setDraft(normalizeProfile(data.profile)))
-      .catch((cause) => setError(String(cause)))
+      .then(async (response) => {
+        const data = await response.json().catch(() => ({}));
+        // Same silent-failure class already fixed in catalogue/workqueue/checklist/suppliers:
+        // a non-2xx response (e.g. 500) that still returns valid JSON previously slipped past
+        // this .then chain, silently rendering an EMPTY profile with no indication anything
+        // went wrong — indistinguishable from a genuinely blank profile. Now we check response.ok
+        // first and surface the real error instead of quietly wiping the visible form state.
+        if (!response.ok) {
+          throw new Error(typeof data.error === "string" ? data.error : "Failed to load profile.");
+        }
+        setDraft(normalizeProfile(data.profile));
+      })
+      .catch((cause) => setError(cause instanceof Error ? cause.message : String(cause)))
       .finally(() => setLoading(false));
   }, [country]);
 
