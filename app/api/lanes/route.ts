@@ -74,11 +74,21 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const url = new URL(request.url);
-  const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
-  const laneId = url.searchParams.get("laneId");
-  if (!customerId || !laneId) {
-    return Response.json({ error: "customerId and laneId are required." }, { status: 400 });
+  // try/catch added: deleteLane() can throw (e.g. unknown laneId, DB error) and
+  // without this the route falls through to Next's default HTML error page
+  // instead of clean JSON — breaks any API client/agent parsing the response.
+  try {
+    const url = new URL(request.url);
+    const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
+    const laneId = url.searchParams.get("laneId");
+    if (!customerId || !laneId) {
+      return Response.json({ error: "customerId and laneId are required." }, { status: 400 });
+    }
+    return Response.json({ deleted: deleteLane(customerId, laneId) });
+  } catch (error) {
+    return Response.json(
+      { error: error instanceof Error ? error.message : "Failed to delete lane." },
+      { status: 500 },
+    );
   }
-  return Response.json({ deleted: deleteLane(customerId, laneId) });
 }
