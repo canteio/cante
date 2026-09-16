@@ -35,10 +35,18 @@ const ProfileSchema = z.object({
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
-  if (!customerId) return Response.json({ profile: null });
-  const country = normalizeJurisdiction(url.searchParams.get("country"));
-  return Response.json({ country, profile: await getJurisdictionProfile(customerId, country) });
+  // Same silent-failure gap fixed in conversations/customers/import-monitor
+  // GET handlers: a DB error here previously bubbled up as Next's generic
+  // HTML error page instead of JSON, which is unreadable for an API caller
+  // (human or agent). Wrap both DB calls so failures come back as {error}.
+  try {
+    const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
+    if (!customerId) return Response.json({ profile: null });
+    const country = normalizeJurisdiction(url.searchParams.get("country"));
+    return Response.json({ country, profile: await getJurisdictionProfile(customerId, country) });
+  } catch {
+    return Response.json({ error: "Failed to load jurisdiction profile." }, { status: 500 });
+  }
 }
 
 // Machine-readable shape doc, same "self-correct from the response body
