@@ -60,6 +60,18 @@ export async function DELETE(request: Request) {
       { status: 400 },
     );
   }
-  await deleteConversation(id);
-  return Response.json({ ok: true });
+  // Route-handler error audit (2026-09-17, continuing the GET/profiles/lanes
+  // sweep): this DELETE had zero try/catch, so a DB failure in
+  // deleteConversation fell through to Next's generic HTML error page
+  // instead of a parseable JSON {error} body — breaks any AI-agent client
+  // that expects JSON on every status, not just the happy path.
+  try {
+    await deleteConversation(id);
+    return Response.json({ ok: true });
+  } catch (error) {
+    return Response.json(
+      { error: error instanceof Error ? error.message : "Failed to delete conversation." },
+      { status: 500 },
+    );
+  }
 }
