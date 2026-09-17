@@ -376,7 +376,10 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
       ) : queue.length === 0 ? (
         <div className="empty">
           <Inbox size={24} strokeWidth={1.5} style={{ marginBottom: 8 }} />
-          <p>No open compliance tasks. Your operations are currently 100% compliant with active regulations.</p>
+          {/* An empty queue means "nothing currently flagged," not "certified compliant" —
+              coverage depends on which regulations Cante is actively monitoring for this
+              workspace. Overclaiming compliance here is a liability risk, not just a UX nit. */}
+          <p>No open compliance tasks. Nothing is currently flagged for the regulations Cante is monitoring — this is not a compliance certification.</p>
         </div>
       ) : (
         <div className="checklist-grid">
