@@ -85,7 +85,8 @@ async function completeOpenAi(req: CompletionRequest, signal: AbortSignal): Prom
       model: process.env.OPENAI_MODEL || "gpt-5",
       instructions: req.system,
       input: promptWithSchema(req),
-      tools: [{ type: "web_search" }],
+      // Onboarding extracts supplied text in one call, without web research.
+      tools: req.tools?.length === 0 ? [] : [{ type: "web_search" }],
       max_output_tokens: Number(process.env.CANTE_LLM_MAX_OUTPUT_TOKENS || 16_000),
       store: false,
     }),
@@ -97,7 +98,7 @@ async function completeOpenAi(req: CompletionRequest, signal: AbortSignal): Prom
 }
 
 async function completeAnthropic(req: CompletionRequest, signal: AbortSignal): Promise<string> {
-  const tools = [
+  const tools = req.tools?.length === 0 ? [] : [
     { type: "web_search_20250305", name: "web_search", max_uses: 6 },
   ];
   const messages: Array<Record<string, unknown>> = [
@@ -123,6 +124,7 @@ async function completeAnthropic(req: CompletionRequest, signal: AbortSignal): P
     });
     const payload = await responseJson(response, "anthropic");
     if (payload.stop_reason === "pause_turn") {
+      if (req.tools?.length === 0) throw new LlmError("Extraction did not complete", "api");
       messages.push({ role: "assistant", content: payload.content ?? [] });
       continue;
     }

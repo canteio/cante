@@ -226,6 +226,8 @@ export class ClaudeCodeProvider implements LlmProvider {
       ...DENIED_TOOLS,
     ];
 
+    // Text extraction must not turn into a second research stage.
+    if (req.tools?.length === 0) args.push("--tools", "");
     try {
       const text = await this.run(args, undefined, req.timeoutMs ?? 300_000, req.signal);
       return { text, provider: this.name, durationMs: Date.now() - started };

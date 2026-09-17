@@ -6,7 +6,9 @@ import {
 } from "@/lib/auth/config";
 import { updateSupabaseSession } from "@/lib/supabase/middleware";
 
+// Onboarding uses the same workspace gate; existing login destinations stay unchanged.
 const PROTECTED_PREFIXES = [
+  "/onboarding",
   "/catalogue",
   "/chat",
   "/checklist",
@@ -76,6 +78,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/onboarding/:path*",
     "/catalogue/:path*",
     "/chat/:path*",
     "/checklist/:path*",

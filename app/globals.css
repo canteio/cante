@@ -3281,3 +3281,9 @@ textarea.input {
 
 /* Separate setup sections without adding a new visual token system. */
 .profile-form { display: grid; gap: 1rem; padding-top: 1rem; }
+
+/* First-run setup uses the app's existing controls, in one focused column. */
+.onboarding-page { min-height: 100dvh; display: grid; place-items: center; padding: 24px; overflow: auto; }
+.onboarding-card { width: 100%; max-width: 560px; }
+.onboarding-card .page-head { margin-top: 16px; }
+.onboarding-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
