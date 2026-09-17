@@ -141,9 +141,18 @@ test("screeningCoverage separates never-screened, matched, errored, and stale su
 
   const originalFetch = global.fetch;
 
+  // Each screenSupplier call below simulates a *different* upstream state
+  // (clear / match / error). screenExactNames caches the CSL snapshot for
+  // CACHE_TTL_MS (15 min) so consecutive calls in production don't hammer
+  // Trade.gov — but that same caching means, without a reset here, calls 2
+  // and 3 would silently reuse call 1's cached (empty) snapshot instead of
+  // hitting their own mocked fetch response, masking the "error" outcome
+  // this test exists to verify. Reset before each call so every mock is
+  // actually exercised.
   global.fetch = (async () => cslResponse([])) as typeof fetch;
   await screenSupplier(customerId, clearId);
 
+  resetCslCacheForTests();
   global.fetch = (async () =>
     cslResponse([
       {
@@ -157,6 +166,7 @@ test("screeningCoverage separates never-screened, matched, errored, and stale su
     ])) as typeof fetch;
   await screenSupplier(customerId, matchId);
 
+  resetCslCacheForTests();
   global.fetch = (async () => new Response("boom", { status: 500 })) as typeof fetch;
   await screenSupplier(customerId, erroredId);
 
