@@ -49,7 +49,20 @@ export async function POST(request: Request) {
         { status: 409 },
       );
     }
-    const body = await request.json().catch(() => ({}));
+    // `request.json()` happily parses a top-level "null"/"[]"/"42" JSON body
+    // without throwing, so `body.provider` below would previously throw a
+    // TypeError caught by the outer catch and surfaced as an undifferentiated
+    // 500 — indistinguishable from a real server error to a calling agent.
+    // Reject any non-plain-object body up front with a 400 that documents
+    // the expected shape, matching the same contract already applied to
+    // POST /api/workqueue.
+    const body = await request.json().catch(() => null);
+    if (body === null || typeof body !== "object" || Array.isArray(body)) {
+      return Response.json(
+        { error: "Request body must be a JSON object, e.g. { \"provider\": \"claude-code\" }." },
+        { status: 400 },
+      );
+    }
     const selected = normalizeProviderChoice(body.provider);
     const provider = getProvider(selected);
     const health = await provider.available();
