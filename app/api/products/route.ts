@@ -193,21 +193,33 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const url = new URL(request.url);
-  const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
-  const productId = url.searchParams.get("productId");
-  if (!customerId || !productId) {
-    return Response.json({ error: "customerId and productId are required." }, { status: 400 });
+  // try/catch sweep (item 40+): createClient()/supabase calls below can throw
+  // (bad env, network) rather than reject with a `.error` field — without this
+  // guard that throw falls through to Next's HTML error page instead of JSON,
+  // breaking any API client/agent parsing the response (same fix as logout,
+  // lanes, memories, checklist, conversations routes).
+  try {
+    const url = new URL(request.url);
+    const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
+    const productId = url.searchParams.get("productId");
+    if (!customerId || !productId) {
+      return Response.json({ error: "customerId and productId are required." }, { status: 400 });
+    }
+    if (getDataBackend() === "supabase") {
+      const supabase = await createClient();
+      const { error, count } = await supabase
+        .from("products")
+        .delete({ count: "exact" })
+        .eq("customer_id", customerId)
+        .eq("id", productId);
+      if (error) return Response.json({ error: error.message }, { status: 500 });
+      return Response.json({ deleted: Boolean(count) });
+    }
+    return Response.json({ deleted: deleteProduct(customerId, productId) });
+  } catch (error) {
+    return Response.json(
+      { error: error instanceof Error ? error.message : "Failed to delete product." },
+      { status: 500 },
+    );
   }
-  if (getDataBackend() === "supabase") {
-    const supabase = await createClient();
-    const { error, count } = await supabase
-      .from("products")
-      .delete({ count: "exact" })
-      .eq("customer_id", customerId)
-      .eq("id", productId);
-    if (error) return Response.json({ error: error.message }, { status: 500 });
-    return Response.json({ deleted: Boolean(count) });
-  }
-  return Response.json({ deleted: deleteProduct(customerId, productId) });
 }
