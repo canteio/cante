@@ -73,22 +73,33 @@ const profileShapeDocs = {
 
 export async function PUT(request: Request) {
   const body = await request.json().catch(() => ({}));
-  const customerId = await resolveCustomerId(body.customerId);
-  // "No customer." gave a caller nothing to act on; spell out the fix inline
-  // (same human/agent-fixable-error bar as the import-monitor query params)
-  // rather than making the caller go read resolveCustomerId's source.
-  if (!customerId) {
-    return Response.json(
-      { error: "No customer could be resolved. Pass a valid `customerId` in the request body, or omit it to use the default customer if one exists." },
-      { status: 404 },
-    );
+  // Last unguarded mutating route in the POST/PUT/DELETE/PATCH sweep (see
+  // route.ts sweep across llm/, substances/, conversations/, customers/,
+  // import-monitor/): resolveCustomerId/upsertJurisdictionProfile/
+  // refreshChecklistForCustomer all hit the DB and previously had zero
+  // try/catch here, so any DB error (bad connection, FK violation, etc.)
+  // fell through to Next's generic HTML error page instead of JSON —
+  // unreadable for an API client or an agent parsing the response.
+  try {
+    const customerId = await resolveCustomerId(body.customerId);
+    // "No customer." gave a caller nothing to act on; spell out the fix inline
+    // (same human/agent-fixable-error bar as the import-monitor query params)
+    // rather than making the caller go read resolveCustomerId's source.
+    if (!customerId) {
+      return Response.json(
+        { error: "No customer could be resolved. Pass a valid `customerId` in the request body, or omit it to use the default customer if one exists." },
+        { status: 404 },
+      );
+    }
+    const country = normalizeJurisdiction(body.country);
+    const parsed = ProfileSchema.safeParse(body.profile);
+    if (!parsed.success) {
+      return Response.json({ error: parsed.error.flatten(), shape: profileShapeDocs }, { status: 400 });
+    }
+    const profile = await upsertJurisdictionProfile(customerId, country, parsed.data);
+    await refreshChecklistForCustomer(customerId, country);
+    return Response.json({ country, profile });
+  } catch {
+    return Response.json({ error: "Failed to save jurisdiction profile." }, { status: 500 });
   }
-  const country = normalizeJurisdiction(body.country);
-  const parsed = ProfileSchema.safeParse(body.profile);
-  if (!parsed.success) {
-    return Response.json({ error: parsed.error.flatten(), shape: profileShapeDocs }, { status: 400 });
-  }
-  const profile = await upsertJurisdictionProfile(customerId, country, parsed.data);
-  await refreshChecklistForCustomer(customerId, country);
-  return Response.json({ country, profile });
 }
