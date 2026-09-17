@@ -1,7 +1,7 @@
 "use client";
 
 import { Bot, Check, ChevronDown } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { LlmProviderChoice } from "@/lib/llm";
 
 type ProviderStatus = {
@@ -23,6 +23,39 @@ export function ProviderSwitcher({
   const [selected, setSelected] = useState<LlmProviderChoice>(initialProvider);
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  // Keyboard-nav/focus-trap audit follow-up (found while sweeping the
+  // component tree for popovers not yet covered by the fix already applied
+  // to chat-panel's jurisdiction picker, catalogue-panel's Add Product form,
+  // and workqueue-panel's action modal): this menu had NO Escape handler, no
+  // click-outside-to-close, and never returned focus to the trigger button —
+  // a keyboard user could tab into the open menu but had no way to dismiss
+  // it without the mouse, and focus was stranded on close either way. Give
+  // it the same close() helper pattern: Escape, an outside click, and
+  // choosing an option (see `choose` below) all route through here so focus
+  // always lands back on the toggle button.
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  function close() {
+    setOpen(false);
+    triggerRef.current?.focus();
+  }
+  useEffect(() => {
+    if (!open) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") close();
+    }
+    function onPointerDown(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node) && e.target !== triggerRef.current) {
+        setOpen(false);
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("mousedown", onPointerDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("mousedown", onPointerDown);
+    };
+  }, [open]);
   // Silent-failure fix (matches the audit already applied to every other
   // panel in the app): a failed /api/llm fetch — network error, or a non-2xx
   // response whose body isn't JSON — used to throw inside an un-awaited,
@@ -52,7 +85,7 @@ export function ProviderSwitcher({
   async function choose(provider: LlmProviderChoice) {
     setSaving(true);
     setSelected(provider);
-    setOpen(false);
+    close(); // return focus to trigger, not just hide the menu
     try {
       const res = await fetch("/api/llm", {
         method: "POST",
@@ -74,9 +107,11 @@ export function ProviderSwitcher({
   return (
     <div className="provider-switcher">
       <button
+        ref={triggerRef}
         type="button"
         className="provider-current"
         aria-expanded={open}
+        aria-haspopup="menu"
         onClick={() => setOpen((value) => !value)}
       >
         <Bot size={13} />
@@ -86,7 +121,7 @@ export function ProviderSwitcher({
       </button>
 
       {open && (
-        <div className="provider-menu">
+        <div className="provider-menu" ref={menuRef} role="menu">
           {providers.map((provider) => (
             <button
               key={provider.id}
