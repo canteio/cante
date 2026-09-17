@@ -69,6 +69,19 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
   const [materials, setMaterials] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
 
+  // UI/UX friction fix: Escape didn't close the "Add Product" form, unlike
+  // the action-modal dialog pattern already used in workqueue-panel.tsx
+  // (role="dialog" + Escape-to-close). Users expect Escape to cancel any
+  // open inline form, not just true modal dialogs. Mirrors that pattern here.
+  useEffect(() => {
+    if (!showAddForm) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setShowAddForm(false);
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [showAddForm]);
+
   const load = useCallback(async () => {
     setLoading(true);
     // Previously this had no error handling: a failed fetch (network error or
