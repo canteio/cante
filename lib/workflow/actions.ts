@@ -26,7 +26,11 @@ export type ActionState =
   | "irrelevant"
   | "closed";
 
-const STATES = new Set<ActionState>([
+// Exported as an ordered array (not just the Set below) so lib/workflow/openapi.ts
+// can build the /api/workqueue OpenAPI enum/summary schema from the single
+// source of truth instead of hand-duplicating the state list a second time —
+// the exact drift risk the monitor's openapi.ts header already warns about.
+export const STATES_LIST: ActionState[] = [
   "new",
   "acknowledged",
   "assigned",
@@ -34,7 +38,9 @@ const STATES = new Set<ActionState>([
   "evidence_requested",
   "irrelevant",
   "closed",
-]);
+];
+
+const STATES = new Set<ActionState>(STATES_LIST);
 
 /** Terminal states cannot be left except by explicitly reopening. */
 const TERMINAL = new Set<ActionState>(["irrelevant", "closed"]);
