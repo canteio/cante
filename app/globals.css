@@ -3059,6 +3059,24 @@ textarea.input {
   flex: 1 1 180px;
 }
 
+/* Screen-reader-only live region for ChipInput's add/remove announcements —
+   visually hidden but still read by assistive tech, standard accessible
+   pattern (not display:none, which screen readers also skip). See the
+   fuller .chip-input/.chip-field ruleset further down this file (added
+   alongside the profile/catalogue redesign) for the chip component's
+   visible styling. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .btn-small {
   font-size: 12px;
   padding: 4px 10px;
@@ -3233,3 +3251,33 @@ textarea.input {
   .import-monitor .page-actions { flex-direction: column; align-items: stretch; }
   .import-monitor .page-actions .btn { width: 100%; }
 }
+
+/* Profile/catalogue setup: real values stay dark; examples are explicitly labelled
+   and italic. Scope these rules so other operational pages retain their styling. */
+.profile-form .input::placeholder,
+.catalogue-editor .input::placeholder,
+.chip-input input::placeholder { color: var(--text-faint); font-style: italic; opacity: 1; }
+.profile-completion { color: var(--text-secondary); margin: 0; }
+.profile-section-fields { display: grid; gap: 1rem; margin-top: 1rem; }
+.profile-disclosure > summary { cursor: pointer; font-weight: 600; }
+.profile-disclosure > summary .muted { margin-left: 12px; font-weight: 400; font-size: 0.8rem; }
+.profile-code-basis { display: grid; gap: 4px; margin-top: 8px; font-size: 0.8rem; color: var(--text-secondary); }
+.chip-field { min-width: 0; }
+.chip-field > .side-label { display: block; padding: 0; margin-bottom: 4px; }
+.chip-input { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 8px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--app-background); }
+.chip-input:focus-within { outline: 2px solid var(--blue); outline-offset: 2px; }
+.chip-input input { flex: 1 1 150px; width: 0; min-width: 100px; border: 0; outline: 0; padding: 6px 0; background: transparent; color: var(--text); font: inherit; }
+.chip-input-value { display: inline-flex; align-items: center; max-width: 100%; white-space: normal; overflow-wrap: anywhere; gap: 4px; }
+.chip-input button { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; min-width: 28px; min-height: 28px; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--text-secondary); }
+.chip-input button:hover:not(:disabled) { background: var(--app-surface-active); }
+.chip-input button:disabled { opacity: 0.5; cursor: not-allowed; }
+.chip-input button:focus-visible,
+.profile-disclosure > summary:focus-visible,
+.profile-form .input:focus-visible,
+.catalogue-editor .input:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.catalogue-add-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.catalogue-tools { display: grid; gap: 1rem; margin-bottom: 1.5rem; }
+@media (max-width: 640px) { .catalogue-add-fields { grid-template-columns: minmax(0, 1fr); } }
+
+/* Separate setup sections without adding a new visual token system. */
+.profile-form { display: grid; gap: 1rem; padding-top: 1rem; }
