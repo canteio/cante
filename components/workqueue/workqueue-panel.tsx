@@ -83,6 +83,7 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
   const [summary, setSummary] = useState<Record<string, number>>({});
   const [includeResolved, setIncludeResolved] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [actionModal, setActionModal] = useState<ActionModalState | null>(null);
@@ -98,15 +99,27 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
 
   const load = useCallback(async () => {
     setLoading(true);
+    setLoadError(null);
+    setError(null);
+    // Hide stale counts while reloading; a failed request is not an empty queue.
+    setSummary({});
     try {
       const res = await fetch(
         `/api/workqueue?includeResolved=${includeResolved}&country=${encodeURIComponent(country)}`,
       );
+      if (!res.ok) {
+        const failure: unknown = await res.json().catch(() => null);
+        const message = failure && typeof failure === "object" && "error" in failure
+          && typeof failure.error === "string" && failure.error.trim()
+          ? failure.error
+          : `Could not load tasks (HTTP ${res.status}). Please retry.`;
+        throw new Error(message);
+      }
       const data = await res.json();
       setQueue(data.queue ?? []);
       setSummary(data.summary ?? {});
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setLoadError(e instanceof Error ? e.message : "Could not load tasks. Please retry.");
     } finally {
       setLoading(false);
     }
@@ -355,6 +368,11 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
 
       {loading ? (
         <div className="empty" role="status">Loading tasks…</div>
+      ) : loadError ? (
+        <div role="alert" className="card">
+          <p>{loadError}</p>
+          <button className="btn" onClick={() => void load()}>Retry loading tasks</button>
+        </div>
       ) : queue.length === 0 ? (
         <div className="empty">
           <Inbox size={24} strokeWidth={1.5} style={{ marginBottom: 8 }} />
