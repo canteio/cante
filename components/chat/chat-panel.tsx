@@ -83,6 +83,21 @@ export function ChatPanel({
   const [country, setCountry] = useState<JurisdictionName>(initialCountry);
   const [countryMenuOpen, setCountryMenuOpen] = useState(false);
 
+  // UI/UX friction fix: the jurisdiction picker menu (role="menu") had no
+  // Escape handler, unlike the Add Product form (catalogue-panel.tsx) and
+  // modal dialogs (workqueue-panel.tsx). A user who opens this popover and
+  // changes their mind had no keyboard way to dismiss it — only clicking
+  // one of the menu items or elsewhere on the page closed it. Mirrors the
+  // same window-keydown Escape pattern already established for this repo.
+  useEffect(() => {
+    if (!countryMenuOpen) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setCountryMenuOpen(false);
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [countryMenuOpen]);
+
   async function openConversation(id: string) {
     setError(null);
     // Same silent-failure class already fixed in workqueue/checklist/
