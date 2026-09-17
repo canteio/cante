@@ -62,7 +62,14 @@ export function getAction(findingId: string): FindingAction | undefined {
 
 export function transition(input: TransitionInput): FindingAction {
   if (!STATES.has(input.state)) {
-    throw new WorkflowError(`Unknown state "${input.state}".`);
+    // Agent-usability audit: an AI client guessing at the state enum only
+    // learns it guessed wrong, not what the right values are. List them so
+    // the caller can self-correct without reading source, matching the
+    // "describe the expected shape" pattern already used by the JSON-body
+    // guards on /api/workqueue and /api/llm.
+    throw new WorkflowError(
+      `Unknown state "${input.state}". Valid states: ${Array.from(STATES).join(", ")}.`,
+    );
   }
   const finding = db.select().from(findings).where(eq(findings.id, input.findingId)).get();
   if (!finding) throw new WorkflowError("Finding not found.");
