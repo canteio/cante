@@ -1,7 +1,7 @@
 "use client";
 
 import { Bot, Check, ChevronDown } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import type { LlmProviderChoice } from "@/lib/llm";
 
 type ProviderStatus = {
@@ -23,38 +23,28 @@ export function ProviderSwitcher({
   const [selected, setSelected] = useState<LlmProviderChoice>(initialProvider);
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
-  // Keyboard-nav/focus-trap audit follow-up (found while sweeping the
-  // component tree for popovers not yet covered by the fix already applied
-  // to chat-panel's jurisdiction picker, catalogue-panel's Add Product form,
-  // and workqueue-panel's action modal): this menu had NO Escape handler, no
-  // click-outside-to-close, and never returned focus to the trigger button —
-  // a keyboard user could tab into the open menu but had no way to dismiss
-  // it without the mouse, and focus was stranded on close either way. Give
-  // it the same close() helper pattern: Escape, an outside click, and
-  // choosing an option (see `choose` below) all route through here so focus
-  // always lands back on the toggle button.
+  const menuId = useId();
   const triggerRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const openingEdge = useRef<"first" | "last">("first");
   function close() {
     setOpen(false);
     triggerRef.current?.focus();
   }
   useEffect(() => {
     if (!open) return;
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") close();
-    }
-    function onPointerDown(e: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node) && e.target !== triggerRef.current) {
+    const items = menuRef.current?.querySelectorAll<HTMLButtonElement>('[role="menuitemradio"]');
+    const item = openingEdge.current === "last" ? items?.[items.length - 1] : items?.[0];
+    // Focus the menu itself while providers load so Escape and Tab still work.
+    (item ?? menuRef.current)?.focus();
+    function onPointerDown(e: PointerEvent) {
+      if (e.target instanceof Node && !menuRef.current?.contains(e.target) && !triggerRef.current?.contains(e.target)) {
+        // Outside clicks keep their own focus target, including on touch screens.
         setOpen(false);
       }
     }
-    window.addEventListener("keydown", onKeyDown);
-    window.addEventListener("mousedown", onPointerDown);
-    return () => {
-      window.removeEventListener("keydown", onKeyDown);
-      window.removeEventListener("mousedown", onPointerDown);
-    };
+    window.addEventListener("pointerdown", onPointerDown);
+    return () => window.removeEventListener("pointerdown", onPointerDown);
   }, [open]);
   // Silent-failure fix (matches the audit already applied to every other
   // panel in the app): a failed /api/llm fetch — network error, or a non-2xx
@@ -110,9 +100,22 @@ export function ProviderSwitcher({
         ref={triggerRef}
         type="button"
         className="provider-current"
+        id={`${menuId}-trigger`}
         aria-expanded={open}
         aria-haspopup="menu"
-        onClick={() => setOpen((value) => !value)}
+        aria-controls={open ? menuId : undefined}
+        aria-label={`AI provider: ${active?.shortLabel ?? selected}`}
+        onClick={() => {
+          openingEdge.current = "first";
+          setOpen((value) => !value);
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+            event.preventDefault();
+            openingEdge.current = event.key === "ArrowUp" ? "last" : "first";
+            setOpen(true);
+          }
+        }}
       >
         <Bot size={13} />
         <span>{active?.shortLabel ?? selected}</span>
@@ -121,15 +124,48 @@ export function ProviderSwitcher({
       </button>
 
       {open && (
-        <div className="provider-menu" ref={menuRef} role="menu">
+        <div
+          className="provider-menu"
+          ref={menuRef}
+          id={menuId}
+          role="menu"
+          aria-labelledby={`${menuId}-trigger`}
+          tabIndex={-1}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              event.preventDefault();
+              event.stopPropagation();
+              close();
+            } else if (event.key === "Tab") {
+              // Let the browser move forward/backward from the trigger, not a removed item.
+              close();
+            } else if (["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) {
+              event.preventDefault();
+              const items = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('[role="menuitemradio"]'));
+              if (items.length === 0) return;
+              const current = items.findIndex((item) => item === document.activeElement);
+              const next = event.key === "Home" ? 0 : event.key === "End" ? items.length - 1
+                : event.key === "ArrowDown" ? (current + 1) % items.length
+                : current < 0 ? items.length - 1 : (current - 1 + items.length) % items.length;
+              items[next]?.focus();
+            }
+          }}
+        >
           {providers.map((provider) => (
             <button
               key={provider.id}
               type="button"
               className="provider-option"
+              role="menuitemradio"
+              aria-checked={provider.id === selected}
+              // Unavailable options stay discoverable by keyboard, but cannot be chosen.
+              aria-disabled={!provider.ok || saving}
+              tabIndex={-1}
+              style={!provider.ok || saving ? { opacity: 0.5, cursor: "not-allowed" } : undefined}
               data-active={provider.id === selected}
-              disabled={!provider.ok}
-              onClick={() => choose(provider.id)}
+              onClick={() => {
+                if (provider.ok && !saving) void choose(provider.id);
+              }}
             >
               <span className={`provider-dot${provider.ok ? " is-ok" : " is-bad"}`} />
               <span className="provider-copy">
