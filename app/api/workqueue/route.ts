@@ -61,6 +61,14 @@ export async function POST(request: Request) {
   } catch {
     return Response.json({ error: "Request body must be valid JSON." }, { status: 400 });
   }
+  // Valid JSON can still be null or a scalar; reject it before customer lookup
+  // so agent clients receive a repairable 400 instead of an unhandled 500.
+  if (body === null || typeof body !== "object" || Array.isArray(body)) {
+    return Response.json(
+      { error: "Request body must be a JSON object containing findingId and state, or findingId and action: 'assess'." },
+      { status: 400 },
+    );
+  }
   const payload = body as Record<string, unknown>;
   const customerId = await resolveCustomerId(payload.customerId as string | undefined);
   // Human/agent-fixable-error audit (final sweep): tell the caller exactly what
