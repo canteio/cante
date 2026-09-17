@@ -257,7 +257,12 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
         </button>
       </div>
 
-      {error && <div className="pill pill-bad" style={{ margin: "1rem 0" }}>{error}</div>}
+      {/* UI/UX friction sweep (a11y): this error banner and the loading
+          state below were plain divs with no ARIA role, so screen-reader
+          users got zero notification when a task update failed or a
+          reload was in progress — matches the role="alert"/role="status"
+          pattern already established in app/import-monitor/panel.tsx. */}
+      {error && <div className="pill pill-bad" role="alert" style={{ margin: "1rem 0" }}>{error}</div>}
 
       {/* Modal Action Sheet */}
       {actionModal && (
@@ -330,7 +335,7 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
       )}
 
       {loading ? (
-        <div className="empty">Loading tasks…</div>
+        <div className="empty" role="status">Loading tasks…</div>
       ) : queue.length === 0 ? (
         <div className="empty">
           <Inbox size={24} strokeWidth={1.5} style={{ marginBottom: 8 }} />

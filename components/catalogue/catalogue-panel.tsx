@@ -169,7 +169,11 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
         </div>
       </div>
 
-      {error && <div className="pill pill-bad" style={{ marginBottom: "1rem" }}>{error}</div>}
+      {/* UI/UX friction sweep (a11y): announce load/import failures and the
+          loading state to screen readers, matching the role="alert"/
+          role="status" pattern from app/import-monitor/panel.tsx (and now
+          workqueue-panel.tsx / checklist-panel.tsx in this same sweep). */}
+      {error && <div className="pill pill-bad" role="alert" style={{ marginBottom: "1rem" }}>{error}</div>}
 
       {/* Quick Add Modal/Form */}
       {showAddForm && (
@@ -285,7 +289,7 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
       </div>
 
       {loading ? (
-        <div className="empty">Loading catalogue…</div>
+        <div className="empty" role="status">Loading catalogue…</div>
       ) : filteredProducts.length === 0 ? (
         <div className="empty">No matching items in catalogue. Add a product above or state it in chat.</div>
       ) : viewMode === "table" ? (

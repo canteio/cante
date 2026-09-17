@@ -169,8 +169,13 @@ export function ChecklistPanel({ country }: { country: JurisdictionName }) {
           </div>
         </div>
 
+        {/* UI/UX friction sweep (a11y): error banner and loading state had
+            no ARIA role, so a screen-reader user got no notification when
+            a status save/recalculate failed or a load was in progress —
+            same role="alert"/role="status" pattern applied across
+            import-monitor, workqueue, and catalogue panels this sweep. */}
         {error && (
-          <div className="pill pill-bad" style={{ margin: "0.75rem 0" }}>
+          <div className="pill pill-bad" role="alert" style={{ margin: "0.75rem 0" }}>
             {error}
           </div>
         )}
@@ -199,7 +204,7 @@ export function ChecklistPanel({ country }: { country: JurisdictionName }) {
         </div>
 
         {loading ? (
-          <div className="empty">Loading checklist…</div>
+          <div className="empty" role="status">Loading checklist…</div>
         ) : filteredItems.length === 0 ? (
           <div className="empty">No checklist rows for this filter.</div>
         ) : (
