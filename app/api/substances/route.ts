@@ -138,8 +138,19 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const componentId = new URL(request.url).searchParams.get("componentId");
-  if (!componentId) return Response.json({ error: "componentId is required." }, { status: 400 });
-  deleteComponent(componentId);
-  return Response.json({ deleted: true });
+  // Same try/catch sweep as POST above: without this, a thrown error from
+  // deleteComponent (e.g. an FK constraint on a component still referenced
+  // by declared substances) would fall through to an HTML error page
+  // instead of clean JSON, breaking any API client/agent parsing the response.
+  try {
+    const componentId = new URL(request.url).searchParams.get("componentId");
+    if (!componentId) return Response.json({ error: "componentId is required." }, { status: 400 });
+    deleteComponent(componentId);
+    return Response.json({ deleted: true });
+  } catch (error) {
+    return Response.json(
+      { error: error instanceof Error ? error.message : "Request failed." },
+      { status: 500 },
+    );
+  }
 }
