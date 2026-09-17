@@ -190,8 +190,14 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
         </div>
       </div>
 
-      {error && <div className="pill pill-bad" style={{ marginBottom: "1rem" }}>{error}</div>}
-      {note && <div className="pill pill-ok" style={{ marginBottom: "1rem" }}>{note}</div>}
+      {/* UI/UX fix: error/success banners here were plain <div>s with no
+          role, so screen-reader users got zero notification when a screen
+          or batch-screen action failed/succeeded (they'd have to re-scan
+          the page to notice). import-monitor/panel.tsx already established
+          role="alert" for errors and role="status" for transient success
+          notes as the reference pattern — applying the same here. */}
+      {error && <div className="pill pill-bad" role="alert" style={{ marginBottom: "1rem" }}>{error}</div>}
+      {note && <div className="pill pill-ok" role="status" style={{ marginBottom: "1rem" }}>{note}</div>}
 
       {/* Overview Cards */}
       {coverage && (
@@ -264,7 +270,9 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
         {loading ? "Active Suppliers" : `Active Suppliers (${filteredSuppliers.length})`}
       </div>
       {loading ? (
-        <div className="empty">
+        // role="status" so screen readers announce the loading state instead
+        // of silence (same pattern applied to error/note banners above).
+        <div className="empty" role="status">
           <RefreshCw size={24} strokeWidth={1.5} className="spin" style={{ marginBottom: 8 }} />
           <p>Loading suppliers…</p>
         </div>
