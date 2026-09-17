@@ -89,10 +89,23 @@ export function ChatPanel({
   // changes their mind had no keyboard way to dismiss it — only clicking
   // one of the menu items or elsewhere on the page closed it. Mirrors the
   // same window-keydown Escape pattern already established for this repo.
+  //
+  // Follow-up fix (continuing the focus-trap/keyboard-nav audit noted in the
+  // build log): closing via Escape used to drop keyboard focus entirely —
+  // the browser left it on the now-hidden trigger button with no visible
+  // anchor state, so a keyboard user lost their place. The WAI-ARIA APG
+  // menu-button pattern requires focus to return explicitly to the trigger
+  // on close, so we re-focus it here. Click-selection (chooseCountry)
+  // already leaves focus on the clicked menu item, which is fine on its
+  // own — only the Escape path had no natural focus target.
+  const countryTriggerRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (!countryMenuOpen) return;
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") setCountryMenuOpen(false);
+      if (e.key === "Escape") {
+        setCountryMenuOpen(false);
+        countryTriggerRef.current?.focus();
+      }
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
@@ -597,6 +610,7 @@ export function ChatPanel({
             <div className="composer-bar">
               <div className="country-picker">
                 <button
+                  ref={countryTriggerRef}
                   type="button"
                   className="country-picker-current"
                   aria-haspopup="menu"
