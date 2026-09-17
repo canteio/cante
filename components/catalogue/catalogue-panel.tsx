@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Boxes, Check, Plus, Upload, X, Tag, Search, LayoutGrid, List } from "lucide-react";
 import type { JurisdictionName } from "@/lib/countries";
 import { CountryTabs } from "@/components/dashboard/country-tabs";
@@ -73,10 +73,22 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
   // the action-modal dialog pattern already used in workqueue-panel.tsx
   // (role="dialog" + Escape-to-close). Users expect Escape to cancel any
   // open inline form, not just true modal dialogs. Mirrors that pattern here.
+  //
+  // Follow-up fix (same keyboard-nav/focus-trap audit that fixed the
+  // jurisdiction picker in chat-panel.tsx): closing via Escape left keyboard
+  // focus stranded wherever it happened to be inside the now-hidden form,
+  // instead of returning it to the "Add Product" trigger button per the
+  // WAI-ARIA APG disclosure pattern (focus must return to the control that
+  // opened the region on close). Added a ref on the trigger button and call
+  // .focus() on it inside the existing Escape handler.
+  const addFormTriggerRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (!showAddForm) return;
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") setShowAddForm(false);
+      if (e.key === "Escape") {
+        setShowAddForm(false);
+        addFormTriggerRef.current?.focus();
+      }
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
@@ -175,7 +187,7 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
           </p>
         </div>
         <div className="page-actions">
-          <button className="btn btn-primary" onClick={() => setShowAddForm((v) => !v)}>
+          <button ref={addFormTriggerRef} className="btn btn-primary" onClick={() => setShowAddForm((v) => !v)}>
             <Plus size={14} /> {showAddForm ? "Close Form" : "Add Product"}
           </button>
           <CountryTabs value={country} />
