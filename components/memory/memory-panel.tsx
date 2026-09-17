@@ -134,7 +134,11 @@ export function MemoryPanel({ country }: { country: JurisdictionName }) {
           </div>
         </div>
 
-        {error && <div className="pill pill-bad" style={{ marginBottom: "1rem" }}>{error}</div>}
+        {/* UI/UX friction sweep (a11y) continued: memory-panel was one of the
+            last two unaudited panels (with compliance-profile-panel) missing
+            the role="alert"/role="status" pattern already applied across
+            import-monitor, suppliers, workqueue, catalogue, and checklist. */}
+        {error && <div className="pill pill-bad" role="alert" style={{ marginBottom: "1rem" }}>{error}</div>}
 
         <div className="memory-compose">
           <select value={draftKind} onChange={(event) => setDraftKind(event.target.value)}>
@@ -163,7 +167,7 @@ export function MemoryPanel({ country }: { country: JurisdictionName }) {
         </div>
 
         {loading ? (
-          <div className="empty">Loading memory…</div>
+          <div className="empty" role="status">Loading memory…</div>
         ) : memories.length === 0 ? (
           <div className="empty">
             Nothing remembered yet. Facts learned in chat will appear here for confirmation.

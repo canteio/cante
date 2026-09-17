@@ -114,10 +114,16 @@ export function ComplianceProfilePanel({ country }: { country: JurisdictionName 
           </div>
         </div>
 
-        {error && <div className="pill pill-bad" style={{ marginBottom: "1rem" }}>{error}</div>}
+        {/* UI/UX friction sweep (a11y) continued: this is the compliance-profile
+            ("screening") page — it screens Federal Register/CBP/EPA rules per
+            the page-sub copy above, and was the last unaudited panel along with
+            memory-panel.tsx. Same role="alert"/role="status" pattern already
+            established in import-monitor, suppliers, workqueue, catalogue,
+            and checklist panels. */}
+        {error && <div className="pill pill-bad" role="alert" style={{ marginBottom: "1rem" }}>{error}</div>}
 
         {loading ? (
-          <div className="empty">Loading profile...</div>
+          <div className="empty" role="status">Loading profile...</div>
         ) : (
           <div className="profile-form">
             {/* Identity Section */}
