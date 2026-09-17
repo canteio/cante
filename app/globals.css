@@ -2191,6 +2191,16 @@ a:hover {
   cursor: not-allowed;
   opacity: 0.5;
   background: var(--app-surface);
+  /* .btn-primary sets white text for its blue background; overriding only
+     the background here (not color) left disabled primary buttons with
+     white text on a near-white background — the label vanished entirely
+     (e.g. "Save Product" looked blank). opacity: 0.5 above already conveys
+     "disabled" without needing the background swap, so drop it and let the
+     primary variant keep its own readable color at reduced opacity. */
+}
+.btn-primary:disabled {
+  background: #0284c7;
+  color: #fff;
 }
 
 .btn-primary {
