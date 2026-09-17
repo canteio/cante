@@ -30,12 +30,20 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
+  const includeResolvedParam = url.searchParams.get("includeResolved");
+  // A mistyped filter must not silently hide resolved tasks from an agent.
+  if (includeResolvedParam !== null && includeResolvedParam !== "true" && includeResolvedParam !== "false") {
+    return Response.json(
+      { error: "includeResolved must be 'true' or 'false'; omit it to hide resolved tasks." },
+      { status: 400 },
+    );
+  }
   const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
   if (!customerId) return Response.json({ queue: [], summary: {} });
 
   const jurisdiction = normalizeJurisdiction(url.searchParams.get("country"));
   const target = await getCustomerWithProfile(customerId);
-  const includeResolved = url.searchParams.get("includeResolved") === "true";
+  const includeResolved = includeResolvedParam === "true";
   const queue = listWorkQueue(customerId, { includeResolved }).map((row) => ({
     ...row,
     impact: listImpactForFinding(row.finding.id),
