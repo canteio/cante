@@ -134,6 +134,12 @@ export function ChecklistPanel({ country }: { country: JurisdictionName }) {
     return Array.from(cats);
   }, [items]);
 
+  useEffect(() => {
+    // Country changes and recalculation can remove the selected category.
+    // Reset only missing filters so existing obligations never appear empty.
+    if (!categories.includes(activeCategory)) setActiveCategory("all");
+  }, [categories, activeCategory]);
+
   const filteredItems = useMemo(() => {
     if (activeCategory === "all") return items;
     return items.filter((i) => i.category === activeCategory);
@@ -194,6 +200,7 @@ export function ChecklistPanel({ country }: { country: JurisdictionName }) {
               key={cat}
               className={`pill ${activeCategory === cat ? "pill-blue" : "pill-muted"}`}
               style={{ cursor: "pointer", border: "none", padding: "6px 12px" }}
+              aria-pressed={activeCategory === cat}
               onClick={() => setActiveCategory(cat)}
             >
               {CATEGORY_LABELS[cat] ?? cat.replace(/_/g, " ")} (
