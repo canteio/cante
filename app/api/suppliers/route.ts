@@ -14,6 +14,10 @@ import { latestScreening, screenSupplier, screeningCoverage } from "@/lib/screen
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+// Single source of truth for the POST action enum, echoed in the 400 below
+// so an unknown action is self-correctable from the response alone.
+const SUPPLIERS_ACTIONS = ["upsert", "evidence", "request", "screen"] as const;
+
 /**
  * Suppliers, their evidence (item 9), and their screening status (item 10).
  *
@@ -118,7 +122,15 @@ export async function POST(request: Request) {
       return Response.json(result);
     }
 
-    return Response.json({ error: `Unknown action "${action}".` }, { status: 400 });
+    // Agent-usability audit continued (2026-09-17): an unknown `action` only
+    // told a caller it guessed wrong, not what to try next — same fix already
+    // applied to workflow.transition()'s unknown-state error. Enumerate the
+    // real options inline so an AI client can self-correct from this one
+    // response instead of reading source.
+    return Response.json(
+      { error: `Unknown action "${action}".`, validActions: SUPPLIERS_ACTIONS },
+      { status: 400 },
+    );
   } catch (error) {
     if (error instanceof EvidenceError) {
       return Response.json({ error: error.message }, { status: error.status });
