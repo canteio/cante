@@ -1,8 +1,9 @@
 "use client";
 
 import { AlertTriangle, CheckCircle2, CircleHelp, RefreshCw, Filter, Check, Clock } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { JurisdictionName } from "@/lib/countries";
+import { createStatusRequestTracker } from "@/lib/checklist/status-request";
 import { CountryTabs } from "@/components/dashboard/country-tabs";
 
 type ChecklistItem = {
@@ -55,6 +56,7 @@ export function ChecklistPanel({ country }: { country: JurisdictionName }) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const statusRequests = useRef(createStatusRequestTracker());
   // UI/UX friction fix: load/refresh/setStatus previously had no error
   // handling at all — a failed fetch (network drop, 500, auth expiry) left
   // the panel silently stuck on "Loading checklist…" or reverted a status
@@ -98,23 +100,29 @@ export function ChecklistPanel({ country }: { country: JurisdictionName }) {
   }
 
   async function setStatus(item: ChecklistItem, status: string) {
-    const previous = items;
+    const request = statusRequests.current.begin(item.id);
     setItems((prev) => prev.map((row) => (row.id === item.id ? { ...row, status } : row)));
     try {
-      const res = await fetch("/api/checklist", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: item.id, status }),
-      });
+      const res = await statusRequests.current.run(item.id, () =>
+        fetch("/api/checklist", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: item.id, status }),
+        }),
+      );
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error ?? "Could not save status change.");
       }
-      await load();
+      if (statusRequests.current.isLatest(request)) setError(null);
     } catch (e: any) {
-      // Roll back the optimistic update so the UI doesn't lie about state
-      // that was never actually persisted to the server.
-      setItems(previous);
+      // A slower failed request must not undo a newer choice for this item.
+      if (!statusRequests.current.isLatest(request)) return;
+      setItems((current) =>
+        current.map((row) =>
+          row.id === item.id && row.status === status ? { ...row, status: item.status } : row,
+        ),
+      );
       setError(e.message ?? "Could not save status change.");
     }
   }
