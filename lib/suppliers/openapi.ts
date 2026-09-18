@@ -1,4 +1,4 @@
-import { EVIDENCE_TYPES } from "./evidence";
+import { EVIDENCE_TYPES } from "./contract";
 
 /**
  * Machine-readable contract for /api/suppliers, mirroring the pattern
@@ -12,9 +12,8 @@ import { EVIDENCE_TYPES } from "./evidence";
  *
  * Kept hand-written for the same reason as the other specs: a stable,
  * prose-friendly contract that survives internal refactors. `docType` enum is
- * pulled from lib/suppliers/evidence.ts EVIDENCE_TYPES so this can never
- * drift from the real allowed values — same anti-drift approach as the
- * workqueue spec pulling STATES_LIST from lib/workflow/actions.ts.
+ * pulled from the storage-independent supplier contract so route validation and
+ * discovery cannot drift, while discovery stays usable without a database.
  */
 
 const evidenceStatusSchema = {
@@ -280,7 +279,7 @@ export function buildSuppliersOpenApiSpec() {
               },
             },
             "400": {
-              description: "Malformed JSON body, no customer could be resolved, missing required field for the chosen action, an EvidenceError (bad status value or missing evidence fields), or an unknown `action` (response lists `validActions`).",
+              description: "Malformed JSON body, no customer could be resolved, missing required field for the chosen action, an EvidenceError (unsupported document type or status), or an unknown `action` (response lists `validActions`).",
               content: { "application/json": { schema: errorResponseSchema } },
             },
             "500": { description: "Unexpected failure (e.g. screening upstream call, supplier not found in screen mode).", content: { "application/json": { schema: errorResponseSchema } } },
