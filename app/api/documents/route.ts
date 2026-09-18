@@ -18,6 +18,12 @@ import { normalizeJurisdiction } from "@/lib/countries";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+// Single source of truth for the POST action enum, echoed back in the 400
+// body as `validActions` so an AI/API client that guesses wrong learns what
+// to try next instead of just learning it guessed wrong (same self-
+// documenting-error pattern applied to /api/suppliers and /api/substances).
+const DOCUMENTS_ACTIONS = ["ingest", "audit", "price", "promote"] as const;
+
 function camel(value: any): any {
   if (Array.isArray(value)) return value.map(camel);
   if (!value || typeof value !== "object") return value;
@@ -246,7 +252,10 @@ export async function POST(request: Request) {
       return Response.json(promoteCodesFromDocument(documentId));
     }
 
-    return Response.json({ error: `Unknown action "${action}".` }, { status: 400 });
+    return Response.json(
+      { error: `Unknown action "${action}".`, validActions: DOCUMENTS_ACTIONS },
+      { status: 400 },
+    );
   } catch (error) {
     if (error instanceof DocumentInputError) {
       return Response.json({ error: error.message }, { status: error.status });
