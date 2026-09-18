@@ -4,6 +4,7 @@ import { AlertTriangle, CheckCircle2, CircleHelp, RefreshCw, Filter, Check, Cloc
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { JurisdictionName } from "@/lib/countries";
 import { createStatusRequestTracker } from "@/lib/checklist/status-request";
+import { recoverChecklistStatusFailure } from "@/lib/checklist/status-failure";
 import { CountryTabs } from "@/components/dashboard/country-tabs";
 
 type ChecklistItem = {
@@ -101,6 +102,7 @@ export function ChecklistPanel({ country }: { country: JurisdictionName }) {
 
   async function setStatus(item: ChecklistItem, status: string) {
     const request = statusRequests.current.begin(item.id);
+    let failureStatus: number | undefined;
     setItems((prev) => prev.map((row) => (row.id === item.id ? { ...row, status } : row)));
     try {
       const res = await statusRequests.current.run(item.id, () =>
@@ -111,6 +113,7 @@ export function ChecklistPanel({ country }: { country: JurisdictionName }) {
         }),
       );
       if (!res.ok) {
+        failureStatus = res.status;
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error ?? "Could not save status change.");
       }
@@ -119,9 +122,12 @@ export function ChecklistPanel({ country }: { country: JurisdictionName }) {
       // A slower failed request must not undo a newer choice for this item.
       if (!statusRequests.current.isLatest(request)) return;
       setItems((current) =>
-        current.map((row) =>
-          row.id === item.id && row.status === status ? { ...row, status: item.status } : row,
-        ),
+        recoverChecklistStatusFailure(current, {
+          itemId: item.id,
+          attemptedStatus: status,
+          previousStatus: item.status,
+          httpStatus: failureStatus,
+        }),
       );
       setError(e.message ?? "Could not save status change.");
     }
