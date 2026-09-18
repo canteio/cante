@@ -2,6 +2,7 @@ import { after, before, test } from "node:test";
 import assert from "node:assert/strict";
 import { buildSuppliersOpenApiSpec } from "./openapi";
 import { EVIDENCE_TYPES } from "./contract";
+import { resetCslCacheForTests } from "@/lib/screening/csl";
 import { GET as discover } from "../../app/api/suppliers/openapi/route";
 import { operatingDb } from "@/lib/test-support/operating-db";
 
@@ -132,6 +133,63 @@ test("evidence and request contracts match real persisted action responses", asy
   const get = await route.GET(new Request(`http://localhost/api/suppliers?customerId=${customerId}`));
   const documents = (await get.json()).suppliers[0].documents;
   assert.deepEqual(documents.map((document: { docType: string }) => document.docType).sort(), ["certificate_of_origin", "pfas"]);
+});
+
+test("screen action persists the mocked Trade.gov match joined by the next GET", async () => {
+  const list = await route.GET(new Request(`http://localhost/api/suppliers?customerId=${customerId}`));
+  const supplierId = (await list.json()).suppliers[0].id;
+  const originalFetch = global.fetch;
+
+  // Clear the shared 15-minute snapshot so this request must exercise the
+  // mocked Trade.gov boundary instead of reusing data from another test.
+  resetCslCacheForTests();
+  global.fetch = (async () =>
+    new Response(
+      JSON.stringify({
+        results: [
+          {
+            name: "ACME COMPONENTS",
+            alt_names: [],
+            source: "Entity List (EL) - Bureau of Industry and Security",
+            source_list_url: "https://www.bis.gov/entity-list",
+            addresses: [
+              {
+                address: "1 Test Road",
+                city: "Testville",
+                state: null,
+                postal_code: "00000",
+                country: "MX",
+              },
+            ],
+          },
+        ],
+      }),
+      { status: 200, headers: { "content-type": "application/json" } },
+    )) as typeof fetch;
+
+  try {
+    const screen = await route.POST(jsonRequest({ customerId, action: "screen", supplierId }));
+    assert.equal(screen.status, 200);
+    const screened = await screen.json();
+    assert.equal(screened.clear, false);
+    assert.equal(screened.row.outcome, "match");
+    assert.equal(screened.row.matchCount, 1);
+    assert.equal(screened.row.supplierId, supplierId);
+
+    const get = await route.GET(new Request(`http://localhost/api/suppliers?customerId=${customerId}`));
+    assert.equal(get.status, 200);
+    const payload = await get.json();
+    assert.equal(payload.suppliers[0].latestScreening.id, screened.row.id);
+    assert.equal(payload.suppliers[0].latestScreening.outcome, "match");
+    assert.equal(payload.suppliers[0].latestScreening.matches[0].source, screened.row.matches[0].source);
+    assert.deepEqual(payload.screeningCoverage.neverScreened, []);
+    assert.deepEqual(payload.screeningCoverage.currentMatches, [
+      { name: "Acme Components", matchCount: 1 },
+    ]);
+  } finally {
+    global.fetch = originalFetch;
+    resetCslCacheForTests();
+  }
 });
 
 test("documented 400 responses match malformed, unknown-action, and invalid-enum requests", async () => {
