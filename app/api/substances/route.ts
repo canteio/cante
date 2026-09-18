@@ -34,6 +34,12 @@ export async function GET(request: Request) {
   });
 }
 
+// Single source of truth for POST /api/substances actions, echoed back in the
+// 400 body below so an AI/API client that guesses wrong learns what to try
+// next instead of just that it was wrong — same self-documenting-error
+// pattern already applied to /api/suppliers, /api/workqueue and /api/llm.
+const SUBSTANCES_ACTIONS = ["component", "declare", "load_list"] as const;
+
 export async function POST(request: Request) {
   let body: unknown;
   try {
@@ -128,7 +134,10 @@ export async function POST(request: Request) {
       });
     }
 
-    return Response.json({ error: `Unknown action "${action}".` }, { status: 400 });
+    return Response.json(
+      { error: `Unknown action "${action}".`, validActions: SUBSTANCES_ACTIONS },
+      { status: 400 },
+    );
   } catch (error) {
     return Response.json(
       { error: error instanceof Error ? error.message : "Request failed." },
