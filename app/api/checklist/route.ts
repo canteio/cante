@@ -3,7 +3,8 @@ import {
   resolveCustomerId,
   updateChecklistItemStatus,
 } from "@/lib/db/queries";
-import { checklistStatusSchema, refreshChecklistForCustomer } from "@/lib/checks/checklist";
+import { refreshChecklistForCustomer } from "@/lib/checks/checklist";
+import { checklistStatusSchema } from "@/lib/checks/checklist-status";
 import { z } from "zod";
 import { normalizeJurisdiction } from "@/lib/countries";
 

@@ -6,11 +6,11 @@ process.env.CANTE_DB_PATH = ":memory:";
 process.env.CANTE_DATA_BACKEND = "sqlite";
 let route: typeof import("../../app/api/checklist/route");
 let database: typeof import("../db/client");
-let statuses: typeof import("./checklist");
+let statuses: typeof import("./checklist-status");
 before(async () => {
   route = await import("../../app/api/checklist/route");
   database = await import("../db/client");
-  statuses = await import("./checklist");
+  statuses = await import("./checklist-status");
   database.db.$client.exec(`
     CREATE TABLE checklist_items (id TEXT PRIMARY KEY, status TEXT, updated_at TEXT);
     INSERT INTO checklist_items VALUES ('test-item', 'required', 'initial');
