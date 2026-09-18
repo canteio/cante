@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { POST } from "@/app/api/screening/route";
+import { GET as discover } from "@/app/api/screening/openapi/route";
+import { buildScreeningOpenApiSpec } from "@/lib/screening/openapi";
 import {
   CSL_DATASET_URL,
   SCREENING_LIMITS,
@@ -57,6 +59,39 @@ function post(body: unknown) {
     }),
   );
 }
+
+const contract = buildScreeningOpenApiSpec().paths["/api/screening"].post;
+
+test("screening discovery serves cacheable OpenAPI 3.1 without operating storage", async () => {
+  const response = await discover();
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("Cache-Control"), "public, max-age=3600");
+  assert.deepEqual(await response.json(), buildScreeningOpenApiSpec());
+  assert.deepEqual(Object.keys(contract.responses).sort(), ["200", "400", "500", "502"]);
+
+  const names = contract.requestBody.content["application/json"].schema.properties.names;
+  assert.equal(names.maxItems, SCREENING_LIMITS.maxNames);
+  assert.equal(names.items.maxLength, SCREENING_LIMITS.maxNameLength);
+});
+
+test("the documented success contract matches a real API response", async () => {
+  resetCslCacheForTests();
+  const mock = mockDataset([record()]);
+  try {
+    const response = await post({ names: ["Acme Société, LLC.", "Different Company"] });
+    const body = await response.json() as Record<string, unknown>;
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("Cache-Control"), "no-store, max-age=0");
+    assert.deepEqual(
+      Object.keys(body).sort(),
+      [...contract.responses["200"].content["application/json"].schema.required].sort(),
+    );
+    assert.equal((body.matches as unknown[]).length, 1);
+    assert.deepEqual(body.unmatchedNames, ["Different Company"]);
+  } finally {
+    mock.restore();
+  }
+});
 
 test("matches an exact normalized alias and returns source context", async () => {
   resetCslCacheForTests();
