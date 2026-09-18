@@ -75,7 +75,13 @@ export async function PATCH(request: Request) {
   // instead of a parseable JSON {error} body — same AI-agent-API-cleanliness
   // fix applied everywhere else in this sweep.
   try {
-    await updateChecklistItemStatus(parsed.data.id, parsed.data.status);
+    const updated = await updateChecklistItemStatus(parsed.data.id, parsed.data.status);
+    if (!updated) {
+      return Response.json(
+        { error: `Checklist item "${parsed.data.id}" was not found. Refresh with GET /api/checklist before retrying.` },
+        { status: 404 },
+      );
+    }
     return Response.json({ ok: true });
   } catch (error) {
     return Response.json(

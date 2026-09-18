@@ -685,20 +685,24 @@ export async function listChecklistItems(
     .all();
 }
 
-export async function updateChecklistItemStatus(id: string, status: string): Promise<void> {
+export async function updateChecklistItemStatus(id: string, status: string): Promise<boolean> {
   if (cloudDataEnabled()) {
     const supabase = await createSupabaseClient();
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("checklist_items")
       .update({ status, updated_at: new Date().toISOString() })
-      .eq("id", id);
+      .eq("id", id)
+      // Request the matched row so callers can distinguish an update from a no-op.
+      .select("id")
+      .maybeSingle();
     cloudError("checklist update", error);
-    return;
+    return data !== null;
   }
-  db.update(checklistItems)
+  const result = db.update(checklistItems)
     .set({ status, updatedAt: new Date().toISOString() })
     .where(eq(checklistItems.id, id))
     .run();
+  return result.changes > 0;
 }
 
 /**

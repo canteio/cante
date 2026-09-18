@@ -65,10 +65,15 @@ test("every status advertised by discovery is accepted and persisted by PATCH", 
   assert.ok(payload.issues.length > 0);
 });
 
-test("discovery discloses PATCH's no-op success for unknown IDs", async () => {
-  const response = await route.PATCH(request("PATCH", { id: "missing", status: "completed" }));
-  assert.equal(response.status, 200);
-  assert.deepEqual(await response.json(), { ok: true });
-  assert.match(contract.patch.description, /unknown IDs also return ok: true/);
+test("unknown checklist IDs return the documented 404 instead of a no-op success", async () => {
+  const response = await route.PATCH(request("PATCH", { id: " missing ", status: "completed" }));
+  assert.equal(response.status, 404);
+  const payload = await response.json();
+  assert.match(payload.error, /Checklist item "missing" was not found/);
+  assert.deepEqual(
+    Object.keys(payload),
+    contract.patch.responses["404"].content["application/json"].schema.required,
+  );
+  assert.match(contract.patch.description, /Unknown IDs return 404/);
   assert.equal(database.db.$client.prepare("SELECT id FROM checklist_items WHERE id = ?").get("missing"), undefined);
 });

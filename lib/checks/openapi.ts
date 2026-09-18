@@ -65,7 +65,7 @@ export function buildChecklistOpenApiSpec() {
         },
         patch: {
           operationId: "updateChecklistStatus", summary: "Set a checklist item's status",
-          description: "IDs are trimmed. A successful response does not prove a row existed; unknown IDs also return ok: true. Use completed, needs_review, or not_applicable for the UI's three actions.",
+          description: "IDs are trimmed. Unknown IDs return 404 so clients do not mistake a no-op for a saved status. Use completed, needs_review, or not_applicable for the UI's three actions.",
           requestBody: { required: true, content: json({
             type: "object", properties: {
               id: { type: "string", minLength: 1, pattern: "\\S", description: "ID from GET; must contain a non-whitespace character." },
@@ -84,6 +84,7 @@ export function buildChecklistOpenApiSpec() {
                 issues: { type: "array", items: { type: "object" }, minItems: 1 },
               }, required: ["error", "shape", "issues"],
             }) },
+            "404": { description: "Checklist item not found. Refresh the checklist before retrying.", content: json(error) },
             "500": { description: "Storage failure", content: json(error) },
           },
         },
