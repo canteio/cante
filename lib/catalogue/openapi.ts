@@ -30,14 +30,14 @@ const productSchema = {
     customerId: { type: "string" },
     sku: { type: "string" },
     name: { type: "string" },
-    description: { type: "string", nullable: true },
+    description: { type: ["string", "null"] },
     materials: { type: "array", items: { type: "string" } },
-    originCountry: { type: "string", nullable: true },
-    unitOfMeasure: { type: "string", nullable: true },
-    unitValue: { type: "number", nullable: true },
+    originCountry: { type: ["string", "null"] },
+    unitOfMeasure: { type: ["string", "null"] },
+    unitValue: { type: ["number", "null"] },
     currency: { type: "string" },
     productClass: { type: "string", enum: ["consumer", "industrial", "component", "unknown"] },
-    notes: { type: "string", nullable: true },
+    notes: { type: ["string", "null"] },
     createdAt: { type: "string", format: "date-time" },
     updatedAt: { type: "string", format: "date-time" },
   },
@@ -51,8 +51,8 @@ const classificationSchema = {
     id: { type: "string" },
     productId: { type: "string" },
     code: { type: "string" },
-    tier: { type: "string", description: "e.g. lead | confirmed — see lib/catalogue/classifications.ts." },
-    supersededAt: { type: "string", nullable: true, format: "date-time" },
+    tier: { type: "string", description: "document | human | lead | guess — see lib/checks/facts.ts." },
+    supersededAt: { type: ["string", "null"], format: "date-time" },
   },
   required: ["id", "productId", "code"],
 } as const;
@@ -103,7 +103,7 @@ export function buildProductsOpenApiSpec() {
       title: "Cante Products API",
       version: "1.0.0",
       description:
-        "Customer product catalogue: list/upsert/delete one SKU, or bulk-import a whole catalogue as CSV text, JSON `csv` field, or an uploaded spreadsheet/PDF (multipart `file`). A spreadsheet or CSV import can only ever produce `lead`-tier classifications, never `confirmed`.",
+        "Customer product catalogue: list/upsert/delete one SKU, or bulk-import a whole catalogue via a JSON `csv` field or an uploaded spreadsheet/PDF (multipart `file`). A spreadsheet or CSV import can only ever produce `lead`-tier classifications, never verified document-tier classifications.",
     },
     paths: {
       "/api/products": {
@@ -114,7 +114,7 @@ export function buildProductsOpenApiSpec() {
           ],
           responses: {
             "200": {
-              description: "Always 200; an unresolved customerId returns `{ products: [] }` rather than an error.",
+              description: "An unresolved customerId returns `{ products: [] }` rather than an error.",
               content: { "application/json": { schema: { type: "object", properties: { products: { type: "array", items: productWithClassificationsSchema } }, required: ["products"] } } },
             },
           },
@@ -130,18 +130,19 @@ export function buildProductsOpenApiSpec() {
                     {
                       type: "object",
                       description: "Single-product upsert mode, keyed on `sku`.",
+                      not: { required: ["csv"] },
                       properties: {
                         customerId: { type: "string" },
                         sku: { type: "string" },
                         name: { type: "string" },
-                        description: { type: "string", nullable: true },
+                        description: { type: ["string", "null"] },
                         materials: { type: "array", items: { type: "string" } },
-                        originCountry: { type: "string", nullable: true },
-                        unitOfMeasure: { type: "string", nullable: true },
-                        unitValue: { type: "number", nullable: true },
+                        originCountry: { type: ["string", "null"] },
+                        unitOfMeasure: { type: ["string", "null"] },
+                        unitValue: { type: ["number", "null"] },
                         currency: { type: "string" },
                         productClass: { type: "string", enum: ["consumer", "industrial", "component", "unknown"] },
-                        notes: { type: "string", nullable: true },
+                        notes: { type: ["string", "null"] },
                       },
                       required: ["sku", "name"],
                     },
@@ -196,7 +197,7 @@ export function buildProductsOpenApiSpec() {
         delete: {
           summary: "Delete one product by id.",
           parameters: [
-            { name: "customerId", in: "query", required: true, schema: { type: "string" } },
+            { name: "customerId", in: "query", required: false, schema: { type: "string" } },
             { name: "productId", in: "query", required: true, schema: { type: "string" } },
           ],
           responses: {
