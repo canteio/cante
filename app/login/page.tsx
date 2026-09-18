@@ -5,15 +5,9 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { BrandMark } from "@/components/brand-mark";
 import { createClient } from "@/lib/supabase/client";
+import { safeNext } from "@/lib/auth/safe-next";
 
 const authMode = process.env.NEXT_PUBLIC_CANTE_AUTH_MODE === "supabase" ? "supabase" : "demo";
-
-function safeNext(rawNext: string | null) {
-  if (!rawNext || !rawNext.startsWith("/") || rawNext.startsWith("//")) {
-    return "/chat?country=Indonesia";
-  }
-  return rawNext;
-}
 
 export default function LoginPage() {
   const router = useRouter();
