@@ -3,7 +3,8 @@ import {
   resolveCustomerId,
   updateChecklistItemStatus,
 } from "@/lib/db/queries";
-import { refreshChecklistForCustomer } from "@/lib/checks/checklist";
+import { checklistStatusSchema, refreshChecklistForCustomer } from "@/lib/checks/checklist";
+import { z } from "zod";
 import { normalizeJurisdiction } from "@/lib/countries";
 
 export const runtime = "nodejs";
@@ -16,7 +17,7 @@ export const dynamic = "force-dynamic";
 // to go read this source file.
 const checklistPatchShapeDocs = {
   id: { type: "string", required: true, description: "Checklist item id, from a prior GET /api/checklist response." },
-  status: { type: "string", required: true, description: "New status value, e.g. \"done\", \"pending\", \"skipped\"." },
+  status: { type: "string", required: true, enum: checklistStatusSchema.options, description: "Use completed for fulfilled obligations, needs_review for review, or not_applicable for N/A." },
 } as const;
 
 export async function GET(request: Request) {
@@ -50,12 +51,22 @@ export async function POST(request: Request) {
   return Response.json({ items: await listChecklistItems(customerId, jurisdiction), jurisdiction });
 }
 
+const checklistPatchSchema = z.object({
+  id: z.string().trim().min(1),
+  status: checklistStatusSchema,
+});
+
 export async function PATCH(request: Request) {
-  const body = await request.json().catch(() => ({}));
-  if (!body.id || !body.status) {
-    // Echo the shape doc so an agent can self-correct from this response
-    // alone rather than needing the source file.
-    return Response.json({ error: "Missing `id` and/or `status`.", shape: checklistPatchShapeDocs }, { status: 400 });
+  const body: unknown = await request.json().catch(() => null);
+  const parsed = checklistPatchSchema.safeParse(body);
+  if (!parsed.success) {
+    // Reject malformed JSON and unknown statuses before they can corrupt the
+    // checklist's completion counts; agents get the real enum to correct retries.
+    return Response.json({
+      error: "Provide a non-empty string `id` and a supported checklist `status`.",
+      shape: checklistPatchShapeDocs,
+      issues: parsed.error.issues,
+    }, { status: 400 });
   }
   // Route-handler error audit (2026-09-17, continuing the GET/profiles/lanes/
   // conversations sweep): this PATCH had zero try/catch, so a DB failure in
@@ -63,7 +74,7 @@ export async function PATCH(request: Request) {
   // instead of a parseable JSON {error} body — same AI-agent-API-cleanliness
   // fix applied everywhere else in this sweep.
   try {
-    await updateChecklistItemStatus(body.id, String(body.status));
+    await updateChecklistItemStatus(parsed.data.id, parsed.data.status);
     return Response.json({ ok: true });
   } catch (error) {
     return Response.json(

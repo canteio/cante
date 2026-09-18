@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { z } from "zod";
 import { and, eq } from "drizzle-orm";
 import { db } from "@/lib/db/client";
 import {
@@ -16,20 +17,13 @@ import {
 import { extractKbliCodes, resolveHsCodes } from "@/lib/checks/facts";
 import { DEFAULT_JURISDICTION, type JurisdictionName } from "@/lib/countries";
 
-type ChecklistStatus =
-  | "unknown"
-  | "required"
-  | "not_required"
-  | "completed"
-  | "expiring"
-  | "blocked"
-  | "needs_review"
-  | "verified"
-  | "needs_evidence"
-  | "monitored"
-  | "not_applicable"
-  | "source_failed"
-  | "requires_expert_review";
+// Generation, API validation and error guidance share the same status vocabulary.
+export const checklistStatusSchema = z.enum([
+  "unknown", "required", "not_required", "completed", "expiring", "blocked",
+  "needs_review", "verified", "needs_evidence", "monitored", "not_applicable",
+  "source_failed", "requires_expert_review",
+]);
+type ChecklistStatus = z.infer<typeof checklistStatusSchema>;
 
 type ChecklistDraft = {
   /** Stable identity — rows are matched and pruned on this, never on the title. */
