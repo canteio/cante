@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Truck, ShieldCheck, ShieldAlert, Plus, Search, FileCheck, RefreshCw, CheckCircle2, AlertTriangle, Play } from "lucide-react";
 import type { JurisdictionName } from "@/lib/countries";
 import { CountryTabs } from "@/components/dashboard/country-tabs";
-import { supplierBatchRefreshError, supplierBatchScreenCompleted, supplierScreeningFeedback } from "@/lib/suppliers/screening-feedback";
+import { supplierBatchRefreshError, supplierBatchScreenCompleted, supplierScreenRefreshError, supplierScreeningFeedback } from "@/lib/suppliers/screening-feedback";
 import { readSupplierPostResponse } from "@/lib/suppliers/post-response";
 
 type SupplierDoc = {
@@ -100,7 +100,7 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
     void load();
   }, [load]);
 
-  async function post(body: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+  async function post(body: Record<string, unknown>): Promise<{ data: Record<string, unknown>; refreshError: string | null } | null> {
     setBusy(true);
     setError(null);
     try {
@@ -110,8 +110,10 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
         body: JSON.stringify(body),
       });
       const data = await readSupplierPostResponse(res);
-      await load();
-      return data;
+      const refreshError = await load();
+      // Return refresh state with the mutation result so callers cannot present
+      // fresh-result success while the supplier cards still show stale data.
+      return { data, refreshError };
     } catch (cause) {
       // Keep failed mutations in-band: callers treat null as "stop", so a
       // network/invalid-response failure cannot fall through to success UI.
@@ -134,11 +136,18 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
   }
 
   async function screenSupplier(supplierId: string) {
-    const data = await post({ action: "screen", supplierId });
+    const result = await post({ action: "screen", supplierId });
     // The route returns the persisted result as `{ row, clear }`; reading the
     // old `screening` key silently dropped feedback after a successful click.
-    const feedback = supplierScreeningFeedback(data);
-    if (!feedback) return;
+    const feedback = supplierScreeningFeedback(result?.data ?? null);
+    if (!result || !feedback) return;
+
+    const refreshFeedback = supplierScreenRefreshError(feedback, result.refreshError);
+    if (refreshFeedback) {
+      setNote(null);
+      setError(refreshFeedback);
+      return;
+    }
 
     if (feedback.kind !== "success") {
       setError(feedback.message);

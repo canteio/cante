@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { supplierBatchRefreshError, supplierBatchScreenCompleted, supplierScreeningFeedback } from "./screening-feedback";
+import { supplierBatchRefreshError, supplierBatchScreenCompleted, supplierScreenRefreshError, supplierScreeningFeedback } from "./screening-feedback";
 
 test("supplier screening feedback reads the route's nested row contract", () => {
   assert.deepEqual(
@@ -45,5 +45,15 @@ test("batch refresh feedback reports screening outcomes without hiding the refre
   assert.equal(
     supplierBatchRefreshError(3, 1, "Supplier service unavailable."),
     "Screening requests finished (2 completed, 1 failed), but current results could not be refreshed: Supplier service unavailable. Reload before relying on the displayed results.",
+  );
+});
+
+test("single-screen refresh feedback prevents stale cards from looking successful", () => {
+  const screening = supplierScreeningFeedback({ row: { outcome: "clear", matchCount: 0 } });
+
+  assert.equal(supplierScreenRefreshError(screening, null), null);
+  assert.equal(
+    supplierScreenRefreshError(screening, "Supplier refresh unavailable."),
+    "Screening completed with no exact watchlist match. This is not a clearance decision. Current results could not be refreshed: Supplier refresh unavailable. Reload before relying on the displayed result.",
   );
 });

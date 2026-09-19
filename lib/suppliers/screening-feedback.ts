@@ -10,6 +10,17 @@ export function supplierBatchRefreshError(total: number, failed: number, refresh
   return `Screening requests finished (${total - failed} completed, ${failed} failed), but current results could not be refreshed: ${refreshError} Reload before relying on the displayed results.`;
 }
 
+/** Preserve the mutation outcome while warning that the visible supplier card is stale. */
+export function supplierScreenRefreshError(
+  feedback: SupplierScreeningFeedback | null,
+  refreshError: string | null,
+): string | null {
+  if (!refreshError) return null;
+
+  const outcome = feedback?.message ?? "Screening request finished.";
+  return `${outcome} Current results could not be refreshed: ${refreshError} Reload before relying on the displayed result.`;
+}
+
 /**
  * Confirm that a batch item produced a completed persisted screening.
  * Matches still count as completed; stored errors and unknown shapes must be
