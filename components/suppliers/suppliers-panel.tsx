@@ -66,6 +66,7 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [coverage, setCoverage] = useState<Coverage | null>(null);
   const [search, setSearch] = useState("");
+  const searchInput = useRef<HTMLInputElement>(null);
   const [name, setName] = useState("");
   const [supplierCountry, setSupplierCountry] = useState("South Korea");
   const [role, setRole] = useState("Raw Material Manufacturer");
@@ -388,12 +389,36 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
             <h2>Search Vendors</h2>
           </div>
           <div style={{ marginTop: "0.5rem" }}>
-            <input
-              className="input"
-              placeholder="Filter by vendor name, country, or role…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+            <label htmlFor="supplier-search" className="side-label" style={{ display: "block", padding: 0, marginBottom: 4 }}>
+              Filter vendors
+            </label>
+            <div style={{ position: "relative" }}>
+              <input
+                ref={searchInput}
+                id="supplier-search"
+                className="input"
+                placeholder="Vendor name, country, or role"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                style={search.length > 0 ? { paddingRight: "5.75rem" } : undefined}
+              />
+              {search.length > 0 && (
+                // Keep recovery beside the filter and return focus so keyboard
+                // users can immediately start a new search after clearing it.
+                <button
+                  className="btn btn-small"
+                  type="button"
+                  aria-label="Clear vendor search"
+                  onClick={() => {
+                    setSearch("");
+                    searchInput.current?.focus();
+                  }}
+                  style={{ position: "absolute", right: 4, top: "50%", transform: "translateY(-50%)" }}
+                >
+                  Clear
+                </button>
+              )}
+            </div>
           </div>
         </section>
       </div>
