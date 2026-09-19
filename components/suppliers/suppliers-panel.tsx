@@ -333,35 +333,53 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
             <Plus size={15} strokeWidth={1.75} />
             <h2>Register Vendor</h2>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr auto", gap: "0.5rem", marginTop: "0.5rem" }}>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              // Native submission lets Enter work from every registration field;
+              // addSupplier still uses the ref lock to reject same-tick repeats.
+              void addSupplier();
+            }}
+            style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr auto", alignItems: "end", gap: "0.5rem", marginTop: "0.5rem" }}
+          >
             {/* Keep the submitted registration snapshot immutable until its
                 request finishes: otherwise a quick edit can be erased when
                 the successful Add flow clears the original vendor name. */}
-            <input
-              className="input"
-              placeholder="Vendor Name (e.g. LG Chem Ltd)"
-              value={name}
-              disabled={addSupplierBusy}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <input
-              className="input"
-              placeholder="Country"
-              value={supplierCountry}
-              disabled={addSupplierBusy}
-              onChange={(e) => setSupplierCountry(e.target.value)}
-            />
-            <input
-              className="input"
-              placeholder="Role"
-              value={role}
-              disabled={addSupplierBusy}
-              onChange={(e) => setRole(e.target.value)}
-            />
-            <button className="btn btn-primary" disabled={mutationBusy || !name.trim()} onClick={addSupplier}>
+            <label htmlFor="supplier-name" className="side-label" style={{ display: "grid", gap: 4, padding: 0 }}>
+              Vendor name
+              <input
+                id="supplier-name"
+                className="input"
+                placeholder="e.g. LG Chem Ltd"
+                value={name}
+                disabled={addSupplierBusy}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </label>
+            <label htmlFor="supplier-country" className="side-label" style={{ display: "grid", gap: 4, padding: 0 }}>
+              Country
+              <input
+                id="supplier-country"
+                className="input"
+                value={supplierCountry}
+                disabled={addSupplierBusy}
+                onChange={(e) => setSupplierCountry(e.target.value)}
+              />
+            </label>
+            <label htmlFor="supplier-role" className="side-label" style={{ display: "grid", gap: 4, padding: 0 }}>
+              Role
+              <input
+                id="supplier-role"
+                className="input"
+                value={role}
+                disabled={addSupplierBusy}
+                onChange={(e) => setRole(e.target.value)}
+              />
+            </label>
+            <button className="btn btn-primary" type="submit" disabled={mutationBusy || !name.trim()}>
               {mutation?.kind === "add" ? "Adding…" : "Add"}
             </button>
-          </div>
+          </form>
         </section>
 
         <section className="card">
