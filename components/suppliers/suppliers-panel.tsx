@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Truck, ShieldCheck, ShieldAlert, Plus, Search, FileCheck, RefreshCw, CheckCircle2, AlertTriangle, Play } from "lucide-react";
 import type { JurisdictionName } from "@/lib/countries";
 import { CountryTabs } from "@/components/dashboard/country-tabs";
-import { supplierScreeningFeedback } from "@/lib/suppliers/screening-feedback";
+import { supplierBatchScreenCompleted, supplierScreeningFeedback } from "@/lib/suppliers/screening-feedback";
 import { readSupplierPostResponse } from "@/lib/suppliers/post-response";
 
 type SupplierDoc = {
@@ -162,11 +162,17 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ action: "screen", supplierId: s.id }),
           });
-          if (!res.ok) failed.push(s.name);
+          const data = await readSupplierPostResponse(res);
+          // A 200 can persist outcome="error" when the watchlist provider fails;
+          // only clear/match rows mean this vendor was actually screened.
+          if (!supplierBatchScreenCompleted(data)) failed.push(s.name);
         } catch {
           failed.push(s.name);
         }
       }
+      // Refresh first: load() clears stale errors, so feedback must be applied
+      // afterward or a real batch failure disappears as soon as it is shown.
+      await load();
       if (failed.length === 0) {
         setNote("Batch screening finished across all " + suppliers.length + " suppliers.");
         setTimeout(() => setNote(null), 4000);
@@ -175,7 +181,6 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
           "Batch screening finished with " + failed.length + " failure(s): " + failed.join(", ") + ". Retry those vendors individually."
         );
       }
-      await load();
     } finally {
       setBatchBusy(false);
     }

@@ -3,6 +3,19 @@ export type SupplierScreeningFeedback = {
   message: string;
 };
 
+/**
+ * Confirm that a batch item produced a completed persisted screening.
+ * Matches still count as completed; stored errors and unknown shapes must be
+ * retried instead of being hidden behind the batch's success message.
+ */
+export function supplierBatchScreenCompleted(payload: Record<string, unknown>): boolean {
+  const row = payload.row;
+  if (!row || typeof row !== "object" || Array.isArray(row)) return false;
+
+  const outcome = (row as Record<string, unknown>).outcome;
+  return outcome === "clear" || outcome === "match";
+}
+
 /** Turn the supplier screen route's persisted `row` into user-facing feedback. */
 export function supplierScreeningFeedback(payload: Record<string, unknown> | null): SupplierScreeningFeedback | null {
   const row = payload?.row;
