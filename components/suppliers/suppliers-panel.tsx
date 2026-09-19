@@ -5,6 +5,7 @@ import { Truck, ShieldCheck, ShieldAlert, Plus, Search, FileCheck, RefreshCw, Ch
 import type { JurisdictionName } from "@/lib/countries";
 import { CountryTabs } from "@/components/dashboard/country-tabs";
 import { supplierScreeningFeedback } from "@/lib/suppliers/screening-feedback";
+import { readSupplierPostResponse } from "@/lib/suppliers/post-response";
 
 type SupplierDoc = {
   id: string;
@@ -103,13 +104,19 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setError((data.error as string) ?? "Request failed.");
-        return null;
-      }
+      const data = await readSupplierPostResponse(res);
       await load();
       return data;
+    } catch (cause) {
+      // Keep failed mutations in-band: callers treat null as "stop", so a
+      // network/invalid-response failure cannot fall through to success UI.
+      const message = cause instanceof TypeError
+        ? "Could not reach the supplier service. Check your connection and retry."
+        : cause instanceof Error
+          ? cause.message
+          : "Supplier request failed. Try again.";
+      setError(message);
+      return null;
     } finally {
       setBusy(false);
     }
