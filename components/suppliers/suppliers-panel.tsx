@@ -6,6 +6,7 @@ import type { JurisdictionName } from "@/lib/countries";
 import { CountryTabs } from "@/components/dashboard/country-tabs";
 import { supplierBatchRefreshError, supplierBatchScreenCompleted, supplierScreenRefreshError, supplierScreeningFeedback } from "@/lib/suppliers/screening-feedback";
 import { supplierRegistrationFeedback } from "@/lib/suppliers/registration-feedback";
+import { supplierEmptyState } from "@/lib/suppliers/empty-state";
 import { readSupplierPostResponse } from "@/lib/suppliers/post-response";
 
 type SupplierDoc = {
@@ -253,6 +254,9 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
     const q = search.toLowerCase();
     return s.name.toLowerCase().includes(q) || (s.country && s.country.toLowerCase().includes(q)) || s.role.toLowerCase().includes(q);
   });
+  const emptyState = !loading && filteredSuppliers.length === 0
+    ? supplierEmptyState(suppliers.length, search)
+    : null;
 
   return (
     <div className="main-scroll">
@@ -365,10 +369,17 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
           <RefreshCw size={24} strokeWidth={1.5} className="spin" style={{ marginBottom: 8 }} />
           <p>Loading suppliers…</p>
         </div>
-      ) : filteredSuppliers.length === 0 ? (
+      ) : emptyState ? (
         <div className="empty">
           <Truck size={24} strokeWidth={1.5} style={{ marginBottom: 8 }} />
-          <p>No matching suppliers found. Add a vendor above or tell the AI Copilot in chat.</p>
+          <p>{emptyState.message}</p>
+          {emptyState.kind === "no_match" && (
+            // A search miss should be recoverable here; suggesting registration
+            // made existing suppliers look absent and sent users to the wrong task.
+            <button className="btn btn-small" type="button" onClick={() => setSearch("")}>
+              Clear search
+            </button>
+          )}
         </div>
       ) : (
         <div className="checklist-grid">
