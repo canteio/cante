@@ -281,6 +281,13 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
     ? supplierEmptyState(suppliers.length, search)
     : null;
 
+  function clearSearch() {
+    setSearch("");
+    // Both recovery controls return keyboard users to the filter so the next
+    // query can start without tabbing back through the page.
+    searchInput.current?.focus();
+  }
+
   return (
     <div className="main-scroll">
       <div className="page-head">
@@ -409,10 +416,7 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
                   className="btn btn-small"
                   type="button"
                   aria-label="Clear vendor search"
-                  onClick={() => {
-                    setSearch("");
-                    searchInput.current?.focus();
-                  }}
+                  onClick={clearSearch}
                   style={{ position: "absolute", right: 4, top: "50%", transform: "translateY(-50%)" }}
                 >
                   Clear
@@ -441,7 +445,7 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
           {emptyState.kind === "no_match" && (
             // A search miss should be recoverable here; suggesting registration
             // made existing suppliers look absent and sent users to the wrong task.
-            <button className="btn btn-small" type="button" onClick={() => setSearch("")}>
+            <button className="btn btn-small" type="button" onClick={clearSearch}>
               Clear search
             </button>
           )}
