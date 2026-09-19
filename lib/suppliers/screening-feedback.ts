@@ -3,6 +3,13 @@ export type SupplierScreeningFeedback = {
   message: string;
 };
 
+/** Give repeated card actions a unique name and announce the active state. */
+export function supplierScreenActionLabel(name: string, busy: boolean): string {
+  return busy
+    ? `Screening ${name} against sanctions watchlists`
+    : `Screen ${name} against sanctions watchlists`;
+}
+
 /** Keep a failed post-screen refresh distinct from the screening outcomes. */
 export function supplierBatchRefreshError(total: number, failed: number, refreshError: string | null): string | null {
   if (!refreshError) return null;

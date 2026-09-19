@@ -1,6 +1,17 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { supplierBatchRefreshError, supplierBatchScreenCompleted, supplierScreenRefreshError, supplierScreeningFeedback } from "./screening-feedback";
+import { supplierBatchRefreshError, supplierBatchScreenCompleted, supplierScreenActionLabel, supplierScreenRefreshError, supplierScreeningFeedback } from "./screening-feedback";
+
+test("supplier card screening actions name the vendor and active state", () => {
+  assert.equal(
+    supplierScreenActionLabel("Acme Metals", false),
+    "Screen Acme Metals against sanctions watchlists",
+  );
+  assert.equal(
+    supplierScreenActionLabel("Acme Metals", true),
+    "Screening Acme Metals against sanctions watchlists",
+  );
+});
 
 test("supplier screening feedback reads the route's nested row contract", () => {
   assert.deepEqual(

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Truck, ShieldCheck, ShieldAlert, Plus, Search, FileCheck, RefreshCw, CheckCircle2, AlertTriangle, Play } from "lucide-react";
 import type { JurisdictionName } from "@/lib/countries";
 import { CountryTabs } from "@/components/dashboard/country-tabs";
-import { supplierBatchRefreshError, supplierBatchScreenCompleted, supplierScreenRefreshError, supplierScreeningFeedback } from "@/lib/suppliers/screening-feedback";
+import { supplierBatchRefreshError, supplierBatchScreenCompleted, supplierScreenActionLabel, supplierScreenRefreshError, supplierScreeningFeedback } from "@/lib/suppliers/screening-feedback";
 import { supplierRegistrationFeedback } from "@/lib/suppliers/registration-feedback";
 import { supplierEmptyState } from "@/lib/suppliers/empty-state";
 import { readSupplierPostResponse } from "@/lib/suppliers/post-response";
@@ -488,7 +488,17 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
               </div>
 
               <div className="checklist-actions" style={{ marginTop: "auto", paddingTop: "0.5rem", borderTop: "1px solid var(--border)" }}>
-                <button className="btn btn-small" disabled={mutationBusy} onClick={() => screenSupplier(s.id)}>
+                {/* Every card repeats the visible label, so include the vendor in
+                    the accessible name and expose which screen is in progress. */}
+                <button
+                  className="btn btn-small"
+                  disabled={mutationBusy}
+                  aria-label={supplierScreenActionLabel(
+                    s.name,
+                    mutation?.kind === "screen" && mutation.supplierId === s.id,
+                  )}
+                  onClick={() => screenSupplier(s.id)}
+                >
                   <Search size={12} />
                   {mutation?.kind === "screen" && mutation.supplierId === s.id ? "Screening…" : "Screen Sanctions"}
                 </button>
