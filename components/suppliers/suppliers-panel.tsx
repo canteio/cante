@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Truck, ShieldCheck, ShieldAlert, Plus, Search, FileCheck, RefreshCw, CheckCircle2, AlertTriangle, Play } from "lucide-react";
 import type { JurisdictionName } from "@/lib/countries";
 import { CountryTabs } from "@/components/dashboard/country-tabs";
@@ -39,6 +39,11 @@ type Coverage = {
   erroredScreenings: string[];
 };
 
+type SupplierMutation =
+  | { kind: "add" }
+  | { kind: "screen"; supplierId: string }
+  | { kind: "batch" };
+
 const STATUS_CLASS: Record<string, string> = {
   received: "pill-ok",
   requested: "pill-warn",
@@ -61,8 +66,8 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
   const [name, setName] = useState("");
   const [supplierCountry, setSupplierCountry] = useState("South Korea");
   const [role, setRole] = useState("Raw Material Manufacturer");
-  const [busy, setBusy] = useState(false);
-  const [batchBusy, setBatchBusy] = useState(false);
+  const [mutation, setMutation] = useState<SupplierMutation | null>(null);
+  const mutationLock = useRef(false);
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
   // UI/UX fix: the initial fetch used to have no loading state, so the panel
@@ -100,9 +105,27 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
     void load();
   }, [load]);
 
-  async function post(body: Record<string, unknown>): Promise<{ data: Record<string, unknown>; refreshError: string | null } | null> {
-    setBusy(true);
+  function beginMutation(next: SupplierMutation): boolean {
+    // React state does not update until the next render, so the ref closes the
+    // same-tick double-click window that disabled buttons alone cannot cover.
+    if (mutationLock.current) return false;
+    mutationLock.current = true;
+    setMutation(next);
     setError(null);
+    setNote(null);
+    return true;
+  }
+
+  function endMutation() {
+    mutationLock.current = false;
+    setMutation(null);
+  }
+
+  async function post(
+    body: Record<string, unknown>,
+    activeMutation: Exclude<SupplierMutation, { kind: "batch" }>,
+  ): Promise<{ data: Record<string, unknown>; refreshError: string | null } | null> {
+    if (!beginMutation(activeMutation)) return null;
     try {
       const res = await fetch("/api/suppliers", {
         method: "POST",
@@ -125,18 +148,24 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
       setError(message);
       return null;
     } finally {
-      setBusy(false);
+      endMutation();
     }
   }
 
   async function addSupplier() {
     if (!name.trim()) return;
-    const res = await post({ action: "upsert", name: name.trim(), country: supplierCountry, role });
+    const res = await post(
+      { action: "upsert", name: name.trim(), country: supplierCountry, role },
+      { kind: "add" },
+    );
     if (res) setName("");
   }
 
   async function screenSupplier(supplierId: string) {
-    const result = await post({ action: "screen", supplierId });
+    const result = await post(
+      { action: "screen", supplierId },
+      { kind: "screen", supplierId },
+    );
     // The route returns the persisted result as `{ row, clear }`; reading the
     // old `screening` key silently dropped feedback after a successful click.
     const feedback = supplierScreeningFeedback(result?.data ?? null);
@@ -159,8 +188,7 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
   }
 
   async function screenAllSuppliers() {
-    setBatchBusy(true);
-    setError(null);
+    if (!beginMutation({ kind: "batch" })) return;
     // Previously this loop fired all requests and then unconditionally claimed
     // success ("Batch screening finished…") regardless of whether individual
     // screens actually failed (network error, 4xx/5xx) — same silent-failure
@@ -201,10 +229,11 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
         );
       }
     } finally {
-      setBatchBusy(false);
+      endMutation();
     }
   }
 
+  const mutationBusy = mutation !== null;
   const filteredSuppliers = suppliers.filter((s) => {
     if (!search.trim()) return true;
     const q = search.toLowerCase();
@@ -222,9 +251,9 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
           </p>
         </div>
         <div className="page-actions">
-          <button className="btn btn-primary" onClick={screenAllSuppliers} disabled={batchBusy || suppliers.length === 0}>
-            <RefreshCw size={13} className={batchBusy ? "spin" : ""} />
-            {batchBusy ? "Screening Watchlists…" : "Screen All Suppliers"}
+          <button className="btn btn-primary" onClick={screenAllSuppliers} disabled={mutationBusy || suppliers.length === 0}>
+            <RefreshCw size={13} className={mutation?.kind === "batch" ? "spin" : ""} />
+            {mutation?.kind === "batch" ? "Screening Watchlists…" : "Screen All Suppliers"}
           </button>
           <CountryTabs value={country} />
         </div>
@@ -283,8 +312,8 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
               value={role}
               onChange={(e) => setRole(e.target.value)}
             />
-            <button className="btn btn-primary" disabled={busy || !name.trim()} onClick={addSupplier}>
-              {busy ? "Adding…" : "Add"}
+            <button className="btn btn-primary" disabled={mutationBusy || !name.trim()} onClick={addSupplier}>
+              {mutation?.kind === "add" ? "Adding…" : "Add"}
             </button>
           </div>
         </section>
@@ -359,8 +388,9 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
               </div>
 
               <div className="checklist-actions" style={{ marginTop: "auto", paddingTop: "0.5rem", borderTop: "1px solid var(--border)" }}>
-                <button className="btn btn-small" onClick={() => screenSupplier(s.id)}>
-                  <Search size={12} /> Screen Sanctions
+                <button className="btn btn-small" disabled={mutationBusy} onClick={() => screenSupplier(s.id)}>
+                  <Search size={12} />
+                  {mutation?.kind === "screen" && mutation.supplierId === s.id ? "Screening…" : "Screen Sanctions"}
                 </button>
               </div>
             </article>
