@@ -234,6 +234,7 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
   }
 
   const mutationBusy = mutation !== null;
+  const addSupplierBusy = mutation?.kind === "add";
   const filteredSuppliers = suppliers.filter((s) => {
     if (!search.trim()) return true;
     const q = search.toLowerCase();
@@ -294,22 +295,28 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
             <h2>Register Vendor</h2>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr auto", gap: "0.5rem", marginTop: "0.5rem" }}>
+            {/* Keep the submitted registration snapshot immutable until its
+                request finishes: otherwise a quick edit can be erased when
+                the successful Add flow clears the original vendor name. */}
             <input
               className="input"
               placeholder="Vendor Name (e.g. LG Chem Ltd)"
               value={name}
+              disabled={addSupplierBusy}
               onChange={(e) => setName(e.target.value)}
             />
             <input
               className="input"
               placeholder="Country"
               value={supplierCountry}
+              disabled={addSupplierBusy}
               onChange={(e) => setSupplierCountry(e.target.value)}
             />
             <input
               className="input"
               placeholder="Role"
               value={role}
+              disabled={addSupplierBusy}
               onChange={(e) => setRole(e.target.value)}
             />
             <button className="btn btn-primary" disabled={mutationBusy || !name.trim()} onClick={addSupplier}>
