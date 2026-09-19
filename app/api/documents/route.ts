@@ -14,15 +14,10 @@ import { getDataBackend } from "@/lib/auth/config";
 import { createClient } from "@/lib/supabase/server";
 import { fileAttachments } from "@/lib/chat/attachments";
 import { normalizeJurisdiction } from "@/lib/countries";
+import { DOCUMENTS_ACTIONS } from "@/lib/documents/contract";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-// Single source of truth for the POST action enum, echoed back in the 400
-// body as `validActions` so an AI/API client that guesses wrong learns what
-// to try next instead of just learning it guessed wrong (same self-
-// documenting-error pattern applied to /api/suppliers and /api/substances).
-const DOCUMENTS_ACTIONS = ["ingest", "audit", "price", "promote"] as const;
 
 function camel(value: any): any {
   if (Array.isArray(value)) return value.map(camel);
@@ -173,6 +168,14 @@ export async function POST(request: Request) {
     body = await request.json();
   } catch {
     return Response.json({ error: "Request body must be valid JSON." }, { status: 400 });
+  }
+  // Reject primitives before property access so API clients receive the documented 400,
+  // not an opaque 500 for JSON such as null or [].
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return Response.json(
+      { error: "Request body must be a JSON object.", validActions: DOCUMENTS_ACTIONS },
+      { status: 400 },
+    );
   }
   const payload = body as Record<string, unknown>;
   const customerId = await resolveCustomerId(payload.customerId as string | undefined);
