@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { supplierBatchScreenCompleted, supplierScreeningFeedback } from "./screening-feedback";
+import { supplierBatchRefreshError, supplierBatchScreenCompleted, supplierScreeningFeedback } from "./screening-feedback";
 
 test("supplier screening feedback reads the route's nested row contract", () => {
   assert.deepEqual(
@@ -38,4 +38,12 @@ test("batch screening only counts persisted clear or match outcomes as completed
   assert.equal(supplierBatchScreenCompleted({ row: { outcome: "error" } }), false);
   assert.equal(supplierBatchScreenCompleted({ row: null }), false);
   assert.equal(supplierBatchScreenCompleted({ clear: true }), false);
+});
+
+test("batch refresh feedback reports screening outcomes without hiding the refresh failure", () => {
+  assert.equal(supplierBatchRefreshError(3, 1, null), null);
+  assert.equal(
+    supplierBatchRefreshError(3, 1, "Supplier service unavailable."),
+    "Screening requests finished (2 completed, 1 failed), but current results could not be refreshed: Supplier service unavailable. Reload before relying on the displayed results.",
+  );
 });

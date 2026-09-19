@@ -3,6 +3,13 @@ export type SupplierScreeningFeedback = {
   message: string;
 };
 
+/** Keep a failed post-screen refresh distinct from the screening outcomes. */
+export function supplierBatchRefreshError(total: number, failed: number, refreshError: string | null): string | null {
+  if (!refreshError) return null;
+
+  return `Screening requests finished (${total - failed} completed, ${failed} failed), but current results could not be refreshed: ${refreshError} Reload before relying on the displayed results.`;
+}
+
 /**
  * Confirm that a batch item produced a completed persisted screening.
  * Matches still count as completed; stored errors and unknown shapes must be

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Truck, ShieldCheck, ShieldAlert, Plus, Search, FileCheck, RefreshCw, CheckCircle2, AlertTriangle, Play } from "lucide-react";
 import type { JurisdictionName } from "@/lib/countries";
 import { CountryTabs } from "@/components/dashboard/country-tabs";
-import { supplierBatchScreenCompleted, supplierScreeningFeedback } from "@/lib/suppliers/screening-feedback";
+import { supplierBatchRefreshError, supplierBatchScreenCompleted, supplierScreeningFeedback } from "@/lib/suppliers/screening-feedback";
 import { readSupplierPostResponse } from "@/lib/suppliers/post-response";
 
 type SupplierDoc = {
@@ -73,7 +73,7 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
   // fixed for silent failures elsewhere: workqueue/checklist/catalogue/etc.).
   const [loading, setLoading] = useState(true);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (): Promise<string | null> => {
     try {
       const res = await fetch("/api/suppliers");
       if (!res.ok) {
@@ -84,8 +84,13 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
       setSuppliers(data.suppliers ?? []);
       setCoverage(data.screeningCoverage ?? null);
       setError(null);
-    } catch (e: any) {
-      setError(e.message ?? "Failed to load suppliers.");
+      return null;
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Failed to load suppliers.";
+      setError(message);
+      // Mutations need the failure value too; otherwise their later success
+      // message can erase the only evidence that fresh results never loaded.
+      return message;
     } finally {
       setLoading(false);
     }
@@ -172,7 +177,12 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
       }
       // Refresh first: load() clears stale errors, so feedback must be applied
       // afterward or a real batch failure disappears as soon as it is shown.
-      await load();
+      const refreshError = await load();
+      const refreshFeedback = supplierBatchRefreshError(suppliers.length, failed.length, refreshError);
+      if (refreshFeedback) {
+        setError(refreshFeedback);
+        return;
+      }
       if (failed.length === 0) {
         setNote("Batch screening finished across all " + suppliers.length + " suppliers.");
         setTimeout(() => setNote(null), 4000);
