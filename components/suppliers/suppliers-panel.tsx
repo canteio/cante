@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Truck, ShieldCheck, ShieldAlert, Plus, Search, FileCheck, RefreshCw, CheckCircle2, AlertTriangle, Play } from "lucide-react";
 import type { JurisdictionName } from "@/lib/countries";
 import { CountryTabs } from "@/components/dashboard/country-tabs";
+import { supplierScreeningFeedback } from "@/lib/suppliers/screening-feedback";
 
 type SupplierDoc = {
   id: string;
@@ -122,10 +123,18 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
 
   async function screenSupplier(supplierId: string) {
     const data = await post({ action: "screen", supplierId });
-    if (data && data.screening) {
-      setNote("Screening completed for supplier: outcome is " + ((data.screening as any).outcome || "clear") + ".");
-      setTimeout(() => setNote(null), 3000);
+    // The route returns the persisted result as `{ row, clear }`; reading the
+    // old `screening` key silently dropped feedback after a successful click.
+    const feedback = supplierScreeningFeedback(data);
+    if (!feedback) return;
+
+    if (feedback.kind !== "success") {
+      setError(feedback.message);
+      return;
     }
+
+    setNote(feedback.message);
+    setTimeout(() => setNote(null), 3000);
   }
 
   async function screenAllSuppliers() {
