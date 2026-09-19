@@ -8,6 +8,7 @@ import { supplierBatchRefreshError, supplierBatchScreenCompleted, supplierScreen
 import { supplierRegistrationFeedback } from "@/lib/suppliers/registration-feedback";
 import { supplierEmptyState } from "@/lib/suppliers/empty-state";
 import { readSupplierPostResponse } from "@/lib/suppliers/post-response";
+import { scheduleSupplierNoteClear, type SupplierNoteTimer } from "@/lib/suppliers/transient-note";
 
 type SupplierDoc = {
   id: string;
@@ -72,6 +73,30 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
   const mutationLock = useRef(false);
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
+  const noteTimer = useRef<SupplierNoteTimer | null>(null);
+
+  const clearTransientNote = useCallback(() => {
+    if (noteTimer.current !== null) clearTimeout(noteTimer.current);
+    noteTimer.current = null;
+    setNote(null);
+  }, []);
+
+  const showTransientNote = useCallback((message: string, delayMs = 3000) => {
+    setNote(message);
+    noteTimer.current = scheduleSupplierNoteClear(
+      noteTimer.current,
+      () => {
+        noteTimer.current = null;
+        setNote(null);
+      },
+      delayMs,
+    );
+  }, []);
+
+  useEffect(() => () => {
+    if (noteTimer.current !== null) clearTimeout(noteTimer.current);
+  }, []);
+
   // UI/UX fix: the initial fetch used to have no loading state, so the panel
   // showed "Active Suppliers (0)" / "No matching suppliers found" while data
   // was still in flight — indistinguishable from a genuinely empty vendor
@@ -114,7 +139,7 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
     mutationLock.current = true;
     setMutation(next);
     setError(null);
-    setNote(null);
+    clearTransientNote();
     return true;
   }
 
@@ -166,13 +191,12 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
     setName("");
     const feedback = supplierRegistrationFeedback(submittedName, result.refreshError);
     if (feedback.kind === "error") {
-      setNote(null);
+      clearTransientNote();
       setError(feedback.message);
       return;
     }
 
-    setNote(feedback.message);
-    setTimeout(() => setNote(null), 3000);
+    showTransientNote(feedback.message);
   }
 
   async function screenSupplier(supplierId: string) {
@@ -187,7 +211,7 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
 
     const refreshFeedback = supplierScreenRefreshError(feedback, result.refreshError);
     if (refreshFeedback) {
-      setNote(null);
+      clearTransientNote();
       setError(refreshFeedback);
       return;
     }
@@ -197,8 +221,7 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
       return;
     }
 
-    setNote(feedback.message);
-    setTimeout(() => setNote(null), 3000);
+    showTransientNote(feedback.message);
   }
 
   async function screenAllSuppliers() {
@@ -235,8 +258,7 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
         return;
       }
       if (failed.length === 0) {
-        setNote("Batch screening finished across all " + suppliers.length + " suppliers.");
-        setTimeout(() => setNote(null), 4000);
+        showTransientNote("Batch screening finished across all " + suppliers.length + " suppliers.", 4000);
       } else {
         setError(
           "Batch screening finished with " + failed.length + " failure(s): " + failed.join(", ") + ". Retry those vendors individually."
