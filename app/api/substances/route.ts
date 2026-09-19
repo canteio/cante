@@ -1,4 +1,5 @@
 import { resolveCustomerId } from "@/lib/db/queries";
+import { SUBSTANCES_ACTIONS } from "@/lib/substances/contract";
 import {
   addComponent,
   assessRestrictions,
@@ -33,12 +34,6 @@ export async function GET(request: Request) {
     ...(matchText ? { substanceMatches: productsContainingSubstanceNamedIn(customerId, matchText) } : {}),
   });
 }
-
-// Single source of truth for POST /api/substances actions, echoed back in the
-// 400 body below so an AI/API client that guesses wrong learns what to try
-// next instead of just that it was wrong — same self-documenting-error
-// pattern already applied to /api/suppliers, /api/workqueue and /api/llm.
-const SUBSTANCES_ACTIONS = ["component", "declare", "load_list"] as const;
 
 export async function POST(request: Request) {
   let body: unknown;
