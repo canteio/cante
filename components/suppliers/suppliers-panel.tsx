@@ -5,6 +5,7 @@ import { Truck, ShieldCheck, ShieldAlert, Plus, Search, FileCheck, RefreshCw, Ch
 import type { JurisdictionName } from "@/lib/countries";
 import { CountryTabs } from "@/components/dashboard/country-tabs";
 import { supplierBatchRefreshError, supplierBatchScreenCompleted, supplierScreenRefreshError, supplierScreeningFeedback } from "@/lib/suppliers/screening-feedback";
+import { supplierRegistrationFeedback } from "@/lib/suppliers/registration-feedback";
 import { readSupplierPostResponse } from "@/lib/suppliers/post-response";
 
 type SupplierDoc = {
@@ -153,12 +154,24 @@ export function SuppliersPanel({ country }: { country: JurisdictionName }) {
   }
 
   async function addSupplier() {
-    if (!name.trim()) return;
-    const res = await post(
-      { action: "upsert", name: name.trim(), country: supplierCountry, role },
+    const submittedName = name.trim();
+    if (!submittedName) return;
+    const result = await post(
+      { action: "upsert", name: submittedName, country: supplierCountry, role },
       { kind: "add" },
     );
-    if (res) setName("");
+    if (!result) return;
+
+    setName("");
+    const feedback = supplierRegistrationFeedback(submittedName, result.refreshError);
+    if (feedback.kind === "error") {
+      setNote(null);
+      setError(feedback.message);
+      return;
+    }
+
+    setNote(feedback.message);
+    setTimeout(() => setNote(null), 3000);
   }
 
   async function screenSupplier(supplierId: string) {
