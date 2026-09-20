@@ -8,32 +8,15 @@ import {
 } from "@/lib/db/queries";
 import { refreshChecklistForCustomer } from "@/lib/checks/checklist";
 import { normalizeJurisdiction } from "@/lib/countries";
+import { MEMORY_KINDS } from "@/lib/memories/contract";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const KINDS = [
-  "product",
-  "hs_code",
-  "naics",
-  "material",
-  "process",
-  "waste",
-  "distribution_state",
-  "label_claim",
-  "export_classification",
-  "product_flag",
-  "kbli",
-  "market",
-  "location",
-  "license",
-  "sni",
-  "tax",
-  "contact",
-  "operational",
-  "preference",
-  "other",
-];
+function isJsonObject(value: unknown): value is Record<string, unknown> {
+  // Arrays and null otherwise reach property access and can turn a caller error into an HTML 500.
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -47,11 +30,16 @@ export async function GET(request: Request) {
  *  a person entered it deliberately. Model-proposed entries come in via the
  *  chat route and land unconfirmed. */
 export async function POST(request: Request) {
-  const body = await request.json().catch(() => ({}));
-  const content: string | undefined = body.content?.trim();
+  const body: unknown = await request.json().catch(() => ({}));
+  if (!isJsonObject(body)) {
+    return Response.json({ error: "Request body must be a JSON object." }, { status: 400 });
+  }
+  const content = typeof body.content === "string" ? body.content.trim() : "";
   if (!content) return Response.json({ error: "Empty memory." }, { status: 400 });
 
-  const customerId = await resolveCustomerId(body.customerId);
+  const customerId = await resolveCustomerId(
+    typeof body.customerId === "string" ? body.customerId : undefined,
+  );
   // Same human/agent-fixable-error bar as profiles/checklist/documents/import-monitor:
   // tell the caller exactly what to pass instead of a bare "No customer."
   if (!customerId) {
@@ -61,14 +49,18 @@ export async function POST(request: Request) {
     );
   }
 
-  const kind = KINDS.includes(body.kind) ? body.kind : "other";
-  const jurisdiction = normalizeJurisdiction(body.country);
+  const kind = MEMORY_KINDS.includes(body.kind as (typeof MEMORY_KINDS)[number])
+    ? (body.kind as string)
+    : "other";
+  const jurisdiction = normalizeJurisdiction(
+    typeof body.country === "string" ? body.country : undefined,
+  );
   const memory = await addMemory({
     customerId,
     jurisdiction,
     kind,
     content,
-    source: body.source ?? "entered by hand",
+    source: typeof body.source === "string" ? body.source : "entered by hand",
     origin: "manual",
     confirmed: true,
   });
@@ -80,8 +72,18 @@ export async function POST(request: Request) {
 
 /** PATCH — confirm or unconfirm a model-proposed memory. */
 export async function PATCH(request: Request) {
-  const body = await request.json().catch(() => ({}));
-  if (!body.id) return Response.json({ error: "No id." }, { status: 400 });
+  const body: unknown = await request.json().catch(() => ({}));
+  if (
+    !isJsonObject(body) ||
+    typeof body.id !== "string" ||
+    !body.id.trim() ||
+    typeof body.confirmed !== "boolean"
+  ) {
+    return Response.json(
+      { error: "Pass a JSON object with a non-empty string `id` and boolean `confirmed`." },
+      { status: 400 },
+    );
+  }
   // Route-handler error audit (2026-09-17, continuing the checklist/lanes/
   // conversations/profiles sweep): this PATCH had zero try/catch, so a DB
   // failure in setMemoryConfirmed/refreshChecklistForCustomer fell through
