@@ -58,6 +58,14 @@ test("200 schema's results item (lead) covers every field searchMonitor actually
   }
 });
 
+test("200 schema documents actionable source recovery without requiring it on healthy sources", () => {
+  const spec = buildImportMonitorOpenApiSpec();
+  const okSchema = spec.paths["/api/import-monitor"].get.responses["200"].content["application/json"].schema;
+  const sourceSchema = okSchema.properties.sources.properties.shipments;
+  assert.equal(sourceSchema.properties.nextAction.type, "string");
+  assert.ok(!(sourceSchema.required as readonly string[]).includes("nextAction"));
+});
+
 test("every response now carries a worked JSON example, not just a schema", () => {
   const spec = buildImportMonitorOpenApiSpec();
   const responses = spec.paths["/api/import-monitor"].get.responses;

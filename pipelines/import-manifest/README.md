@@ -152,7 +152,8 @@ Also accepts `importer` (substring), `hsChapter`, and
 auth returns 401, storage failure returns 503. Middleware also protects the
 page and API. Requests cannot choose another tenant: the API resolves the
 session's workspace. The response includes `status`, `sources`, `updatedAt`,
-`caveats`, `total`, and paginated `results`; responses are private/no-store.
+`caveats`, `total`, and paginated `results`; blocked/failed sources include an
+operator-safe `nextAction` recovery step. Responses are private/no-store.
 
 Runnable curl examples (an agent still needs a logged-in session cookie —
 this is a workspace-scoped endpoint, not a public API key; swap `$COOKIE` for

@@ -113,6 +113,8 @@ test("blocked first run still refreshes and persists real recall records", async
   const result = await refreshMonitor("a", store, { now, recalls: inputs.recalls });
   assert.equal(result.healthy, false);
   assert.equal(result.state.sources.shipments.status, "blocked");
+  assert.match(result.state.sources.shipments.nextAction ?? "", /CANTE_IMPORT_SHIPMENTS_FILE/);
+  assert.match(result.state.sources.shipments.nextAction ?? "", /npm run imports:refresh/);
   assert.equal(result.state.sources.recalls.status, "ok");
   assert.equal((await store.read("a"))?.recalls.length, 1);
   assert.equal(result.state.newLeadIds.length, 0);

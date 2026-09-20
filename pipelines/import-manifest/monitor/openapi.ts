@@ -41,6 +41,7 @@ const sourceStatusSchema = {
     dataAsOf: { type: "string", format: "date-time", nullable: true },
     count: { type: "integer" },
     message: { type: "string" },
+    nextAction: { type: "string", description: "Operator-safe recovery step when the source is blocked or failed; omitted when no action is required." },
   },
   required: ["status", "checkedAt", "dataAsOf", "count", "message"],
 } as const;

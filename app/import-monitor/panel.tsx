@@ -176,6 +176,9 @@ export function ImportMonitorPanel() {
       {data.sources && Object.entries(data.sources).map(([name, source]) => <p key={name}>
         <strong>{name === "shipments" ? "Shipments" : "CPSC recalls"}: {describeSourceStatus(source.status)}</strong> · {source.count} records · {source.message}
         {source.dataAsOf && ` Data as of ${source.dataAsOf.slice(0, 10)}.`}
+        {/* A blocked/error source previously stopped at diagnosis, forcing an
+            operator to hunt through README/source for the recovery command. */}
+        {source.nextAction && <> <strong>Next:</strong> {source.nextAction}</>}
       </p>)}
       <details open={data.status !== "current"}><summary>Coverage and interpretation</summary><ul>{data.caveats.map(c => <li key={c}>{c}</li>)}</ul></details>
       {/* Prior copy only ever said "N matching pairs" with no indication of which

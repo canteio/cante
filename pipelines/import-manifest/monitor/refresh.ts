@@ -20,6 +20,11 @@ export async function refreshMonitor(customerId: string, store: MonitorStore, op
     dataAsOf: old?.dataAsOf ?? null, count: old?.count ?? 0,
     // Do not expose local paths, credentials or raw responses in the product.
     message: error instanceof ShipmentSourceBlocked ? error.message : "Refresh failed; any retained data is from the previous successful refresh. Check worker logs.",
+    // Keep the blocker actionable in both the UI and API without leaking a
+    // worker path: the environment-variable name is stable across deployments.
+    nextAction: error instanceof ShipmentSourceBlocked
+      ? "Configure CANTE_IMPORT_SHIPMENTS_FILE with an authorized rolling JSON snapshot, then run npm run imports:refresh."
+      : "Review the trusted-worker logs, correct the source failure, then run npm run imports:refresh.",
   });
   const shipments = shipmentResult.status === "fulfilled" ? shipmentResult.value.rows : previous?.shipments ?? [];
   const recalls = recallResult.status === "fulfilled" ? recallResult.value : previous?.recalls ?? [];
