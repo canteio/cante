@@ -115,6 +115,7 @@ test("200 response shows agents how to recover a blocked shipment feed", () => {
   assert.equal(blocked.status, "incomplete");
   assert.equal(blocked.sources.shipments.status, "blocked");
   assert.match(blocked.sources.shipments.nextAction, /CANTE_IMPORT_SHIPMENTS_FILE/);
+  assert.match(blocked.sources.shipments.nextAction, /npm run imports:validate/);
   assert.match(blocked.sources.shipments.nextAction, /npm run imports:refresh/);
   assert.deepEqual(blocked.results, []);
 });

@@ -199,7 +199,7 @@ const okExampleBlockedShipmentFeed = {
       dataAsOf: null,
       count: 0,
       message: "No authorized shipment export configured; synthetic sample rows cannot create leads.",
-      nextAction: "Configure CANTE_IMPORT_SHIPMENTS_FILE with an authorized rolling JSON snapshot, then run npm run imports:refresh.",
+      nextAction: "Configure CANTE_IMPORT_SHIPMENTS_FILE with an authorized rolling JSON snapshot, run npm run imports:validate, then run npm run imports:refresh.",
     },
     recalls: {
       status: "ok",

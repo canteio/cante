@@ -59,8 +59,11 @@ IDs. The worker does not choose a default tenant.
    to Supabase; this state is not included in `sync-supabase.ts`. Hosted UI/API
    reads use the signed-in session and RLS, never the worker secret. Do not run
    independent SQLite and Supabase workers for the same monitoring workspace.
-3. Run `npm run imports:refresh`. Leave the shipment path unset to record the
-   blocker while refreshing real recalls. To inspect sample ingestion, point
+3. Run `npm run imports:validate` first. It checks the configured snapshot's
+   complete contract without contacting CPSC or writing customer storage; pass a
+   one-off path with `npm run imports:validate -- /path/to/shipments.json`.
+   Then run `npm run imports:refresh`. Leave the shipment path unset to record
+   the blocker while refreshing real recalls. To inspect sample ingestion, point
    it at `pipelines/import-manifest/fixtures/sample-export.json`; this is
    visibly synthetic and produces zero importer leads.
 4. Open `/import-monitor` while logged in. Use Cargo, Shipper country,

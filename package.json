@@ -15,6 +15,7 @@
     "check": "tsx scripts/run-check.ts",
     "test": "node --import tsx --test lib/**/*.test.ts pipelines/import-manifest/**/*.test.ts",
     "check:scheduled": "tsx scripts/scheduled-check.ts",
+    "imports:validate": "node --import tsx scripts/validate-import-shipments.ts",
     "imports:refresh": "node --import tsx scripts/refresh-import-monitor.ts"
   },
   "dependencies": {

@@ -20,12 +20,12 @@ export async function refreshMonitor(customerId: string, store: MonitorStore, op
     dataAsOf: old?.dataAsOf ?? null, count: old?.count ?? 0,
     // Do not expose local paths, credentials or raw responses in the product.
     message: error instanceof ShipmentSourceBlocked ? error.message : "Refresh failed; any retained data is from the previous successful refresh. Check worker logs.",
-    // A configured-but-broken shipment file used to fall back to the generic
-    // log instruction, which hid the setting an operator needed to repair.
+    // Point operators at the storage-free validator first. A malformed provider
+    // drop should not need a database write or a CPSC request to diagnose.
     nextAction: error instanceof ShipmentSourceBlocked
-      ? "Configure CANTE_IMPORT_SHIPMENTS_FILE with an authorized rolling JSON snapshot, then run npm run imports:refresh."
+      ? "Configure CANTE_IMPORT_SHIPMENTS_FILE with an authorized rolling JSON snapshot, run npm run imports:validate, then run npm run imports:refresh."
       : source === "shipments"
-        ? "Verify CANTE_IMPORT_SHIPMENTS_FILE points to a readable normalized JSON snapshot, then run npm run imports:refresh."
+        ? "Verify CANTE_IMPORT_SHIPMENTS_FILE points to a readable normalized JSON snapshot, run npm run imports:validate, then run npm run imports:refresh."
         : "Review the trusted-worker logs, correct the source failure, then run npm run imports:refresh.",
   });
   const shipments = shipmentResult.status === "fulfilled" ? shipmentResult.value.rows : previous?.shipments ?? [];
