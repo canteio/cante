@@ -3,7 +3,7 @@ import { request as httpRequest } from "node:http";
 import { request as httpsRequest } from "node:https";
 import { completeJson, getProvider } from "@/lib/llm";
 import { resolveCustomerId } from "@/lib/db/queries";
-import { isPublicWebsiteAddress, websiteUrl, WebsiteProfileSchema } from "@/lib/documents/onboarding";
+import { isPublicWebsiteAddress, websiteRequestUrl, websiteUrl, WebsiteProfileSchema } from "@/lib/documents/onboarding";
 import { websiteText } from "@/lib/documents/website-text";
 
 export const runtime = "nodejs";
@@ -56,11 +56,30 @@ async function readWebsite(url: URL, signal: AbortSignal, redirects = 0): Promis
 }
 
 export async function POST(request: Request) {
+  let customerId: string | null;
   try {
-    if (!await resolveCustomerId()) return Response.json({ error: "No workspace access." }, { status: 403 });
-    const body = await request.json();
-    if (typeof body.url !== "string" || body.url.length > 2048) throw new Error("Invalid URL");
-    const text = websiteText(await readWebsite(websiteUrl(body.url.trim()), AbortSignal.timeout(10_000)));
+    customerId = await resolveCustomerId();
+  } catch {
+    return Response.json({ error: "Couldn't verify workspace access." }, { status: 500 });
+  }
+  if (!customerId) return Response.json({ error: "No workspace access." }, { status: 403 });
+
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return Response.json({ error: "Request body must be valid JSON." }, { status: 400 });
+  }
+
+  let url: URL;
+  try {
+    url = websiteRequestUrl(body);
+  } catch (error) {
+    return Response.json({ error: error instanceof Error ? error.message : "Invalid request." }, { status: 400 });
+  }
+
+  try {
+    const text = websiteText(await readWebsite(url, AbortSignal.timeout(10_000)));
     if (text.length < 80) throw new Error("No useful website text");
     // One bounded completion; no retries, crawling, or research stage.
     const { value } = await completeJson(getProvider(), WebsiteProfileSchema, {
@@ -71,7 +90,7 @@ export async function POST(request: Request) {
     });
     return Response.json({ profile: value });
   } catch {
-    // Enrichment failure always leaves manual entry available.
+    // Website and model failures preserve the onboarding manual-entry path.
     return Response.json({ profile: null, note: "Couldn't read your site — no problem, fill it in yourself." });
   }
 }

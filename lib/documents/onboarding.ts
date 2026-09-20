@@ -8,6 +8,23 @@ export const WebsiteProfileSchema = z.object({
   materialsChemicals: z.array(z.string().trim().min(1).max(200)).max(3),
 }).strict();
 export type WebsiteProfile = z.infer<typeof WebsiteProfileSchema>;
+export const WEBSITE_URL_MAX_LENGTH = 2048;
+
+/** Keep malformed agent requests separate from website or model failures. */
+export function websiteRequestUrl(body: unknown): URL {
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    throw new Error("Request body must be a JSON object with a url string.");
+  }
+  const raw = (body as Record<string, unknown>).url;
+  if (typeof raw !== "string" || !raw.trim() || raw.length > WEBSITE_URL_MAX_LENGTH) {
+    throw new Error(`url must be a non-empty string of at most ${WEBSITE_URL_MAX_LENGTH} characters.`);
+  }
+  try {
+    return websiteUrl(raw.trim());
+  } catch {
+    throw new Error("url must use HTTP or HTTPS without credentials and only port 80 or 443.");
+  }
+}
 
 export function onboardingProfile(draft: WebsiteProfile) {
   const clean = (items: string[]) => [...new Set(items.map((item) => item.trim()).filter(Boolean))];
