@@ -120,6 +120,17 @@ test("blocked first run still refreshes and persists real recall records", async
   assert.equal(result.state.newLeadIds.length, 0);
 });
 
+test("configured shipment failures identify the safe setting to repair without leaking its path", async () => {
+  const privatePath = "/private/customer/acme-shipments.json";
+  const result = await refreshMonitor("a", memoryStore(), { ...inputs,
+    shipments: async () => { throw new Error(`ENOENT: ${privatePath}`); } });
+  const source = result.state.sources.shipments;
+  assert.equal(source.status, "error");
+  assert.match(source.nextAction ?? "", /CANTE_IMPORT_SHIPMENTS_FILE/);
+  assert.match(source.nextAction ?? "", /readable normalized JSON snapshot/);
+  assert.doesNotMatch(`${source.message} ${source.nextAction}`, /acme-shipments/);
+});
+
 test("outages retain previous evidence and timestamps without claiming a successful empty refresh", async () => {
   const store = memoryStore();
   await refreshMonitor("a", store, inputs);

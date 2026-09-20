@@ -15,16 +15,18 @@ export async function refreshMonitor(customerId: string, store: MonitorStore, op
     (options.shipments ?? loadShipmentExport)(options.file, now),
     (options.recalls ?? fetchMonitorRecalls)(now),
   ]);
-  const failure = (error: unknown, old: SourceStatus | undefined): SourceStatus => ({
+  const failure = (source: "shipments" | "recalls", error: unknown, old: SourceStatus | undefined): SourceStatus => ({
     status: error instanceof ShipmentSourceBlocked ? "blocked" : "error", checkedAt: now,
     dataAsOf: old?.dataAsOf ?? null, count: old?.count ?? 0,
     // Do not expose local paths, credentials or raw responses in the product.
     message: error instanceof ShipmentSourceBlocked ? error.message : "Refresh failed; any retained data is from the previous successful refresh. Check worker logs.",
-    // Keep the blocker actionable in both the UI and API without leaking a
-    // worker path: the environment-variable name is stable across deployments.
+    // A configured-but-broken shipment file used to fall back to the generic
+    // log instruction, which hid the setting an operator needed to repair.
     nextAction: error instanceof ShipmentSourceBlocked
       ? "Configure CANTE_IMPORT_SHIPMENTS_FILE with an authorized rolling JSON snapshot, then run npm run imports:refresh."
-      : "Review the trusted-worker logs, correct the source failure, then run npm run imports:refresh.",
+      : source === "shipments"
+        ? "Verify CANTE_IMPORT_SHIPMENTS_FILE points to a readable normalized JSON snapshot, then run npm run imports:refresh."
+        : "Review the trusted-worker logs, correct the source failure, then run npm run imports:refresh.",
   });
   const shipments = shipmentResult.status === "fulfilled" ? shipmentResult.value.rows : previous?.shipments ?? [];
   const recalls = recallResult.status === "fulfilled" ? recallResult.value : previous?.recalls ?? [];
@@ -33,9 +35,9 @@ export async function refreshMonitor(customerId: string, store: MonitorStore, op
       status: shipmentResult.value.sample ? "sample" : "ok", checkedAt: now,
       dataAsOf: shipmentResult.value.observedAt, count: shipments.length,
       message: shipmentResult.value.sample ? "Synthetic sample; excluded from importer leads." : "Authorized file export; not a public live manifest feed.",
-    } : failure(shipmentResult.reason, previous?.sources.shipments),
+    } : failure("shipments", shipmentResult.reason, previous?.sources.shipments),
     recalls: recallResult.status === "fulfilled" ? { status: "ok", checkedAt: now, dataAsOf: now,
-      count: recalls.length, message: "Official CPSC API, 180-day recall window." } : failure(recallResult.reason, previous?.sources.recalls),
+      count: recalls.length, message: "Official CPSC API, 180-day recall window." } : failure("recalls", recallResult.reason, previous?.sources.recalls),
   };
   const seen = { ...previous?.seen };
   const leads = buildLeads(shipments, recalls, now, seen);
