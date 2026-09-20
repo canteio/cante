@@ -187,6 +187,34 @@ const okExampleNeverRun = {
   params: monitorQueryDocs,
 };
 
+// A blocked source still returns HTTP 200 with incomplete coverage. Show the
+// recovery field so agents do not mistake an empty result set for "no leads."
+const okExampleBlockedShipmentFeed = {
+  status: "incomplete",
+  updatedAt: "2026-09-14T07:20:00.000Z",
+  sources: {
+    shipments: {
+      status: "blocked",
+      checkedAt: "2026-09-14T07:20:00.000Z",
+      dataAsOf: null,
+      count: 0,
+      message: "No authorized shipment export configured; synthetic sample rows cannot create leads.",
+      nextAction: "Configure CANTE_IMPORT_SHIPMENTS_FILE with an authorized rolling JSON snapshot, then run npm run imports:refresh.",
+    },
+    recalls: {
+      status: "ok",
+      checkedAt: "2026-09-14T07:20:00.000Z",
+      dataAsOf: "2026-09-14T07:20:00.000Z",
+      count: 58,
+      message: "Official CPSC API, 180-day recall window.",
+    },
+  },
+  caveats: ["Shipment coverage is blocked, so an empty result set does not mean no matching importers exist."],
+  total: 0,
+  results: [],
+  params: monitorQueryDocs,
+};
+
 export function buildImportMonitorOpenApiSpec() {
   return {
     openapi: "3.1.0",
@@ -216,8 +244,9 @@ export function buildImportMonitorOpenApiSpec() {
               description: "Current or incomplete/stale leads for the authenticated workspace.",
               content: { "application/json": { schema: okResponseSchema, examples: {
                 current: { summary: "One named-importer lead (synthetic)", value: okExample },
-                commodityCandidate: { summary: "One commodity-candidate lead — cargo-term overlap only, unverified importer identity (synthetic)", value: okExampleCommodityCandidate },
-                neverRun: { summary: "Fresh workspace, worker has not populated data yet — sources is null, results is empty (not \"no leads found\")", value: okExampleNeverRun },
+                commodityCandidate: { summary: "One commodity-candidate lead, cargo-term overlap only with unverified importer identity (synthetic)", value: okExampleCommodityCandidate },
+                neverRun: { summary: "Fresh workspace, worker has not populated data yet; sources is null and results is empty", value: okExampleNeverRun },
+                blockedShipmentFeed: { summary: "Shipment feed blocked; empty results are incomplete and include the recovery action", value: okExampleBlockedShipmentFeed },
               } } },
             },
             "400": {

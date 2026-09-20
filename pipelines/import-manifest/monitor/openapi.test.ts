@@ -108,6 +108,17 @@ test("200 response also carries a worked never_run example (fresh workspace, no 
   assert.deepEqual(neverRunExample.value.results, []);
 });
 
+test("200 response shows agents how to recover a blocked shipment feed", () => {
+  const spec = buildImportMonitorOpenApiSpec();
+  const ok = spec.paths["/api/import-monitor"].get.responses["200"].content["application/json"];
+  const blocked = ok.examples.blockedShipmentFeed.value;
+  assert.equal(blocked.status, "incomplete");
+  assert.equal(blocked.sources.shipments.status, "blocked");
+  assert.match(blocked.sources.shipments.nextAction, /CANTE_IMPORT_SHIPMENTS_FILE/);
+  assert.match(blocked.sources.shipments.nextAction, /npm run imports:refresh/);
+  assert.deepEqual(blocked.results, []);
+});
+
 test("lead schema's shipment field is a typed object, not a bare pointer to source", () => {
   const spec = buildImportMonitorOpenApiSpec();
   const okSchema = spec.paths["/api/import-monitor"].get.responses["200"].content["application/json"].schema;
