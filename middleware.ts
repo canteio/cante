@@ -21,15 +21,14 @@ const PROTECTED_PREFIXES = [
   "/import-monitor",
 ];
 
+const PUBLIC_API_PATHS = new Set(["/api/demo-login", "/api/logout", "/api/waitlist"]);
+
 export async function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   const isProtectedPage = PROTECTED_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
-  const isProtectedApi =
-    pathname.startsWith("/api/") &&
-    pathname !== "/api/demo-login" &&
-    pathname !== "/api/logout";
+  const isProtectedApi = pathname.startsWith("/api/") && !PUBLIC_API_PATHS.has(pathname);
   const isProtected = isProtectedPage || isProtectedApi;
 
   if (!isProtected) {

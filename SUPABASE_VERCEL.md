@@ -25,7 +25,10 @@ Create a Supabase project, then apply the SQL files in `supabase/migrations/`
 in filename order using the SQL Editor or your migration workflow.
 
 It creates the operational tables, tenant membership policies, keyword/vector
-retrieval functions, and indexes. It is idempotent, so rerunning it is safe.
+retrieval functions, indexes, and the server-only waitlist RPC. It is idempotent,
+so rerunning it is safe. The waitlist table has RLS enabled and is not readable
+by anonymous clients. Only the Next.js server's dedicated waitlist credential can
+execute the validated, duplicate-safe RPC with its atomic per-IP rate limit.
 
 Create or invite a user through Supabase Authentication. Copy that user's UUID.
 Create a tenant and membership in SQL Editor, replacing the example values and
@@ -123,6 +126,10 @@ CANTE_LLM_LOCKED=true
 CANTE_HOSTED_PROVIDER=openai
 OPENAI_API_KEY=...
 OPENAI_MODEL=gpt-5
+# A separately generated, revocable Supabase server secret used only by the
+# waitlist route. It still has service-role power: never prefix with NEXT_PUBLIC_.
+WAITLIST_WRITE_KEY=sb_secret_...
+WAITLIST_HASH_SALT=GENERATE_A_RANDOM_SERVER_ONLY_VALUE
 ```
 
 For Claude instead of OpenAI:
@@ -133,8 +140,10 @@ ANTHROPIC_API_KEY=...
 ANTHROPIC_MODEL=claude-sonnet-4-20250514
 ```
 
-Do **not** add `SUPABASE_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, local CLI
-paths, Telegram credentials, or `CANTE_DB_PATH` to Vercel.
+Do **not** add the worker's `SUPABASE_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
+local CLI paths, Telegram credentials, or `CANTE_DB_PATH` to Vercel. Create a
+separate, revocable Supabase secret for `WAITLIST_WRITE_KEY`; keep it server-only
+and use it only for the waitlist RPC.
 
 ## 5. Supabase Auth URLs
 

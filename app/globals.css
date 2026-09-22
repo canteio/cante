@@ -842,10 +842,21 @@ a:hover {
 .landing-title { margin: 0; color: #f5f5f2; font-family: var(--font-serif),Georgia,serif; font-size: clamp(44px,4.8vw,70px); font-weight: 500; line-height: 0.98; letter-spacing: 0; }
 .landing-title span { white-space: normal; }
 .landing-copy { width: min(100%,590px); margin: clamp(24px,3.6vh,34px) auto 0; color: rgba(255,255,255,0.68); font-size: clamp(15px,1.25vw,17px); line-height: 1.68; opacity: 1; }
-.landing-actions { flex-direction: column; justify-content: center; gap: 10px; margin-top: clamp(28px,4vh,40px); }
-.landing-cta { min-height: 48px; padding: 0 20px; border-radius: 6px; background: #f5f5f2; box-shadow: none; font-size: 0.86rem; font-weight: 700; }
-.landing-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 26px rgba(0,0,0,0.22); }
-.landing-access-note { color: rgba(255,255,255,0.4); font-size: 0.72rem; }
+.landing-actions { flex-direction: column; justify-content: center; gap: 10px; margin-top: clamp(28px,4vh,40px); scroll-margin-top: 40vh; }
+.landing-waitlist-wrap { display: grid; justify-items: center; gap: 10px; width: min(100%,510px); }
+.landing-waitlist { position: relative; display: grid; grid-template-columns: minmax(0,1fr) auto; width: 100%; padding: 4px; border: 1px solid rgba(255,255,255,0.25); border-radius: 9px; background: rgba(8,8,8,0.62); box-shadow: 0 14px 44px rgba(0,0,0,0.26); backdrop-filter: blur(14px); }
+.landing-waitlist input[type="email"] { min-width: 0; height: 48px; padding: 0 15px; border: 0; outline: 0; background: transparent; color: #fff; font: inherit; font-size: 0.9rem; }
+.landing-waitlist input[type="email"]::placeholder { color: rgba(255,255,255,0.62); }
+.landing-waitlist:focus-within { border-color: rgba(255,255,255,0.58); box-shadow: 0 0 0 3px rgba(255,255,255,0.1),0 14px 44px rgba(0,0,0,0.26); }
+.landing-honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.landing-cta { min-height: 48px; padding: 0 20px; border: 0; border-radius: 6px; background: #f5f5f2; box-shadow: none; font-size: 0.86rem; font-weight: 700; }
+.landing-cta:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 26px rgba(0,0,0,0.22); }
+.landing-cta:disabled { cursor: wait; opacity: 0.68; }
+.landing-access-note { color: rgba(255,255,255,0.65); font-size: 0.72rem; }
+.landing-waitlist-error { margin: 0; color: #ffc7c2; font-size: 0.76rem; }
+.landing-waitlist-success { display: flex; align-items: center; gap: 11px; min-height: 58px; padding: 8px 18px 8px 10px; border: 1px solid rgba(255,255,255,0.22); border-radius: 9px; background: rgba(8,8,8,0.62); color: #fff; box-shadow: 0 14px 44px rgba(0,0,0,0.26); backdrop-filter: blur(14px); }
+.landing-waitlist-success span { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: #f5f5f2; color: #111; }
+.landing-waitlist-success p { margin: 0; font-size: 0.86rem; font-weight: 600; }
 
 .landing-stream {
   position: absolute;
@@ -909,6 +920,12 @@ a:hover {
   .landing-copy { margin-top: 20px; font-size: 15px; line-height: 1.6; }
   .landing-kicker { margin-bottom: 16px; }
   .landing-actions { margin-top: 24px; }
+  .landing-waitlist { width: min(100%,390px); }
+  .landing-waitlist input[type="email"] { padding: 0 11px; }
+  .landing-cta { padding: 0 14px; }
+  .landing-cta span { display: none; }
+  .landing-cta::before { content: "Join"; }
+  .landing-cta:disabled::before { content: "Joining…"; }
   .landing-access-note { display: none; }
   .landing-stream { grid-template-columns: 1fr; gap: 2px; width: calc(100% - 44px); }
   .landing-stream-label { padding-bottom: 2px; }

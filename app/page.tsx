@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { ArrowRight } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
+import { WaitlistForm } from "@/components/waitlist-form";
 
 type LandingStyle = CSSProperties & { "--d": string };
 
@@ -11,8 +11,6 @@ const signalSteps = [
   { time: "06:04", label: "EPA TSCA", value: "Relevance matched" },
   { time: "06:05", label: "Daily brief", value: "Ready" },
 ];
-
-const loginHref = `/login?next=${encodeURIComponent("/chat?country=United%20States")}`;
 
 export default function LandingPage() {
   return (
@@ -29,7 +27,6 @@ export default function LandingPage() {
           <BrandMark />
           <span>Cante</span>
         </Link>
-        <Link className="landing-signin" href={loginHref}>Sign in</Link>
       </header>
 
       <section className="landing-hero" aria-labelledby="landing-title">
@@ -41,9 +38,8 @@ export default function LandingPage() {
           <p className="landing-copy anim" style={{ "--d": "0.32s" } as LandingStyle}>
             Cante checks official sources daily and tells you which changes affect your operations.
           </p>
-          <div className="landing-actions anim" style={{ "--d": "0.43s" } as LandingStyle}>
-            <Link className="landing-cta" href="/request-access">Request private access <ArrowRight size={16} strokeWidth={2} /></Link>
-            <span className="landing-access-note">Access is reviewed personally.</span>
+          <div className="landing-actions anim" id="waitlist" style={{ "--d": "0.43s" } as LandingStyle}>
+            <WaitlistForm />
           </div>
         </div>
       </section>

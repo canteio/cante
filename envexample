@@ -15,6 +15,11 @@ CANTE_DATA_BACKEND=sqlite
 SUPABASE_SECRET_KEY=
 CANTE_SUPABASE_CUSTOMER_SLUG=example-company
 CANTE_SYNC_SUPABASE=false
+# Separately generated, revocable Supabase server secret used only by this route.
+# It still has service-role power; keep server-only and never expose as NEXT_PUBLIC_*.
+WAITLIST_WRITE_KEY=
+# Random server-only secret used to hash waitlist IPs for abuse prevention.
+WAITLIST_HASH_SALT=
 
 # LLM provider
 # Local: claude-code / codex-cli / antigravity. Vercel: api.
