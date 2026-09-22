@@ -1,5 +1,5 @@
 -- Cante production schema for Supabase Postgres.
--- Apply after the bootstrap customers/customer_users migration.
+-- Includes tenant tables for a fresh project bootstrap.
 
 create extension if not exists vector with schema extensions;
 
@@ -110,7 +110,7 @@ create table if not exists public.source_packs (
 create table if not exists public.check_runs (
   id text primary key,
   customer_id uuid not null references public.customers(id) on delete cascade,
-  jurisdiction text not null default 'Indonesia',
+  jurisdiction text not null default 'United States',
   started_at timestamptz not null default now(),
   completed_at timestamptz,
   status text not null default 'running',
@@ -132,7 +132,7 @@ create table if not exists public.source_results (
 create table if not exists public.source_documents (
   id text primary key,
   customer_id uuid not null references public.customers(id) on delete cascade,
-  jurisdiction text not null default 'Indonesia',
+  jurisdiction text not null default 'United States',
   source_id text not null references public.sources(id),
   identity text not null,
   content_hash text not null,
@@ -175,7 +175,7 @@ create table if not exists public.alerts (
 create table if not exists public.conversations (
   id text primary key,
   customer_id uuid not null references public.customers(id) on delete cascade,
-  jurisdiction text not null default 'Indonesia',
+  jurisdiction text not null default 'United States',
   title text not null default 'New chat',
   summary text,
   created_at timestamptz not null default now(),
@@ -194,7 +194,7 @@ create table if not exists public.chat_messages (
 create table if not exists public.memories (
   id text primary key,
   customer_id uuid not null references public.customers(id) on delete cascade,
-  jurisdiction text not null default 'Indonesia',
+  jurisdiction text not null default 'United States',
   kind text not null default 'other',
   content text not null,
   source text,
@@ -217,7 +217,7 @@ create index if not exists memories_content_fts_idx
 create table if not exists public.checklist_items (
   id text primary key,
   customer_id uuid not null references public.customers(id) on delete cascade,
-  jurisdiction text not null default 'Indonesia',
+  jurisdiction text not null default 'United States',
   key text,
   title text not null,
   category text not null default 'other',

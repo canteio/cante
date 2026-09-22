@@ -47,7 +47,7 @@ export default function RequestAccessPage() {
             <span>Company</span>
             <input
               onChange={(event) => setCompany(event.target.value)}
-              placeholder="PT MA"
+              placeholder="Example Company"
               required
               value={company}
             />
@@ -68,7 +68,7 @@ export default function RequestAccessPage() {
             <span>Company description or website</span>
             <textarea
               onChange={(event) => setDescription(event.target.value)}
-              placeholder="We import PVC inputs from China and manufacture tarpaulins in Surabaya..."
+              placeholder="We manufacture industrial equipment in Chicago and sell across the United States..."
               required
               rows={5}
               value={description}

@@ -166,7 +166,7 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
         state,
         title: "Assign Finding to Team Member",
         primaryLabel: "Assignee Name / Email *",
-        primaryPlaceholder: "e.g. Budi Santoso (Compliance Lead)",
+        primaryPlaceholder: "e.g. Example Reviewer (Compliance Lead)",
         primaryValue: "",
         secondaryLabel: "Target Due Date (Optional)",
         secondaryPlaceholder: "YYYY-MM-DD",
@@ -180,7 +180,7 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
         state,
         title: "Forward Finding to Customs Broker (PPJK / CHB)",
         primaryLabel: "Broker / PPJK Agency Name *",
-        primaryPlaceholder: "e.g. PT Trans Samudera PPJK Surabaya",
+        primaryPlaceholder: "e.g. PT Example Logistics Jakarta",
         primaryValue: "",
       });
       return;
@@ -191,7 +191,7 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
         state,
         title: "Request Evidence from Supplier",
         primaryLabel: "Supplier / Counterparty Name *",
-        primaryPlaceholder: "e.g. LG Chem Ltd (Korea)",
+        primaryPlaceholder: "e.g. Acme Chemicals (Korea)",
         primaryValue: "",
       });
       return;

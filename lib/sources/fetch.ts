@@ -1728,7 +1728,7 @@ function parseOssKbliVersionsJson(json: string, source: SourceDefinition): Regul
  * route to Kemenperin's regulations: `jdih.kemenperin.go.id` has been dark to
  * the outside world since Feb 2024 and `peraturan.go.id` (the record pasal.id
  * itself cites as its source) is equally dead, so nothing official is reachable
- * for the ministry that governs MA's own sector.
+ * for the ministry responsible for industrial policy.
  *
  * Three properties of this feed are load-bearing and must not be smoothed over:
  *

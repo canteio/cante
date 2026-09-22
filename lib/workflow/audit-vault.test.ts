@@ -6,16 +6,16 @@ test("generateAuditDefenseDossier produces complete Indonesian DJBC audit packet
   const dossier = generateAuditDefenseDossier({
     dossierReferenceNumber: "AUD-DJBC-2026-001",
     auditAgency: "BEA_CUKAI_INDONESIA",
-    auditNoticeReference: "Surat Tugas Audit KPU Bea dan Cukai Tanjung Perak #ST-101/2026",
+    auditNoticeReference: "Surat Tugas Audit KPU Bea dan Cukai Tanjung Priok #ST-101/2026",
     company: {
-      companyName: "PT MA Makmur Surabaya",
+      companyName: "Acme Manufacturing",
       country: "Indonesia",
       tradeIdentifiers: {
         nibOrEin: "0123456789012",
         apiOrIorNumber: "API-P 998877",
         kbliOrNaics: ["22210", "13992"],
       },
-      facilityAddress: "Jl. Rungkut Industri No. 88, Surabaya, Jawa Timur",
+      facilityAddress: "Jl. Contoh No. 1, Jakarta",
       sideOfTrade: "import",
     },
     transactions: [
@@ -49,16 +49,16 @@ test("generateAuditDefenseDossier produces complete Indonesian DJBC audit packet
       },
     ],
     preparedBy: {
-      name: "Budi Santoso",
+      name: "Example Reviewer",
       title: "Head of Customs Compliance",
       department: "Supply Chain & Logistics",
     },
   });
 
   assert.match(dossier, /DIREKTORAT JENDERAL BEA DAN CUKAI/);
-  assert.match(dossier, /PT MA Makmur Surabaya/);
+  assert.match(dossier, /Acme Manufacturing/);
   assert.match(dossier, /PIB-123456-2026/);
   assert.match(dossier, /3904\.10\.00/);
   assert.match(dossier, /Permendag 12/);
-  assert.match(dossier, /Budi Santoso/);
+  assert.match(dossier, /Example Reviewer/);
 });

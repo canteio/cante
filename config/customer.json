@@ -1,82 +1,27 @@
 {
-  "_README": "Profile read by the judgment stage. Anything marked 'confirmed': false is an educated guess, NOT verified with the customer — the judgment stage must not present an alert as HS-code-specific while these are unconfirmed.",
-
+  "_README": "Fictional example for local development only. Replace with verified customer inputs before running real checks.",
   "customer": {
-    "name": "MA",
-    "product": "PVC tarpaulin & plastic sheeting manufacturer",
-    "city": "Surabaya",
-    "country": "Indonesia",
-    "side_of_trade": "import",
+    "name": "Example Company",
+    "product": "Industrial equipment manufacturer (fictional example)",
+    "city": "Chicago",
+    "country": "United States",
+    "side_of_trade": "domestic",
     "language": {
-      "primary": "id-ID",
-      "alert_format": "Bahasa Indonesia, plus a one-line English gloss"
-    },
-    "contact": {
-      "name": null,
-      "role": null,
-      "whatsapp": null,
-      "confirmed": false,
-      "_todo": "Readme next step 2 — get the real compliance contact."
+      "primary": "en-US",
+      "alert_format": "English"
     }
   },
-
   "hs_codes": {
     "confirmed": false,
-    "_todo": "MA is an importer of raw materials and domestic manufacturer. Export declaration (PEB) is parked for when export lanes activate.",
-    "candidates": [
-      {
-        "code": "3904.10",
-        "basis": "PVC resin (Polyvinyl chloride in primary forms) — imported raw material (requires PI/import permit evaluation)",
-        "confirmed": false
-      },
-      {
-        "code": "2917.34",
-        "basis": "DOP (Dioctyl phthalate plasticizer) — imported chemical additive",
-        "confirmed": false
-      },
-      {
-        "code": "3812.39",
-        "basis": "Plastic stabilizers & anti-oxidants — imported raw materials",
-        "confirmed": false
-      },
-      {
-        "code": "5903.10",
-        "basis": "Textile fabrics impregnated/coated with PVC — woven substrate / intermediate",
-        "confirmed": false
-      },
-      {
-        "code": "6306.19",
-        "basis": "Tarpaulins, awnings, and sunblinds — manufactured finished good",
-        "confirmed": false
-      },
-      {
-        "code": "3920.43",
-        "basis": "PVC sheets, non-cellular — manufactured finished good",
-        "confirmed": false
-      }
-    ]
+    "candidates": []
   },
-
   "destination_markets": {
     "confirmed": false,
-    "countries": [],
-    "_todo": "Currently domestic sales; export markets parked until international lanes activate."
+    "countries": []
   },
-
   "relevance_guidance": {
-    "likely_relevant": [
-      "Import restrictions, quotas, and licensing (PI TPT, PI B2, Laporan Surveyor / LS Import, Surat Pengecualian B3 / KLHK)",
-      "Customs tariffs, Bea Masuk (BM), PPh Pasal 22 Import, PPN Import on plastics/chemicals (Ch. 29, Ch. 38, Ch. 39, Ch. 59)",
-      "KBLI licensing, OSS risk verification, and mandatory SNI product standards",
-      "Environmental and B3 / non-B3 waste and chemical handling regulations (KLHK / DLH Surabaya)",
-      "Labor, OHS (K3), and local Surabaya/East Java municipal Perda",
-      "Parked: PEB / export procedures become relevant once export lanes are enabled"
-    ],
-    "almost_never_relevant": [
-      "Harga Patokan Ekspor (HPE) / Harga Referensi decrees for mining, palm oil, agriculture and forestry",
-      "Daftar Merek RBD Palm Olein (branded cooking oil export registers)",
-      "Single-commodity rules for unrelated sectors: coal, nickel ore, kratom, fertilizer, fresh fruit"
-    ],
-    "_note": "This is guidance for judgment, not a keyword filter. A rule in the 'almost never' list can still matter if it changes an underlying customs procedure that applies to all importers/manufacturers — read it, don't pattern-match it."
+    "likely_relevant": [],
+    "almost_never_relevant": [],
+    "_note": "Determine relevance from verified operations; this fictional example establishes no compliance facts."
   }
 }

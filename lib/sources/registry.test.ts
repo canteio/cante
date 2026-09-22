@@ -283,3 +283,9 @@ test("every Indonesian source serves a domestic manufacturer", () => {
   assert.equal(domestic.sources.length, all.sources.length);
   assert.ok(domestic.sources.length >= 10);
 });
+
+test("source selection defaults to United States when jurisdiction is omitted", () => {
+  const selection = selectMonitoredSources();
+  assert.ok(selection.sources.length > 0);
+  assert.ok(selection.sources.every((source) => source.country === "United States"));
+});

@@ -40,7 +40,7 @@ export interface GeneratedActionDrafts {
  */
 export function generateActionDrafts(
   context: DraftContext,
-  jurisdiction: JurisdictionName = "Indonesia",
+  jurisdiction: JurisdictionName = "United States",
 ): GeneratedActionDrafts {
   const isUs = jurisdiction === "United States";
   const ref = context.regulationRef || context.title;

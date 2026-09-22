@@ -10,7 +10,7 @@ const PEB = `
 PEMBERITAHUAN EKSPOR BARANG
 Nomor Pendaftaran: 000123
 Tanggal: 12/08/2026
-Eksportir: PT MA
+Eksportir: Example Company
 Negara Tujuan: Netherlands
 Currency: USD
 

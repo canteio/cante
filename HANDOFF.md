@@ -11,34 +11,12 @@ Written 18 Aug 2026. If the dates below are weeks old, ask before trusting the
 
 ## The one-line state
 
-**The software works and the production migration is implemented, but the remote data import still requires the local Supabase secret.** The local ledger currently has 211 findings, 12 alerts, 18 conversations, 51 chat messages, 6 memories, and 2 documents.
+The application supports a local SQLite worker and a Supabase-backed hosted app.
+This open-source checkout includes only a fictional example customer. No existing
+customer, production ledger, account, or delivery destination is assumed.
 
-The bottleneck has not been engineering for some time.
-
----
-
-## In flight right now
-
-Setting up the scheduled check on a **second Mac** (an always-on machine) so the
-pilot can start.
-
-Done:
-- `cante.db` copied across (db + `-wal` + `-shm` together)
-- `.env` created with Telegram credentials, `chmod 600`, gitignored
-
-Remaining:
-1. Get the current bot token from @BotFather (`/mybots` → API Token) — an
-   earlier token was revoked and `.env` briefly held the dead one
-2. Press **Start** on the bot in Telegram, or it cannot message you
-3. `npm run check:scheduled -- --verify` → want `Telegram OK — bot @name`
-4. `npm run check:scheduled` — full dress rehearsal, real message to the phone
-5. LaunchAgent at `~/Library/LaunchAgents/ai.cante.check.plist`, then
-   `launchctl load` + `launchctl start` (test immediately, don't wait for 07:00)
-6. `sudo pmset -a sleep 0` and `pmset repeat wakeorpoweron MTWRFSU 06:55:00`
-7. Healthchecks.io ping URL into `.env` as `CANTE_HEARTBEAT_URL`
-
-**The always-on Mac owns `cante.db` from now on.** Do not run checks on both
-machines — divergent seen-logs mean the customer gets the same regulation twice.
+Use `SUPABASE_VERCEL.md` to bootstrap a new project and tenant. Configure the
+worker and delivery destination for your own deployment before scheduling runs.
 
 ---
 
@@ -72,8 +50,7 @@ feature, check this rule first and say so.
 ## What the product is, in one paragraph
 
 A robot that reads government websites every morning and tells one factory owner
-whether any new rule affects their business. Out of 211 regulations read, it
-dismissed 188 as irrelevant and surfaced 21. That ratio is the product. Its
+whether any new rule affects their business. Its
 distinguishing property is that it reports what it *could not* check — failed
 feeds, unmonitored tracks — instead of showing green.
 
@@ -123,8 +100,6 @@ meetings than any feature.
 ## Where the rest lives
 
 - **Market, competitors, TAM:** `market.md`
-- **Plan (30 days to first revenue):** https://claude.ai/code/artifact/00a4c1ff-fe52-4eb7-b8cc-755f6dedd8ae
-- **US lead list (28 real importers + method):** https://claude.ai/code/artifact/e2595400-e357-4a54-b431-5e7ca69392de
 - **Code, sources, verified-vs-assumed claims:** `CLAUDE.md`
 - **Scope and sequencing:** `plan.md`
 - **Source reliability:** `readme.md`

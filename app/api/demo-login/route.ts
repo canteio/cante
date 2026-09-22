@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { DEMO_SESSION_COOKIE, DEMO_SESSION_VALUE } from "@/lib/auth/config";
 
-const DEMO_USER = "ptma";
-const DEMO_PASSWORD = "ptma";
+const DEMO_USER = "demo";
+const DEMO_PASSWORD = "demo";
 
 export async function POST(request: Request) {
   let body: unknown;

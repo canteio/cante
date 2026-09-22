@@ -140,13 +140,13 @@ export function ComplianceProfilePanel({ country }: { country: JurisdictionName 
               <TextField
                 label="Legal Entity Name"
                 value={draft.legalName}
-                placeholder={isId ? "PT MA Makmur Surabaya" : "MA Plastics USA LLC"}
+                placeholder={isId ? "Acme Manufacturing" : "Acme Manufacturing LLC"}
                 onChange={(legalName) => { setSaved(false); setDraft((current) => ({ ...current, legalName })); }}
               />
               <ListField
                 label="Primary address, then other facilities"
                 values={draft.facilityAddresses}
-                placeholder={isId ? "Jl. Rungkut Industri No. 88, Kota Surabaya, Jawa Timur" : "1200 Industrial Blvd, Houston, TX 77001"}
+                placeholder={isId ? "Jl. Contoh No. 1, Jakarta" : "1200 Industrial Blvd, Houston, TX 77001"}
                 onChange={(facilityAddresses) => { setSaved(false); setDraft((current) => ({ ...current, facilityAddresses })); }}
               />
               <ListField

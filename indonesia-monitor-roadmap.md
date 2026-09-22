@@ -204,7 +204,7 @@ Perda is hard but important. Model it by location:
 - industrial estate if relevant
 
 Start with the customer's actual operating location. Surabaya city regulations
-and DLH notices are automated for MA. East Java provincial JDIH currently
+and DLH notices are automated for matching locations. East Java provincial JDIH currently
 blocks unattended requests and remains a disclosed manual-assisted gap.
 
 Source types:
@@ -250,7 +250,7 @@ Checklist Item
 
 Examples:
 
-- Confirm MA's real KBLI from OSS/NIB.
+- Confirm the customer's real KBLI from OSS/NIB.
 - Confirm whether KBLI transition to KBLI 2025 changes OSS license status.
 - Verify whether PVC tarpaulin product line has any mandatory SNI exposure.
 - Check whether Surabaya/East Java Perda adds local industrial/environmental
@@ -331,7 +331,7 @@ Tindakan: minta PPJK cek apakah aturan ini menyentuh HS 5903.10 / 6306.19.90.
    labor, catalogue, and Surabaya sources.
 5. Completed: add a full-inventory fingerprint ledger and new/changed-only
    judgment.
-6. Get evidence-backed KBLI, HS, permit, destination, and SNI facts for MA.
+6. Get evidence-backed KBLI, HS, permit, destination, and SNI facts for the customer.
 7. Add the ministry-specific Permen/Kepmen feeds those facts activate.
 8. Find structured East Java and INSW/lartas routes without hiding failures.
 9. Add document upload for OSS/NIB/PEB/invoice/SNI certificates.

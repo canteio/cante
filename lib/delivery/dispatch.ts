@@ -117,7 +117,7 @@ export function formatTelegramDigest(runId: string): string {
   const noted = found.filter((f) => f.relevance === "noted");
 
   const lines: string[] = [
-    `🛡️ Cante — ${run?.jurisdiction ?? "Indonesia"} — ${new Date().toISOString().slice(0, 10)}`,
+    `🛡️ Cante — ${run?.jurisdiction ?? "United States"} — ${new Date().toISOString().slice(0, 10)}`,
     `${okCount}/${results.length} sources OK` +
       (failedResults.length > 0 ? ` · ${failedResults.length} FAILED` : ""),
   ];

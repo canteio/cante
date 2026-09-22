@@ -1,5 +1,5 @@
 export const DEMO_SESSION_COOKIE = "cante_demo_session";
-export const DEMO_SESSION_VALUE = "ptma";
+export const DEMO_SESSION_VALUE = "demo";
 
 export type AuthMode = "demo" | "supabase";
 export type DataBackend = "sqlite" | "supabase";

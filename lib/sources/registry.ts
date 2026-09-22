@@ -481,7 +481,7 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     notes: "Production portal times out and the development portal has no working DNS; member integration feeds are decentralized rather than a public central read API.",
   },
   {
-    // The only route to the ministry that governs MA's own sector. Both
+    // The only route to the ministry responsible for industrial policy. Both
     // official records for Kemenperin regulations are unreachable — its JDIH
     // has been dark since Feb 2024 and peraturan.go.id, which pasal.id names as
     // its own upstream, is equally dead. This is a private re-publisher standing
@@ -1256,7 +1256,7 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
 ];
 
 /** Legacy helper: sources expected to produce parseable rows without caveats. */
-export function fetchableSources(country = "Indonesia"): SourceDefinition[] {
+export function fetchableSources(country = "United States"): SourceDefinition[] {
   return SOURCE_REGISTRY.filter(
     (s) => s.country === country && s.reliabilityStatus === "working",
   );
@@ -1268,7 +1268,7 @@ export function fetchableSources(country = "Indonesia"): SourceDefinition[] {
  * untested sources are attempted and recorded as success/failure.
  */
 export function monitoredSources(
-  country = "Indonesia",
+  country = "United States",
   profile?: SourceSelectionProfile | null,
 ): SourceDefinition[] {
   return selectMonitoredSources(country, profile).sources;
@@ -1286,8 +1286,8 @@ const STATE_ALIASES: Record<NonNullable<SourceActivation["state"]>, string[]> = 
  *
  * Indonesia has 38 provinces and 500-plus regencies and cities, each issuing its
  * own Perda. Cante has official adapters for exactly two jurisdictions —
- * Surabaya city and East Java province — because those are where the first
- * customer is. A customer in Sidoarjo, or one distributing into Banten, had no
+ * Surabaya city and East Java province. A customer in Sidoarjo, or one
+ * distributing into Banten, had no
  * regional coverage at all and no way to get it without a new hand-built
  * adapter per city.
  *
@@ -1383,7 +1383,7 @@ export function regionalPasalSources(
 }
 
 export function selectMonitoredSources(
-  country = "Indonesia",
+  country = "United States",
   profile?: SourceSelectionProfile | null,
   options: SourceSelectionOptions = {},
 ): SourceSelection {

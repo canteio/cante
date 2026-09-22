@@ -5,6 +5,6 @@ import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
 export default async function Page({ searchParams }: { searchParams: Promise<{ country?: string }> }) {
   const params = await searchParams;
   // Preserve an explicit jurisdiction; otherwise use DEFAULT_JURISDICTION (US),
-  // the current new-customer default, rather than the legacy PT MA login default.
+  // the default for new customers.
   return <OnboardingWizard country={normalizeJurisdiction(params.country)} />;
 }

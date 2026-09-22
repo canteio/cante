@@ -21,7 +21,7 @@ Three things about this feed that will mislead you if you forget them:
 
 Read the titles in `regulations.json` the way a person would — not a keyword search. Use `full_title` (complete, reconstructed from the URL slug); `listing_title` is truncated where `truncated: true`, and the cut-off part is usually the part that says what the rule covers.
 
-Most relevant regulations will NOT contain the words "PVC" or "tarpaulin" in the title. `config/customer.json` has a `relevance_guidance` block listing what typically matters and what typically doesn't — read it as guidance for judgment, not as a filter to apply mechanically. Something in the "almost never relevant" list still matters if it changes an export procedure that applies to all exporters.
+Relevant regulations may not name the customer’s products in the title. `config/customer.json` has a `relevance_guidance` block listing what typically matters and what typically doesn't — read it as guidance for judgment, not as a filter to apply mechanically. Something in the "almost never relevant" list still matters if it changes an export procedure that applies to all exporters.
 
 Weight the `found_in_views` field: entries from the `ekspor` view are export-policy-tagged by Kemendag itself and are far likelier to matter than the general `semua` feed, which is dominated by HPE commodity-price decrees. The `perizinan` view is mostly historical (its newest entries are from 2022) — useful as reference, rarely a source of change.
 

@@ -7,7 +7,7 @@ import type { CustomerProfile, Memory } from "@/lib/db/schema";
  * The contradiction this exists to kill: `customer_profiles.hsCodes` holds the
  * seed-time educated guesses, while `memories` can hold specific codes a human
  * confirmed on the Memory page. Rendering both as equals produced a prompt that
- * asserted 6306.19.90 and 3921.90 in the same breath.
+ * asserted conflicting classifications in the same breath.
  *
  * Three tiers, and they are not the same thing:
  *   document — off a real PEB/invoice. This is what `hsCodesConfirmed` means,

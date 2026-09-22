@@ -21,7 +21,7 @@
 > workflow and ownership analysis remain separate product work.
 
 ## Goal
-A properly structured Next.js app at the repo root. `npm run dev` from the root just works. Multi-tenant data model from day one, even though only one customer (MA) exists right now — so adding customer #2 is a database row, not a refactor.
+A properly structured Next.js app at the repo root. `npm run dev` from the root just works. Multi-tenant data model from day one, so adding customer #2 is a database row, not a refactor.
 
 Local-only for now: no GitHub push, no deploy, no cron. But the structure should be deploy-ready when that decision comes.
 
@@ -66,7 +66,7 @@ national-law, Perda, and living-checklist requirements.
       judge.ts          <- relevance judgment against a customer profile
       checklist.ts      <- refresh living checklist from memory/profile/source packs
   scripts/
-    seed.ts             <- seed MA + Indonesian source list
+    seed.ts             <- seed fictional Example Company + both jurisdiction source lists
   drizzle/              <- migrations
   package.json          <- at root
 ```
@@ -226,4 +226,4 @@ Validation lives *above* the seam: providers return raw text, and one Zod schema
 - No WhatsApp delivery integration — `alerts.channel` exists in the schema for it, but v1 delivery is manual copy-paste.
 
 ## Definition of done
-`npm install && npm run dev` at the repo root, open localhost, see MA's dashboard, click "Run check now," watch a real check run against the expanded Indonesia source set, see the result stored in the database and rendered in the UI — including an explicit note if any source failed.
+`npm install && npm run dev` at the repo root, open localhost, see the customer's dashboard, click "Run check now," watch a real check run against the expanded Indonesia source set, see the result stored in the database and rendered in the UI — including an explicit note if any source failed.

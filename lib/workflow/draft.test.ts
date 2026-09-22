@@ -5,7 +5,7 @@ import { generateActionDrafts } from "./draft";
 test("generateActionDrafts creates tailored Indonesian drafts for PPJK, internal ops, and suppliers", () => {
   const drafts = generateActionDrafts(
     {
-      customerName: "MA",
+      customerName: "Example Company",
       productDescription: "PVC Resin & Plasticizers",
       regulationRef: "Permendag 12/2026",
       title: "Kebijakan Impor Barang Industri",

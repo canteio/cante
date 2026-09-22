@@ -289,7 +289,7 @@ blurred. **[assumed but high confidence]**
    own rules force us to say it. That is correct. Budget for the lost deals.
 4. **Nothing in the US pack has ever touched a real company.** `US-plan.md`
    states it: the first evidence-grounded US judgment run still needs a real
-   pilot profile. The Indonesian pack is good because MA exists. The US pack was
+   pilot profile. The Indonesian pack has source coverage tests. The US pack was
    built from API documentation.
 5. **The audit market has a one-time-revenue trap.** IEEPA refunds and entry
    audits are recovery events, not subscriptions. They are the land. If the
@@ -311,7 +311,7 @@ The point of writing numbers down is to be able to be wrong about them.
 2. **One customs broker asked whether they would resell an entry audit.** Ten
    minutes, tests the entire Lane B channel assumption, and 2,093 is a
    knowable list.
-3. **MA pays without being asked twice** — money, at a stated price, not "this
+3. **A customer pays without being asked twice** — money, at a stated price, not "this
    is useful".
 4. **One alert prevents one concrete cost.** The 8 mandatory-SNI Permenperin
    rules already surfaced through pasal.id are the best live candidate.

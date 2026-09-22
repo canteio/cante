@@ -12,7 +12,7 @@ const signalSteps = [
   { time: "06:05", label: "Daily brief", value: "Ready" },
 ];
 
-const loginHref = `/login?next=${encodeURIComponent("/chat?country=Indonesia")}`;
+const loginHref = `/login?next=${encodeURIComponent("/chat?country=United%20States")}`;
 
 export default function LandingPage() {
   return (
