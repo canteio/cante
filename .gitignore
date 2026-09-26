@@ -28,3 +28,4 @@ pasal-main
 import-data/
 .env.local
 .env*.local
+supabase/.temp/
