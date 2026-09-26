@@ -503,7 +503,7 @@ create index if not exists document_chunks_customer_jurisdiction_idx
 create index if not exists document_chunks_content_fts_idx
   on public.document_chunks using gin (to_tsvector('simple', content));
 create index if not exists document_chunks_embedding_hnsw_idx
-  on public.document_chunks using hnsw (embedding vector_cosine_ops);
+  on public.document_chunks using hnsw (embedding extensions.vector_cosine_ops);
 
 create schema if not exists private;
 revoke all on schema private from public;

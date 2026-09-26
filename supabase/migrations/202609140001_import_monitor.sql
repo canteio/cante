@@ -1,7 +1,7 @@
 -- The local worker publishes one bounded snapshot atomically. Reads use the
 -- user's session; only the trusted worker may write discoveries or provenance.
 create table if not exists public.import_monitor_state (
-  customer_id text primary key references public.customers(id) on delete cascade,
+  customer_id uuid primary key references public.customers(id) on delete cascade,
   revision integer not null check (revision > 0),
   payload jsonb not null check (jsonb_typeof(payload) = 'object')
 );
