@@ -29,7 +29,7 @@ type ChatActivity = {
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 800;
+export const maxDuration = 300;
 
 /**
  * The chat can now reach the internet, which makes the grounding rules load
