@@ -72,6 +72,8 @@ export type StreamEvent =
   | { type: "error"; message: string };
 
 export interface CompletionRequest {
+  /** Explicit [] disables optional web tools for bounded extraction calls. */
+  tools?: string[];
   /** Standing instructions — role, constraints, tone. */
   system: string;
   /** The actual task for this call. */

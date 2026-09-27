@@ -12,6 +12,9 @@ import {
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+const isJsonObject = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
+
 /**
  * Model-suggested classifications.
  *
@@ -36,7 +39,12 @@ export async function POST(request: Request) {
   } catch {
     return Response.json({ error: "Request body must be valid JSON." }, { status: 400 });
   }
-  const payload = body as Record<string, unknown>;
+  // JSON primitives parse successfully, but they cannot satisfy the documented
+  // request contract and must not fall through as uncaught property accesses.
+  if (!isJsonObject(body)) {
+    return Response.json({ error: "Request body must be a JSON object." }, { status: 400 });
+  }
+  const payload = body;
   const customerId = await resolveCustomerId(payload.customerId as string | undefined);
   const sku = payload.sku as string;
   if (!customerId || !sku) {
@@ -77,7 +85,12 @@ export async function PATCH(request: Request) {
   } catch {
     return Response.json({ error: "Request body must be valid JSON." }, { status: 400 });
   }
-  const payload = body as Record<string, unknown>;
+  // JSON primitives parse successfully, but they cannot satisfy the documented
+  // request contract and must not fall through as uncaught property accesses.
+  if (!isJsonObject(body)) {
+    return Response.json({ error: "Request body must be a JSON object." }, { status: 400 });
+  }
+  const payload = body;
 
   try {
     return Response.json({

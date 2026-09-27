@@ -5,15 +5,9 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { BrandMark } from "@/components/brand-mark";
 import { createClient } from "@/lib/supabase/client";
+import { safeNext } from "@/lib/auth/safe-next";
 
 const authMode = process.env.NEXT_PUBLIC_CANTE_AUTH_MODE === "supabase" ? "supabase" : "demo";
-
-function safeNext(rawNext: string | null) {
-  if (!rawNext || !rawNext.startsWith("/") || rawNext.startsWith("//")) {
-    return "/chat?country=Indonesia";
-  }
-  return rawNext;
-}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -58,7 +52,7 @@ export default function LoginPage() {
 
       if (!response.ok) {
         setIsSubmitting(false);
-        setError("Use the pilot credentials for PT MA.");
+        setError("Use the demo credentials: demo / demo.");
         return;
       }
     }
@@ -84,7 +78,7 @@ export default function LoginPage() {
               <p>
                 {authMode === "supabase"
                   ? "Use your approved workspace account."
-                  : "Access the PT MA workspace."}
+                  : "Access the demo workspace."}
               </p>
             </div>
           </div>
@@ -96,7 +90,7 @@ export default function LoginPage() {
               autoFocus
               name="username"
               onChange={(event) => setUsername(event.target.value)}
-              placeholder={authMode === "supabase" ? "name@company.com" : "ptma"}
+              placeholder={authMode === "supabase" ? "name@company.com" : "demo"}
               type={authMode === "supabase" ? "email" : "text"}
               value={username}
             />
@@ -108,7 +102,7 @@ export default function LoginPage() {
               autoComplete="current-password"
               name="password"
               onChange={(event) => setPassword(event.target.value)}
-              placeholder="ptma"
+              placeholder="demo"
               type="password"
               value={password}
             />
@@ -122,7 +116,7 @@ export default function LoginPage() {
 
           {authMode === "demo" ? (
             <p className="login-demo-note">
-              Demo credentials: <strong>ptma</strong> / <strong>ptma</strong>
+              Demo credentials: <strong>demo</strong> / <strong>demo</strong>
             </p>
           ) : (
             <p className="login-demo-note">

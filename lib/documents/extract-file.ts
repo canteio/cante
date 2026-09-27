@@ -1,5 +1,9 @@
 import { unzipSync, strFromU8 } from "fflate";
 import { load } from "cheerio";
+import {
+  MAX_EXTRACTED_FILE_BYTES,
+  type ExtractedFormat,
+} from "./files-extract-contract";
 
 /**
  * Turn an uploaded file into plain text, or refuse it clearly.
@@ -36,7 +40,7 @@ export class FileExtractionError extends Error {
   }
 }
 
-export type ExtractedFormat = "text" | "csv" | "xlsx" | "docx" | "pdf";
+export type { ExtractedFormat } from "./files-extract-contract";
 
 export interface ExtractedFile {
   text: string;
@@ -44,9 +48,6 @@ export interface ExtractedFile {
   /** Real limits of what was read — surfaced to the user, never swallowed. */
   warnings: string[];
 }
-
-/** 15MB. A trade document that exceeds this is almost certainly a scan. */
-const MAX_BYTES = 15 * 1024 * 1024;
 
 function extensionOf(filename: string): string {
   const match = filename.toLowerCase().match(/\.([a-z0-9]+)$/);
@@ -196,9 +197,9 @@ export async function extractTextFromFile(
   bytes: Uint8Array,
 ): Promise<ExtractedFile> {
   if (bytes.byteLength === 0) throw new FileExtractionError("That file is empty.");
-  if (bytes.byteLength > MAX_BYTES) {
+  if (bytes.byteLength > MAX_EXTRACTED_FILE_BYTES) {
     throw new FileExtractionError(
-      `That file is ${(bytes.byteLength / 1024 / 1024).toFixed(1)}MB, over the ${MAX_BYTES / 1024 / 1024}MB limit. A trade document this large is usually a scan, which cannot be read anyway.`,
+      `That file is ${(bytes.byteLength / 1024 / 1024).toFixed(1)}MB, over the ${MAX_EXTRACTED_FILE_BYTES / 1024 / 1024}MB limit. A trade document this large is usually a scan, which cannot be read anyway.`,
     );
   }
 

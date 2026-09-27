@@ -22,8 +22,8 @@ const SAMPLE_CLEAN_SHIPMENT: DocumentSet = {
   commercialInvoice: {
     invoiceNumber: "INV-LG-9988",
     invoiceDate: "2026-08-10",
-    sellerName: "LG Chem Ltd (Busan, South Korea)",
-    buyerName: "PT MA Makmur Surabaya",
+    sellerName: "Acme Chemicals (Busan, South Korea)",
+    buyerName: "Acme Manufacturing",
     currency: "USD",
     incoterm: "CIF",
     totalValue: 50000,
@@ -39,10 +39,10 @@ const SAMPLE_CLEAN_SHIPMENT: DocumentSet = {
   },
   billOfLading: {
     blNumber: "ONE202608101",
-    shipperName: "LG Chem Ltd",
-    consigneeName: "PT MA Makmur Surabaya",
+    shipperName: "Acme Chemicals",
+    consigneeName: "Acme Manufacturing",
     portOfLoading: "Busan, South Korea",
-    portOfDischarge: "Tanjung Perak, Surabaya",
+    portOfDischarge: "Tanjung Priok, Jakarta",
     containerNumbers: ["TGHU1234567", "MSKU7654321"],
     declaredGrossWeightKg: 50500,
     freightPayableTerm: "PREPAID",
@@ -69,8 +69,8 @@ const SAMPLE_DISCREPANT_SHIPMENT: DocumentSet = {
   commercialInvoice: {
     invoiceNumber: "INV-5544",
     invoiceDate: "2026-08-12",
-    sellerName: "East Asia Petrochem",
-    buyerName: "PT MA Makmur Surabaya",
+    sellerName: "Example Chemicals",
+    buyerName: "Acme Manufacturing",
     currency: "USD",
     incoterm: "CIF",
     totalValue: 35000,
@@ -86,10 +86,10 @@ const SAMPLE_DISCREPANT_SHIPMENT: DocumentSet = {
   },
   billOfLading: {
     blNumber: "BL-5544",
-    shipperName: "East Asia Petrochem",
-    consigneeName: "PT MA Makmur Surabaya",
+    shipperName: "Example Chemicals",
+    consigneeName: "Acme Manufacturing",
     portOfLoading: "Shanghai",
-    portOfDischarge: "Tanjung Perak",
+    portOfDischarge: "Tanjung Priok",
     containerNumbers: ["CONT111"], // CONT222 missing!
     declaredGrossWeightKg: 40000, // Weight mismatch!
     freightPayableTerm: "COLLECT", // CIF vs Collect conflict!
@@ -193,7 +193,12 @@ export function DocumentsPanel({ country }: { country: JurisdictionName }) {
                     style={{
                       background: "var(--card-bg)",
                       border: "1px solid var(--border)",
-                      borderLeft: `4px solid ${flag.severity === "CRITICAL" ? "var(--danger)" : "var(--warn)}"}`,
+                      // Bug fix: stray `}` was embedded inside the "var(--warn)" string literal,
+                      // producing an invalid CSS value ("var(--warn)}") for non-CRITICAL flags.
+                      // Browsers silently drop invalid CSS values, so WARNING-severity discrepancy
+                      // cards rendered with NO left border color at all — visually indistinguishable
+                      // from a CRITICAL flag's colored border. Fixed template literal below.
+                      borderLeft: `4px solid ${flag.severity === "CRITICAL" ? "var(--danger)" : "var(--warn)"}`,
                       padding: "8px 12px",
                       borderRadius: 4,
                     }}

@@ -23,11 +23,11 @@
 > license, and transaction review remain explicit manual/expert gaps.
 
 ## Goal
-A daily automated check that watches Indonesian government trade sources for changes affecting a specific exporter's products, and sends a plain-language WhatsApp alert when something relevant changes. First real customer: MA (PVC tarpaulin manufacturer, Surabaya, Indonesia).
+A daily automated check that watches Indonesian government trade sources for changes affecting a specific exporter's products, and sends a plain-language WhatsApp alert when something relevant changes.
 
 ## Scope for v1 — keep this narrow
 IN:
-- One customer profile (MA) hardcoded to start, not a multi-tenant system yet
+- A fictional customer profile for local development; tenant data is configured separately
 - Daily automated check (no manual trigger needed)
 - Three source categories only (see below)
 - WhatsApp delivery only (no email, no dashboard yet)
@@ -39,8 +39,8 @@ OUT (do not build yet):
 - Payment/billing integration
 - Any language other than Bahasa Indonesia (with a one-line English gloss)
 
-## Expanded scope — MA's actual request
-MA has asked for this to also track regulatory change tied to their KBLI code (Indonesia's business classification code, separate from HS codes — determines which licenses/regulations apply to them) across the Indonesian regulation hierarchy: UU (laws), PP (government regulations), Kepres (presidential decisions), Perda (regional regulations), and tax regulations.
+## Expanded scope — jurisdiction-aware monitoring
+For Indonesian operations, also track regulatory change tied to their KBLI code (Indonesia's business classification code, separate from HS codes — determines which licenses/regulations apply to them) across the Indonesian regulation hierarchy: UU (laws), PP (government regulations), Kepres (presidential decisions), Perda (regional regulations), and tax regulations.
 
 See `indonesia-monitor-roadmap.md` for the updated product version of this
 scope. The Indonesia monitor should become a KBLI/OSS/SNI/tax/customs/legal
@@ -60,8 +60,8 @@ calls. Nationwide all-ministry Permen/Kepmen, East Java province, private OSS
 status, mandatory-SNI applicability, and INSW/lartas remain explicit gaps.
 
 **Do not build all five at once.** Sequence:
-1. Get MA's real KBLI code from their OSS/NIB registration first — it's the filter everything else runs through.
-2. Confirm real HS codes from PEB/invoice. The four codes confirmed in Memory (6306.19.90, 3920.43.90, 3921.12.00, 3918.90.99) are now the working set and have superseded the seed-time guesses, but `hsCodesConfirmed` stays false and the checklist row stays open until a document backs them.
+1. Get the customer's real KBLI code from their OSS/NIB registration first — it's the filter everything else runs through.
+2. Confirm HS codes from PEB/invoice. Human confirmation supersedes guesses, but document verification is required to close the checklist row.
 3. Add ministry-specific Permen/Kepmen feeds selected by confirmed KBLI, product, permit, and market facts; JDIHN member feeds are candidates, not assumed coverage.
 4. Find a structured East Java provincial source and official INSW/lartas route. Surabaya city rules and environmental notices are already automated.
 5. Once KBLI and HS evidence are confirmed, tighten the judgment prompt from "leads" to "verified KBLI-to-rule mapping."
@@ -74,7 +74,7 @@ Prefer these official sources — they're free, public, and don't need an accoun
 3. **JDIH Kemenkeu, DJBC, and DJP** — finance, customs, tariff, and tax changes.
 4. **JDIH KLH/BPLH and Kemnaker** — environment and labor/OHS changes.
 5. **OSS and BSN** — public KBLI/SNI catalogue discovery, with private licensing status and mandatory applicability kept as evidence gaps.
-6. **Surabaya JDIH and DLH** — city regulations and environmental notices for MA's operating location.
+6. **Surabaya JDIH and DLH** — city regulations and environmental notices for matching operating locations.
 
 Use official adapters for repeat monitoring and grounded web/manual lookup for
 blocked archives or document interpretation. The exact boundary is in
@@ -83,7 +83,7 @@ blocked archives or document interpretation. The exact boundary is in
 ## Important: scraping reliability, tested directly
 - **peraturan.bpk.go.id actively blocks automated requests (bot detection, confirmed).** Do not rely on this as a daily-fetch source. Use it only for occasional manual lookups of a regulation's full text once you already know it exists.
 - **peraturan.go.id and central JDIHN are disabled from daily automation.** Setneg replaces six national instrument types; no central reliable feed covers every ministry's Permen/Kepmen.
-- **jdih.kemendag.go.id is reliable and reachable** — this is the most important source for MA anyway, since it's Kemendag's own regulation list including HPE decrees.
+- **jdih.kemendag.go.id is reliable and reachable** — Kemendag publishes trade regulations here, including HPE decrees; relevance depends on the configured operations.
 - **A structured official endpoint is preferred over browser scraping.** Every
   paginated adapter must fail honestly if a page is missing, rather than silently
   treating partial inventory as complete.
@@ -99,7 +99,7 @@ blocked archives or document interpretation. The exact boundary is in
 ## The daily check, in plain terms — this is the whole idea
 Every day, the job does roughly this:
 1. Search the sources listed above for anything posted or enacted in the last ~60 days.
-2. Compare what it finds against MA's profile — product: PVC tarpaulin (terpal PVC), HS code if known.
+2. Compare what it finds against the configured profile, products, and verified HS codes.
 3. Decide honestly: does this actually affect this product? If yes, explain what changed and what to do about it, in 2-4 short lines of plain Bahasa Indonesia, casual and clear — no legal jargon, no long quotes from the source, just what it means in practice. Add one short English line under it summarizing the same thing.
 4. If genuinely nothing relevant happened, say that plainly instead of manufacturing a change — accuracy matters more than always having something to report.
 5. Check today's finding against the dedup log before writing it, so the same regulation doesn't get reported two days running.
@@ -110,15 +110,15 @@ That's the entire logic. It doesn't need a separate script or its own API key �
 1. **Add scheduling** — a GitHub Action (or cron job) that runs once a day, e.g. every morning at 07:00 WIB, and triggers Claude Code headless with the daily-check prompt.
 2. **Add a dedup log** — a simple markdown or text file Claude Code reads before writing a new alert and appends to after, so the same regulation isn't flagged twice.
 3. **Write the daily output to a file, not send it anywhere** — one file per day under `alerts/`, plain language, ready to copy-paste.
-4. **Config file for the customer profile** — `customers.md` or `customers.json` with business name, product description, and HS code if known. Only one entry (MA) for now, but structured so adding a second customer later doesn't require rewriting anything.
+4. **Config file for the customer profile** — `customers.md` or `customers.json` with business name, product description, and HS code if known. Only one entry (Example Company) for now, but structured so adding a second customer later doesn't require rewriting anything.
 5. **Logging** — a line per day noting whether the check ran, found something, or errored, so you can check later that it's actually running daily without watching it live.
-6. **Manual delivery step** — each morning, open the day's alert file and send it to MA yourself over WhatsApp. Track whether you actually did this daily; skipping it breaks the whole test.
+6. **Manual delivery step** — each morning, open the day's alert file and send it to the configured customer yourself over WhatsApp. Track whether you actually did this daily; skipping it breaks the whole test.
 
 ## Definition of done for v1
 - The daily check runs automatically without you triggering it by hand.
 - It has run for at least 14 consecutive days, logged each run.
 - It has correctly identified at least one real, relevant change (or correctly identified zero when there was nothing — either counts, as long as it's accurate).
-- MA has received at least one real alert whose content was generated entirely by the automated check, even though you sent the WhatsApp message yourself.
+- A consenting customer has received at least one real alert whose content was generated entirely by the automated check, even though you sent the WhatsApp message yourself.
 
 ## Scope change, 16 Aug 2026 — from monitoring engine to monitoring service
 
@@ -150,10 +150,10 @@ of scope alongside auth and deploy. Items 2–10 make each alert worth more; non
 of them make an alert arrive on its own. Until that changes, Cante is a better
 monitoring engine, not yet a finished monitoring service.
 
-The v1 definition of done below is unchanged: the 14-day live test with MA
+The v1 definition of done below is unchanged: the 14-day live test with a consenting customer
 and a real answer on willingness to pay still decide what happens next. The
 operating-data layer exists to make those 14 days produce a sharper alert, not
 to replace the test.
 
 ## Explicitly not solving yet
-Pricing, contracts, onboarding flow, and expansion to more customers all come after the two-week live test with MA produces a real yes/no on willingness to pay. Do not build billing or a signup page as part of this MVP.
+Pricing, contracts, onboarding flow, and expansion to more customers all come after the two-week live test with a consenting customer produces a real yes/no on willingness to pay. Do not build billing or a signup page as part of this MVP.

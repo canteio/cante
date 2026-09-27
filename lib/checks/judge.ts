@@ -72,8 +72,7 @@ export const JudgmentSchema = z.object({
       "The ready-to-send WhatsApp message, in the tone of a real message to a business owner. " +
         "Use the language required by the system prompt. If nothing is flagged or noted, this must be " +
         "ONE short line stating so plainly, bolded with a single leading/trailing asterisk " +
-        "(WhatsApp's own bold syntax, not Markdown) — e.g. '*Aman* — tidak ada yang baru hari ini buat " +
-        "MA.' or '*Clear* — nothing new today.' Do not add an explanatory paragraph after it, and do " +
+        "(WhatsApp's own bold syntax, not Markdown) — e.g. '*Aman* — tidak ada yang baru hari ini.' or '*Clear* — nothing new today.' Do not add an explanatory paragraph after it, and do " +
         "not restate coverage caveats, failed sources, or unconfirmed HS/KBLI facts here — code appends " +
         "those automatically as a separate section right after this message. Only write more than the " +
         "one-line summary when something is actually flagged or noted and needs explaining.",

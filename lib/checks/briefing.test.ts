@@ -21,7 +21,7 @@ function briefed(overrides: Partial<BriefedFinding> = {}): BriefedFinding {
         { topic: "Orang pribadi", before: "maksimal 7 tahun", after: "tanpa batas waktu" },
         { topic: "PT biasa & CV", before: "boleh pakai", after: "tidak boleh lagi" },
       ],
-      affectsCustomer: "Cek bentuk badan usaha MA dulu.",
+      affectsCustomer: "Cek bentuk badan usaha Example Company dulu.",
       sourcesRead: ["https://example.go.id/1"],
       confidence: "sourced",
     },

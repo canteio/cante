@@ -12,6 +12,7 @@ import {
 import { db } from "@/lib/db/client";
 import { productClassifications, products, type Product } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { SUGGESTION_CONFIDENCE_LEVELS } from "./suggest-contract";
 
 /**
  * Model-suggested tariff classification — Quickcode's core, with this
@@ -212,7 +213,7 @@ const SuggestionSchema = z.object({
   recommendedCode: z
     .string()
     .describe("A code copied verbatim from the candidate list, or \"\" when noSuitableCandidate is true."),
-  confidence: z.enum(["high", "medium", "low"]),
+  confidence: z.enum(SUGGESTION_CONFIDENCE_LEVELS),
   griApplied: z
     .string()
     .describe("Which General Rule of Interpretation drove the choice, e.g. 'GRI 1' or 'GRI 3(b)'."),

@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { Boxes, Check, Plus, Upload, X, Tag, Search, LayoutGrid, List } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Plus, Tag, Search, LayoutGrid, List } from "lucide-react";
+import { ChipInput } from "@/components/chip-input";
 import type { JurisdictionName } from "@/lib/countries";
 import { CountryTabs } from "@/components/dashboard/country-tabs";
 
@@ -66,15 +67,53 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
   const [sku, setSku] = useState("");
   const [name, setName] = useState("");
   const [hsCode, setHsCode] = useState("");
-  const [materials, setMaterials] = useState("");
+  const [materials, setMaterials] = useState<string[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
+
+  // UI/UX friction fix: Escape didn't close the "Add Product" form, unlike
+  // the action-modal dialog pattern already used in workqueue-panel.tsx
+  // (role="dialog" + Escape-to-close). Users expect Escape to cancel any
+  // open inline form, not just true modal dialogs. Mirrors that pattern here.
+  //
+  // Follow-up fix (same keyboard-nav/focus-trap audit that fixed the
+  // jurisdiction picker in chat-panel.tsx): closing via Escape left keyboard
+  // focus stranded wherever it happened to be inside the now-hidden form,
+  // instead of returning it to the "Add Product" trigger button per the
+  // WAI-ARIA APG disclosure pattern (focus must return to the control that
+  // opened the region on close). Added a ref on the trigger button and call
+  // .focus() on it inside the existing Escape handler.
+  const addFormTriggerRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!showAddForm) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setShowAddForm(false);
+        addFormTriggerRef.current?.focus();
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [showAddForm]);
 
   const load = useCallback(async () => {
     setLoading(true);
+    // Previously this had no error handling: a failed fetch (network error or
+    // non-2xx) left the user staring at "No matching items in catalogue" with
+    // no way to tell an empty catalogue apart from a broken load — same
+    // silent-failure class already fixed in workqueue/checklist/suppliers
+    // panels this cycle. Now surfaces a real error banner and keeps loading
+    // state accurate even when the request throws.
+    setError(null);
     try {
       const res = await fetch("/api/products");
       const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Failed to load catalogue.");
+        return;
+      }
       setProducts(data.products ?? []);
+    } catch {
+      setError("Failed to load catalogue. Check your connection and try again.");
     } finally {
       setLoading(false);
     }
@@ -89,7 +128,10 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
     setBusy(true);
     setError(null);
     try {
-      const csvContent = "sku,name,hs_code,materials\n\"" + sku.trim() + "\",\"" + name.trim() + "\",\"" + hsCode.trim() + "\",\"" + materials.trim() + "\"";
+      // The import contract accepts one declared HS code, but a list of materials.
+      // Quote CSV cells so punctuation in real product names cannot corrupt a row.
+      const cell = (value: string) => `"${value.replaceAll('"', '""')}"`;
+      const csvContent = "sku,name,hs_code,materials\n" + [sku.trim(), name.trim(), hsCode.trim(), materials.join(";")].map(cell).join(",");
       const res = await fetch("/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -101,10 +143,12 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
         setSku("");
         setName("");
         setHsCode("");
-        setMaterials("");
+        setMaterials([]);
         setShowAddForm(false);
         await load();
       }
+    } catch {
+      setError("Could not save product. Please try again.");
     } finally {
       setBusy(false);
     }
@@ -140,71 +184,69 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
   });
 
   return (
-    <div className="main-scroll">
+    <div className="main-scroll catalogue-editor">
       <div className="page-head">
         <div>
-          <h1>Product Catalogue &amp; Materials</h1>
+          <h1>Product Catalogue</h1>
           <p className="page-sub">
-            Your manufactured finished goods and imported raw materials. Classifications determine import taxes (Bea Masuk, PPN, PPh 22), LARTAS quotas, and export rules.
+            Add the products you make or buy so Cante can match changes to your business.
           </p>
         </div>
         <div className="page-actions">
-          <button className="btn btn-primary" onClick={() => setShowAddForm((v) => !v)}>
+          <button ref={addFormTriggerRef} aria-expanded={showAddForm} aria-controls="catalogue-add-product" className="btn btn-primary" onClick={() => setShowAddForm((v) => !v)}>
             <Plus size={14} /> {showAddForm ? "Close Form" : "Add Product"}
           </button>
           <CountryTabs value={country} />
         </div>
       </div>
 
-      {error && <div className="pill pill-bad" style={{ marginBottom: "1rem" }}>{error}</div>}
+      {/* UI/UX friction sweep (a11y): announce load/import failures and the
+          loading state to screen readers, matching the role="alert"/
+          role="status" pattern from app/import-monitor/panel.tsx (and now
+          workqueue-panel.tsx / checklist-panel.tsx in this same sweep). */}
+      {error && <div className="pill pill-bad" role="alert" style={{ marginBottom: "1rem" }}>{error}</div>}
 
       {/* Quick Add Modal/Form */}
       {showAddForm && (
-        <section className="card" style={{ marginBottom: "1.5rem", borderLeft: "4px solid var(--accent-primary, #0284c7)" }}>
+        <section id="catalogue-add-product" className="card" style={{ marginBottom: "1.5rem" }}>
           <div className="card-head">
             <Tag size={16} />
-            <h2>Add Single Product or Raw Material</h2>
+            <h2>Add product</h2>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", marginTop: "0.5rem" }}>
+          <p className="muted" role="status">{[sku.trim(), name.trim()].filter(Boolean).length} of 2 required fields complete. Examples are not saved data.</p>
+          <div className="catalogue-add-fields">
             <div>
-              <label className="side-label" style={{ padding: 0, marginBottom: 2 }}>SKU / Material Code *</label>
+              <label htmlFor="product-sku" className="side-label" style={{ padding: 0, marginBottom: 2 }}>SKU / Material Code *</label>
               <input
                 className="input mono"
                 placeholder="e.g. RM-PVC-K67 or FIN-TARP-01"
-                value={sku}
+                id="product-sku" required value={sku}
                 onChange={(e) => setSku(e.target.value)}
               />
             </div>
             <div>
-              <label className="side-label" style={{ padding: 0, marginBottom: 2 }}>Product / Material Name *</label>
+              <label htmlFor="product-name" className="side-label" style={{ padding: 0, marginBottom: 2 }}>Product / Material Name *</label>
               <input
                 className="input"
                 placeholder="e.g. PVC Resin K-67 or Tarpaulin 12oz"
-                value={name}
+                id="product-name" required value={name}
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
             <div>
-              <label className="side-label" style={{ padding: 0, marginBottom: 2 }}>Declared HS Code</label>
+              <label htmlFor="product-hs" className="side-label" style={{ padding: 0, marginBottom: 2 }}>Declared HS Code (optional)</label>
               <input
                 className="input mono"
                 placeholder="e.g. 3904.10.00"
-                value={hsCode}
+                id="product-hs" value={hsCode}
                 onChange={(e) => setHsCode(e.target.value)}
               />
             </div>
-            <div>
-              <label className="side-label" style={{ padding: 0, marginBottom: 2 }}>Materials / Chemical Composition</label>
-              <input
-                className="input"
-                placeholder="e.g. Polyvinyl Chloride (CAS 9002-86-2)"
-                value={materials}
-                onChange={(e) => setMaterials(e.target.value)}
-              />
-            </div>
+            <ChipInput label="Materials / chemical composition (optional)" values={materials}
+              onChange={setMaterials} placeholder="PVC resin" disabled={busy} />
           </div>
           <div style={{ marginTop: "1rem", display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
-            <button className="btn" onClick={() => setShowAddForm(false)}>Cancel</button>
+            <button className="btn" onClick={() => { setShowAddForm(false); addFormTriggerRef.current?.focus(); }}>Cancel</button>
             <button className="btn btn-primary" disabled={busy || !sku.trim() || !name.trim()} onClick={addSingleProduct}>
               {busy ? "Saving…" : "Save Product"}
             </button>
@@ -213,7 +255,7 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
       )}
 
       {/* Search & Bulk CSV Row */}
-      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "1rem", marginBottom: "1.5rem" }}>
+      <div className="catalogue-tools">
         <section className="card">
           <div className="card-head">
             <Search size={15} strokeWidth={1.75} />
@@ -222,30 +264,21 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
           <div style={{ marginTop: "0.5rem" }}>
             <input
               className="input"
-              placeholder="Search by SKU, item name, HS code, or chemical ingredient…"
+              aria-label="Search catalogue" placeholder="Search by SKU, item name, HS code, or chemical ingredient…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
         </section>
 
-        <section className="card">
-          <div className="card-head">
-            <Upload size={15} strokeWidth={1.75} />
-            <h2>Bulk CSV</h2>
-          </div>
-          <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.5rem" }}>
-            <input
-              className="input mono"
-              placeholder="sku,name,hs_code"
-              value={csv}
-              onChange={(e) => setCsv(e.target.value)}
-            />
-            <button className="btn" disabled={busy || !csv.trim()} onClick={() => void importCsv()}>
-              {busy ? "…" : "Import"}
-            </button>
-          </div>
-        </section>
+        {/* Bulk import is a secondary path; keep it out of first-product setup. */}
+        <details className="card profile-disclosure">
+          <summary>Import from CSV</summary>
+          <label htmlFor="catalogue-csv" className="muted">Paste a header row and product rows. Separate materials with semicolons.</label>
+          <textarea id="catalogue-csv" className="input mono" rows={4} placeholder={'e.g. sku,name,hs_code,materials\nTARP-01,Tarpaulin,,PVC;Polyester'}
+            value={csv} onChange={(e) => setCsv(e.target.value)} />
+          <button className="btn" disabled={busy || !csv.trim()} onClick={() => void importCsv()}>{busy ? "Importing…" : "Import products"}</button>
+        </details>
       </div>
 
       {summary && (
@@ -262,19 +295,19 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
       <div className="meta-row" style={{ justifyContent: "space-between", marginBottom: "0.5rem" }}>
         <div className="side-label" style={{ padding: 0 }}>Registered Items ({filteredProducts.length})</div>
         <div style={{ display: "flex", gap: 4 }}>
-          <button className={"btn btn-small " + (viewMode === "grid" ? "btn-primary" : "")} onClick={() => setViewMode("grid")}>
+          <button className={"btn btn-small " + (viewMode === "grid" ? "btn-primary" : "")} aria-label="Grid view" aria-pressed={viewMode === "grid"} onClick={() => setViewMode("grid")}>
             <LayoutGrid size={13} />
           </button>
-          <button className={"btn btn-small " + (viewMode === "table" ? "btn-primary" : "")} onClick={() => setViewMode("table")}>
+          <button className={"btn btn-small " + (viewMode === "table" ? "btn-primary" : "")} aria-label="Table view" aria-pressed={viewMode === "table"} onClick={() => setViewMode("table")}>
             <List size={13} />
           </button>
         </div>
       </div>
 
       {loading ? (
-        <div className="empty">Loading catalogue…</div>
+        <div className="empty" role="status">Loading catalogue…</div>
       ) : filteredProducts.length === 0 ? (
-        <div className="empty">No matching items in catalogue. Add a product above or state it in chat.</div>
+        <div className="empty">{products.length ? "No products match your search." : "No products yet. Add your first product to get started."}</div>
       ) : viewMode === "table" ? (
         <div className="card" style={{ padding: 0, overflow: "hidden" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem" }}>

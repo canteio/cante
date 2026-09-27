@@ -83,10 +83,53 @@ export function ChatPanel({
   const [country, setCountry] = useState<JurisdictionName>(initialCountry);
   const [countryMenuOpen, setCountryMenuOpen] = useState(false);
 
+  // UI/UX friction fix: the jurisdiction picker menu (role="menu") had no
+  // Escape handler, unlike the Add Product form (catalogue-panel.tsx) and
+  // modal dialogs (workqueue-panel.tsx). A user who opens this popover and
+  // changes their mind had no keyboard way to dismiss it — only clicking
+  // one of the menu items or elsewhere on the page closed it. Mirrors the
+  // same window-keydown Escape pattern already established for this repo.
+  //
+  // Follow-up fix (continuing the focus-trap/keyboard-nav audit noted in the
+  // build log): closing via Escape used to drop keyboard focus entirely —
+  // the browser left it on the now-hidden trigger button with no visible
+  // anchor state, so a keyboard user lost their place. The WAI-ARIA APG
+  // menu-button pattern requires focus to return explicitly to the trigger
+  // on close, so we re-focus it here. Click-selection (chooseCountry)
+  // already leaves focus on the clicked menu item, which is fine on its
+  // own — only the Escape path had no natural focus target.
+  const countryTriggerRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!countryMenuOpen) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setCountryMenuOpen(false);
+        countryTriggerRef.current?.focus();
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [countryMenuOpen]);
+
   async function openConversation(id: string) {
     setError(null);
-    const res = await fetch(`/api/conversations?id=${id}`);
-    if (!res.ok) return;
+    // Same silent-failure class already fixed in workqueue/checklist/
+    // suppliers/catalogue/profile/memory this cycle: a failed load used to
+    // just `return`, leaving the panel blank or stuck on stale messages with
+    // no indication anything went wrong. Now it surfaces a real error so the
+    // user can tell "broken load" from "empty conversation".
+    let res: Response;
+    try {
+      res = await fetch(`/api/conversations?id=${id}`);
+    } catch {
+      setError("Could not load this conversation — check your connection and try again.");
+      return;
+    }
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setError(data.error ?? `Could not load this conversation (${res.status}).`);
+      return;
+    }
     const data = await res.json();
     setCountry(normalizeJurisdiction(data.conversation?.jurisdiction));
     setConversationId(id);
@@ -567,6 +610,7 @@ export function ChatPanel({
             <div className="composer-bar">
               <div className="country-picker">
                 <button
+                  ref={countryTriggerRef}
                   type="button"
                   className="country-picker-current"
                   aria-haspopup="menu"

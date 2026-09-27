@@ -171,7 +171,7 @@ const US_SOURCE_PACKS = [
 }));
 
 /**
- * Seeds MA and the Indonesian source list.
+ * Seeds a fictional example customer and both jurisdiction source lists.
  *
  * The customer profile is read from the existing config/customer.json rather
  * than retyped, so the unconfirmed-HS-code flags carry over exactly as they

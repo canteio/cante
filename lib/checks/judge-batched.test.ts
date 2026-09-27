@@ -82,7 +82,7 @@ function fakeProvider(options: {
 
 function input(entries: RegulationEntry[]) {
   return {
-    customer: { name: "MA" } as Customer,
+    customer: { name: "Example Company" } as Customer,
     profile: {
       productDescription: "PVC tarpaulin",
       destinationMarkets: [],

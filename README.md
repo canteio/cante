@@ -17,7 +17,7 @@ flagship pack; the United States pack keeps domestic manufacturing,
 distribution, and exports as separate coverage tracks. It alerts **only when
 something genuinely relevant changed**.
 
-First customer: **PT MA**, PVC manufacturer, Surabaya. Real, live, in progress.
+The bundled Example Company profile is fictional, based in Chicago, United States, and contains no verified compliance facts.
 
 The daily monitor still uses the signed-in local Claude/Codex CLI, so that high-volume job does not require a hosted key. The deployed chat uses an explicitly configured OpenAI or Anthropic API because Vercel cannot run a desktop CLI. API spend starts only when `CANTE_LLM=api` is set.
 
@@ -30,7 +30,7 @@ Needs Node 22+ and the [Claude Code](https://claude.com/claude-code) CLI install
 ```bash
 npm install
 npm run db:push     # create cante.db from the schema
-npm run db:seed     # seed the sources + MA
+npm run db:seed     # seed the sources + Example Company
 npm run dev         # http://localhost:3000
 ```
 
@@ -56,11 +56,11 @@ the shared static artwork and `app/icon.png` is its matching browser favicon.
 The dark landing page inverts the same asset to white; light surfaces render it
 in black. There is no tile, gray fill, or logo animation.
 
-For the temporary PT MA demo gate, open `/login` and use:
+For the local demo gate, open `/login` and use:
 
 ```txt
-username: ptma
-password: ptma
+username: demo
+password: demo
 ```
 
 This only sets a local demo cookie. It is not production authentication.
@@ -153,7 +153,7 @@ lib/checks/       judge.ts · judge-batched.ts · briefing.ts · run.ts · check
 lib/db/           schema.ts · client.ts · queries.ts
 app/              page.tsx (public landing) · login/ · request-access/ · pending/ · logout/ · workqueue/ · checklist/ · chat/ · memory/ · api/{checks,workqueue,checklist,chat,customers,memories,screening}
 components/       dashboard/ · workqueue/ · checklist/ · memory/ · chat/
-scripts/          seed.ts (sources + country source packs + MA) · run-check.ts
+scripts/          seed.ts (sources + country source packs + Example Company) · run-check.ts
 config/           customer.json — read at seed time only
 ```
 
@@ -228,10 +228,10 @@ to the alert as code-written coverage caveats.
   invite-only landing page adapted from the MotionSites AI Runtime visual
   direction: full-bleed video background, compact rounded nav, request-invite
   CTA, and compliance-monitoring copy.
-- **Temporary PT MA login gate added (21 Aug 2026).** `/login` accepts
-  `ptma` / `ptma`, sets an HTTP-only `cante_demo_session` cookie, and middleware
+- **Local demo login gate added (21 Aug 2026).** `/login` accepts
+  `demo` / `demo`, sets an HTTP-only `cante_demo_session` cookie, and middleware
   redirects protected app screens there when the cookie is missing. Landing app
-  links now pass through login and default to Indonesia / PT MA. This is only
+  links now pass through login and default to United States demo. This is only
   placeholder navigation logic until Supabase Auth and user-to-customer mapping
   are added.
 - **Supabase/Vercel prep added (21 Aug 2026).** The app now has Supabase SSR
@@ -307,22 +307,22 @@ to the alert as code-written coverage caveats.
   caveats and refused to infer EAR99. The older pre-depth reference is
   `47c65faf-1b70-4313-9a0d-153126127b8f`.
 - **Indonesia full-inventory automation is verified.** The seven new adapters fetched 459 official records without a failure. Full run `282f54b9` fetched 513 records across 13 active sources, judged 76 bootstrap documents, and stored 403 older records as baseline. Immediate repeat run `6c05be50` fetched the same 513 records, detected zero new or changed records, made zero judgment calls, and produced zero findings. This is the current reference behavior.
-- **The checklist is first-class.** `/checklist` shows a living compliance work queue generated from customer profile, memory, KBLI records, and source coverage. Chat-extracted or manually entered facts refresh it automatically. Current MA state creates 11 rows, including environment and labor/OHS; Surabaya city automation and the blocked East Java provincial layer are represented separately.
+- **The checklist is first-class.** `/checklist` shows a living compliance work queue generated from customer profile, memory, KBLI records, and source coverage. Chat-extracted or manually entered facts refresh it automatically. Surabaya city automation and the blocked East Java provincial layer are represented separately.
 - **Chat now streams and can search the web.** Answers arrive token by token over SSE (`--include-partial-messages`), with a timeline of what actually happened: the searches run with their real queries, the favicons of the pages those searches actually returned, an expandable list of those sources, and a thinking block showing real duration and token count. What it deliberately does *not* show is invented reasoning prose — the CLI emits thinking blocks with empty text, so there is nothing real to display and the UI says how long it thought rather than pretending to know what about. An earlier version faked all three: a second model call wrote "reasoning" before the answer began, the answer had to open with a `<visible_reasoning>` block that was stripped back out, and every search animated the same three hardcoded government favicons regardless of what it found. The stream closes as soon as the answer is saved, while memory extraction runs in the background so the composer is not stuck waiting. HS-code questions asking for new/latest regulation discovery get an explicit search directive to hit official Indonesian sources immediately. The model may call `WebSearch` / `WebFetch` for outside context — what a regulation actually says, background on an HS code. The two sources of truth are kept explicitly separate in the prompt: stored run data is the only authority on what the monitor checked, and web findings must be attributed to their source. "The 14 Aug run flagged X" and "Kemendag's site says X" have to read differently — a web answer dressed up as a check result is the exact failure this product exists to avoid. Still no API spend: it's the same local CLI provider behind the same seam.
 - First real judgment run: 28 findings — 1 `noted`, 1 `baseline`, 26 `clear`. It fetched Permendag 12/2026's detail page, read the real enactment date, and declined to flag it. The day-one false alert the design exists to prevent, prevented in practice rather than in theory.
 - The alert disclosed the unconfirmed HS codes, unknown destination markets, the ~10-of-2,386 window, and the bootstrap caveat without being prompted per-run.
-- **HS codes now have three tiers, and the contradiction between them is gone.** The profile held seed-time guesses (3921.90, 6306.12, 3926.90) while Memory held four human-confirmed codes (6306.19.90, 3920.43.90, 3921.12.00, 3918.90.99) — and the judgment prompt asserted both sets at once. `lib/checks/facts.ts` now resolves them: document-verified (off a PEB/invoice — still **none**), human-confirmed in Memory (the working set), unconfirmed leads, and superseded guesses the model is told not to judge against or repeat. `hsCodesConfirmed` remains `false`, and every alert still discloses that nothing has been checked against a real export document.
+- **HS codes have evidence tiers.** `lib/checks/facts.ts` distinguishes document-verified codes, human-confirmed memories, unconfirmed leads, and superseded guesses. Only document evidence closes verification gaps.
 - Not scheduled yet. `npm run check` is the identical code path, so a local cron entry needs no new code. Cante isn't its own git repo (the enclosing repo's remote is unrelated), so cloud scheduling would need a repo of its own first.
 - The Python-era pipeline (`scripts/fetch_sources.py`, `alerts/*.md`, `raw/*.json`) was deleted once the TypeScript port was verified to produce identical output. `daily-prompt-check.md` is kept — it's the prose the judgment stage was ported from and still the clearest statement of the rules.
 
 ## Next
 
-1. Get MA's actual KBLI from OSS/NIB, actual HS code(s), destination markets, and compliance contact; confirm those facts once they come off real evidence (PEB / invoice / OSS).
-2. Add ministry-specific Permen/Kepmen adapters selected by MA's confirmed KBLI, products, permits, and markets; no dependable all-ministry feed exists.
+1. Get the customer's actual KBLI from OSS/NIB, actual HS code(s), destination markets, and compliance contact; confirm those facts once they come off real evidence (PEB / invoice / OSS).
+2. Add ministry-specific Permen/Kepmen adapters selected by the customer's confirmed KBLI, products, permits, and markets; no dependable all-ministry feed exists.
 3. Find a structured East Java provincial route and verify an official INSW/lartas integration. Surabaya city rules and environmental notices are already automated.
 4. Put the check on a daily schedule — local cron calling `npm run check` is enough.
 5. Run it for real for ~14 days, delivering each alert by hand.
-6. Ask MA directly whether they'd pay $200–400/month. That answer, not more research, decides what happens next.
+6. Ask a prospective customer directly whether they'd pay $200–400/month. That answer, not more research, decides what happens next.
 7. Enter a real US pilot manufacturer's facility, NAICS, materials/SDS,
    products, distribution states, and export evidence in the US Profile screen,
    then run the first evidence-grounded US check.

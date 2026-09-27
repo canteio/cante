@@ -1,0 +1,272 @@
+import { monitorQueryDocs } from "./query";
+
+/** Maps our hand-written monitorQueryDocs contract (already echoed on every
+ * HTTP response as a same-turn self-correction aid, see http.ts/query.ts) into
+ * a standard OpenAPI 3.1 parameter list. Kept as a small pure function (not a
+ * static JSON file) so it can never drift out of sync with monitorQueryDocs —
+ * the single source of truth for the querystring contract. An AI agent that
+ * already knows how to read OpenAPI (most do, natively) can now discover this
+ * endpoint's shape via a standard /openapi.json instead of having to parse our
+ * bespoke `params` field or read source.
+ */
+function toOpenApiSchema(doc: (typeof monitorQueryDocs)[keyof typeof monitorQueryDocs]) {
+  if (doc.type === "enum") {
+    return { type: "string", enum: [...doc.values], default: doc.default, example: doc.values[0] };
+  }
+  if (doc.type === "integer") {
+    return { type: "integer", minimum: doc.min, maximum: doc.max, default: doc.default };
+  }
+  // string
+  const schema: Record<string, unknown> = { type: "string" };
+  if ("pattern" in doc) schema.pattern = doc.pattern;
+  if ("max" in doc) schema.maxLength = doc.max;
+  if ("example" in doc) schema.example = doc.example;
+  return schema;
+}
+
+// Response-body schemas were previously undocumented in the spec — the
+// parameter contract was machine-readable but an agent still had to read
+// query.ts/model.ts source (or trial-and-error a live request) to learn the
+// shape of what comes back. These are hand-written (not derived from the
+// zod/TS types) for the same reason monitorQueryDocs is hand-written: a
+// stable, prose-friendly contract that doesn't need to track every internal
+// refactor of MonitorState/Lead. Keep in sync with model.ts's Lead/
+// SourceStatus interfaces and query.ts's searchMonitor() return shape.
+const paramsSchema = { type: "object", description: "Echo of the same querystring contract described under this operation's parameters, included on every response so an agent can self-correct without a second lookup." } as const;
+const sourceStatusSchema = {
+  type: "object",
+  properties: {
+    status: { type: "string", enum: ["ok", "blocked", "error", "sample"] },
+    checkedAt: { type: "string", format: "date-time" },
+    dataAsOf: { type: "string", format: "date-time", nullable: true },
+    count: { type: "integer" },
+    message: { type: "string" },
+    nextAction: { type: "string", description: "Operator-safe recovery step when the source is blocked or failed; omitted when no action is required." },
+  },
+  required: ["status", "checkedAt", "dataAsOf", "count", "message"],
+} as const;
+// Previously `shipment` was documented as a bare `{ type: "object" }` with a
+// prose pointer to schema/shipments.ts — every other field in this spec is
+// fully typed for an agent to consume directly, but the one field most
+// useful for lead-gen (raw manifest detail: vessel, ports, weight, container
+// numbers, redaction flag, etc. — the fields panel.tsx itself only surfaces
+// a slice of, see its <article> rendering) forced an agent back to source.
+// Mirrors ImportShipmentRow (schema/shipments.ts) field-for-field; keep the
+// two in sync if that table gains/loses a column.
+const shipmentSchema = {
+  type: "object",
+  description: "The matched ImportShipmentRow (one CBP ocean manifest bill-of-lading record). Nullable fields reflect real manifest data: null can mean 'not present on this manifest' or 'redacted at source' — see dataRedacted to distinguish the latter.",
+  properties: {
+    id: { type: "string" },
+    billOfLading: { type: "string" },
+    carrierScac: { type: "string", nullable: true, description: "Standard Carrier Alpha Code." },
+    manifestSequenceNumber: { type: "string", nullable: true },
+    vesselName: { type: "string", nullable: true },
+    vesselImoCode: { type: "string", nullable: true },
+    voyageNumber: { type: "string", nullable: true },
+    portOfLadingCode: { type: "string", nullable: true, description: "CBP Schedule D port code." },
+    portOfUnladingCode: { type: "string", nullable: true, description: "CBP Schedule D port code." },
+    shipperName: { type: "string", nullable: true },
+    shipperAddress: { type: "string", nullable: true },
+    shipperCountryCode: { type: "string", nullable: true, pattern: "^[A-Z]{2}$", description: "ISO 3166-1 alpha-2, derived from shipperAddress." },
+    consigneeName: { type: "string", nullable: true, description: "The US importer." },
+    consigneeAddress: { type: "string", nullable: true },
+    dataRedacted: { type: "boolean", description: "True if the shipper/consignee identity was redacted at source under 19 CFR 103.31(d); distinguishes 'redacted' from 'not yet ingested' for the nullable party fields above." },
+    cargoDescription: { type: "string", nullable: true },
+    hsChapter: { type: "string", nullable: true, pattern: "^\\d{2}$" },
+    grossWeightKg: { type: "number", nullable: true },
+    packageCount: { type: "integer", nullable: true },
+    containerNumbers: { type: "array", items: { type: "string" }, nullable: true },
+    estimatedArrivalDate: { type: "string", format: "date", nullable: true, description: "Not proof of delivery — manifest ETA only." },
+    manifestFiledDate: { type: "string", format: "date", nullable: true },
+    sourceType: { type: "string", description: "Provenance, e.g. 'cbp_foia_bulk', 'sample_fixture'." },
+    sourceFileRef: { type: "string", nullable: true },
+    ingestedAt: { type: "string", format: "date-time" },
+  },
+  required: ["id", "billOfLading", "dataRedacted", "sourceType", "ingestedAt"],
+} as const;
+const leadSchema = {
+  type: "object",
+  description: "One shipment-recall pair.",
+  properties: {
+    id: { type: "string" }, shipmentId: { type: "string" }, importer: { type: "string" },
+    recallId: { type: "string" }, recallUrl: { type: "string", format: "uri" }, recallTitle: { type: "string" },
+    recallDate: { type: "string", format: "date" },
+    terms: { type: "array", items: { type: "string" }, description: "Cargo-description terms shared with the recall notice." },
+    kind: { type: "string", enum: ["named_importer", "commodity_candidate"] },
+    firstSeenAt: { type: "string", format: "date-time" },
+    newInLatestRun: { type: "boolean" },
+    shipment: shipmentSchema,
+  },
+  required: ["id", "shipmentId", "importer", "recallId", "recallUrl", "recallTitle", "recallDate", "terms", "kind", "firstSeenAt"],
+} as const;
+const okResponseSchema = {
+  type: "object",
+  properties: {
+    status: { type: "string", enum: ["never_run", "current", "incomplete"], description: "never_run = worker has not populated data yet; incomplete = coverage is stale/partial, results still returned." },
+    updatedAt: { type: "string", format: "date-time", nullable: true },
+    sources: { type: "object", nullable: true, properties: { shipments: sourceStatusSchema, recalls: sourceStatusSchema } },
+    caveats: { type: "array", items: { type: "string" }, description: "Plain-English coverage/interpretation warnings; render before trusting results." },
+    total: { type: "integer", description: "Total matching pairs before offset/limit slicing." },
+    results: { type: "array", items: leadSchema },
+    params: paramsSchema,
+  },
+  required: ["status", "updatedAt", "sources", "caveats", "total", "results", "params"],
+} as const;
+const errorResponseSchema = (extra: Record<string, unknown> = {}) => ({
+  type: "object",
+  properties: { error: { type: "string" }, params: paramsSchema, ...extra },
+  required: ["error", "params"],
+});
+
+// Worked response examples for an AI agent consuming the spec cold: schemas alone
+// describe shape, not "what does a realistic populated response actually look
+// like" — an agent reading OpenAPI natively (per the file header above) can use
+// these directly rather than having to synthesize a mental model from `properties`
+// nesting. Values are clearly synthetic (obviously placeholder company/recall
+// names), matching the repo's standing rule that examples/fixtures must never
+// look like real discovered data (see monitor.test.ts / sources.ts sample-marker
+// pattern) — this is spec documentation, not a shipped record.
+const okExample = {
+  status: "current",
+  updatedAt: "2026-09-14T07:20:00.000Z",
+  sources: {
+    shipments: { status: "ok", checkedAt: "2026-09-14T07:20:00.000Z", dataAsOf: "2026-09-13T00:00:00.000Z", count: 412, message: "Loaded authorized export." },
+    recalls: { status: "ok", checkedAt: "2026-09-14T07:20:00.000Z", dataAsOf: "2026-09-14T06:00:00.000Z", count: 58, message: "Fetched from CPSC API." },
+  },
+  caveats: [
+    "Ocean manifests only; confidentiality redactions and unknown parties reduce coverage.",
+    "Named importer means an exact normalized CPSC importer name plus commodity overlap; verify the linked recall.",
+  ],
+  total: 1,
+  results: [{
+    id: "example-lead-id", shipmentId: "example-shipment-id", importer: "Example Imports Inc.",
+    recallId: "26-000", recallUrl: "https://www.cpsc.gov/Recalls/example", recallTitle: "Example product recalled (illustrative only)",
+    recallDate: "2026-09-01", terms: ["stroller"], kind: "named_importer", firstSeenAt: "2026-09-10T00:00:00.000Z", newInLatestRun: true,
+    shipment: { id: "example-shipment-id", billOfLading: "EXAMPLE-BOL", shipperCountryCode: "CN", cargoDescription: "baby stroller", manifestFiledDate: "2026-09-05" },
+  }],
+  params: monitorQueryDocs,
+};
+const errorExample = (extra: Record<string, unknown> = {}) => ({ error: "Invalid query parameters", params: monitorQueryDocs, ...extra });
+
+// Second worked example for the "commodity_candidate" kind — previously only
+// "named_importer" had a worked example, so an agent using `kind=commodity_candidate`
+// (a weaker/fuzzier match: cargo-description term overlap only, no exact importer
+// name match) had to infer the shape/meaning by reading model.ts or trial-and-error.
+// This mirrors okExample's structure but shows the distinguishing traits of a
+// commodity match: no confident importer identity, terms array is the only tie
+// to the recall, and the caveat text calls that out explicitly.
+const okExampleCommodityCandidate = {
+  ...okExample,
+  results: [{
+    id: "example-lead-id-2", shipmentId: "example-shipment-id-2", importer: "Unmatched Shipper (name not normalized to a known importer)",
+    recallId: "26-000", recallUrl: "https://www.cpsc.gov/Recalls/example", recallTitle: "Example product recalled (illustrative only)",
+    recallDate: "2026-09-01", terms: ["stroller", "child restraint"], kind: "commodity_candidate", firstSeenAt: "2026-09-10T00:00:00.000Z", newInLatestRun: false,
+    shipment: { id: "example-shipment-id-2", billOfLading: "EXAMPLE-BOL-2", shipperCountryCode: "CN", cargoDescription: "baby stroller / child restraint parts", manifestFiledDate: "2026-09-06" },
+  }],
+  caveats: [
+    ...okExample.caveats,
+    "commodity_candidate: cargo-description term overlap only, no verified importer-name match — confirm identity before treating as a lead.",
+  ],
+};
+
+// Third worked example: "never_run" — the state a BRAND NEW workspace actually
+// gets back before the worker has populated any data yet (see query.ts: `if
+// (!state) return { status: "never_run", ... sources: null, results: [] }`).
+// This is the very first response most integrating agents will see in practice,
+// but until now the spec only showed the two populated ("current") shapes —
+// an agent could easily assume `sources` is always an object and crash on the
+// null, or treat an empty `results` as "no leads exist" instead of "not run yet".
+const okExampleNeverRun = {
+  status: "never_run",
+  updatedAt: null,
+  sources: null,
+  caveats: [],
+  total: 0,
+  results: [],
+  params: monitorQueryDocs,
+};
+
+// A blocked source still returns HTTP 200 with incomplete coverage. Show the
+// recovery field so agents do not mistake an empty result set for "no leads."
+const okExampleBlockedShipmentFeed = {
+  status: "incomplete",
+  updatedAt: "2026-09-14T07:20:00.000Z",
+  sources: {
+    shipments: {
+      status: "blocked",
+      checkedAt: "2026-09-14T07:20:00.000Z",
+      dataAsOf: null,
+      count: 0,
+      message: "No authorized shipment export configured; synthetic sample rows cannot create leads.",
+      nextAction: "Configure CANTE_IMPORT_SHIPMENTS_FILE with an authorized rolling JSON snapshot, run npm run imports:validate, then run npm run imports:refresh.",
+    },
+    recalls: {
+      status: "ok",
+      checkedAt: "2026-09-14T07:20:00.000Z",
+      dataAsOf: "2026-09-14T07:20:00.000Z",
+      count: 58,
+      message: "Official CPSC API, 180-day recall window.",
+    },
+  },
+  caveats: ["Shipment coverage is blocked, so an empty result set does not mean no matching importers exist."],
+  total: 0,
+  results: [],
+  params: monitorQueryDocs,
+};
+
+export function buildImportMonitorOpenApiSpec() {
+  return {
+    openapi: "3.1.0",
+    info: {
+      title: "Cante Import Monitor API",
+      version: "1.0.0",
+      description:
+        "Read-only lead-scoring feed: US CBP ocean manifest shipments cross-matched " +
+        "against CPSC/FDA/FSIS recalls. See each parameter's `note`/`description` " +
+        "for meaning; every non-200 and every 200 response also echoes this same " +
+        "parameter contract under a `params` field for agents that skip spec discovery.",
+    },
+    paths: {
+      "/api/import-monitor": {
+        get: {
+          summary: "Query recall-matched import leads",
+          operationId: "getImportMonitor",
+          parameters: Object.entries(monitorQueryDocs).map(([name, doc]) => ({
+            name,
+            in: "query",
+            required: false,
+            description: "note" in doc ? doc.note : undefined,
+            schema: toOpenApiSchema(doc),
+          })),
+          responses: {
+            "200": {
+              description: "Current or incomplete/stale leads for the authenticated workspace.",
+              content: { "application/json": { schema: okResponseSchema, examples: {
+                current: { summary: "One named-importer lead (synthetic)", value: okExample },
+                commodityCandidate: { summary: "One commodity-candidate lead, cargo-term overlap only with unverified importer identity (synthetic)", value: okExampleCommodityCandidate },
+                neverRun: { summary: "Fresh workspace, worker has not populated data yet; sources is null and results is empty", value: okExampleNeverRun },
+                blockedShipmentFeed: { summary: "Shipment feed blocked; empty results are incomplete and include the recovery action", value: okExampleBlockedShipmentFeed },
+              } } },
+            },
+            "400": {
+              description: "Invalid query parameters; body includes `issues` (zod flatten) and `params`.",
+              content: { "application/json": { schema: errorResponseSchema({ issues: { type: "object" } }),
+                examples: { badCountry: { summary: "country failed the ^[A-Z]{2}$ pattern", value: errorExample({ issues: { fieldErrors: { country: ["Invalid"] }, formErrors: [] } }) } } } },
+            },
+            "401": {
+              description: "No authenticated workspace session; body includes `params`.",
+              content: { "application/json": { schema: errorResponseSchema(),
+                examples: { unauthenticated: { summary: "No workspace session", value: errorExample({ error: "Workspace authentication required." }) } } } },
+            },
+            "503": {
+              description: "Storage temporarily unavailable; body includes `retryable: true` and `params`.",
+              content: { "application/json": { schema: errorResponseSchema({ retryable: { type: "boolean", const: true } }),
+                examples: { storageOutage: { summary: "Retryable storage failure", value: errorExample({ error: "Import monitoring storage is unavailable.", retryable: true }) } } } },
+            },
+          },
+        },
+      },
+    },
+  } as const;
+}

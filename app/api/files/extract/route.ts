@@ -1,4 +1,5 @@
 import { extractTextFromFile, FileExtractionError } from "@/lib/documents/extract-file";
+import { MAX_EXTRACTED_TEXT_CHARS } from "@/lib/documents/files-extract-contract";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -12,9 +13,6 @@ export const dynamic = "force-dynamic";
  * Keeping those separate is what stops "I asked the model about this invoice"
  * from turning into "this invoice is on file as verified".
  */
-
-/** A whole workbook can be enormous; a chat prompt cannot. */
-const MAX_CHARS = 20_000;
 
 export async function POST(request: Request) {
   if (!request.headers.get("content-type")?.includes("multipart/form-data")) {
@@ -41,13 +39,13 @@ export async function POST(request: Request) {
 
     const warnings = [...extracted.warnings];
     let text = extracted.text;
-    if (text.length > MAX_CHARS) {
+    if (text.length > MAX_EXTRACTED_TEXT_CHARS) {
       // Truncation has to be stated. A model answering from the first half of a
       // document, with no indication the rest existed, is the same failure as a
       // source that silently parsed only its first page.
-      text = text.slice(0, MAX_CHARS);
+      text = text.slice(0, MAX_EXTRACTED_TEXT_CHARS);
       warnings.push(
-        `Only the first ${MAX_CHARS.toLocaleString()} characters were attached; this file is longer, so anything past that point was not read.`,
+        `Only the first ${MAX_EXTRACTED_TEXT_CHARS.toLocaleString()} characters were attached; this file is longer, so anything past that point was not read.`,
       );
     }
 
@@ -61,6 +59,12 @@ export async function POST(request: Request) {
     if (error instanceof FileExtractionError) {
       return Response.json({ error: error.message }, { status: 400 });
     }
-    throw error;
+    // Keep unexpected failures machine-readable while preserving the original
+    // error in server logs for diagnosis.
+    console.error("Unexpected file extraction failure", error);
+    return Response.json(
+      { error: "The file could not be extracted because of an unexpected server error." },
+      { status: 500 },
+    );
   }
 }

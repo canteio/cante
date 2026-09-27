@@ -6,8 +6,7 @@
 
 Daily automated check of official government sources, matched against one
 manufacturer's actual operations, producing a plain-language alert only when
-something genuinely changed. First customer: **MA**, PVC tarpaulin
-manufacturer, Surabaya.
+something genuinely changed. The bundled customer profile is fictional and defaults to the United States.
 
 **Not export-only.** A purely domestic manufacturer is a first-class customer:
 every one of the 13 Indonesian sources — national law, tax, environment, labor
@@ -199,7 +198,7 @@ CANTE_COUNTRY="United States" npm run check  # run the US pack
 npm run check:scheduled            # the cron entrypoint: run, deliver, exit with a code
 npm run check:scheduled -- --verify # confirm the Telegram bot and chat work
 npm run db:push    # apply lib/db/schema.ts to cante.db
-npm run db:seed    # seed sources + MA from config/customer.json
+npm run db:seed    # seed sources + Example Company from config/customer.json
 npm run db:cloud:dry-run # inventory the SQLite -> Supabase migration, no writes
 npm run db:cloud:sync    # upsert the local ledger with a local-only Supabase secret
 npm run db:cloud:verify  # compare local and cloud counts
@@ -291,7 +290,7 @@ app/              page.tsx (public landing) · login/ · request-access/ · pend
                   api/{checks,checklist,chat,customers,memories,screening,products,classifications,lanes,documents,workqueue,suppliers,tariff,substances}
 components/       dashboard/ · checklist/ · memory/ · chat/ (chat-panel.tsx reads the SSE stream · markdown.tsx renders answers)
                   catalogue/ · documents/ · workqueue/ · suppliers/ (the Operations screens)
-scripts/          seed.ts (sources + source packs + MA) · run-check.ts · scheduled-check.ts (cron)
+scripts/          seed.ts (sources + source packs + Example Company) · run-check.ts · scheduled-check.ts (cron)
 mike-main/        reference copy of another project — design source, gitignored,
                   excluded in tsconfig (else `next build` compiles its backend)
 uigen-claude/     reference copy used for chat streaming/thinking UI patterns,
@@ -422,14 +421,14 @@ Keep landing CSS scoped under
 `.landing-*` in `app/globals.css`; do not let the dark marketing palette leak
 into the operational dashboard.
 
-**Login is a dummy PT MA gate, not real auth.** Added 21 Aug 2026 so the site
+**Login is a local demo gate, not real auth.** Added 21 Aug 2026 so the site
 has login flow before Supabase exists. `/login` posts to `/api/demo-login`;
-username `ptma` and password `ptma` set an HTTP-only `cante_demo_session=ptma`
+username `demo` and password `demo` set an HTTP-only `cante_demo_session=demo`
 cookie for 12 hours. `middleware.ts` redirects the app pages (`/chat`,
 `/checks`, `/checklist`, `/profile`, `/memory`, `/catalogue`, `/documents`,
 `/workqueue`, `/suppliers`) to `/login?next=...` when the cookie is absent.
 Landing `Sign in`, `Open app`, `Product`, and `Sources` route through this gate
-and default to the Indonesia / PT MA workspace. This is only a prototype of the
+and default to the United States demo workspace. This is only a prototype of the
 navigation logic; replace it with Supabase Auth + user-to-customer mapping
 before exposing real customer data.
 
@@ -683,10 +682,10 @@ denying a tool changes what the model *says*, not just what it can do.
 
 ### Trade Compliance Action Suite & Sourcing Architecture (added 19 Aug 2026)
 
-**1. Customer Profile Shift & Sourcing Reality (`config/customer.json`)**
-MA is configured as `side_of_trade: "import"` — an industrial manufacturer that imports raw material polymers and chemicals (PVC resin `3904.10`, DOP plasticizer `2917.34`, stabilizers `3812.39`, coated textiles `5903.10`), buys local domestic inputs (fillers, domestic additives, packaging), manufactures finished goods in Surabaya, and sells domestically.
-- **PEB Parked:** PEB (Pemberitahuan Ekspor Barang) export declaration logic is preserved in code and safely parked until international export lanes activate.
-- **Domestic + Import Coexistence:** The engine evaluates both import rules (INSW LARTAS, PI quotas, LS inspection, B3 exemptions) on foreign inputs, and domestic factory rules (Surabaya DLH wastewater, UKL-UPL, K3 chemical safety, Faktur Pajak PPN 11%, Kemenperin TKDN local content scoring) on local operations.
+**1. Customer profiles (`config/customer.json`)**
+The bundled profile is a fictional domestic manufacturer in the United States.
+Configure actual operations and trade lanes before monitoring a real tenant.
+Indonesian profiles support both domestic obligations and import/export rules.
 
 **2. INSW / NTR (National Tariff Repository) & LARTAS (`lib/tariff/insw.ts`)**
 Maps BTKI / HS codes to authoritative duty rates and restrictions:
@@ -873,12 +872,8 @@ that finally fixes the unconfirmed-HS-code gap.
 
 ### HS codes have three tiers, and confusing them is a bug
 
-`lib/checks/facts.ts` is the single place that answers "which HS codes are in
-force", because the profile and memory had drifted into contradicting each
-other: `customer_profiles.hsCodes` held the seed-time guesses (3921.90, 6306.12,
-3926.90) with `hsCodesConfirmed: false`, while four **human-confirmed** memory
-rows named specific codes (6306.19.90, 3920.43.90, 3921.12.00, 3918.90.99). The
-prompt asserted both sets at once.
+`lib/checks/facts.ts` resolves conflicts between seed-time guesses and
+human-confirmed memories. A prompt must not assert both sets as established facts.
 
 | Tier | What it means | Who may call it verified |
 |---|---|---|
@@ -922,8 +917,8 @@ used the guessed codes.
 | `gw.oss.go.id/v2/portal/kbli/version` | **working** | No-auth JSON gateway used by the official OSS frontend. Reports published KBLI catalogue versions as a heartbeat; specific KBLI mapping still requires confirmed codes. |
 | `jdih.surabaya.go.id/peraturan/ajax` | **working** | No-auth JSON listing. Cante exhausts current/prior-year pagination; latest probe parsed 123 records. Activated for Surabaya operations. |
 | `lh.surabaya.go.id/weblh/data-pengumuman-dokumen` | **working** | Official AMDAL/UKL-UPL/DELH/DPLH notices in a rolling 45-day window; latest probe parsed 13 records. |
-| `peraturan.bpk.go.id` | **blocked** | Confirmed bot detection. Manual lookups only, never automated — and not a bypass candidate: its `robots.txt` (checked 17 Aug 2026) explicitly disallows `ClaudeBot` by name alongside the standard AI-crawler blocklist (GPTBot, CCBot, Bytespider, etc.), a direct statement that this operator does not want Claude-driven automated access. It is also broader than "BPK's own regulations" — it aggregates UU/PP/Perpres, ministry Permen/Kepmen, and Perda/Pergub/Perwali from many agencies, so losing it is a real coverage gap, not a niche one. The fix is ministry-specific portals (e.g. `jdih.kemenperin.go.id` for MA's own ministry), not a replacement aggregator. |
-| `jdih.kemenperin.go.id` | **blocked — long-dead, not transient** | Ministry of Industry's own JDIH — the ministry most directly relevant to MA. Checked 17 Aug 2026 (`ECONNREFUSED` 202.47.80.10:443); re-checked 18 Aug from **three vantage points**: this machine (timeout, both ports), Anthropic's fetch infrastructure (`ECONNREFUSED`), and the Wayback Machine's crawlers — whose **last successful capture is February 2024** (SIINas: April 2024). The entire `kemenperin.go.id` web presence (JDIH, SIINas, main site) has been dark to the outside world for ~2 years; `api.` subdomain doesn't resolve. Do not wait for recovery. The one live host found, `itjen.kemenperin.go.id` (Inspectorate General, HTTP 200, server-rendered), was probed and **rejected as coverage**: its Permenperin list is 8 curated internal-governance entries spanning 2010–2025 (kode etik, SAKIP, pengawasan intern) — a false heartbeat for industrial-policy coverage. ⚠️ Web search also surfaces `jdih.kementrianhukumdanham.com` and `jdih.kemenkumhamri.com` — misspelled `.com` squats of official JDIH sites; never treat these as sources. The realistic route is pasal.id's authenticated API (below). |
+| `peraturan.bpk.go.id` | **blocked** | Confirmed bot detection. Manual lookups only, never automated — and not a bypass candidate: its `robots.txt` (checked 17 Aug 2026) explicitly disallows `ClaudeBot` by name alongside the standard AI-crawler blocklist (GPTBot, CCBot, Bytespider, etc.), a direct statement that this operator does not want Claude-driven automated access. It is also broader than "BPK's own regulations" — it aggregates UU/PP/Perpres, ministry Permen/Kepmen, and Perda/Pergub/Perwali from many agencies, so losing it is a real coverage gap, not a niche one. The fix is ministry-specific portals (e.g. `jdih.kemenperin.go.id` for manufacturing regulations), not a replacement aggregator. |
+| `jdih.kemenperin.go.id` | **blocked — long-dead, not transient** | Ministry of Industry's own JDIH — the ministry responsible for industrial policy. Checked 17 Aug 2026 (`ECONNREFUSED` 202.47.80.10:443); re-checked 18 Aug from **three vantage points**: this machine (timeout, both ports), Anthropic's fetch infrastructure (`ECONNREFUSED`), and the Wayback Machine's crawlers — whose **last successful capture is February 2024** (SIINas: April 2024). The entire `kemenperin.go.id` web presence (JDIH, SIINas, main site) has been dark to the outside world for ~2 years; `api.` subdomain doesn't resolve. Do not wait for recovery. The one live host found, `itjen.kemenperin.go.id` (Inspectorate General, HTTP 200, server-rendered), was probed and **rejected as coverage**: its Permenperin list is 8 curated internal-governance entries spanning 2010–2025 (kode etik, SAKIP, pengawasan intern) — a false heartbeat for industrial-policy coverage. ⚠️ Web search also surfaces `jdih.kementrianhukumdanham.com` and `jdih.kemenkumhamri.com` — misspelled `.com` squats of official JDIH sites; never treat these as sources. The realistic route is pasal.id's authenticated API (below). |
 | `peraturan.go.id` | **unreachable from here — but alive** | Not a dead host: Wayback recorded HTTP 200 crawls through 24 Apr 2026, and pasal.id crawls it daily from Southeast Asia. It times out from this machine and from Anthropic's fetch infrastructure, so this is a geo/network restriction. Still not polled: it publishes **only PDFs** (no search, no structure, no API), so using it needs an Indonesian egress path *and* the PDF/OCR pipeline this project declines to build. Superseded for six national instrument types by Setneg; reached second-hand for Kemenperin via pasal.id. |
 | `jdihn.go.id` | **blocked** | The old central host times out and the replacement is not a dependable public document API. Member ILDIS feeds remain an expansion route. |
 | East Java JDIH (`jdih.jatimprov.go.id`) | **blocked** | Works interactively but Cloudflare rejects unattended fetches — reconfirmed 17 Aug 2026 with a plain `fetch()` matching production headers (HTTP 403, Cloudflare challenge page). Not retried directly; superseded by the row below. |
@@ -967,7 +962,7 @@ adapter is `kemenperin-pasal` in the registry with parser `pasal-laws-json`.
 Live end-to-end through `fetchAllSources()`: **23 Permenperin rows for 2026,
 zero failures**, including 8 mandatory-SNI / revocation rules
 (`Pemberlakuan Standar Nasional Indonesia`, `Pencabutan …`) that Cante was
-previously blind to — this is the ministry that governs MA's own sector.
+previously blind to — this is the ministry responsible for industrial policy.
 
 ⚠️ **This is the only non-official regulation source in the registry**, and
 four mechanisms keep it from reading like an official one. Do not weaken any
@@ -1094,7 +1089,7 @@ sent 10 into judgment, `[pasal-dates] 10 of 10 enactment dates resolved`, and al
 10 came back `clear` — correctly, since they cover safety glass, wheat flour,
 palm cooking oil, halal certification, aircraft-repair imports and agro
 machinery, none of which touch PVC tarpaulin. The one-line quiet alert also
-landed as designed: `*Aman* — tidak ada yang baru atau relevan buat MA hari
+landed as designed: `*Aman* — tidak ada yang baru atau relevan buat Example Company hari
 ini.`
 
 ⚠️ **A stale caveat shipped with it, and it is the exact failure rule 2 exists to
@@ -1153,7 +1148,7 @@ across all years. Always probe a code before building on it.
 
 Indonesia has 38 provinces and 500-plus regencies and cities, each issuing its
 own Perda. Cante had official adapters for exactly two jurisdictions — Surabaya
-city and East Java province — because that is where the first customer is. A
+city and East Java province. A
 customer in Sidoarjo, or one distributing into Banten, had **no regional
 coverage at all**, and no route to it without hand-building an adapter per city.
 
@@ -1575,7 +1570,7 @@ USITC HTS source was already fetching `general`, `special`, `other` and
 
 **`lib/tariff/` closes it.** `lookupTariff()` reads the official row,
 `quoteDuty()` prices a shipment, `compareDuty()` prices a misclassification.
-Verified live: HTS 6306.12.00.00 general 8.8%, and the MA case computes —
+Verified live: HTS 6306.12.00.00 general 8.8%, and a fictional example computes —
 the seed guess 3921.90 (4.2%) against the document's 6306.12 (8.8%) on a $400k
 lane is a **USD 18,400/year** difference.
 
@@ -1865,13 +1860,9 @@ an explicit instruction not to contradict them. That instruction is load-bearing
 and there is a test for the exact sentence a live run produced before it existed
 ("logged as a lead, not a confirmed fact") while the database said `confirmed=1`.
 
-Verified live, 18 Aug 2026: an `.xlsx` of two KBLI and two HS codes was filed as
-a document, saved four confirmed memories, refreshed the checklist, and the
-answer opened *"the KBLI/HS codes from kbli.xlsx are now recorded"* — then
-caught a genuine conflict (`6306.12.00` against the previously recorded
-`6306.19.90`, different subheadings of the same tarpaulin heading) and asked
-which is current. That question is the useful one; asking the customer to
-re-confirm what they had just supplied was not. Probe data was deleted after.
+An uploaded spreadsheet can establish confirmed memories and expose conflicts
+with previously recorded classifications. Ask which conflicting code is current
+rather than asking the customer to reconfirm the entire upload.
 
 ⚠️ **Failures are absorbed, never raised.** A filing error becomes a caveat the
 model reads out; the conversation must not break because an import failed.
@@ -2131,8 +2122,7 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
   stayed in English and disclosed the empty profile, heartbeat-only portals,
   uncovered state distribution track, and unknown export classifications.
 - Checklist is working locally at `/checklist`. `/api/checklist` refreshes rows
-  from profile, memory, KBLI records, and Indonesia source-pack coverage. Current
-  MA state produces 11 rows, including environment and labor/OHS. Surabaya
+  from profile, memory, KBLI records, and Indonesia source-pack coverage. Surabaya
   city automation is distinguished from the blocked East Java provincial gap.
 - **Indonesia full-inventory automation is verified.** Source-only probes parsed
   459 records from the seven new adapters with zero failures. Full run
@@ -2157,9 +2147,8 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
   - 12 sources registered, **9 requests made** — peraturan.go.id failed once and
     its 4 sibling views were recorded as `Not attempted`, disclosed to the
     customer as one line ("plus 4 tampilan lain yang otomatis tidak dicoba").
-  - The alert reasons from the **human-confirmed** codes (6306.19.90, 3920.43.90,
-    3921.12.00, 3918.90.99), says plainly they have never been matched against a
-    PEB or invoice, and no longer repeats the superseded guesses.
+  - The alert distinguishes human-confirmed codes from document-verified codes
+    and does not repeat superseded guesses.
   - OSS produced **no finding**; the alert says the portal was only checked for
     reachability and "itu bukan sumber peraturan".
   - `[coverage] 35 entries — 0 judged, 34 already seen, 1 unaccounted`. The
@@ -2179,7 +2168,7 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
 - First real run: 28 findings — 1 `noted`, 1 `baseline`, 26 `clear`. Correctly
   read Permendag 12/2026's enactment date off the detail page and declined to
   flag it.
-- **MA's HS codes and destination markets are unconfirmed placeholders**
+- **The fictional seed profile has no confirmed HS codes or destination markets**
   (`hsCodesConfirmed: false`). The judgment stage discloses this in every alert.
   They stay false until they come off a real export document (PEB/invoice).
 - Not scheduled. Local cron via `npm run check` works today; no push, no deploy.
@@ -2187,14 +2176,14 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
 
 ## Next
 
-1. Get MA's real KBLI from OSS/NIB and real HS code(s) from PEB/invoice;
+1. Get the customer's real KBLI from OSS/NIB and real HS code(s) from PEB/invoice;
    confirm those Memory rows so Checklist can move from leads to verified facts.
-2. Add ministry-specific Permen/Kepmen feeds based on MA's confirmed KBLI,
+2. Add ministry-specific Permen/Kepmen feeds based on the customer's confirmed KBLI,
    products, permits, and markets; there is no reliable all-ministry central feed.
    Kemenperin is now covered via pasal.id (private re-publisher, disclosed as
    such). Next: run a real `npm run check` and read how the 23 Permenperin rows
    land in the alert — in particular whether the model honours the provenance
-   hedge, and whether the 8 mandatory-SNI rules match MA's products. Those
+   hedge, and whether the 8 mandatory-SNI rules match the customer's products. Those
    SNI rules are the most likely first genuine `flagged` finding this monitor
    produces, so it is worth watching closely rather than assuming.
 3. East Java provincial coverage is now automated via `api.jdih.jatimprov.go.id`
@@ -2208,7 +2197,7 @@ Finding relevance values: `flagged` (send it) · `noted` (worth a manual look) �
    and transaction evidence before presenting restricted-party screening as a
    complete workflow.
 6. Run for ~14 days, delivering each alert by hand.
-7. Ask MA directly about $200–400/month. That answer decides what happens next.
+7. Ask a prospective customer directly about $200–400/month. That answer decides what happens next.
 
 Explicitly not yet: auth, cron, deploy, WhatsApp API, billing, signup.
 

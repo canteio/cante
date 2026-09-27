@@ -6,7 +6,9 @@ import {
 } from "@/lib/auth/config";
 import { updateSupabaseSession } from "@/lib/supabase/middleware";
 
+// Onboarding uses the same workspace gate; existing login destinations stay unchanged.
 const PROTECTED_PREFIXES = [
+  "/onboarding",
   "/catalogue",
   "/chat",
   "/checklist",
@@ -19,15 +21,14 @@ const PROTECTED_PREFIXES = [
   "/import-monitor",
 ];
 
+const PUBLIC_API_PATHS = new Set(["/api/demo-login", "/api/logout", "/api/waitlist"]);
+
 export async function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   const isProtectedPage = PROTECTED_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
-  const isProtectedApi =
-    pathname.startsWith("/api/") &&
-    pathname !== "/api/demo-login" &&
-    pathname !== "/api/logout";
+  const isProtectedApi = pathname.startsWith("/api/") && !PUBLIC_API_PATHS.has(pathname);
   const isProtected = isProtectedPage || isProtectedApi;
 
   if (!isProtected) {
@@ -76,6 +77,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/onboarding/:path*",
     "/catalogue/:path*",
     "/chat/:path*",
     "/checklist/:path*",

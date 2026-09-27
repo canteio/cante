@@ -45,7 +45,7 @@ export function getProvider(choice?: string | null): LlmProvider {
 export async function completeJson<T extends ZodType>(
   provider: LlmProvider,
   schema: T,
-  req: { system: string; prompt: string; timeoutMs?: number },
+  req: { system: string; prompt: string; timeoutMs?: number; tools?: string[] },
 ): Promise<{ value: z.infer<T>; raw: string; durationMs: number }> {
   const result = await provider.complete({ ...req, schema });
   const json = extractJson(result.text);

@@ -26,3 +26,6 @@ uigen-claude
 pasal-main
 # Operator-supplied shipment exports may contain tenant-owned data.
 import-data/
+.env.local
+.env*.local
+supabase/.temp/

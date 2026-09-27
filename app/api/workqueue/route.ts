@@ -30,12 +30,20 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
+  const includeResolvedParam = url.searchParams.get("includeResolved");
+  // A mistyped filter must not silently hide resolved tasks from an agent.
+  if (includeResolvedParam !== null && includeResolvedParam !== "true" && includeResolvedParam !== "false") {
+    return Response.json(
+      { error: "includeResolved must be 'true' or 'false'; omit it to hide resolved tasks." },
+      { status: 400 },
+    );
+  }
   const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
   if (!customerId) return Response.json({ queue: [], summary: {} });
 
   const jurisdiction = normalizeJurisdiction(url.searchParams.get("country"));
   const target = await getCustomerWithProfile(customerId);
-  const includeResolved = url.searchParams.get("includeResolved") === "true";
+  const includeResolved = includeResolvedParam === "true";
   const queue = listWorkQueue(customerId, { includeResolved }).map((row) => ({
     ...row,
     impact: listImpactForFinding(row.finding.id),
@@ -61,9 +69,24 @@ export async function POST(request: Request) {
   } catch {
     return Response.json({ error: "Request body must be valid JSON." }, { status: 400 });
   }
+  // Valid JSON can still be null or a scalar; reject it before customer lookup
+  // so agent clients receive a repairable 400 instead of an unhandled 500.
+  if (body === null || typeof body !== "object" || Array.isArray(body)) {
+    return Response.json(
+      { error: "Request body must be a JSON object containing findingId and state, or findingId and action: 'assess'." },
+      { status: 400 },
+    );
+  }
   const payload = body as Record<string, unknown>;
   const customerId = await resolveCustomerId(payload.customerId as string | undefined);
-  if (!customerId) return Response.json({ error: "No customer." }, { status: 400 });
+  // Human/agent-fixable-error audit (final sweep): tell the caller exactly what
+  // to pass instead of a bare "No customer." — matches products/lanes/suppliers/etc.
+  if (!customerId) {
+    return Response.json(
+      { error: "No customer could be resolved. Pass a valid `customerId` in the JSON request body, or omit it to use the default customer if one exists." },
+      { status: 400 }
+    );
+  }
 
   const findingId = payload.findingId as string;
   if (!findingId) return Response.json({ error: "findingId is required." }, { status: 400 });

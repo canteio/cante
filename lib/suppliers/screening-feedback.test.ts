@@ -1,0 +1,70 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import { supplierBatchRefreshError, supplierBatchScreenCompleted, supplierScreenActionLabel, supplierScreenRefreshError, supplierScreeningFeedback } from "./screening-feedback";
+
+test("supplier card screening actions name the vendor and active state", () => {
+  assert.equal(
+    supplierScreenActionLabel("Acme Metals", false),
+    "Screen Acme Metals against sanctions watchlists",
+  );
+  assert.equal(
+    supplierScreenActionLabel("Acme Metals", true),
+    "Screening Acme Metals against sanctions watchlists",
+  );
+});
+
+test("supplier screening feedback reads the route's nested row contract", () => {
+  assert.deepEqual(
+    supplierScreeningFeedback({ row: { outcome: "clear", matchCount: 0 } }),
+    {
+      kind: "success",
+      message: "Screening completed with no exact watchlist match. This is not a clearance decision.",
+    },
+  );
+
+  assert.deepEqual(
+    supplierScreeningFeedback({ row: { outcome: "match", matchCount: 1 } }),
+    {
+      kind: "attention",
+      message: "Screening found 1 potential watchlist match. Review before proceeding.",
+    },
+  );
+
+  assert.deepEqual(
+    supplierScreeningFeedback({ row: { outcome: "error", errorMessage: "Trade.gov timed out" } }),
+    {
+      kind: "error",
+      message: "Screening could not be completed: Trade.gov timed out",
+    },
+  );
+});
+
+test("supplier screening feedback rejects the obsolete response shape", () => {
+  assert.equal(supplierScreeningFeedback({ screening: { outcome: "clear" } }), null);
+});
+
+test("batch screening only counts persisted clear or match outcomes as completed", () => {
+  assert.equal(supplierBatchScreenCompleted({ row: { outcome: "clear" } }), true);
+  assert.equal(supplierBatchScreenCompleted({ row: { outcome: "match" } }), true);
+  assert.equal(supplierBatchScreenCompleted({ row: { outcome: "error" } }), false);
+  assert.equal(supplierBatchScreenCompleted({ row: null }), false);
+  assert.equal(supplierBatchScreenCompleted({ clear: true }), false);
+});
+
+test("batch refresh feedback reports screening outcomes without hiding the refresh failure", () => {
+  assert.equal(supplierBatchRefreshError(3, 1, null), null);
+  assert.equal(
+    supplierBatchRefreshError(3, 1, "Supplier service unavailable."),
+    "Screening requests finished (2 completed, 1 failed), but current results could not be refreshed: Supplier service unavailable. Reload before relying on the displayed results.",
+  );
+});
+
+test("single-screen refresh feedback prevents stale cards from looking successful", () => {
+  const screening = supplierScreeningFeedback({ row: { outcome: "clear", matchCount: 0 } });
+
+  assert.equal(supplierScreenRefreshError(screening, null), null);
+  assert.equal(
+    supplierScreenRefreshError(screening, "Supplier refresh unavailable."),
+    "Screening completed with no exact watchlist match. This is not a clearance decision. Current results could not be refreshed: Supplier refresh unavailable. Reload before relying on the displayed result.",
+  );
+});

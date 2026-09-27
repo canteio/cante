@@ -8,7 +8,7 @@ import { parseCsv } from "@/lib/catalogue/csv";
  * Trade lanes — item 3.
  *
  * A lane is what turns "Indonesia changed an export rule" into "this affects
- * your Surabaya → Rotterdam movements", and it carries the only volume and
+ * your Chicago → Rotterdam movements", and it carries the only volume and
  * value figures the exposure maths in lib/impact has to work with.
  *
  * Frequency is stored as both a label and, where known, a shipment count. The

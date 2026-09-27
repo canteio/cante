@@ -26,7 +26,11 @@ export type ActionState =
   | "irrelevant"
   | "closed";
 
-const STATES = new Set<ActionState>([
+// Exported as an ordered array (not just the Set below) so lib/workflow/openapi.ts
+// can build the /api/workqueue OpenAPI enum/summary schema from the single
+// source of truth instead of hand-duplicating the state list a second time —
+// the exact drift risk the monitor's openapi.ts header already warns about.
+export const STATES_LIST: ActionState[] = [
   "new",
   "acknowledged",
   "assigned",
@@ -34,7 +38,9 @@ const STATES = new Set<ActionState>([
   "evidence_requested",
   "irrelevant",
   "closed",
-]);
+];
+
+const STATES = new Set<ActionState>(STATES_LIST);
 
 /** Terminal states cannot be left except by explicitly reopening. */
 const TERMINAL = new Set<ActionState>(["irrelevant", "closed"]);
@@ -62,7 +68,14 @@ export function getAction(findingId: string): FindingAction | undefined {
 
 export function transition(input: TransitionInput): FindingAction {
   if (!STATES.has(input.state)) {
-    throw new WorkflowError(`Unknown state "${input.state}".`);
+    // Agent-usability audit: an AI client guessing at the state enum only
+    // learns it guessed wrong, not what the right values are. List them so
+    // the caller can self-correct without reading source, matching the
+    // "describe the expected shape" pattern already used by the JSON-body
+    // guards on /api/workqueue and /api/llm.
+    throw new WorkflowError(
+      `Unknown state "${input.state}". Valid states: ${Array.from(STATES).join(", ")}.`,
+    );
   }
   const finding = db.select().from(findings).where(eq(findings.id, input.findingId)).get();
   if (!finding) throw new WorkflowError("Finding not found.");

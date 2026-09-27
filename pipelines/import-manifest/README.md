@@ -59,8 +59,11 @@ IDs. The worker does not choose a default tenant.
    to Supabase; this state is not included in `sync-supabase.ts`. Hosted UI/API
    reads use the signed-in session and RLS, never the worker secret. Do not run
    independent SQLite and Supabase workers for the same monitoring workspace.
-3. Run `npm run imports:refresh`. Leave the shipment path unset to record the
-   blocker while refreshing real recalls. To inspect sample ingestion, point
+3. Run `npm run imports:validate` first. It checks the configured snapshot's
+   complete contract without contacting CPSC or writing customer storage; pass a
+   one-off path with `npm run imports:validate -- /path/to/shipments.json`.
+   Then run `npm run imports:refresh`. Leave the shipment path unset to record
+   the blocker while refreshing real recalls. To inspect sample ingestion, point
    it at `pipelines/import-manifest/fixtures/sample-export.json`; this is
    visibly synthetic and produces zero importer leads.
 4. Open `/import-monitor` while logged in. Use Cargo, Shipper country,
@@ -152,7 +155,33 @@ Also accepts `importer` (substring), `hsChapter`, and
 auth returns 401, storage failure returns 503. Middleware also protects the
 page and API. Requests cannot choose another tenant: the API resolves the
 session's workspace. The response includes `status`, `sources`, `updatedAt`,
-`caveats`, `total`, and paginated `results`; responses are private/no-store.
+`caveats`, `total`, and paginated `results`; blocked/failed sources include an
+operator-safe `nextAction` recovery step. Responses are private/no-store.
+
+Runnable curl examples (an agent still needs a logged-in session cookie —
+this is a workspace-scoped endpoint, not a public API key; swap `$COOKIE` for
+your authenticated `Cookie:` header value). These mirror the worked examples
+already embedded in `/api/import-monitor/openapi` so an agent can copy either
+one and get a consistent shape back:
+
+```sh
+# Default query: named-importer leads only, first page.
+curl -s -H "Cookie: $COOKIE" \
+  "https://<host>/api/import-monitor" | jq .
+
+# Narrow to strollers shipped from China, including commodity-overlap
+# candidates (not just exact CPSC-name matches) — see the `kind` caveat
+# in the response before treating a candidate as a confirmed lead.
+curl -s -H "Cookie: $COOKIE" \
+  "https://<host>/api/import-monitor?cargo=stroller&country=CN&kind=all" | jq .
+
+# Page 2 of up to 100 results.
+curl -s -H "Cookie: $COOKIE" \
+  "https://<host>/api/import-monitor?limit=100&offset=100" | jq .
+
+# Discover the full parameter/response contract without a session at all.
+curl -s "https://<host>/api/import-monitor/openapi" | jq .
+```
 
 ## Verification
 

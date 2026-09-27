@@ -17,6 +17,17 @@ test("HTTP includes machine-readable param docs on invalid filters", async () =>
   const body = await response.json();
   assert.ok(body.params.limit.max === 100, "params doc should describe the limit field");
 });
+test("HTTP surfaces a human-fixable message for an invalid country filter, not just 'Invalid'", async () => {
+  // Regression check for the query.ts custom regex message: an agent (or a
+  // human copy-pasting from a shipper address) that sends a lowercase or
+  // 3-letter country code should be told the exact fix ("two-letter
+  // uppercase ISO-3166-1 alpha-2") in the 400 body itself, not a bare
+  // zod "Invalid" that forces a second lookup against the params doc.
+  const response = await respondToMonitorQuery(new Request("https://cante.test/api/import-monitor?country=china"), "tenant", async () => { throw new Error("must not read"); });
+  assert.equal(response.status, 400);
+  const body = await response.json();
+  assert.match(body.issues.fieldErrors.country[0], /two-letter uppercase ISO-3166-1/);
+});
 test("HTTP ignores injected tenant IDs and returns private no-store coverage even when never run", async () => {
   let tenant = "";
   const response = await respondToMonitorQuery(new Request("https://cante.test/api/import-monitor?customerId=other-tenant"), "session-tenant", async id => { tenant = id; return null; });

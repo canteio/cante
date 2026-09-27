@@ -842,10 +842,21 @@ a:hover {
 .landing-title { margin: 0; color: #f5f5f2; font-family: var(--font-serif),Georgia,serif; font-size: clamp(44px,4.8vw,70px); font-weight: 500; line-height: 0.98; letter-spacing: 0; }
 .landing-title span { white-space: normal; }
 .landing-copy { width: min(100%,590px); margin: clamp(24px,3.6vh,34px) auto 0; color: rgba(255,255,255,0.68); font-size: clamp(15px,1.25vw,17px); line-height: 1.68; opacity: 1; }
-.landing-actions { flex-direction: column; justify-content: center; gap: 10px; margin-top: clamp(28px,4vh,40px); }
-.landing-cta { min-height: 48px; padding: 0 20px; border-radius: 6px; background: #f5f5f2; box-shadow: none; font-size: 0.86rem; font-weight: 700; }
-.landing-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 26px rgba(0,0,0,0.22); }
-.landing-access-note { color: rgba(255,255,255,0.4); font-size: 0.72rem; }
+.landing-actions { flex-direction: column; justify-content: center; gap: 10px; margin-top: clamp(28px,4vh,40px); scroll-margin-top: 40vh; }
+.landing-waitlist-wrap { display: grid; justify-items: center; gap: 10px; width: min(100%,510px); }
+.landing-waitlist { position: relative; display: grid; grid-template-columns: minmax(0,1fr) auto; width: 100%; padding: 4px; border: 1px solid rgba(255,255,255,0.25); border-radius: 9px; background: rgba(8,8,8,0.62); box-shadow: 0 14px 44px rgba(0,0,0,0.26); backdrop-filter: blur(14px); }
+.landing-waitlist input[type="email"] { min-width: 0; height: 48px; padding: 0 15px; border: 0; outline: 0; background: transparent; color: #fff; font: inherit; font-size: 0.9rem; }
+.landing-waitlist input[type="email"]::placeholder { color: rgba(255,255,255,0.62); }
+.landing-waitlist:focus-within { border-color: rgba(255,255,255,0.58); box-shadow: 0 0 0 3px rgba(255,255,255,0.1),0 14px 44px rgba(0,0,0,0.26); }
+.landing-honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.landing-cta { min-height: 48px; padding: 0 20px; border: 0; border-radius: 6px; background: #f5f5f2; box-shadow: none; font-size: 0.86rem; font-weight: 700; }
+.landing-cta:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 26px rgba(0,0,0,0.22); }
+.landing-cta:disabled { cursor: wait; opacity: 0.68; }
+.landing-access-note { color: rgba(255,255,255,0.65); font-size: 0.72rem; }
+.landing-waitlist-error { margin: 0; color: #ffc7c2; font-size: 0.76rem; }
+.landing-waitlist-success { display: flex; align-items: center; gap: 11px; min-height: 58px; padding: 8px 18px 8px 10px; border: 1px solid rgba(255,255,255,0.22); border-radius: 9px; background: rgba(8,8,8,0.62); color: #fff; box-shadow: 0 14px 44px rgba(0,0,0,0.26); backdrop-filter: blur(14px); }
+.landing-waitlist-success span { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: #f5f5f2; color: #111; }
+.landing-waitlist-success p { margin: 0; font-size: 0.86rem; font-weight: 600; }
 
 .landing-stream {
   position: absolute;
@@ -909,6 +920,12 @@ a:hover {
   .landing-copy { margin-top: 20px; font-size: 15px; line-height: 1.6; }
   .landing-kicker { margin-bottom: 16px; }
   .landing-actions { margin-top: 24px; }
+  .landing-waitlist { width: min(100%,390px); }
+  .landing-waitlist input[type="email"] { padding: 0 11px; }
+  .landing-cta { padding: 0 14px; }
+  .landing-cta span { display: none; }
+  .landing-cta::before { content: "Join"; }
+  .landing-cta:disabled::before { content: "Joining…"; }
   .landing-access-note { display: none; }
   .landing-stream { grid-template-columns: 1fr; gap: 2px; width: calc(100% - 44px); }
   .landing-stream-label { padding-bottom: 2px; }
@@ -2191,6 +2208,16 @@ a:hover {
   cursor: not-allowed;
   opacity: 0.5;
   background: var(--app-surface);
+  /* .btn-primary sets white text for its blue background; overriding only
+     the background here (not color) left disabled primary buttons with
+     white text on a near-white background — the label vanished entirely
+     (e.g. "Save Product" looked blank). opacity: 0.5 above already conveys
+     "disabled" without needing the background swap, so drop it and let the
+     primary variant keep its own readable color at reduced opacity. */
+}
+.btn-primary:disabled {
+  background: #0284c7;
+  color: #fff;
 }
 
 .btn-primary {
@@ -3049,6 +3076,24 @@ textarea.input {
   flex: 1 1 180px;
 }
 
+/* Screen-reader-only live region for ChipInput's add/remove announcements —
+   visually hidden but still read by assistive tech, standard accessible
+   pattern (not display:none, which screen readers also skip). See the
+   fuller .chip-input/.chip-field ruleset further down this file (added
+   alongside the profile/catalogue redesign) for the chip component's
+   visible styling. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .btn-small {
   font-size: 12px;
   padding: 4px 10px;
@@ -3195,3 +3240,67 @@ textarea.input {
 .import-monitor-result { padding: 20px 0; border-top: 1px solid var(--border); }
 .import-monitor-result h2 { font-size: 18px; }
 .import-monitor p, .import-monitor li { line-height: 1.6; }
+/* Programmatic focus target for paged results (see panel.tsx resultsHeadingRef):
+   moves keyboard-user focus to the updated status line after Previous/Next so
+   there's a visible cue, matching the aria-live announcement screen readers
+   already get. A plain <p> has no default focus ring in most resets, so make
+   one explicit instead of silently relying on (and being at the mercy of)
+   whatever the browser default happens to be. */
+.import-monitor [tabindex="-1"]:focus-visible { outline: 2px solid var(--accent, #2563eb); outline-offset: 2px; border-radius: 3px; }
+
+/* UI/UX friction (mobile layout — next-undone item from company-plan): the
+   filter form's inputs/select carried no explicit width, so on a phone
+   viewport flex-wrap let short fields (Country, HS chapter) sit side-by-side
+   at their intrinsic ~fit-content size while long ones (Cargo, Importer)
+   wrapped mid-row — an inconsistent, cramped grid that's hard to scan and
+   whose 32px-tall .btn buttons (page-actions Previous/Next, and the form's
+   Search/Reset) fall below the ~44px touch-target minimum from Apple's HIG /
+   Android's Material guidance, a real tap-accuracy problem on a touchscreen.
+   Below 640px, stack every filter field to full width (one per row, easy to
+   scan top-to-bottom) and grow all .import-monitor buttons to a 44px tall
+   touch target, still catching the same class of device as the existing
+   720px/820px breakpoints above target for the rest of the shell. */
+@media (max-width: 640px) {
+  .import-monitor-form { flex-direction: column; align-items: stretch; }
+  .import-monitor-form label { width: 100%; }
+  .import-monitor-form input, .import-monitor-form select { width: 100%; }
+  .import-monitor .btn { height: 44px; padding: 0 16px; }
+  .import-monitor .page-actions { flex-direction: column; align-items: stretch; }
+  .import-monitor .page-actions .btn { width: 100%; }
+}
+
+/* Profile/catalogue setup: real values stay dark; examples are explicitly labelled
+   and italic. Scope these rules so other operational pages retain their styling. */
+.profile-form .input::placeholder,
+.catalogue-editor .input::placeholder,
+.chip-input input::placeholder { color: var(--text-faint); font-style: italic; opacity: 1; }
+.profile-completion { color: var(--text-secondary); margin: 0; }
+.profile-section-fields { display: grid; gap: 1rem; margin-top: 1rem; }
+.profile-disclosure > summary { cursor: pointer; font-weight: 600; }
+.profile-disclosure > summary .muted { margin-left: 12px; font-weight: 400; font-size: 0.8rem; }
+.profile-code-basis { display: grid; gap: 4px; margin-top: 8px; font-size: 0.8rem; color: var(--text-secondary); }
+.chip-field { min-width: 0; }
+.chip-field > .side-label { display: block; padding: 0; margin-bottom: 4px; }
+.chip-input { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 8px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--app-background); }
+.chip-input:focus-within { outline: 2px solid var(--blue); outline-offset: 2px; }
+.chip-input input { flex: 1 1 150px; width: 0; min-width: 100px; border: 0; outline: 0; padding: 6px 0; background: transparent; color: var(--text); font: inherit; }
+.chip-input-value { display: inline-flex; align-items: center; max-width: 100%; white-space: normal; overflow-wrap: anywhere; gap: 4px; }
+.chip-input button { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; min-width: 28px; min-height: 28px; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--text-secondary); }
+.chip-input button:hover:not(:disabled) { background: var(--app-surface-active); }
+.chip-input button:disabled { opacity: 0.5; cursor: not-allowed; }
+.chip-input button:focus-visible,
+.profile-disclosure > summary:focus-visible,
+.profile-form .input:focus-visible,
+.catalogue-editor .input:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.catalogue-add-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.catalogue-tools { display: grid; gap: 1rem; margin-bottom: 1.5rem; }
+@media (max-width: 640px) { .catalogue-add-fields { grid-template-columns: minmax(0, 1fr); } }
+
+/* Separate setup sections without adding a new visual token system. */
+.profile-form { display: grid; gap: 1rem; padding-top: 1rem; }
+
+/* First-run setup uses the app's existing controls, in one focused column. */
+.onboarding-page { min-height: 100dvh; display: grid; place-items: center; padding: 24px; overflow: auto; }
+.onboarding-card { width: 100%; max-width: 560px; }
+.onboarding-card .page-head { margin-top: 16px; }
+.onboarding-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }

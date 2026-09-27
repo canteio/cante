@@ -2,7 +2,7 @@
 CANTE_APP_URL=http://localhost:3000
 
 # Auth
-# demo = local ptma/ptma cookie gate
+# demo = local demo/demo cookie gate
 # supabase = Supabase email/password auth via @supabase/ssr
 CANTE_AUTH_MODE=demo
 NEXT_PUBLIC_CANTE_AUTH_MODE=demo
@@ -13,8 +13,13 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 CANTE_DATA_BACKEND=sqlite
 # Local sync worker only. Never add this to Vercel or expose it as NEXT_PUBLIC_*.
 SUPABASE_SECRET_KEY=
-CANTE_SUPABASE_CUSTOMER_SLUG=pt-ma
+CANTE_SUPABASE_CUSTOMER_SLUG=example-company
 CANTE_SYNC_SUPABASE=false
+# Separately generated, revocable Supabase server secret used only by this route.
+# It still has service-role power; keep server-only and never expose as NEXT_PUBLIC_*.
+WAITLIST_WRITE_KEY=
+# Random server-only secret used to hash waitlist IPs for abuse prevention.
+WAITLIST_HASH_SALT=
 
 # LLM provider
 # Local: claude-code / codex-cli / antigravity. Vercel: api.

@@ -38,6 +38,24 @@ test("dismissal requires a reason, assignment requires an assignee", async () =>
   );
 });
 
+test("an unknown state error lists the valid states, so an agent client can self-correct", async () => {
+  const { customerId, dbPath } = await operatingDb();
+  const { transition, WorkflowError } = await import("@/lib/workflow/actions");
+  const id = `w1b-${customerId}`;
+  seedFinding(dbPath, customerId, { id, title: "Permendag 12/2026" });
+
+  assert.throws(
+    () => transition({ findingId: id, customerId, state: "bogus" as never }),
+    (e: Error) =>
+      e instanceof WorkflowError &&
+      /Unknown state "bogus"/.test(e.message) &&
+      /Valid states: new, acknowledged, assigned, forwarded_to_broker, evidence_requested, irrelevant, closed/.test(
+        e.message,
+      ),
+    "the error should enumerate the enum, not just reject the guess",
+  );
+});
+
 test("the full broker round trip is recorded, and closing is sticky", async () => {
   const { customerId, dbPath } = await operatingDb();
   const { transition, getAction, listWorkQueue, WorkflowError } = await import(

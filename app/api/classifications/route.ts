@@ -7,6 +7,7 @@ import {
   resolveProductCodes,
 } from "@/lib/catalogue/classifications";
 import type { HsCodeTier } from "@/lib/checks/facts";
+import { CLASSIFICATION_TIERS } from "@/lib/catalogue/classifications-contract";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -20,7 +21,7 @@ export const dynamic = "force-dynamic";
  * merely conventional.
  */
 
-const TIERS = new Set(["document", "human", "lead", "guess"]);
+const TIERS = new Set<string>(CLASSIFICATION_TIERS);
 
 export async function GET(request: Request) {
   const url = new URL(request.url);

@@ -136,7 +136,7 @@ async function mapCustomers(db: Database.Database, cloud: SupabaseClient | null)
   if (localCustomers.length === 0) throw new Error("The local database has no customers.");
 
   const mapping = new Map<string, string>();
-  const preferredSlug = process.env.CANTE_SUPABASE_CUSTOMER_SLUG ?? "pt-ma";
+  const preferredSlug = process.env.CANTE_SUPABASE_CUSTOMER_SLUG!.trim();
 
   for (const [index, customer] of localCustomers.entries()) {
     const localId = String(customer.id);
@@ -310,6 +310,9 @@ async function verify(
 }
 
 async function main() {
+  if (!process.env.CANTE_SUPABASE_CUSTOMER_SLUG?.trim()) {
+    throw new Error("Set CANTE_SUPABASE_CUSTOMER_SLUG to the intended Supabase tenant slug (for example, example-company) before running sync, pull, verify, or dry-run.");
+  }
   const dbPath = process.env.CANTE_DB_PATH || path.join(process.cwd(), "cante.db");
   const db = new Database(dbPath, { readonly: !pullInputs });
   db.pragma("foreign_keys = ON");

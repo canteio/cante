@@ -8,6 +8,9 @@ import {
   type SupplierDocument,
 } from "@/lib/db/schema";
 import { listProducts } from "@/lib/catalogue/products";
+import { EVIDENCE_STATUSES, EVIDENCE_TYPES, type EvidenceStatus } from "./contract";
+
+export { EVIDENCE_TYPES, type EvidenceStatus } from "./contract";
 
 /**
  * Supplier evidence tracking — item 9.
@@ -24,33 +27,8 @@ import { listProducts } from "@/lib/catalogue/products";
  * still manual, and the status says so rather than implying a message went out.
  */
 
-export type EvidenceStatus =
-  | "not_requested"
-  | "requested"
-  | "received"
-  | "expired"
-  | "rejected"
-  | "not_applicable";
-
-const STATUSES = new Set<EvidenceStatus>([
-  "not_requested",
-  "requested",
-  "received",
-  "expired",
-  "rejected",
-  "not_applicable",
-]);
-
-export const EVIDENCE_TYPES = [
-  "certificate_of_origin",
-  "material_declaration",
-  "reach",
-  "rohs",
-  "pfas",
-  "sni",
-  "test_report",
-  "other",
-] as const;
+const STATUSES = new Set<EvidenceStatus>(EVIDENCE_STATUSES);
+const DOCUMENT_TYPES = new Set<string>(EVIDENCE_TYPES);
 
 export class EvidenceError extends Error {
   readonly status = 400;
@@ -75,6 +53,11 @@ export interface EvidenceInput {
 }
 
 export function upsertEvidence(input: EvidenceInput): SupplierDocument {
+  // Reject values outside the discovery enum instead of silently persisting a
+  // document type that API clients cannot read back through the contract.
+  if (!DOCUMENT_TYPES.has(input.docType)) {
+    throw new EvidenceError(`Unknown document type "${input.docType}".`);
+  }
   if (!STATUSES.has((input.status ?? "not_requested") as EvidenceStatus)) {
     throw new EvidenceError(`Unknown status "${input.status}".`);
   }

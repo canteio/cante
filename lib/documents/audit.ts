@@ -12,6 +12,7 @@ import {
 import { getProductBySku, listProducts } from "@/lib/catalogue/products";
 import { listClassifications, recordClassification } from "@/lib/catalogue/classifications";
 import { compareDuty } from "@/lib/tariff/rates";
+import { DOCUMENT_TYPES } from "@/lib/documents/contract";
 
 /**
  * Document audit — item 8.
@@ -77,15 +78,7 @@ export interface IngestInput {
   text: string;
 }
 
-const DOC_TYPES = new Set([
-  "peb",
-  "commercial_invoice",
-  "packing_list",
-  "purchase_order",
-  "customs_entry",
-  "bill_of_lading",
-  "other",
-]);
+const DOC_TYPES = new Set<string>(DOCUMENT_TYPES);
 
 function cleanNumber(raw: string | undefined): number | null {
   if (!raw) return null;

@@ -38,7 +38,7 @@ export const maxDuration = 800;
  * confident web answer that reads like a check result is the exact failure this
  * whole product is built to avoid.
  */
-const INDONESIA_SYSTEM_PROMPT = `You are Cante's Chief Regulatory Copilot for Indonesian businesses and manufacturers (such as PT MA).
+const INDONESIA_SYSTEM_PROMPT = `You are Cante's Chief Regulatory Copilot for Indonesian businesses and manufacturers.
 
 You have two sources of truth:
 1. **The stored run data below.** This is the authority on what the monitor actually checked, what it found, which sources succeeded or failed, and what was sent to the customer. If data is absent, say so plainly.

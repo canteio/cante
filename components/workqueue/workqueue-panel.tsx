@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Inbox, CheckCircle2, Send, X, Clock, ExternalLink, AlertCircle, Copy, Check } from "lucide-react";
 import type { JurisdictionName } from "@/lib/countries";
 import { CountryTabs } from "@/components/dashboard/country-tabs";
@@ -83,21 +83,43 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
   const [summary, setSummary] = useState<Record<string, number>>({});
   const [includeResolved, setIncludeResolved] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [actionModal, setActionModal] = useState<ActionModalState | null>(null);
+  // UI/UX + a11y friction (workqueue-panel is the last of the three known
+  // modal/popover patterns to get this fix — chat-panel's jurisdiction
+  // picker and catalogue-panel's Add Product form already return focus):
+  // this modal only *closed* on Escape/backdrop/Cancel, it never returned
+  // keyboard focus to whichever "Acknowledge / Assign / Forward / Close /
+  // Mark Irrelevant" button opened it, so keyboard and screen-reader users
+  // got dropped back at the top of the document instead of where they were.
+  // Track the button that opened the modal and refocus it on every close path.
+  const triggerRef = useRef<HTMLElement | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
+    setLoadError(null);
+    setError(null);
+    // Hide stale counts while reloading; a failed request is not an empty queue.
+    setSummary({});
     try {
       const res = await fetch(
         `/api/workqueue?includeResolved=${includeResolved}&country=${encodeURIComponent(country)}`,
       );
+      if (!res.ok) {
+        const failure: unknown = await res.json().catch(() => null);
+        const message = failure && typeof failure === "object" && "error" in failure
+          && typeof failure.error === "string" && failure.error.trim()
+          ? failure.error
+          : `Could not load tasks (HTTP ${res.status}). Please retry.`;
+        throw new Error(message);
+      }
       const data = await res.json();
       setQueue(data.queue ?? []);
       setSummary(data.summary ?? {});
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setLoadError(e instanceof Error ? e.message : "Could not load tasks. Please retry.");
     } finally {
       setLoading(false);
     }
@@ -108,12 +130,32 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
   }, [load]);
 
   async function copyDraft(key: string, text: string) {
-    await navigator.clipboard.writeText(text);
-    setCopiedKey(key);
-    setTimeout(() => setCopiedKey(null), 2000);
+    // UI/UX friction: navigator.clipboard.writeText() rejects silently in
+    // browsers without clipboard permission (common in iframes/insecure
+    // contexts) or without focus — the button just did nothing and the user
+    // had no idea whether the draft was copied or the click was ignored.
+    // Surface the failure via the existing error banner instead of letting
+    // the promise rejection vanish into the console.
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey(null), 2000);
+    } catch {
+      setError("Could not copy to clipboard — your browser may be blocking clipboard access. Select and copy the text manually.");
+    }
+  }
+
+  function closeActionModal() {
+    setActionModal(null);
+    // Return focus to the button that opened the modal (WAI-ARIA APG dialog
+    // pattern) instead of leaving keyboard focus stranded on <body>.
+    triggerRef.current?.focus();
   }
 
   function openActionModal(findingId: string, state: string) {
+    // Capture the currently-focused element (the trigger button — a click
+    // focuses its target before onClick fires) so we can restore focus later.
+    triggerRef.current = document.activeElement as HTMLElement | null;
     if (state === "acknowledged") {
       void submitAction({ findingId, state });
       return;
@@ -124,7 +166,7 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
         state,
         title: "Assign Finding to Team Member",
         primaryLabel: "Assignee Name / Email *",
-        primaryPlaceholder: "e.g. Budi Santoso (Compliance Lead)",
+        primaryPlaceholder: "e.g. Example Reviewer (Compliance Lead)",
         primaryValue: "",
         secondaryLabel: "Target Due Date (Optional)",
         secondaryPlaceholder: "YYYY-MM-DD",
@@ -138,7 +180,7 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
         state,
         title: "Forward Finding to Customs Broker (PPJK / CHB)",
         primaryLabel: "Broker / PPJK Agency Name *",
-        primaryPlaceholder: "e.g. PT Trans Samudera PPJK Surabaya",
+        primaryPlaceholder: "e.g. PT Example Logistics Jakarta",
         primaryValue: "",
       });
       return;
@@ -149,7 +191,7 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
         state,
         title: "Request Evidence from Supplier",
         primaryLabel: "Supplier / Counterparty Name *",
-        primaryPlaceholder: "e.g. LG Chem Ltd (Korea)",
+        primaryPlaceholder: "e.g. Acme Chemicals (Korea)",
         primaryValue: "",
       });
       return;
@@ -189,7 +231,7 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
       const data = await res.json();
       if (!res.ok) setError(data.error ?? "Could not update task.");
       else {
-        setActionModal(null);
+        closeActionModal();
         await load();
       }
     } catch (e: any) {
@@ -205,6 +247,22 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
     });
     if (res.ok) await load();
   }
+
+  // UI/UX + accessibility friction: the action modal below had no keyboard
+  // escape hatch and no dialog semantics — a keyboard/screen-reader user had
+  // to tab all the way to the visible "Cancel" button to back out (and a
+  // screen reader announced no dialog role at all), while a mouse user
+  // clicking the dimmed backdrop got nothing, unlike every other modal
+  // pattern on the web. Standard WAI-ARIA APG dialog pattern: Escape closes,
+  // role="dialog" + aria-modal="true" + aria-labelledby announce it.
+  useEffect(() => {
+    if (!actionModal) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") closeActionModal();
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [actionModal]);
 
   return (
     <div className="main-scroll">
@@ -231,15 +289,23 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
         </button>
       </div>
 
-      {error && <div className="pill pill-bad" style={{ margin: "1rem 0" }}>{error}</div>}
+      {/* UI/UX friction sweep (a11y): this error banner and the loading
+          state below were plain divs with no ARIA role, so screen-reader
+          users got zero notification when a task update failed or a
+          reload was in progress — matches the role="alert"/role="status"
+          pattern already established in app/import-monitor/panel.tsx. */}
+      {error && <div className="pill pill-bad" role="alert" style={{ margin: "1rem 0" }}>{error}</div>}
 
       {/* Modal Action Sheet */}
       {actionModal && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 16 }}>
-          <div className="card" style={{ maxWidth: 520, width: "100%", background: "var(--app-surface)", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.2)" }}>
+        <div
+          style={{ position: "fixed", inset: 0, background: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 16 }}
+          onClick={(e) => { if (e.target === e.currentTarget) closeActionModal(); }}
+        >
+          <div className="card" role="dialog" aria-modal="true" aria-labelledby="action-modal-title" style={{ maxWidth: 520, width: "100%", background: "var(--app-surface)", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.2)" }}>
             <div className="card-head" style={{ justifyContent: "space-between" }}>
-              <h2 style={{ fontSize: "1.1rem" }}>{actionModal.title}</h2>
-              <button className="icon-btn" onClick={() => setActionModal(null)}><X size={14} /></button>
+              <h2 id="action-modal-title" style={{ fontSize: "1.1rem" }}>{actionModal.title}</h2>
+              <button className="icon-btn" aria-label="Close dialog" onClick={closeActionModal}><X size={14} /></button>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginTop: "1rem" }}>
               <div>
@@ -264,7 +330,7 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
                 </div>
               )}
               <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem", marginTop: "1rem" }}>
-                <button className="btn" onClick={() => setActionModal(null)}>Cancel</button>
+                <button className="btn" onClick={closeActionModal}>Cancel</button>
                 <button
                   className="btn btn-primary"
                   disabled={!actionModal.primaryValue.trim()}
@@ -301,11 +367,19 @@ export function WorkQueuePanel({ country }: { country: JurisdictionName }) {
       )}
 
       {loading ? (
-        <div className="empty">Loading tasks…</div>
+        <div className="empty" role="status">Loading tasks…</div>
+      ) : loadError ? (
+        <div role="alert" className="card">
+          <p>{loadError}</p>
+          <button className="btn" onClick={() => void load()}>Retry loading tasks</button>
+        </div>
       ) : queue.length === 0 ? (
         <div className="empty">
           <Inbox size={24} strokeWidth={1.5} style={{ marginBottom: 8 }} />
-          <p>No open compliance tasks. Your operations are currently 100% compliant with active regulations.</p>
+          {/* An empty queue means "nothing currently flagged," not "certified compliant" —
+              coverage depends on which regulations Cante is actively monitoring for this
+              workspace. Overclaiming compliance here is a liability risk, not just a UX nit. */}
+          <p>No open compliance tasks. Nothing is currently flagged for the regulations Cante is monitoring — this is not a compliance certification.</p>
         </div>
       ) : (
         <div className="checklist-grid">

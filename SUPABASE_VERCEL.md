@@ -21,25 +21,45 @@ Supabase session and RLS, and places those bounded excerpts in the model prompt.
 
 ## 1. Apply The Schema
 
-In Supabase SQL Editor, run the complete file:
-
-`supabase/migrations/202608230001_cante_production.sql`
+Create a Supabase project, then apply the SQL files in `supabase/migrations/`
+in filename order using the SQL Editor or your migration workflow.
 
 It creates the operational tables, tenant membership policies, keyword/vector
-retrieval functions, and indexes. It is idempotent, so rerunning it is safe.
+retrieval functions, indexes, and the server-only waitlist RPC. It is idempotent,
+so rerunning it is safe. The waitlist table has RLS enabled and is not readable
+by anonymous clients. Only the Next.js server's dedicated waitlist credential can
+execute the validated, duplicate-safe RPC with its atomic per-IP rate limit.
 
-Confirm the existing user is still linked:
+Create or invite a user through Supabase Authentication. Copy that user's UUID.
+Create a tenant and membership in SQL Editor, replacing the example values and
+`YOUR_AUTH_USER_UUID` with your own values:
 
 ```sql
-select c.name as customer, u.email, cu.role
+insert into public.customers (slug, name, country, city)
+values ('example-company', 'Example Company', 'United States', 'Chicago');
+
+insert into public.customer_users (customer_id, user_id, role)
+select id, 'YOUR_AUTH_USER_UUID'::uuid, 'owner'
+from public.customers where slug = 'example-company';
+```
+
+Verify the intended user and tenant are linked:
+
+```sql
+select c.slug, c.name, u.email, cu.role
 from public.customer_users cu
 join public.customers c on c.id = cu.customer_id
 join auth.users u on u.id = cu.user_id;
 ```
 
-The expected row is `MA / cante@cante.cante / owner`.
+No tenant or user is supplied by the repository. The values above are fictional.
 
-## 2. Import SQLite Once
+## 2. Initialize the local worker and optionally import data
+
+For a new local ledger, run `npm run db:push` and `npm run db:seed`.
+Seeding creates official source definitions and a fictional Example Company;
+replace its profile with your own verified inputs before monitoring operations.
+For an existing ledger, review its intended tenant mapping before importing.
 
 Put the Supabase secret key in the local Mac's `.env` temporarily. This is the
 only process that needs it:
@@ -47,7 +67,7 @@ only process that needs it:
 ```txt
 NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
 SUPABASE_SECRET_KEY=sb_secret_...
-CANTE_SUPABASE_CUSTOMER_SLUG=pt-ma
+CANTE_SUPABASE_CUSTOMER_SLUG=YOUR_TENANT_SLUG
 ```
 
 Never prefix the secret with `NEXT_PUBLIC_`, commit it, or add it to Vercel.
@@ -60,9 +80,11 @@ npm run db:cloud:sync
 npm run db:cloud:verify
 ```
 
-The importer preserves record IDs and maps the local MA customer to the
-existing Supabase customer with slug `pt-ma`, so the existing owner membership
-continues to authorize the imported rows. Upserts make the process resumable.
+The importer preserves record IDs and maps the first local customer to the
+explicit `CANTE_SUPABASE_CUSTOMER_SLUG`. This variable is required for dry-run,
+sync, pull, and verification. Use the slug created above for your deployment.
+Additional local customers use slugs derived from their names. Review these
+mappings before syncing. Upserts make the process resumable.
 Verification proves that every local record ID exists in Supabase; it
 deliberately allows additional cloud-created chats, memories, products, and
 uploads.
@@ -78,7 +100,7 @@ CANTE_LLM=claude-code
 CANTE_SYNC_SUPABASE=true
 NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
 SUPABASE_SECRET_KEY=sb_secret_...
-CANTE_SUPABASE_CUSTOMER_SLUG=pt-ma
+CANTE_SUPABASE_CUSTOMER_SLUG=YOUR_TENANT_SLUG
 ```
 
 `npm run check:scheduled` will run locally, verify the result, sync all rows to
@@ -104,6 +126,10 @@ CANTE_LLM_LOCKED=true
 CANTE_HOSTED_PROVIDER=openai
 OPENAI_API_KEY=...
 OPENAI_MODEL=gpt-5
+# A separately generated, revocable Supabase server secret used only by the
+# waitlist route. It still has service-role power: never prefix with NEXT_PUBLIC_.
+WAITLIST_WRITE_KEY=sb_secret_...
+WAITLIST_HASH_SALT=GENERATE_A_RANDOM_SERVER_ONLY_VALUE
 ```
 
 For Claude instead of OpenAI:
@@ -114,8 +140,10 @@ ANTHROPIC_API_KEY=...
 ANTHROPIC_MODEL=claude-sonnet-4-20250514
 ```
 
-Do **not** add `SUPABASE_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, local CLI
-paths, Telegram credentials, or `CANTE_DB_PATH` to Vercel.
+Do **not** add the worker's `SUPABASE_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
+local CLI paths, Telegram credentials, or `CANTE_DB_PATH` to Vercel. Create a
+separate, revocable Supabase secret for `WAITLIST_WRITE_KEY`; keep it server-only
+and use it only for the waitlist RPC.
 
 ## 5. Supabase Auth URLs
 
@@ -139,7 +167,7 @@ npm run build
 Then verify in production:
 
 1. An anonymous visit to `/chat` redirects to `/login`.
-2. The owner can sign in and sees MA's migrated checks, memory, and chat.
+2. The owner can sign in and sees only their tenant’s checks, memory, and chat.
 3. A signed-in user without membership lands on `/pending`.
 4. Chat answers from the locked hosted provider.
 5. An uploaded text document appears in Supabase `trade_documents` and its

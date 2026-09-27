@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+const isDev = process.env.NODE_ENV !== "production";
+
 const config: NextConfig = {
   poweredByHeader: false,
   // better-sqlite3 is a native module — it must not be bundled by webpack.
@@ -17,7 +19,15 @@ const config: NextConfig = {
             key: "Content-Security-Policy",
             value:
               "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; " +
-              "script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; " +
+              // Next.js dev mode's bundler (HMR, react-refresh, sourcemap eval)
+              // requires 'unsafe-eval' to run at all — without it, every client
+              // component silently fails to hydrate (React never mounts, so
+              // every button/dropdown/loading-state on every page is dead,
+              // even though the underlying API calls succeed). Production
+              // builds don't need eval, so this stays scoped to dev only —
+              // the deployed CSP is unchanged and no less strict than before.
+              `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}; ` +
+              "style-src 'self' 'unsafe-inline'; " +
               "img-src 'self' data: https:; font-src 'self' data:; " +
               "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
           },

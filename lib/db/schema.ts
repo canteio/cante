@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import { integer, real, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 /**
- * Multi-tenant from day one, even though only MA exists.
+ * Multi-tenant: each customer has an isolated workspace.
  *
  * Everything hangs off customer_id, and sources are keyed by country +
  * regulation_type, so "add customer #2" or "add Vietnam" is a row rather than
@@ -30,7 +30,7 @@ export const customerProfiles = sqliteTable("customer_profiles", {
   sideOfTrade: text("side_of_trade").notNull().default("export"),
   /** JSON array of {code, basis, confirmed} */
   hsCodes: text("hs_codes", { mode: "json" }).$type<HsCode[]>().notNull(),
-  /** JSON array of KBLI codes — empty until MA's OSS/NIB is read. */
+  /** JSON array of KBLI codes — empty until customer OSS/NIB evidence is read. */
   kbliCodes: text("kbli_codes", { mode: "json" }).$type<string[]>().notNull(),
   /** JSON array of ISO country names */
   destinationMarkets: text("destination_markets", { mode: "json" })
@@ -178,7 +178,7 @@ export const checkRuns = sqliteTable("check_runs", {
   customerId: text("customer_id")
     .notNull()
     .references(() => customers.id),
-  jurisdiction: text("jurisdiction").notNull().default("Indonesia"),
+  jurisdiction: text("jurisdiction").notNull().default("United States"),
   startedAt: text("started_at").notNull().default(now),
   completedAt: text("completed_at"),
   /** running | complete | failed */
@@ -221,7 +221,7 @@ export const sourceDocuments = sqliteTable(
     customerId: text("customer_id")
       .notNull()
       .references(() => customers.id),
-    jurisdiction: text("jurisdiction").notNull().default("Indonesia"),
+    jurisdiction: text("jurisdiction").notNull().default("United States"),
     sourceId: text("source_id")
       .notNull()
       .references(() => sources.id),
@@ -300,7 +300,7 @@ export const conversations = sqliteTable("conversations", {
   customerId: text("customer_id")
     .notNull()
     .references(() => customers.id),
-  jurisdiction: text("jurisdiction").notNull().default("Indonesia"),
+  jurisdiction: text("jurisdiction").notNull().default("United States"),
   title: text("title").notNull().default("New chat"),
   createdAt: text("created_at").notNull().default(now),
   updatedAt: text("updated_at").notNull().default(now),
@@ -340,7 +340,7 @@ export const memories = sqliteTable("memories", {
   customerId: text("customer_id")
     .notNull()
     .references(() => customers.id),
-  jurisdiction: text("jurisdiction").notNull().default("Indonesia"),
+  jurisdiction: text("jurisdiction").notNull().default("United States"),
   /** product | hs_code | market | contact | operational | preference | other */
   kind: text("kind").notNull().default("other"),
   content: text("content").notNull(),
@@ -357,7 +357,7 @@ export const checklistItems = sqliteTable("checklist_items", {
   customerId: text("customer_id")
     .notNull()
     .references(() => customers.id),
-  jurisdiction: text("jurisdiction").notNull().default("Indonesia"),
+  jurisdiction: text("jurisdiction").notNull().default("United States"),
   /**
    * Stable identity for system-generated rows, so a row can be reworded without
    * orphaning the old one. Matching on the title meant every rename left a
@@ -491,7 +491,7 @@ export const productClassifications = sqliteTable("product_classifications", {
  * Origin → destination movement of a product. Item 3.
  *
  * A lane is what turns "Indonesia changed an export rule" into "this affects
- * your Surabaya → Rotterdam lane", and it carries the volume/value figures every
+ * your Chicago → Rotterdam lane", and it carries the volume/value figures every
  * exposure estimate depends on.
  */
 export const tradeLanes = sqliteTable("trade_lanes", {

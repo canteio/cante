@@ -318,7 +318,7 @@ export async function operatingDb(): Promise<{ dbPath: string; customerId: strin
   const sqlite = new Database(sharedDb.dbPath);
   sqlite
     .prepare("INSERT INTO customers VALUES (?, ?, ?, ?, ?)")
-    .run(customerId, "Test Co", "Indonesia", "Surabaya", "2026-08-16T00:00:00Z");
+    .run(customerId, "Example Company", "United States", "Chicago", "2026-08-16T00:00:00Z");
   sqlite.close();
   return { dbPath: sharedDb.dbPath, customerId };
 }

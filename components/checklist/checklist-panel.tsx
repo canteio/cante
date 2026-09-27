@@ -1,8 +1,10 @@
 "use client";
 
 import { AlertTriangle, CheckCircle2, CircleHelp, RefreshCw, Filter, Check, Clock } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { JurisdictionName } from "@/lib/countries";
+import { createStatusRequestTracker } from "@/lib/checklist/status-request";
+import { recoverChecklistStatusFailure } from "@/lib/checklist/status-failure";
 import { CountryTabs } from "@/components/dashboard/country-tabs";
 
 type ChecklistItem = {
@@ -55,12 +57,25 @@ export function ChecklistPanel({ country }: { country: JurisdictionName }) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const statusRequests = useRef(createStatusRequestTracker());
+  // UI/UX friction fix: load/refresh/setStatus previously had no error
+  // handling at all — a failed fetch (network drop, 500, auth expiry) left
+  // the panel silently stuck on "Loading checklist…" or reverted a status
+  // change with zero explanation. Surface failures via a dismissible banner
+  // (same pattern as components/workqueue/workqueue-panel.tsx) instead of
+  // failing silently.
+  const [error, setError] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
     try {
-      const data = await fetch(`/api/checklist?country=${encodeURIComponent(country)}`).then((r) => r.json());
+      const res = await fetch(`/api/checklist?country=${encodeURIComponent(country)}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Could not load checklist.");
       setItems(data.items ?? []);
+      setError(null);
+    } catch (e: any) {
+      setError(e.message ?? "Could not load checklist.");
     } finally {
       setLoading(false);
     }
@@ -69,25 +84,53 @@ export function ChecklistPanel({ country }: { country: JurisdictionName }) {
   async function refresh() {
     setRefreshing(true);
     try {
-      const data = await fetch("/api/checklist", {
+      const res = await fetch("/api/checklist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ country }),
-      }).then((r) => r.json());
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Could not recalculate checklist.");
       setItems(data.items ?? []);
+      setError(null);
+    } catch (e: any) {
+      setError(e.message ?? "Could not recalculate checklist.");
     } finally {
       setRefreshing(false);
     }
   }
 
   async function setStatus(item: ChecklistItem, status: string) {
+    const request = statusRequests.current.begin(item.id);
+    let failureStatus: number | undefined;
     setItems((prev) => prev.map((row) => (row.id === item.id ? { ...row, status } : row)));
-    await fetch("/api/checklist", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: item.id, status }),
-    });
-    await load();
+    try {
+      const res = await statusRequests.current.run(item.id, () =>
+        fetch("/api/checklist", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: item.id, status }),
+        }),
+      );
+      if (!res.ok) {
+        failureStatus = res.status;
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Could not save status change.");
+      }
+      if (statusRequests.current.isLatest(request)) setError(null);
+    } catch (e: any) {
+      // A slower failed request must not undo a newer choice for this item.
+      if (!statusRequests.current.isLatest(request)) return;
+      setItems((current) =>
+        recoverChecklistStatusFailure(current, {
+          itemId: item.id,
+          attemptedStatus: status,
+          previousStatus: item.status,
+          httpStatus: failureStatus,
+        }),
+      );
+      setError(e.message ?? "Could not save status change.");
+    }
   }
 
   useEffect(() => {
@@ -104,6 +147,12 @@ export function ChecklistPanel({ country }: { country: JurisdictionName }) {
     }
     return Array.from(cats);
   }, [items]);
+
+  useEffect(() => {
+    // Country changes and recalculation can remove the selected category.
+    // Reset only missing filters so existing obligations never appear empty.
+    if (!categories.includes(activeCategory)) setActiveCategory("all");
+  }, [categories, activeCategory]);
 
   const filteredItems = useMemo(() => {
     if (activeCategory === "all") return items;
@@ -140,6 +189,17 @@ export function ChecklistPanel({ country }: { country: JurisdictionName }) {
           </div>
         </div>
 
+        {/* UI/UX friction sweep (a11y): error banner and loading state had
+            no ARIA role, so a screen-reader user got no notification when
+            a status save/recalculate failed or a load was in progress —
+            same role="alert"/role="status" pattern applied across
+            import-monitor, workqueue, and catalogue panels this sweep. */}
+        {error && (
+          <div className="pill pill-bad" role="alert" style={{ margin: "0.75rem 0" }}>
+            {error}
+          </div>
+        )}
+
         {/* Summary Row */}
         <div className="checklist-summary">
           <SummaryCell label="Action Required" value={counts.open} tone="warn" />
@@ -154,6 +214,7 @@ export function ChecklistPanel({ country }: { country: JurisdictionName }) {
               key={cat}
               className={`pill ${activeCategory === cat ? "pill-blue" : "pill-muted"}`}
               style={{ cursor: "pointer", border: "none", padding: "6px 12px" }}
+              aria-pressed={activeCategory === cat}
               onClick={() => setActiveCategory(cat)}
             >
               {CATEGORY_LABELS[cat] ?? cat.replace(/_/g, " ")} (
@@ -164,7 +225,7 @@ export function ChecklistPanel({ country }: { country: JurisdictionName }) {
         </div>
 
         {loading ? (
-          <div className="empty">Loading checklist…</div>
+          <div className="empty" role="status">Loading checklist…</div>
         ) : filteredItems.length === 0 ? (
           <div className="empty">No checklist rows for this filter.</div>
         ) : (

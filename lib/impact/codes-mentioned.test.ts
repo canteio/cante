@@ -24,7 +24,7 @@ test("codesMentionedIn extracts a fully-dotted 10-digit HTS code from title text
 
 test("codesMentionedIn extracts a bare 6-digit heading from reasoning text", () => {
   const codes = codesMentionedIn({
-    title: null,
+    title: "",
     summaryEn: null,
     reasoning: "The measure applies to heading 630612 broadly.",
     regulationRef: null,
@@ -61,7 +61,7 @@ test("codesMentionedIn deduplicates the same code mentioned in multiple fields",
 
 test("codesMentionedIn does not read regulationRef, only title/summary/reasoning", () => {
   const codes = codesMentionedIn({
-    title: null,
+    title: "",
     summaryEn: null,
     reasoning: null,
     regulationRef: "6306.12.00.00",

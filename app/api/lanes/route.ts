@@ -22,7 +22,14 @@ export async function POST(request: Request) {
   }
   const payload = body as Record<string, unknown>;
   const customerId = await resolveCustomerId(payload.customerId as string | undefined);
-  if (!customerId) return Response.json({ error: "No customer." }, { status: 400 });
+  // Human/agent-fixable-error audit (final sweep): tell the caller exactly what
+  // to pass instead of a bare "No customer." — matches products/suppliers/workqueue/etc.
+  if (!customerId) {
+    return Response.json(
+      { error: "No customer could be resolved. Pass a valid `customerId` in the JSON request body, or omit it to use the default customer if one exists." },
+      { status: 400 }
+    );
+  }
 
   if (typeof payload.csv === "string") {
     return Response.json({ summary: importLanesCsv(customerId, payload.csv) });
@@ -67,11 +74,21 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const url = new URL(request.url);
-  const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
-  const laneId = url.searchParams.get("laneId");
-  if (!customerId || !laneId) {
-    return Response.json({ error: "customerId and laneId are required." }, { status: 400 });
+  // try/catch added: deleteLane() can throw (e.g. unknown laneId, DB error) and
+  // without this the route falls through to Next's default HTML error page
+  // instead of clean JSON — breaks any API client/agent parsing the response.
+  try {
+    const url = new URL(request.url);
+    const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
+    const laneId = url.searchParams.get("laneId");
+    if (!customerId || !laneId) {
+      return Response.json({ error: "customerId and laneId are required." }, { status: 400 });
+    }
+    return Response.json({ deleted: deleteLane(customerId, laneId) });
+  } catch (error) {
+    return Response.json(
+      { error: error instanceof Error ? error.message : "Failed to delete lane." },
+      { status: 500 },
+    );
   }
-  return Response.json({ deleted: deleteLane(customerId, laneId) });
 }

@@ -113,9 +113,24 @@ test("blocked first run still refreshes and persists real recall records", async
   const result = await refreshMonitor("a", store, { now, recalls: inputs.recalls });
   assert.equal(result.healthy, false);
   assert.equal(result.state.sources.shipments.status, "blocked");
+  assert.match(result.state.sources.shipments.nextAction ?? "", /CANTE_IMPORT_SHIPMENTS_FILE/);
+  assert.match(result.state.sources.shipments.nextAction ?? "", /npm run imports:validate/);
+  assert.match(result.state.sources.shipments.nextAction ?? "", /npm run imports:refresh/);
   assert.equal(result.state.sources.recalls.status, "ok");
   assert.equal((await store.read("a"))?.recalls.length, 1);
   assert.equal(result.state.newLeadIds.length, 0);
+});
+
+test("configured shipment failures identify the safe setting to repair without leaking its path", async () => {
+  const privatePath = "/private/customer/acme-shipments.json";
+  const result = await refreshMonitor("a", memoryStore(), { ...inputs,
+    shipments: async () => { throw new Error(`ENOENT: ${privatePath}`); } });
+  const source = result.state.sources.shipments;
+  assert.equal(source.status, "error");
+  assert.match(source.nextAction ?? "", /CANTE_IMPORT_SHIPMENTS_FILE/);
+  assert.match(source.nextAction ?? "", /npm run imports:validate/);
+  assert.match(source.nextAction ?? "", /readable normalized JSON snapshot/);
+  assert.doesNotMatch(`${source.message} ${source.nextAction}`, /acme-shipments/);
 });
 
 test("outages retain previous evidence and timestamps without claiming a successful empty refresh", async () => {

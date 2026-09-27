@@ -64,6 +64,8 @@ export interface SourceStatus {
   dataAsOf: string | null;
   count: number;
   message: string;
+  /** Operator-safe recovery instruction; omitted when no action is required. */
+  nextAction?: string;
 }
 export interface Lead {
   id: string;

@@ -43,12 +43,32 @@ export function MemoryPanel({ country }: { country: JurisdictionName }) {
   const [draft, setDraft] = useState("");
   const [draftKind, setDraftKind] = useState("other");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
-    const data = await fetch(`/api/memories?country=${encodeURIComponent(country)}`).then((r) => r.json());
-    setMemories(data.memories ?? []);
-    setLoading(false);
+    // Previously this fetch had no error handling: a failed /api/memories
+    // request (network error or non-2xx) rendered the identical "Nothing
+    // remembered yet" empty-state as a genuinely empty memory store, giving
+    // the user no way to tell a broken load from real emptiness. Same
+    // silent-failure class already fixed in workqueue/checklist/suppliers/
+    // catalogue/profile panels this cycle. Now surfaces a real error banner.
+    setError(null);
+    try {
+      const res = await fetch(`/api/memories?country=${encodeURIComponent(country)}`);
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Failed to load memories.");
+        setMemories([]);
+        return;
+      }
+      setMemories(data.memories ?? []);
+    } catch {
+      setError("Failed to load memories. Check your connection and try again.");
+      setMemories([]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -114,6 +134,12 @@ export function MemoryPanel({ country }: { country: JurisdictionName }) {
           </div>
         </div>
 
+        {/* UI/UX friction sweep (a11y) continued: memory-panel was one of the
+            last two unaudited panels (with compliance-profile-panel) missing
+            the role="alert"/role="status" pattern already applied across
+            import-monitor, suppliers, workqueue, catalogue, and checklist. */}
+        {error && <div className="pill pill-bad" role="alert" style={{ marginBottom: "1rem" }}>{error}</div>}
+
         <div className="memory-compose">
           <select value={draftKind} onChange={(event) => setDraftKind(event.target.value)}>
             {KINDS.map((kind) => (
@@ -141,7 +167,7 @@ export function MemoryPanel({ country }: { country: JurisdictionName }) {
         </div>
 
         {loading ? (
-          <div className="empty">Loading memory…</div>
+          <div className="empty" role="status">Loading memory…</div>
         ) : memories.length === 0 ? (
           <div className="empty">
             Nothing remembered yet. Facts learned in chat will appear here for confirmation.
