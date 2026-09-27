@@ -29,3 +29,5 @@ import-data/
 .env.local
 .env*.local
 supabase/.temp/
+.vercel
+.env*
