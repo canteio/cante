@@ -1,0 +1,177 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import { resetTariffCacheForTests } from "@/lib/tariff/rates";
+import { computeStackedDuty } from "@/lib/tariff/stack";
+
+/**
+ * Stubs the USITC fetch the same way rates.test.ts does — stack.ts calls
+ * through quoteDuty/lookupTariff, so real network I/O is never exercised here.
+ */
+function stubFetch(rows: unknown[], status = 200) {
+  const original = global.fetch;
+  global.fetch = (async () => ({
+    ok: status >= 200 && status < 300,
+    status,
+    json: async () => rows,
+  })) as unknown as typeof global.fetch;
+  return () => {
+    global.fetch = original;
+  };
+}
+
+test.beforeEach(() => {
+  resetTariffCacheForTests();
+});
+
+test("China-origin row with a List 3 cross-reference stacks base + Section 301 additively", async () => {
+  const restore = stubFetch([
+    {
+      htsno: "8544.42.90.00",
+      general: "2.6%",
+      special: "Free (S)",
+      other: "35%",
+      additionalDuties: "See 9903.88.03",
+    },
+  ]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "8544.42.90.00",
+      countryOfOrigin: "CN",
+      value: 10_000,
+    });
+    assert.ok(result);
+    assert.equal(result!.components.length, 2);
+    assert.equal(result!.components[0].type, "base");
+    assert.equal(result!.components[0].ratePercent, 0.026);
+    assert.equal(result!.components[1].type, "section301");
+    assert.equal(result!.components[1].ratePercent, 0.25);
+    assert.equal(result!.components[1].amount, 2500);
+
+    // 2.6% + 25% = 27.6%, additive.
+    assert.equal(result!.totalRatePercent, 0.276);
+    // 260 (base) + 2500 (301) = 2760
+    assert.equal(result!.totalAmount, 2760);
+
+    assert.ok(result!.stackingExplanation.some((line) => line.includes("stacks additively")));
+    assert.ok(result!.stackingExplanation.some((line) => line.includes("84 FR 20459")));
+    assert.deepEqual(result!.unresolvedMeasures, []);
+    assert.ok(result!.notEvaluated.some((line) => line.includes("Section 232")));
+  } finally {
+    restore();
+  }
+});
+
+test("the same HTS row from Vietnam does not pick up the China-only Section 301 measure", async () => {
+  const restore = stubFetch([
+    {
+      htsno: "8544.42.90.00",
+      general: "2.6%",
+      other: "35%",
+      additionalDuties: "See 9903.88.03",
+    },
+  ]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "8544.42.90.00",
+      countryOfOrigin: "VN",
+      value: 10_000,
+    });
+    assert.ok(result);
+    assert.equal(result!.components.length, 1);
+    assert.equal(result!.totalRatePercent, 0.026);
+    assert.equal(result!.totalAmount, 260);
+    assert.ok(
+      result!.stackingExplanation.some((line) => line.includes("not China") && line.includes("9903.88.03")),
+    );
+  } finally {
+    restore();
+  }
+});
+
+test("a China row with no Chapter 99 cross-reference reports no Section 301 applies", async () => {
+  const restore = stubFetch([{ htsno: "0101.21.00.10", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "0101.21.00.10",
+      countryOfOrigin: "CN",
+      value: 5_000,
+    });
+    assert.ok(result);
+    assert.equal(result!.components.length, 1);
+    assert.equal(result!.totalRatePercent, 0);
+    assert.ok(result!.stackingExplanation.some((line) => line.includes("no Chapter 99 cross-reference")));
+  } finally {
+    restore();
+  }
+});
+
+test("a suspended measure (List 4B) is explained but excluded from the total, never guessed", async () => {
+  const restore = stubFetch([
+    { htsno: "6109.10.00.00", general: "16.5%", additionalDuties: "9903.88.04" },
+  ]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "6109.10.00.00",
+      countryOfOrigin: "CN",
+      value: 1_000,
+    });
+    assert.ok(result);
+    assert.equal(result!.components.length, 1, "suspended measure must not add a component");
+    assert.equal(result!.totalRatePercent, 0.165);
+    assert.ok(result!.stackingExplanation.some((line) => line.includes("suspended")));
+  } finally {
+    restore();
+  }
+});
+
+test("an unrecognised Chapter 99 cross-reference is named as unresolved and voids the total rather than under-stating it", async () => {
+  const restore = stubFetch([
+    { htsno: "7606.12.30.30", general: "3%", additionalDuties: "See 9903.81.91" },
+  ]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "7606.12.30.30",
+      countryOfOrigin: "CN",
+      value: 1_000,
+    });
+    assert.ok(result);
+    assert.deepEqual(result!.unresolvedMeasures, ["9903.81.91"]);
+    assert.equal(result!.totalRatePercent, null, "an unresolved measure must not be silently excluded from the total");
+    assert.equal(result!.totalAmount, null);
+    assert.ok(result!.stackingExplanation.some((line) => line.includes("does not yet have verified")));
+  } finally {
+    restore();
+  }
+});
+
+test("returns null (not a throw) when the HTS code has no published row at all", async () => {
+  const restore = stubFetch([{ htsno: "9999.99.99.99", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "0000.00.00.00",
+      countryOfOrigin: "CN",
+      value: 1_000,
+    });
+    assert.equal(result, null);
+  } finally {
+    restore();
+  }
+});
+
+test("always names what Cante does not evaluate, regardless of what it does compute", async () => {
+  const restore = stubFetch([{ htsno: "0101.21.00.10", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "0101.21.00.10",
+      countryOfOrigin: "MX",
+      value: 1_000,
+    });
+    assert.ok(result);
+    assert.ok(result!.notEvaluated.length >= 4);
+    assert.ok(result!.notEvaluated.some((l) => l.includes("USMCA")));
+    assert.ok(result!.notEvaluated.some((l) => l.includes("AD/CVD")));
+    assert.ok(result!.notEvaluated.some((l) => l.includes("forced-labor") || l.includes("Forced-labor") || l.toLowerCase().includes("forced-labor")));
+  } finally {
+    restore();
+  }
+});
