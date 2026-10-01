@@ -109,6 +109,7 @@ export async function POST(request: Request) {
         quantity: row.quantity,
         unit: row.unit,
         claimedProgramme: row.claimedProgramme,
+        importDate: row.importDate,
       });
       return {
         rowNumber: row.rowNumber,

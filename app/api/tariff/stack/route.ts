@@ -26,6 +26,7 @@ export async function GET(request: Request) {
   const quantity = rawQuantity === null ? null : Number(rawQuantity);
   const unit = url.searchParams.get("unit");
   const claimedProgramme = url.searchParams.get("programme");
+  const importDate = url.searchParams.get("importDate");
 
   if (!code) {
     return Response.json({ error: "Provide code (HTS code)." }, { status: 400 });
@@ -45,6 +46,7 @@ export async function GET(request: Request) {
       quantity,
       unit,
       claimedProgramme,
+      importDate,
     });
     if (!result) {
       return Response.json({ error: `No published HTS row matched ${code}.` }, { status: 404 });

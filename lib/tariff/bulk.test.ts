@@ -15,7 +15,30 @@ test("parses hts_code/country_of_origin headers with value, quantity, unit, prog
     quantity: 500,
     unit: "kg",
     claimedProgramme: "S",
+    importDate: null,
   });
+});
+
+test("parses an optional import_date column", () => {
+  const csv = "hts_code,country_of_origin,import_date\n1234.56.78.90,CN,2026-03-15\n";
+  const { rows, errors } = parseStackRequestRows(csv);
+  assert.equal(errors.length, 0);
+  assert.equal(rows[0].importDate, "2026-03-15");
+});
+
+test("accepts the date header alias for import_date", () => {
+  const csv = "hts_code,country_of_origin,date\n1234.56.78.90,CN,2026-03-15\n";
+  const { rows, errors } = parseStackRequestRows(csv);
+  assert.equal(errors.length, 0);
+  assert.equal(rows[0].importDate, "2026-03-15");
+});
+
+test("a malformed import date is reported as a row error rather than silently ignored", () => {
+  const csv = "hts_code,country_of_origin,import_date\n1234.56.78.90,CN,not-a-date\n";
+  const { rows, errors } = parseStackRequestRows(csv);
+  assert.equal(rows.length, 0);
+  assert.equal(errors.length, 1);
+  assert.match(errors[0].reason, /Import date/);
 });
 
 test("accepts common header aliases used by real trade-compliance spreadsheets", () => {

@@ -255,3 +255,140 @@ test("a non-steel/aluminum HTS code never picks up a Section 232 component", asy
     restore();
   }
 });
+
+test("a China-origin solar cell HTS code surfaces an AD/CVD advisory, never a computed duty component", async () => {
+  const restore = stubFetch([{ htsno: "8541.42.00.10", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "8541.42.00.10",
+      countryOfOrigin: "CN",
+      value: 10_000,
+    });
+    assert.ok(result);
+    // AD/CVD never becomes a stacked component — only an advisory, and the total is unaffected by it.
+    assert.ok(result!.components.every((c) => c.type !== ("ad_cvd" as never)));
+    assert.equal(result!.adCvdAdvisories.length, 1);
+    assert.equal(result!.adCvdAdvisories[0].caseNumbers[0], "A-570-979");
+    assert.ok(result!.stackingExplanation.some((line) => line.includes("AD/CVD lead") && line.includes("access.trade.gov")));
+  } finally {
+    restore();
+  }
+});
+
+test("the same solar cell HTS code from a non-China origin surfaces no AD/CVD advisory", async () => {
+  const restore = stubFetch([{ htsno: "8541.42.00.10", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "8541.42.00.10",
+      countryOfOrigin: "VN",
+      value: 10_000,
+    });
+    assert.ok(result);
+    assert.deepEqual(result!.adCvdAdvisories, []);
+  } finally {
+    restore();
+  }
+});
+
+test("no import date given produces an explicit caveat that today's rate was used", async () => {
+  const restore = stubFetch([{ htsno: "0101.21.00.10", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "0101.21.00.10",
+      countryOfOrigin: "VN",
+      value: 1_000,
+    });
+    assert.ok(result);
+    assert.ok(result!.stackingExplanation.some((line) => line.includes("No import date was given")));
+  } finally {
+    restore();
+  }
+});
+
+test("a malformed import date is ignored with an explicit caveat, not silently accepted", async () => {
+  const restore = stubFetch([{ htsno: "0101.21.00.10", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "0101.21.00.10",
+      countryOfOrigin: "VN",
+      value: 1_000,
+      importDate: "not-a-date",
+    });
+    assert.ok(result);
+    assert.ok(result!.stackingExplanation.some((line) => line.includes("not a usable ISO date")));
+  } finally {
+    restore();
+  }
+});
+
+test("an import date before a Section 301 measure's effective date withholds that measure from the total", async () => {
+  const restore = stubFetch([
+    { htsno: "8544.42.90.00", general: "2.6%", additionalDuties: "See 9903.88.03" },
+  ]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "8544.42.90.00",
+      countryOfOrigin: "CN",
+      value: 10_000,
+      importDate: "2019-01-01", // before 9903.88.03's 2019-05-10 effective date
+    });
+    assert.ok(result);
+    assert.equal(result!.components.length, 1, "the pre-effective-date measure must not stack");
+    assert.equal(result!.components[0].type, "base");
+    assert.ok(
+      result!.stackingExplanation.some((line) => line.includes("did not take effect until") && line.includes("2019-05-10")),
+    );
+  } finally {
+    restore();
+  }
+});
+
+test("an import date on or after a Section 301 measure's effective date still stacks it normally", async () => {
+  const restore = stubFetch([
+    { htsno: "8544.42.90.00", general: "2.6%", additionalDuties: "See 9903.88.03" },
+  ]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "8544.42.90.00",
+      countryOfOrigin: "CN",
+      value: 10_000,
+      importDate: "2020-01-01",
+    });
+    assert.ok(result);
+    assert.equal(result!.components.length, 2);
+    assert.equal(result!.totalRatePercent, 0.276);
+  } finally {
+    restore();
+  }
+});
+
+test("Mexico or Canada origin with no claimed programme gets an explicit USMCA qualification caveat", async () => {
+  const restore = stubFetch([{ htsno: "0101.21.00.10", general: "2%" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "0101.21.00.10",
+      countryOfOrigin: "MX",
+      value: 1_000,
+    });
+    assert.ok(result);
+    assert.ok(result!.stackingExplanation.some((line) => line.includes("USMCA") && line.includes("Mexico")));
+  } finally {
+    restore();
+  }
+});
+
+test("Mexico origin WITH a claimed programme does not repeat the USMCA qualification caveat", async () => {
+  const restore = stubFetch([{ htsno: "0101.21.00.10", general: "2%", special: "Free (S)" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "0101.21.00.10",
+      countryOfOrigin: "MX",
+      value: 1_000,
+      claimedProgramme: "S",
+    });
+    assert.ok(result);
+    assert.ok(!result!.stackingExplanation.some((line) => line.includes("Run the goods through the USMCA")));
+  } finally {
+    restore();
+  }
+});

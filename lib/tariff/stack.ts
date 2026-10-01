@@ -5,6 +5,7 @@ import {
   type Section301Measure,
 } from "@/lib/tariff/section301";
 import { lookupSection232BasicArticle } from "@/lib/tariff/section232";
+import { lookupAdCvdAdvisories, type AdCvdAdvisory } from "@/lib/tariff/adcvd";
 
 /**
  * The tariff-stacking engine.
@@ -33,12 +34,14 @@ import { lookupSection232BasicArticle } from "@/lib/tariff/section232";
  *      lib/tariff/section232.ts's module doc for the full scope statement.
  *
  * Everything else Kate named — USMCA/FTA rules-of-origin qualification
- * beyond a claimed programme symbol, AD/CVD scope, forced-labor (UFLPA)
- * measures, and Section 232 derivative products — is NOT computed here yet
- * and is returned as an explicit `notEvaluated` list naming exactly what is
- * missing, per the project rule that an unverified figure must never be
- * presented as a real one. Real accuracy on what this module does cover
- * beats a fabricated total.
+ * beyond a claimed programme symbol, full AD/CVD scope/rate determination
+ * (this module surfaces AD/CVD as a named, uncomputed advisory lead — see
+ * lib/tariff/adcvd.ts for why a dollar figure is never fabricated there),
+ * forced-labor (UFLPA) measures, and Section 232 derivative products — is
+ * NOT computed here yet and is returned as an explicit `notEvaluated` list
+ * naming exactly what is missing, per the project rule that an unverified
+ * figure must never be presented as a real one. Real accuracy on what this
+ * module does cover beats a fabricated total.
  */
 
 export interface StackedDutyComponent {
@@ -66,12 +69,14 @@ export interface StackedDutyResult {
   notEvaluated: string[];
   /** Chapter 99 cross-references on the HTS row that we found but have no verified data for. */
   unresolvedMeasures: string[];
+  /** Named AD/CVD leads to verify against the order's actual scope text — never a computed amount. */
+  adCvdAdvisories: AdCvdAdvisory[];
 }
 
 const STANDING_NOT_EVALUATED = [
   "Section 232 steel/aluminum derivative-product tariffs (BIS's actively-expanding inclusions list is not covered — only the fixed 'basic article' heading list is)",
   "USMCA/FTA rules-of-origin qualification beyond a claimed programme symbol (no certificate-of-origin analysis performed)",
-  "Anti-dumping/countervailing duty (AD/CVD) scope determinations",
+  "Anti-dumping/countervailing duty (AD/CVD) exact scope/rate determination (named leads surfaced in adCvdAdvisories below are advisory only, never a computed amount)",
   "Forced-labor measures (e.g. UFLPA detentions/withhold-release orders)",
 ];
 
@@ -83,6 +88,15 @@ export interface StackDutyInput {
   quantity?: number | null;
   unit?: string | null;
   claimedProgramme?: string | null;
+  /**
+   * ISO date (YYYY-MM-DD) the goods are/were imported. Every measure this
+   * module resolves already carries its own effective date in its
+   * reference table (Section 301/232 current in-force rates only), so this
+   * input does not change which table row is picked — it exists so a past-
+   * or future-dated entry gets an explicit caveat instead of silently being
+   * quoted at today's rate as if it always applied.
+   */
+  importDate?: string | null;
   signal?: AbortSignal;
 }
 
@@ -102,6 +116,29 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
   const components: StackedDutyComponent[] = [];
   const stackingExplanation: string[] = [];
   const unresolvedMeasures: string[] = [];
+
+  const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+  let importDate: string | null = null;
+  if (input.importDate) {
+    if (ISO_DATE.test(input.importDate) && !Number.isNaN(Date.parse(input.importDate))) {
+      importDate = input.importDate;
+    } else {
+      stackingExplanation.push(
+        `Import date "${input.importDate}" is not a usable ISO date (YYYY-MM-DD), so it was ignored. Every rate below reflects today's current in-force rate, not the rate in effect on any particular historical or future date.`,
+      );
+    }
+  } else {
+    stackingExplanation.push(
+      "No import date was given. Every rate below reflects today's current in-force rate. Section 301 and Section 232 rates have changed over time (see each component's effective date and citations) — a shipment that actually entered on an earlier or later date may owe a different stacked rate than shown here.",
+    );
+  }
+
+  const USMCA_COUNTRIES = ["MX", "CA"];
+  if (USMCA_COUNTRIES.includes(country) && !input.claimedProgramme) {
+    stackingExplanation.push(
+      `Country of origin is ${country === "MX" ? "Mexico" : "Canada"}. Goods that qualify under USMCA rules of origin may be entitled to the special (preferential) rate instead of the general rate quoted above — no programme symbol was claimed here, so the general rate was used. Run the goods through the USMCA tariff-shift/RVC qualification engine (lib/tariff/usmca.ts) before assuming either rate; Cante does not infer qualification from country of origin alone.`,
+    );
+  }
 
   components.push({
     type: "base",
@@ -141,6 +178,12 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
       if (measure.status === "suspended" || measure.ratePercent === null) {
         stackingExplanation.push(
           `${measure.list} (${measure.chapter99Code}) is cross-referenced on this row but was suspended and never took effect (${measure.federalRegisterCitations.join("; ")}), so it does not stack.`,
+        );
+        continue;
+      }
+      if (importDate && importDate < measure.effectiveDate) {
+        stackingExplanation.push(
+          `${measure.list} (${measure.chapter99Code}) is cross-referenced on this row, but its current rate did not take effect until ${measure.effectiveDate}, after the given import date ${importDate}. An earlier rate may have applied instead — this is NOT included in the total below; verify the rate actually in force on ${importDate} against the citations (${measure.federalRegisterCitations.join("; ")}).`,
         );
         continue;
       }
@@ -189,6 +232,15 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
     ? Number(components.reduce((sum, c) => sum + (c.amount ?? 0), 0).toFixed(2))
     : null;
 
+  const adCvdAdvisories = lookupAdCvdAdvisories(base.htsCode, country);
+  if (adCvdAdvisories.length > 0) {
+    for (const advisory of adCvdAdvisories) {
+      stackingExplanation.push(
+        `AD/CVD lead (not included in the total above): ${advisory.title} (${advisory.caseNumbers.join(" / ")}) commonly cites HTS prefixes overlapping ${base.htsCode}. ${advisory.scopeNote} Verify against the order's actual scope language and the specific exporter's rate at access.trade.gov before relying on this — the all-others rate as of ${advisory.asOfDeterminationCitation} was ${(advisory.allOthersRatePercent).toFixed(2)}%, but exporter-specific rates can differ materially.`,
+      );
+    }
+  }
+
   return {
     htsCode: base.htsCode,
     countryOfOrigin: country,
@@ -199,5 +251,6 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
     stackingExplanation,
     notEvaluated: STANDING_NOT_EVALUATED,
     unresolvedMeasures,
+    adCvdAdvisories,
   };
 }

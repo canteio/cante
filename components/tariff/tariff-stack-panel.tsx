@@ -14,12 +14,21 @@ import { Calculator, Upload, FileSpreadsheet, AlertTriangle } from "lucide-react
  */
 
 interface StackedDutyComponent {
-  type: "base" | "section301";
+  type: "base" | "section301" | "section232";
   label: string;
   ratePercent: number | null;
   amount: number | null;
   citation: string[];
   explanation: string;
+}
+
+interface AdCvdAdvisory {
+  caseNumbers: string[];
+  title: string;
+  country: string;
+  allOthersRatePercent: number;
+  asOfDeterminationCitation: string;
+  scopeNote: string;
 }
 
 interface StackedDutyResult {
@@ -32,6 +41,7 @@ interface StackedDutyResult {
   stackingExplanation: string[];
   notEvaluated: string[];
   unresolvedMeasures: string[];
+  adCvdAdvisories: AdCvdAdvisory[];
 }
 
 interface BulkRowResult {
@@ -103,6 +113,17 @@ function ResultCard({ result }: { result: StackedDutyResult }) {
       <div className="pill pill-muted" style={{ display: "block", whiteSpace: "normal", lineHeight: 1.5 }}>
         Not evaluated yet: {result.notEvaluated.join(" · ")}
       </div>
+
+      {result.adCvdAdvisories.length > 0 && (
+        <div style={{ marginTop: "0.75rem" }}>
+          <strong style={{ fontSize: "0.8125rem" }}>AD/CVD leads to verify (not computed)</strong>
+          {result.adCvdAdvisories.map((advisory, i) => (
+            <div key={i} className="pill pill-warn" role="alert" style={{ display: "block", whiteSpace: "normal", lineHeight: 1.5, marginTop: "0.35rem" }}>
+              <AlertTriangle size={12} /> {advisory.title} ({advisory.caseNumbers.join(" / ")}) — all-others rate ~{advisory.allOthersRatePercent.toFixed(2)}% as of {advisory.asOfDeterminationCitation}. {advisory.scopeNote} Verify exact scope and exporter-specific rate at access.trade.gov.
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -111,6 +132,7 @@ export function TariffStackPanel() {
   const [htsCode, setHtsCode] = useState("");
   const [country, setCountry] = useState("");
   const [value, setValue] = useState("");
+  const [importDate, setImportDate] = useState("");
   const [quoting, setQuoting] = useState(false);
   const [quoteError, setQuoteError] = useState<string | null>(null);
   const [quoteResult, setQuoteResult] = useState<StackedDutyResult | null>(null);
@@ -129,6 +151,7 @@ export function TariffStackPanel() {
     try {
       const params = new URLSearchParams({ code: htsCode.trim(), country: country.trim().toUpperCase() });
       if (value.trim()) params.set("value", value.trim());
+      if (importDate.trim()) params.set("importDate", importDate.trim());
       const res = await fetch(`/api/tariff/stack?${params.toString()}`);
       const data = await res.json();
       if (!res.ok) {
@@ -141,7 +164,7 @@ export function TariffStackPanel() {
     } finally {
       setQuoting(false);
     }
-  }, [htsCode, country, value]);
+  }, [htsCode, country, value, importDate]);
 
   const runBulkUpload = useCallback(async (file: File) => {
     setBulkBusy(true);
@@ -219,6 +242,16 @@ export function TariffStackPanel() {
               onChange={(e) => setValue(e.target.value)}
             />
           </div>
+          <div>
+            <label htmlFor="stack-import-date" className="side-label" style={{ padding: 0 }}>Import date</label>
+            <input
+              id="stack-import-date"
+              type="date"
+              className="input mono"
+              value={importDate}
+              onChange={(e) => setImportDate(e.target.value)}
+            />
+          </div>
           <button
             className="btn btn-primary"
             disabled={quoting || !htsCode.trim() || !country.trim()}
@@ -243,7 +276,7 @@ export function TariffStackPanel() {
           (common aliases like <code className="mono">hts</code>, <code className="mono">origin</code>, and{" "}
           <code className="mono">coo</code> are also recognised). Optional columns:{" "}
           <code className="mono">value</code>, <code className="mono">quantity</code>, <code className="mono">unit</code>,{" "}
-          <code className="mono">programme</code>.
+          <code className="mono">programme</code>, <code className="mono">import_date</code> (YYYY-MM-DD).
         </p>
         <input
           ref={fileInputRef}

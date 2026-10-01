@@ -18,6 +18,7 @@ export interface StackRequestRow {
   quantity: number | null;
   unit: string | null;
   claimedProgramme: string | null;
+  importDate: string | null;
 }
 
 export interface StackRequestRowError {
@@ -37,6 +38,9 @@ const VALUE_HEADER_ALIASES = ["value", "customs_value", "shipment_value", "decla
 const QUANTITY_HEADER_ALIASES = ["quantity", "qty"];
 const UNIT_HEADER_ALIASES = ["unit", "uom", "unit_of_measure"];
 const PROGRAMME_HEADER_ALIASES = ["programme", "program", "fta", "claimed_programme", "special_programme"];
+const IMPORT_DATE_HEADER_ALIASES = ["import_date", "importdate", "date", "entry_date", "shipment_date"];
+
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 function firstPresent(row: Record<string, string>, aliases: string[]): string | null {
   for (const alias of aliases) {
@@ -142,6 +146,12 @@ export function parseStackRequestRows(input: string): ParsedStackRequest {
       return;
     }
 
+    const rawImportDate = firstPresent(raw, IMPORT_DATE_HEADER_ALIASES);
+    if (rawImportDate !== null && (!ISO_DATE.test(rawImportDate) || Number.isNaN(Date.parse(rawImportDate)))) {
+      errors.push({ rowNumber, raw, reason: `Import date "${rawImportDate}" is not a usable ISO date (expected YYYY-MM-DD).` });
+      return;
+    }
+
     rows.push({
       rowNumber,
       htsCode,
@@ -150,6 +160,7 @@ export function parseStackRequestRows(input: string): ParsedStackRequest {
       quantity: rawQuantity === null ? null : (quantity as number),
       unit: firstPresent(raw, UNIT_HEADER_ALIASES),
       claimedProgramme: firstPresent(raw, PROGRAMME_HEADER_ALIASES),
+      importDate: rawImportDate,
     });
   });
 
