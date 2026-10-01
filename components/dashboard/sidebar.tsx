@@ -3,6 +3,7 @@ import {
   Boxes,
   Brain,
   Building2,
+  Calculator,
   ClipboardCheck,
   FileText,
   Inbox,
@@ -37,6 +38,7 @@ export async function Sidebar({
     | "documents"
     | "workqueue"
     | "suppliers"
+    | "tariff"
     | "import-monitor";
   activeConversationId?: string | null;
   jurisdiction?: JurisdictionName;
@@ -84,6 +86,10 @@ export async function Sidebar({
           <Link href={`/checks${countryQuery}`} data-active={active === "checks"}>
             <ListChecks size={15} strokeWidth={1.75} />
             Daily Checks & Feeds
+          </Link>
+          <Link href="/tariff" data-active={active === "tariff"}>
+            <Calculator size={15} strokeWidth={1.75} />
+            Tariff Stack Calculator
           </Link>
         </nav>
       </div>
