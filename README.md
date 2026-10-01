@@ -97,10 +97,20 @@ What it computes for real today:
   current in-force rate, effective date, and Federal Register citation(s).
   Only applies when country of origin is China; the response says so
   explicitly either way.
+- **Section 232 steel/aluminum "basic article" tariffs** — resolved from a
+  fixed, enumerated list of Chapter 72/73/76 headings
+  (`lib/tariff/section232.ts`) at the current 50% ad valorem rate (25% for
+  United Kingdom origin under the US-UK Economic Prosperity Deal), citing
+  Proclamations 10895/10896/10947 and their Federal Register notices
+  (90 FR 11249, 90 FR 11251, 90 FR 24199). Deliberately does NOT cover
+  Section 232 *derivative* products (manufactured goods that merely contain
+  steel/aluminum, e.g. washing machines) — that list is actively expanding
+  via BIS's inclusions process and a snapshot of it would misrepresent
+  coverage as complete.
 
 What it deliberately does NOT compute yet, and says so in every response's
-`notEvaluated` list rather than guessing: Section 232 steel/aluminum/auto
-derivative tariffs, USMCA/FTA rules-of-origin qualification beyond a claimed
+`notEvaluated` list rather than guessing: Section 232 derivative-product
+tariffs, USMCA/FTA rules-of-origin qualification beyond a claimed
 programme symbol, AD/CVD scope, and forced-labor (UFLPA) measures. A
 Chapter 99 cross-reference this table doesn't recognize is surfaced in
 `unresolvedMeasures` and voids the total (never silently under-states it) —

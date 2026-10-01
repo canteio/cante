@@ -4,6 +4,7 @@ import {
   lookupSection301Measure,
   type Section301Measure,
 } from "@/lib/tariff/section301";
+import { lookupSection232BasicArticle } from "@/lib/tariff/section232";
 
 /**
  * The tariff-stacking engine.
@@ -14,25 +15,34 @@ import {
  * explicit explanation of what stacked with what and why, citing the
  * Federal Register notice behind each component.
  *
- * **Scope of this first pass.** Two stackable components are computed for
- * real:
+ * **Scope of this pass.** Three stackable components are computed for real:
  *   1. Base/Column 1 duty — from the live USITC HTS schedule (lib/tariff/rates.ts).
  *   2. China Section 301 — resolved from the HTS row's own Chapter 99
  *      cross-reference against lib/tariff/section301.ts's verified table of
  *      List 1-4A measures (which countries and rates these are, Federal
  *      Register citations, effective dates).
+ *   3. Section 232 steel/aluminum "basic article" tariffs — resolved from a
+ *      fixed, enumerated list of Chapter 72/73/76 headings against
+ *      lib/tariff/section232.ts, at the current 50% rate (25% for UK
+ *      origin under the Economic Prosperity Deal). Section 232 *derivative*
+ *      products (manufactured goods merely containing steel/aluminum, e.g.
+ *      washing machines or furniture) are NOT covered — BIS's derivative
+ *      list is actively expanding via its "inclusions process" and
+ *      presenting a snapshot of it as complete would be exactly the
+ *      fabricated-coverage failure this project refuses to make. See
+ *      lib/tariff/section232.ts's module doc for the full scope statement.
  *
- * Everything else Kate named — Section 232 steel/aluminum/derivative
- * status, USMCA/FTA rules-of-origin qualification beyond a claimed
- * programme symbol, AD/CVD scope, and forced-labor (UFLPA) measures — is
- * NOT computed here yet and is returned as an explicit `notEvaluated` list
- * naming exactly what is missing, per the project rule that an unverified
- * figure must never be presented as a real one. Real accuracy on what this
- * module does cover beats a fabricated total.
+ * Everything else Kate named — USMCA/FTA rules-of-origin qualification
+ * beyond a claimed programme symbol, AD/CVD scope, forced-labor (UFLPA)
+ * measures, and Section 232 derivative products — is NOT computed here yet
+ * and is returned as an explicit `notEvaluated` list naming exactly what is
+ * missing, per the project rule that an unverified figure must never be
+ * presented as a real one. Real accuracy on what this module does cover
+ * beats a fabricated total.
  */
 
 export interface StackedDutyComponent {
-  type: "base" | "section301";
+  type: "base" | "section301" | "section232";
   label: string;
   ratePercent: number | null;
   /** Null when the component could not be computed (and totalPercent then can't be fully computed either). */
@@ -59,7 +69,7 @@ export interface StackedDutyResult {
 }
 
 const STANDING_NOT_EVALUATED = [
-  "Section 232 steel/aluminum/auto-derivative tariffs (not yet in the reference table)",
+  "Section 232 steel/aluminum derivative-product tariffs (BIS's actively-expanding inclusions list is not covered — only the fixed 'basic article' heading list is)",
   "USMCA/FTA rules-of-origin qualification beyond a claimed programme symbol (no certificate-of-origin analysis performed)",
   "Anti-dumping/countervailing duty (AD/CVD) scope determinations",
   "Forced-labor measures (e.g. UFLPA detentions/withhold-release orders)",
@@ -150,6 +160,23 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
         `${measure.list} (${measure.chapter99Code}, ${(measure.ratePercent * 100).toFixed(1)}%, effective ${measure.effectiveDate}) stacks additively on top of the Column 1 base duty — Section 301 duties are assessed "in addition to all other applicable duties," per the imposing notices (${measure.federalRegisterCitations.join("; ")}).`,
       );
     }
+  }
+
+  const section232Match = lookupSection232BasicArticle(base.htsCode, country);
+  if (section232Match) {
+    const amount =
+      input.value !== null ? Number((input.value * section232Match.ratePercent).toFixed(2)) : null;
+    components.push({
+      type: "section232",
+      label: section232Match.label,
+      ratePercent: section232Match.ratePercent,
+      amount,
+      citation: section232Match.federalRegisterCitations,
+      explanation: `${section232Match.note} Applies because HTS ${base.htsCode} is enumerated as a basic (non-derivative) ${section232Match.category} article under Chapter 99 heading ${section232Match.chapter99Code}. Stacks ON TOP of (adds to, does not replace) the Column 1 base duty above.`,
+    });
+    stackingExplanation.push(
+      `${section232Match.label} (${section232Match.chapter99Code}, ${(section232Match.ratePercent * 100).toFixed(1)}%) stacks additively on top of the Column 1 base duty — Section 232 duties are assessed in addition to other applicable duties, per the imposing proclamations (${section232Match.federalRegisterCitations.join("; ")}).`,
+    );
   }
 
   const allAdValoremResolved = components.every((c) => c.ratePercent !== null) && unresolvedMeasures.length === 0;

@@ -175,3 +175,83 @@ test("always names what Cante does not evaluate, regardless of what it does comp
     restore();
   }
 });
+
+test("a basic steel article from a non-UK, non-China origin picks up Section 232 at 50%, stacked on Column 1", async () => {
+  const restore = stubFetch([{ htsno: "7210.70.60.60", general: "Free", other: "21.5%" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "7210.70.60.60",
+      countryOfOrigin: "VN",
+      value: 10_000,
+    });
+    assert.ok(result);
+    assert.equal(result!.components.length, 2);
+    assert.equal(result!.components[0].type, "base");
+    assert.equal(result!.components[1].type, "section232");
+    assert.equal(result!.components[1].ratePercent, 0.5);
+    assert.equal(result!.components[1].amount, 5000);
+    assert.equal(result!.totalRatePercent, 0.5);
+    assert.equal(result!.totalAmount, 5000);
+    assert.ok(result!.stackingExplanation.some((line) => line.includes("Section 232") && line.includes("stacks additively")));
+    assert.ok(result!.stackingExplanation.some((line) => line.includes("90 FR 24199")));
+  } finally {
+    restore();
+  }
+});
+
+test("a basic steel article from the United Kingdom stacks Section 232 at 25%, not 50%", async () => {
+  const restore = stubFetch([{ htsno: "7208.10.15.00", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "7208.10.15.00",
+      countryOfOrigin: "GB",
+      value: 10_000,
+    });
+    assert.ok(result);
+    const section232 = result!.components.find((c) => c.type === "section232");
+    assert.ok(section232);
+    assert.equal(section232!.ratePercent, 0.25);
+    assert.equal(section232!.amount, 2500);
+    assert.equal(result!.totalRatePercent, 0.25);
+  } finally {
+    restore();
+  }
+});
+
+test("a China-origin basic steel article stacks BOTH Section 301 and Section 232 additively", async () => {
+  const restore = stubFetch([
+    { htsno: "7208.10.15.00", general: "Free", additionalDuties: "See 9903.88.03" },
+  ]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "7208.10.15.00",
+      countryOfOrigin: "CN",
+      value: 10_000,
+    });
+    assert.ok(result);
+    assert.equal(result!.components.length, 3, "base + section301 + section232");
+    const types = result!.components.map((c) => c.type).sort();
+    assert.deepEqual(types, ["base", "section232", "section301"]);
+    // 0% base + 25% section301 + 50% section232 = 75%
+    assert.equal(result!.totalRatePercent, 0.75);
+    assert.equal(result!.totalAmount, 7500);
+  } finally {
+    restore();
+  }
+});
+
+test("a non-steel/aluminum HTS code never picks up a Section 232 component", async () => {
+  const restore = stubFetch([{ htsno: "6109.10.00.04", general: "16.5%" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "6109.10.00.04",
+      countryOfOrigin: "VN",
+      value: 1_000,
+    });
+    assert.ok(result);
+    assert.equal(result!.components.length, 1);
+    assert.equal(result!.components[0].type, "base");
+  } finally {
+    restore();
+  }
+});
