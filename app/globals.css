@@ -789,10 +789,14 @@ a:hover {
    a shorter fixed-height page. The app shell is intentionally dark, but the
    public landing and login pages are light, so scope the page background to
    html/body as well whenever a light page is mounted — otherwise overscroll
-   flashes the dark app-shell color through the white landing surface. */
+   flashes the dark app-shell color through the white landing surface.
+   color-scheme: light stops a device/browser in dark mode from painting its
+   own dark UA default (scrollbar track, unstyled chrome, pull-to-refresh
+   background) black before/around the white page content. */
 html:has(.landing-page),
 html:has(.landing-page) body {
   background: #ffffff;
+  color-scheme: light;
 }
 
 .landing-page {
@@ -800,6 +804,7 @@ html:has(.landing-page) body {
   padding: clamp(24px, 3.2vw, 44px) clamp(22px, 5vw, 72px);
   background: #ffffff;
   color: #111827;
+  color-scheme: light;
 }
 
 .landing-video { display: none; }
