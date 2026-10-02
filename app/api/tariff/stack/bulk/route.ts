@@ -1,5 +1,6 @@
 import { parseStackRequestRows, MAX_BULK_ROWS, type StackRequestRow } from "@/lib/tariff/bulk";
 import { computeStackedDuty, type StackedDutyResult } from "@/lib/tariff/stack";
+import { TariffLookupError } from "@/lib/tariff/rates";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -60,11 +61,12 @@ export interface BulkStackRowResult {
   error: string | null;
 }
 
-async function runBounded<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>): Promise<R[]> {
+async function runBounded<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>, signal?: AbortSignal): Promise<R[]> {
   const results: R[] = new Array(items.length);
   let next = 0;
   async function worker() {
     while (true) {
+      if (signal?.aborted) return;
       const index = next;
       next += 1;
       if (index >= items.length) return;
@@ -103,6 +105,7 @@ export async function POST(request: Request) {
   const rowResults = await runBounded<StackRequestRow, BulkStackRowResult>(rows, CONCURRENCY, async (row) => {
     try {
       const result = await computeStackedDuty({
+        signal: request.signal,
         htsCode: row.htsCode,
         countryOfOrigin: row.countryOfOrigin,
         value: row.value,
@@ -110,6 +113,9 @@ export async function POST(request: Request) {
         unit: row.unit,
         claimedProgramme: row.claimedProgramme,
         importDate: row.importDate,
+        steelContentValue: row.steelContentValue,
+        aluminumContentValue: row.aluminumContentValue,
+        usmcaQualification: row.usmcaQualification,
       });
       return {
         rowNumber: row.rowNumber,
@@ -122,11 +128,12 @@ export async function POST(request: Request) {
         rowNumber: row.rowNumber,
         input: { htsCode: row.htsCode, countryOfOrigin: row.countryOfOrigin },
         result: null,
-        error: error instanceof Error ? error.message : "Tariff stacking lookup failed.",
+        error: error instanceof TariffLookupError ? "Tariff lookup unavailable." : "Tariff stacking lookup failed.",
       };
     }
-  });
+  }, request.signal);
 
+  if (request.signal.aborted) return Response.json({ error: "Request cancelled." }, { status: 499 });
   return Response.json({
     rows: rowResults,
     rowErrors: errors,

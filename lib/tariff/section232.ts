@@ -21,12 +21,10 @@
  *      through its ongoing "inclusions process" (407 codes added just in
  *      the August 2025 round).
  *
- * This module computes (1) only — the basic-article list — because it is
- * small, stable, and can be verified against primary sources in full. The
- * growing, frequently-amended derivative list in (2) is NOT computed here;
- * presenting a snapshot of an actively-expanding list as complete would be
- * exactly the fabricated-coverage failure this project refuses to make.
- * `lib/tariff/stack.ts` names this gap explicitly in `notEvaluated`.
+ * This module computes the basic-article list and one explicitly bounded
+ * derivative subset: the eleven appliance/welded-wire-rack classifications
+ * added effective June 23, 2025. It does not claim to cover the full or
+ * actively expanding derivative list.
  *
  * Primary sources for the basic-article list and current rate:
  * - Steel: Proclamation 10896 (Feb 10, 2025) implemented at 90 FR 11249
@@ -62,6 +60,25 @@ export interface Section232BasicArticleMatch {
   label: string;
   federalRegisterCitations: string[];
   note: string;
+}
+
+export interface Section232DerivativeMeasure {
+  category: Section232Category;
+  /** Current rate applied to the metal content value, never to the full shipment value. */
+  ratePercent: number;
+  /** Chronological rate changes used when an import date is supplied. */
+  rateHistory: Array<{ effectiveDate: string; ratePercent: number }>;
+  chapter99Code: string;
+  effectiveDate: string;
+  contentValueField: "steelContentValue" | "aluminumContentValue";
+  label: string;
+  citations: string[];
+  note: string;
+}
+
+export interface Section232DerivativeMatch {
+  htsPrefix: string;
+  measures: Section232DerivativeMeasure[];
 }
 
 /**
@@ -125,6 +142,29 @@ const ALUMINUM_BASIC_HEADINGS = [
 const UK_COUNTRY_CODE = "GB";
 const BASE_RATE = 0.5;
 const UK_RATE = 0.25;
+const STEEL_DERIVATIVE_EFFECTIVE_DATE = "2025-06-23";
+const ALUMINUM_WIRE_RACK_EFFECTIVE_DATE = "2025-03-12";
+
+/**
+ * Verified June 23, 2025 steel-derivative tranche. Eight-digit entries match
+ * every statistical suffix. Welded wire rack is limited to the published
+ * ten-digit statistical reporting number.
+ */
+const JUNE_2025_STEEL_DERIVATIVE_PREFIXES = [
+  "84181000",
+  "84183000",
+  "84184000",
+  "84221100",
+  "84501100",
+  "84502000",
+  "84512100",
+  "84512900",
+  "85098020",
+  "85166040",
+  "9403999020",
+];
+
+const WELDED_WIRE_RACK_PREFIX = "9403999020";
 
 function digits(code: string): string {
   return code.replace(/\D/g, "");
@@ -199,4 +239,61 @@ export function lookupSection232BasicArticle(
       ? "UK-origin aluminum is quoted at 25%, conditioned on the UK-sourced-content threshold the US-UK Economic Prosperity Deal requires (reported ~95% by CRS as of mid-2026) — that content test is NOT independently verified here."
       : "50% ad valorem on the full value of the basic (non-derivative) aluminum article, covering HTSUS chapter 76 headings enumerated in subdivision (g) of U.S. note 19 to chapter 99 subchapter III.",
   };
+}
+
+/**
+ * Match only the verified appliance/welded-wire-rack derivative subset. This
+ * function intentionally does not imply that codes outside this table escape
+ * Section 232 derivative duties.
+ */
+export function lookupSection232Derivative(
+  htsCode: string,
+  countryOfOrigin: string,
+): Section232DerivativeMatch | null {
+  const code = digits(htsCode);
+  const htsPrefix = JUNE_2025_STEEL_DERIVATIVE_PREFIXES.find((prefix) => code.startsWith(prefix));
+  if (!htsPrefix) return null;
+
+  const isUK = countryOfOrigin.trim().toUpperCase() === UK_COUNTRY_CODE;
+  const ratePercent = isUK ? UK_RATE : BASE_RATE;
+  const steelMeasure: Section232DerivativeMeasure = {
+    category: "steel",
+    ratePercent,
+    rateHistory: [{ effectiveDate: STEEL_DERIVATIVE_EFFECTIVE_DATE, ratePercent }],
+    chapter99Code: isUK ? "9903.81.98" : "9903.81.91",
+    effectiveDate: STEEL_DERIVATIVE_EFFECTIVE_DATE,
+    contentValueField: "steelContentValue",
+    label: "Section 232 — steel derivative content",
+    citations: [
+      "90 FR 25208 (June 16, 2025) — appliance and welded-wire-rack steel derivatives, effective 2025-06-23",
+      "CBP CSMS #65441222 — 50% of steel content value (25% for United Kingdom), corrected UK heading 9903.81.98",
+    ],
+    note: `The ${(ratePercent * 100).toFixed(0)}% rate applies to the supplied dutiable steel content value, not the article's full customs value. The caller must exclude any content qualifying for the U.S.-melted-and-poured exception described in 90 FR 25208.`,
+  };
+
+  const measures = [steelMeasure];
+  if (code.startsWith(WELDED_WIRE_RACK_PREFIX)) {
+    measures.push({
+      category: "aluminum",
+      ratePercent,
+      rateHistory: isUK
+        ? [{ effectiveDate: ALUMINUM_WIRE_RACK_EFFECTIVE_DATE, ratePercent: UK_RATE }]
+        : [
+            { effectiveDate: ALUMINUM_WIRE_RACK_EFFECTIVE_DATE, ratePercent: 0.25 },
+            { effectiveDate: "2025-06-04", ratePercent: BASE_RATE },
+          ],
+      chapter99Code: isUK ? "9903.85.15" : "9903.85.08",
+      effectiveDate: ALUMINUM_WIRE_RACK_EFFECTIVE_DATE,
+      contentValueField: "aluminumContentValue",
+      label: "Section 232 — aluminum derivative content",
+      citations: [
+        "90 FR 11251 (March 5, 2025) — aluminum derivatives effective 2025-03-12",
+        "90 FR 24199 (June 9, 2025) — current 50% rate (25% for United Kingdom)",
+        "90 FR 25208 and CBP CSMS #65441222 — 9403.99.9020 continues to be subject for its aluminum content",
+      ],
+      note: "The applicable historical rate applies separately to the aluminum content value, not the article's full customs value.",
+    });
+  }
+
+  return { htsPrefix, measures };
 }

@@ -16,6 +16,9 @@ test("parses hts_code/country_of_origin headers with value, quantity, unit, prog
     unit: "kg",
     claimedProgramme: "S",
     importDate: null,
+    steelContentValue: null,
+    aluminumContentValue: null,
+    usmcaQualification: null,
   });
 });
 
@@ -144,4 +147,77 @@ test("agreeing values under two aliases for the same field are not flagged as a 
   assert.equal(errors.length, 0);
   assert.equal(rows.length, 1);
   assert.equal(rows[0].countryOfOrigin, "CN");
+});
+
+test("parses metal content values and explicit USMCA audit fields through safe aliases", () => {
+  const csv = [
+    "hts_code,country,steel_value,aluminium_content_value,usmcaverified,usmca_qualification_decision,usmca_details",
+    "9403.99.9020,CA,2000,1000,yes,qualifies,Certificate ABC reviewed",
+  ].join("\n");
+  const { rows, errors } = parseStackRequestRows(csv);
+  assert.deepEqual(errors, []);
+  assert.equal(rows[0].steelContentValue, 2000);
+  assert.equal(rows[0].aluminumContentValue, 1000);
+  assert.deepEqual(rows[0].usmcaQualification, {
+    verified: true,
+    decision: "qualifies",
+    details: "Certificate ABC reviewed",
+  });
+});
+
+test("conflicting content-value aliases are rejected instead of silently picking one", () => {
+  const csv = "hts_code,country,steel_content_value,steel_value\n8450.11.00,VN,2000,3000\n";
+  const { rows, errors } = parseStackRequestRows(csv);
+  assert.equal(rows.length, 0);
+  assert.match(errors[0].reason, /Conflicting steel content value/);
+});
+
+test("conflicting USMCA aliases are rejected instead of silently picking one", () => {
+  const csv = "hts_code,country,usmca_verified,usmcaverified\n0101.21.00,MX,true,false\n";
+  const { rows, errors } = parseStackRequestRows(csv);
+  assert.equal(rows.length, 0);
+  assert.match(errors[0].reason, /Conflicting USMCA verified/);
+});
+
+test("invalid USMCA booleans and decisions are row errors", () => {
+  const badBoolean = parseStackRequestRows("hts_code,country,usmca_verified\n0101.21.00,MX,maybe\n");
+  assert.equal(badBoolean.rows.length, 0);
+  assert.match(badBoolean.errors[0].reason, /true\/false/);
+
+  const badDecision = parseStackRequestRows("hts_code,country,usmca_decision\n0101.21.00,MX,assumed\n");
+  assert.equal(badDecision.rows.length, 0);
+  assert.match(badDecision.errors[0].reason, /qualifies/);
+});
+
+test("content values cannot exceed shipment value separately or together", () => {
+  const csv = "hts_code,country,value,steel_content_value,aluminum_content_value\n9403.99.9020,VN,1000,700,400\n";
+  const { rows, errors } = parseStackRequestRows(csv);
+  assert.equal(rows.length, 0);
+  assert.match(errors[0].reason, /cannot individually or together exceed/);
+});
+
+test("strict bulk date validation rejects impossible dates", () => {
+  const csv = "hts_code,country,import_date\n8450.11.00,VN,2025-02-29\n";
+  const { rows, errors } = parseStackRequestRows(csv);
+  assert.equal(rows.length, 0);
+  assert.match(errors[0].reason, /Import date/);
+});
+
+test("bulk parser rejects numeric decorations that normalize to an empty value", () => {
+  for (const header of ["value", "quantity", "steel_content_value", "aluminum_content_value"]) {
+    const { rows, errors } = parseStackRequestRows(`hts_code,country,${header}\n8450.11.00,VN,$\n`);
+    assert.equal(rows.length, 0, header);
+    assert.equal(errors.length, 1, header);
+    assert.match(errors[0].reason, /usable, non-negative number/);
+  }
+});
+
+test("bulk parser bounds fields that reach the upstream URL or audit response", () => {
+  const longCode = parseStackRequestRows(`hts_code,country\n${"8".repeat(65)},VN\n`);
+  assert.equal(longCode.rows.length, 0);
+  assert.match(longCode.errors[0].reason, /64 characters/);
+
+  const longDetails = parseStackRequestRows(`hts_code,country,usmca_details\n0101.21.00,MX,${"a".repeat(2_001)}\n`);
+  assert.equal(longDetails.rows.length, 0);
+  assert.match(longDetails.errors[0].reason, /2000 characters/);
 });

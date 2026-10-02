@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { lookupSection232BasicArticle } from "@/lib/tariff/section232";
+import { lookupSection232BasicArticle, lookupSection232Derivative } from "@/lib/tariff/section232";
 
 test("a basic flat-rolled steel heading (7208) matches at 50% for a non-UK origin", () => {
   const match = lookupSection232BasicArticle("7208.10.15.00", "KR");
@@ -63,4 +63,41 @@ test("a wholly unrelated HTS code (e.g. apparel, 6109.10.00) is not matched", ()
 test("an empty/garbage code returns null rather than throwing", () => {
   assert.equal(lookupSection232BasicArticle("", "CN"), null);
   assert.equal(lookupSection232BasicArticle("not-a-code", "CN"), null);
+});
+
+test("every code in the verified June 23 appliance subset matches a steel content measure", () => {
+  const codes = [
+    "8418.10.00", "8451.21.00", "8451.29.00", "8450.11.00", "8450.20.00",
+    "8422.11.00", "8418.30.00", "8418.40.00", "8516.60.40", "8509.80.20",
+    "9403.99.9020",
+  ];
+  for (const code of codes) {
+    const match = lookupSection232Derivative(code, "CN");
+    assert.ok(match, code);
+    assert.equal(match.measures[0].category, "steel", code);
+    assert.equal(match.measures[0].ratePercent, 0.5, code);
+    assert.equal(match.measures[0].effectiveDate, "2025-06-23", code);
+    assert.match(match.measures[0].citations.join(" "), /90 FR 25208/, code);
+    assert.match(match.measures[0].citations.join(" "), /65441222/, code);
+  }
+});
+
+test("welded wire rack requires separate steel and aluminum content measures", () => {
+  const match = lookupSection232Derivative("9403.99.9020", "VN");
+  assert.ok(match);
+  assert.deepEqual(match.measures.map((measure) => measure.category), ["steel", "aluminum"]);
+  assert.equal(match.measures[1].effectiveDate, "2025-03-12");
+  assert.equal(match.measures[1].contentValueField, "aluminumContentValue");
+});
+
+test("the derivative subset uses the UK content rates and headings", () => {
+  const match = lookupSection232Derivative("8450.11.00.90", "GB");
+  assert.ok(match);
+  assert.equal(match.measures[0].ratePercent, 0.25);
+  assert.equal(match.measures[0].chapter99Code, "9903.81.98");
+});
+
+test("nearby codes are not implied to belong to the bounded derivative subset", () => {
+  assert.equal(lookupSection232Derivative("8450.12.00", "CN"), null);
+  assert.equal(lookupSection232Derivative("9403.99.9010", "CN"), null);
 });

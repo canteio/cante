@@ -17,6 +17,9 @@ interface StackedDutyComponent {
   type: "base" | "section301" | "section232";
   label: string;
   ratePercent: number | null;
+  contentRatePercent?: number;
+  contentValue?: number;
+  contentCategory?: "steel" | "aluminum";
   amount: number | null;
   citation: string[];
   explanation: string;
@@ -41,6 +44,10 @@ interface StackedDutyResult {
   stackingExplanation: string[];
   notEvaluated: string[];
   unresolvedMeasures: string[];
+  usmcaQualification:
+    | { status: "not_applicable" | "not_provided"; specialRateRequested: false; explanation: string }
+    | { status: "incomplete"; specialRateRequested: false; decision: string | null; details: string | null; explanation: string }
+    | { status: "verified"; specialRateRequested: boolean; decision: string; details: string; explanation: string };
   adCvdAdvisories: AdCvdAdvisory[];
 }
 
@@ -55,8 +62,24 @@ function pct(value: number | null): string {
   return value === null ? "—" : `${(value * 100).toFixed(2)}%`;
 }
 
+function componentRate(component: StackedDutyComponent): string {
+  if (component.contentRatePercent !== undefined && component.contentCategory) {
+    return `${pct(component.contentRatePercent)} of ${component.contentCategory} content`;
+  }
+  return pct(component.ratePercent);
+}
+
 function usd(value: number | null): string {
   return value === null ? "—" : value.toLocaleString("en-US", { style: "currency", currency: "USD" });
+}
+
+function totalRateLabel(result: StackedDutyResult): string {
+  if (result.unresolvedMeasures.length > 0) return "Total withheld";
+  if (result.totalRatePercent !== null) return `Total: ${pct(result.totalRatePercent)}`;
+  const hasContentComponent = result.components.some((c) => c.contentRatePercent !== undefined);
+  return hasContentComponent
+    ? "Total rate: content-value based"
+    : "Total rate: not a single ad valorem percentage (specific or unparsed duty component)";
 }
 
 function ResultCard({ result }: { result: StackedDutyResult }) {
@@ -69,7 +92,7 @@ function ResultCard({ result }: { result: StackedDutyResult }) {
           </span>
         </div>
         <div className="row">
-          <span className="pill pill-blue">Total: {pct(result.totalRatePercent)}</span>
+          <span className="pill pill-blue">{totalRateLabel(result)}</span>
           {result.totalAmount !== null && <span className="pill pill-muted">{usd(result.totalAmount)}</span>}
         </div>
       </div>
@@ -93,7 +116,7 @@ function ResultCard({ result }: { result: StackedDutyResult }) {
           {result.components.map((c, i) => (
             <tr key={i}>
               <td>{c.label}</td>
-              <td>{pct(c.ratePercent)}</td>
+              <td>{componentRate(c)}</td>
               <td>{usd(c.amount)}</td>
               <td className="muted" style={{ fontSize: "0.75rem" }}>{c.citation.join("; ")}</td>
             </tr>
@@ -108,6 +131,10 @@ function ResultCard({ result }: { result: StackedDutyResult }) {
             <li key={i} style={{ marginBottom: "0.25rem" }}>{line}</li>
           ))}
         </ul>
+      </div>
+
+      <div className="pill pill-muted" style={{ display: "block", whiteSpace: "normal", lineHeight: 1.5, marginBottom: "0.5rem" }}>
+        USMCA decision: {result.usmcaQualification.explanation}
       </div>
 
       <div className="pill pill-muted" style={{ display: "block", whiteSpace: "normal", lineHeight: 1.5 }}>
@@ -132,7 +159,12 @@ export function TariffStackPanel() {
   const [htsCode, setHtsCode] = useState("");
   const [country, setCountry] = useState("");
   const [value, setValue] = useState("");
+  const [steelContentValue, setSteelContentValue] = useState("");
+  const [aluminumContentValue, setAluminumContentValue] = useState("");
   const [importDate, setImportDate] = useState("");
+  const [usmcaVerified, setUsmcaVerified] = useState(false);
+  const [usmcaDecision, setUsmcaDecision] = useState<"" | "qualifies" | "does_not_qualify">("");
+  const [usmcaDetails, setUsmcaDetails] = useState("");
   const [quoting, setQuoting] = useState(false);
   const [quoteError, setQuoteError] = useState<string | null>(null);
   const [quoteResult, setQuoteResult] = useState<StackedDutyResult | null>(null);
@@ -151,7 +183,14 @@ export function TariffStackPanel() {
     try {
       const params = new URLSearchParams({ code: htsCode.trim(), country: country.trim().toUpperCase() });
       if (value.trim()) params.set("value", value.trim());
+      if (steelContentValue.trim()) params.set("steelContentValue", steelContentValue.trim());
+      if (aluminumContentValue.trim()) params.set("aluminumContentValue", aluminumContentValue.trim());
       if (importDate.trim()) params.set("importDate", importDate.trim());
+      if (usmcaVerified || usmcaDecision || usmcaDetails.trim()) {
+        params.set("usmcaVerified", String(usmcaVerified));
+        if (usmcaDecision) params.set("usmcaDecision", usmcaDecision);
+        if (usmcaDetails.trim()) params.set("usmcaDetails", usmcaDetails.trim());
+      }
       const res = await fetch(`/api/tariff/stack?${params.toString()}`);
       const data = await res.json();
       if (!res.ok) {
@@ -164,7 +203,7 @@ export function TariffStackPanel() {
     } finally {
       setQuoting(false);
     }
-  }, [htsCode, country, value, importDate]);
+  }, [htsCode, country, value, steelContentValue, aluminumContentValue, importDate, usmcaVerified, usmcaDecision, usmcaDetails]);
 
   const runBulkUpload = useCallback(async (file: File) => {
     setBulkBusy(true);
@@ -243,6 +282,30 @@ export function TariffStackPanel() {
             />
           </div>
           <div>
+            <label htmlFor="stack-steel-content" className="side-label" style={{ padding: 0 }}>Dutiable steel content value (USD)</label>
+            <input
+              id="stack-steel-content"
+              type="number"
+              min="0"
+              className="input mono"
+              placeholder="optional"
+              value={steelContentValue}
+              onChange={(e) => setSteelContentValue(e.target.value)}
+            />
+          </div>
+          <div>
+            <label htmlFor="stack-aluminum-content" className="side-label" style={{ padding: 0 }}>Aluminum content value (USD)</label>
+            <input
+              id="stack-aluminum-content"
+              type="number"
+              min="0"
+              className="input mono"
+              placeholder="optional"
+              value={aluminumContentValue}
+              onChange={(e) => setAluminumContentValue(e.target.value)}
+            />
+          </div>
+          <div>
             <label htmlFor="stack-import-date" className="side-label" style={{ padding: 0 }}>Import date</label>
             <input
               id="stack-import-date"
@@ -252,6 +315,42 @@ export function TariffStackPanel() {
               onChange={(e) => setImportDate(e.target.value)}
             />
           </div>
+          <div>
+            <label htmlFor="stack-usmca-decision" className="side-label" style={{ padding: 0 }}>USMCA decision</label>
+            <select
+              id="stack-usmca-decision"
+              className="input"
+              value={usmcaDecision}
+              onChange={(e) => {
+                const decision = e.target.value;
+                if (decision === "" || decision === "qualifies" || decision === "does_not_qualify") {
+                  setUsmcaDecision(decision);
+                }
+              }}
+            >
+              <option value="">Not supplied</option>
+              <option value="qualifies">Qualifies</option>
+              <option value="does_not_qualify">Does not qualify</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="stack-usmca-details" className="side-label" style={{ padding: 0 }}>USMCA supporting details</label>
+            <input
+              id="stack-usmca-details"
+              className="input"
+              placeholder="decision reference or basis"
+              value={usmcaDetails}
+              onChange={(e) => setUsmcaDetails(e.target.value)}
+            />
+          </div>
+          <label className="row" style={{ alignSelf: "flex-end", gap: "0.35rem", minHeight: "2.25rem" }}>
+            <input
+              type="checkbox"
+              checked={usmcaVerified}
+              onChange={(e) => setUsmcaVerified(e.target.checked)}
+            />
+            Qualification verified
+          </label>
           <button
             className="btn btn-primary"
             disabled={quoting || !htsCode.trim() || !country.trim()}
@@ -276,7 +375,10 @@ export function TariffStackPanel() {
           (common aliases like <code className="mono">hts</code>, <code className="mono">origin</code>, and{" "}
           <code className="mono">coo</code> are also recognised). Optional columns:{" "}
           <code className="mono">value</code>, <code className="mono">quantity</code>, <code className="mono">unit</code>,{" "}
-          <code className="mono">programme</code>, <code className="mono">import_date</code> (YYYY-MM-DD).
+          <code className="mono">programme</code>, <code className="mono">import_date</code> (YYYY-MM-DD),{" "}
+          <code className="mono">steel_content_value</code>, <code className="mono">aluminum_content_value</code>,{" "}
+          <code className="mono">usmca_verified</code>, <code className="mono">usmca_decision</code>, and{" "}
+          <code className="mono">usmca_details</code>.
         </p>
         <input
           ref={fileInputRef}
@@ -319,7 +421,9 @@ export function TariffStackPanel() {
                   <td>{row.rowNumber}</td>
                   <td className="mono">{row.input.htsCode}</td>
                   <td className="mono">{row.input.countryOfOrigin}</td>
-                  <td>{pct(row.result?.totalRatePercent ?? null)}</td>
+                  <td>
+                    {row.result ? totalRateLabel(row.result) : "—"}
+                  </td>
                   <td>{usd(row.result?.totalAmount ?? null)}</td>
                   <td>
                     {row.error ? (

@@ -183,6 +183,7 @@ export function computeDuty(
     );
   }
 
+  if (!Number.isFinite(total)) return { amount: null, currency: "USD", basis: ["Duty arithmetic overflow; amount withheld."] };
   return { amount: Number(total.toFixed(2)), currency: "USD", basis };
 }
 

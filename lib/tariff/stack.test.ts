@@ -362,8 +362,8 @@ test("an import date on or after a Section 301 measure's effective date still st
   }
 });
 
-test("Mexico or Canada origin with no claimed programme gets an explicit USMCA qualification caveat", async () => {
-  const restore = stubFetch([{ htsno: "0101.21.00.10", general: "2%" }]);
+test("Mexico or Canada origin without a verified decision uses general and records why", async () => {
+  const restore = stubFetch([{ htsno: "0101.21.00.10", general: "2%", special: "Free (S)" }]);
   try {
     const result = await computeStackedDuty({
       htsCode: "0101.21.00.10",
@@ -371,13 +371,16 @@ test("Mexico or Canada origin with no claimed programme gets an explicit USMCA q
       value: 1_000,
     });
     assert.ok(result);
-    assert.ok(result!.stackingExplanation.some((line) => line.includes("USMCA") && line.includes("Mexico")));
+    assert.equal(result.components[0].ratePercent, 0.02);
+    assert.equal(result.usmcaQualification.status, "not_provided");
+    assert.equal(result.usmcaQualification.specialRateRequested, false);
+    assert.ok(result.stackingExplanation.some((line) => line.includes("USMCA") && line.includes("Mexico")));
   } finally {
     restore();
   }
 });
 
-test("Mexico origin WITH a claimed programme does not repeat the USMCA qualification caveat", async () => {
+test("programme S alone is ignored without an explicit verified USMCA decision", async () => {
   const restore = stubFetch([{ htsno: "0101.21.00.10", general: "2%", special: "Free (S)" }]);
   try {
     const result = await computeStackedDuty({
@@ -387,7 +390,284 @@ test("Mexico origin WITH a claimed programme does not repeat the USMCA qualifica
       claimedProgramme: "S",
     });
     assert.ok(result);
-    assert.ok(!result!.stackingExplanation.some((line) => line.includes("Run the goods through the USMCA")));
+    assert.equal(result.components[0].ratePercent, 0.02);
+    assert.equal(result.components[0].amount, 20);
+    assert.ok(result.stackingExplanation.some((line) => line.includes("Programme S was present")));
+  } finally {
+    restore();
+  }
+});
+
+test("programme S+ alone is also ignored without an explicit verified USMCA decision", async () => {
+  const restore = stubFetch([{ htsno: "0101.21.00.10", general: "2%", special: "Free (S+)" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "0101.21.00.10",
+      countryOfOrigin: "MX",
+      value: 1_000,
+      claimedProgramme: "S+",
+    });
+    assert.ok(result);
+    assert.equal(result.components[0].amount, 20);
+    assert.equal(result.usmcaQualification.specialRateRequested, false);
+    assert.ok(result.stackingExplanation.some((line) => line.includes("Programme S+ was present")));
+  } finally {
+    restore();
+  }
+});
+
+test("verified qualifying USMCA decision with details requests the published S rate", async () => {
+  const restore = stubFetch([{ htsno: "0101.21.00.10", general: "2%", special: "Free (S)" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "0101.21.00.10",
+      countryOfOrigin: "CA",
+      value: 1_000,
+      usmcaQualification: {
+        verified: true,
+        decision: "qualifies",
+        details: "Signed certification dated 2026-09-30; product-specific rule reviewed.",
+      },
+    });
+    assert.ok(result);
+    assert.equal(result.components[0].ratePercent, 0);
+    assert.equal(result.components[0].amount, 0);
+    assert.equal(result.usmcaQualification.status, "verified");
+    assert.equal(result.usmcaQualification.specialRateRequested, true);
+    assert.match(result.usmcaQualification.explanation, /Signed certification/);
+  } finally {
+    restore();
+  }
+});
+
+test("verified qualifying decision can request the USMCA S+ symbol when the caller supplies it", async () => {
+  const restore = stubFetch([{ htsno: "0101.21.00.10", general: "2%", special: "Free (S+)" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "0101.21.00.10",
+      countryOfOrigin: "CA",
+      value: 1_000,
+      claimedProgramme: "S+",
+      usmcaQualification: {
+        verified: true,
+        decision: "qualifies",
+        details: "Verified automotive appendix qualification.",
+      },
+    });
+    assert.ok(result);
+    assert.equal(result.components[0].amount, 0);
+    assert.equal(result.usmcaQualification.specialRateRequested, true);
+  } finally {
+    restore();
+  }
+});
+
+test("verified USMCA decision without supporting details stays on general", async () => {
+  const restore = stubFetch([{ htsno: "0101.21.00.10", general: "2%", special: "Free (S)" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "0101.21.00.10",
+      countryOfOrigin: "CA",
+      value: 1_000,
+      usmcaQualification: { verified: true, decision: "qualifies", details: "  " },
+    });
+    assert.ok(result);
+    assert.equal(result.components[0].ratePercent, 0.02);
+    assert.equal(result.usmcaQualification.status, "incomplete");
+    assert.equal(result.usmcaQualification.specialRateRequested, false);
+  } finally {
+    restore();
+  }
+});
+
+test("verified USMCA non-qualifying decision keeps general and preserves the audit basis", async () => {
+  const restore = stubFetch([{ htsno: "0101.21.00.10", general: "2%", special: "Free (S)" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "0101.21.00.10",
+      countryOfOrigin: "MX",
+      value: 1_000,
+      usmcaQualification: {
+        verified: true,
+        decision: "does_not_qualify",
+        details: "Product-specific tariff shift failed.",
+      },
+    });
+    assert.ok(result);
+    assert.equal(result.components[0].amount, 20);
+    assert.equal(result.usmcaQualification.status, "verified");
+    assert.equal(result.usmcaQualification.specialRateRequested, false);
+    assert.match(result.usmcaQualification.explanation, /tariff shift failed/);
+  } finally {
+    restore();
+  }
+});
+
+test("a listed derivative without steel content value is unresolved and withholds both totals", async () => {
+  const restore = stubFetch([{ htsno: "8450.11.00.90", general: "5%" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "8450.11.00.90",
+      countryOfOrigin: "VN",
+      value: 10_000,
+      importDate: "2025-06-23",
+    });
+    assert.ok(result);
+    assert.equal(result.components.length, 2);
+    assert.equal(result.components[1].contentRatePercent, 0.5);
+    assert.equal(result.components[1].ratePercent, null);
+    assert.equal(result.components[1].amount, null);
+    assert.equal(result.unresolvedMeasures.length, 1);
+    assert.equal(result.totalRatePercent, null);
+    assert.equal(result.totalAmount, null);
+  } finally {
+    restore();
+  }
+});
+
+test("a listed derivative computes dollars from steel content without inventing a shipment percentage", async () => {
+  const restore = stubFetch([{ htsno: "8450.11.00.90", general: "5%" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "8450.11.00.90",
+      countryOfOrigin: "VN",
+      value: 10_000,
+      steelContentValue: 3_000,
+      importDate: "2025-06-23",
+    });
+    assert.ok(result);
+    const derivative = result.components[1];
+    assert.equal(derivative.ratePercent, null);
+    assert.equal(derivative.contentRatePercent, 0.5);
+    assert.equal(derivative.contentValue, 3_000);
+    assert.equal(derivative.amount, 1_500);
+    assert.equal(result.totalRatePercent, null);
+    assert.equal(result.totalAmount, 2_000);
+    assert.deepEqual(result.unresolvedMeasures, []);
+  } finally {
+    restore();
+  }
+});
+
+test("welded wire rack computes separate steel and aluminum content duties", async () => {
+  const restore = stubFetch([{ htsno: "9403.99.9020", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "9403.99.9020",
+      countryOfOrigin: "VN",
+      value: 10_000,
+      steelContentValue: 2_000,
+      aluminumContentValue: 1_000,
+      importDate: "2025-06-23",
+    });
+    assert.ok(result);
+    assert.equal(result.components.length, 3);
+    assert.deepEqual(result.components.slice(1).map((component) => component.amount), [1_000, 500]);
+    assert.equal(result.totalRatePercent, null);
+    assert.equal(result.totalAmount, 1_500);
+  } finally {
+    restore();
+  }
+});
+
+test("wire-rack aluminum content uses the 25% rate before the June 4 increase", async () => {
+  const restore = stubFetch([{ htsno: "9403.99.9020", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "9403.99.9020",
+      countryOfOrigin: "VN",
+      value: 10_000,
+      aluminumContentValue: 1_000,
+      importDate: "2025-04-01",
+    });
+    assert.ok(result);
+    assert.equal(result.components.length, 2, "steel tranche was not effective; base plus aluminum remain");
+    assert.equal(result.components[1].contentRatePercent, 0.25);
+    assert.equal(result.components[1].amount, 250);
+    assert.equal(result.totalAmount, 250);
+    assert.deepEqual(result.unresolvedMeasures, []);
+  } finally {
+    restore();
+  }
+});
+
+test("derivative totals are withheld without an import date or after the 2026 regime change", async () => {
+  const restore = stubFetch([{ htsno: "8450.11.00.90", general: "5%" }]);
+  try {
+    for (const importDate of [null, "2026-04-06"]) {
+      const result = await computeStackedDuty({
+        htsCode: "8450.11.00.90",
+        countryOfOrigin: "VN",
+        value: 10_000,
+        steelContentValue: 3_000,
+        importDate,
+      });
+      assert.ok(result);
+      assert.equal(result.totalRatePercent, null);
+      assert.equal(result.totalAmount, null);
+      assert.ok(result.unresolvedMeasures.some((measure) => measure.includes("entry-date Section 232 treatment")));
+      assert.match(result.components[1].explanation, /2026|import date/i);
+    }
+  } finally {
+    restore();
+  }
+});
+
+test("Russian-origin aluminum derivatives are withheld instead of receiving the ordinary rate", async () => {
+  const restore = stubFetch([{ htsno: "9403.99.9020", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "9403.99.9020",
+      countryOfOrigin: "RU",
+      value: 10_000,
+      steelContentValue: 2_000,
+      aluminumContentValue: 1_000,
+      importDate: "2025-07-01",
+    });
+    assert.ok(result);
+    assert.equal(result.totalAmount, null);
+    assert.ok(result.unresolvedMeasures.some((measure) => measure.includes("Russian aluminum")));
+    assert.ok(result.components.some((component) => /200%/.test(component.explanation)));
+  } finally {
+    restore();
+  }
+});
+
+test("the June derivative measure is not applied before its effective date", async () => {
+  const restore = stubFetch([{ htsno: "8450.11.00.90", general: "5%" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "8450.11.00.90",
+      countryOfOrigin: "VN",
+      value: 10_000,
+      steelContentValue: 3_000,
+      importDate: "2025-06-22",
+    });
+    assert.ok(result);
+    assert.equal(result.components.length, 1);
+    assert.equal(result.totalRatePercent, 0.05);
+    assert.equal(result.totalAmount, 500);
+    assert.ok(result.stackingExplanation.some((line) => line.includes("did not take effect until 2025-06-23")));
+  } finally {
+    restore();
+  }
+});
+
+test("an impossible ISO-shaped date is rejected by the shared strict validator", async () => {
+  const restore = stubFetch([{ htsno: "8450.11.00.90", general: "5%" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "8450.11.00.90",
+      countryOfOrigin: "VN",
+      value: 10_000,
+      steelContentValue: 3_000,
+      importDate: "2025-02-29",
+    });
+    assert.ok(result);
+    assert.ok(result.stackingExplanation.some((line) => line.includes("not a usable ISO date")));
+    assert.equal(result.components[1].amount, null, "invalid date must not select a historical legal regime");
+    assert.equal(result.totalAmount, null);
+    assert.ok(result.unresolvedMeasures.some((measure) => measure.includes("entry-date Section 232 treatment")));
   } finally {
     restore();
   }

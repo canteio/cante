@@ -112,3 +112,38 @@ test("rejects an oversized body even without a usable Content-Length header, by 
   const response = await POST(request);
   assert.equal(response.status, 413);
 });
+
+test("bulk API carries derivative content values into an exact dollar calculation", async () => {
+  const restore = stubFetch([{ htsno: "8450.11.00.90", general: "5%" }]);
+  try {
+    const csv = "hts_code,country,value,steel_content_value,import_date\n8450.11.00.90,VN,10000,3000,2025-06-23\n";
+    const response = await POST(csvRequest(csv));
+    assert.equal(response.status, 200);
+    const data = await response.json();
+    assert.equal(data.rows[0].result.totalRatePercent, null);
+    assert.equal(data.rows[0].result.totalAmount, 2000);
+    assert.equal(data.rows[0].result.components[1].contentRatePercent, 0.5);
+  } finally {
+    restore();
+  }
+});
+
+test("bulk API uses programme S only with verified qualification details", async () => {
+  const restore = stubFetch([{ htsno: "0101.21.00.10", general: "2%", special: "Free (S)" }]);
+  try {
+    const csv = [
+      "hts_code,country,value,programme,usmca_verified,usmca_decision,usmca_details",
+      "0101.21.00.10,MX,1000,S,false,qualifies,Unverified assertion",
+      "0101.21.00.10,MX,1000,,true,qualifies,Signed certificate reviewed",
+    ].join("\n");
+    const response = await POST(csvRequest(csv));
+    assert.equal(response.status, 200);
+    const data = await response.json();
+    assert.equal(data.rows[0].result.components[0].amount, 20);
+    assert.equal(data.rows[0].result.usmcaQualification.specialRateRequested, false);
+    assert.equal(data.rows[1].result.components[0].amount, 0);
+    assert.equal(data.rows[1].result.usmcaQualification.specialRateRequested, true);
+  } finally {
+    restore();
+  }
+});

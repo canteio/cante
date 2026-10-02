@@ -4,8 +4,12 @@ import {
   lookupSection301Measure,
   type Section301Measure,
 } from "@/lib/tariff/section301";
-import { lookupSection232BasicArticle } from "@/lib/tariff/section232";
+import {
+  lookupSection232BasicArticle,
+  lookupSection232Derivative,
+} from "@/lib/tariff/section232";
 import { lookupAdCvdAdvisories, type AdCvdAdvisory } from "@/lib/tariff/adcvd";
+import { isStrictIsoDate } from "@/lib/tariff/date";
 
 /**
  * The tariff-stacking engine.
@@ -22,37 +26,59 @@ import { lookupAdCvdAdvisories, type AdCvdAdvisory } from "@/lib/tariff/adcvd";
  *      cross-reference against lib/tariff/section301.ts's verified table of
  *      List 1-4A measures (which countries and rates these are, Federal
  *      Register citations, effective dates).
- *   3. Section 232 steel/aluminum "basic article" tariffs — resolved from a
- *      fixed, enumerated list of Chapter 72/73/76 headings against
- *      lib/tariff/section232.ts, at the current 50% rate (25% for UK
- *      origin under the Economic Prosperity Deal). Section 232 *derivative*
- *      products (manufactured goods merely containing steel/aluminum, e.g.
- *      washing machines or furniture) are NOT covered — BIS's derivative
- *      list is actively expanding via its "inclusions process" and
- *      presenting a snapshot of it as complete would be exactly the
- *      fabricated-coverage failure this project refuses to make. See
- *      lib/tariff/section232.ts's module doc for the full scope statement.
+ *   3. Section 232 steel/aluminum tariffs — basic articles plus the bounded
+ *      appliance/welded-wire-rack derivative subset added June 23, 2025. The
+ *      derivative amount is computed only from caller-supplied steel/aluminum
+ *      content value and is never presented as a shipment-value percentage.
  *
- * Everything else Kate named — USMCA/FTA rules-of-origin qualification
- * beyond a claimed programme symbol, full AD/CVD scope/rate determination
- * (this module surfaces AD/CVD as a named, uncomputed advisory lead — see
- * lib/tariff/adcvd.ts for why a dollar figure is never fabricated there),
- * forced-labor (UFLPA) measures, and Section 232 derivative products — is
- * NOT computed here yet and is returned as an explicit `notEvaluated` list
- * naming exactly what is missing, per the project rule that an unverified
- * figure must never be presented as a real one. Real accuracy on what this
- * module does cover beats a fabricated total.
+ * Everything else Kate named — USMCA qualification analysis (the calculator
+ * accepts an explicit audited decision but does not make one), full AD/CVD
+ * scope/rate determination (this module surfaces AD/CVD as a named,
+ * uncomputed advisory lead — see lib/tariff/adcvd.ts for why a dollar figure
+ * is never fabricated there), forced-labor (UFLPA) measures, and Section 232
+ * derivative products outside the bounded verified subset — is returned in
+ * `notEvaluated` rather than silently omitted.
  */
 
 export interface StackedDutyComponent {
   type: "base" | "section301" | "section232";
   label: string;
+  /** Ad valorem rate on total shipment value. Null for content-value measures. */
   ratePercent: number | null;
-  /** Null when the component could not be computed (and totalPercent then can't be fully computed either). */
+  /** Assessment rate when the legal basis is a metal content value. */
+  contentRatePercent?: number;
+  contentValue?: number;
+  contentCategory?: "steel" | "aluminum";
+  /** Null when the component could not be computed. */
   amount: number | null;
   citation: string[];
   explanation: string;
 }
+
+export type UsmcaQualificationDecision = "qualifies" | "does_not_qualify";
+
+export interface UsmcaQualificationInput {
+  verified: boolean;
+  decision: UsmcaQualificationDecision | null;
+  details: string | null;
+}
+
+export type UsmcaQualificationAudit =
+  | { status: "not_applicable" | "not_provided"; specialRateRequested: false; explanation: string }
+  | {
+      status: "incomplete";
+      specialRateRequested: false;
+      decision: UsmcaQualificationDecision | null;
+      details: string | null;
+      explanation: string;
+    }
+  | {
+      status: "verified";
+      specialRateRequested: boolean;
+      decision: UsmcaQualificationDecision;
+      details: string;
+      explanation: string;
+    };
 
 export interface StackedDutyResult {
   htsCode: string;
@@ -69,13 +95,21 @@ export interface StackedDutyResult {
   notEvaluated: string[];
   /** Chapter 99 cross-references on the HTS row that we found but have no verified data for. */
   unresolvedMeasures: string[];
+  /** Auditable USMCA decision and whether it was allowed to request programme S. */
+  usmcaQualification: UsmcaQualificationAudit;
   /** Named AD/CVD leads to verify against the order's actual scope text — never a computed amount. */
   adCvdAdvisories: AdCvdAdvisory[];
 }
 
+const SECTION232_FULL_VALUE_REGIME_EFFECTIVE_DATE = "2026-04-06";
+const SECTION232_FULL_VALUE_REGIME_CITATION =
+  "Presidential Proclamation, Strengthening Actions Taken to Adjust Imports of Aluminum, Steel, and Copper Into the United States (Apr. 2, 2026), clauses 1-4";
+
 const STANDING_NOT_EVALUATED = [
-  "Section 232 steel/aluminum derivative-product tariffs (BIS's actively-expanding inclusions list is not covered — only the fixed 'basic article' heading list is)",
-  "USMCA/FTA rules-of-origin qualification beyond a claimed programme symbol (no certificate-of-origin analysis performed)",
+  "Section 232 derivative products outside the verified June 23, 2025 appliance/welded-wire-rack subset (the BIS inclusions list is broader and actively expanding)",
+  "Section 232 treatment on or after April 6, 2026, when a later proclamation changed derivative assessment to full customs value and revised covered-product annexes/rates",
+  "Russian aluminum smelt/cast exposure when Russia is not the declared country of origin (the inputs do not collect smelt/cast countries)",
+  "USMCA rules-of-origin analysis (a special rate is used only from an explicit caller-supplied verified decision and supporting details)",
   "Anti-dumping/countervailing duty (AD/CVD) exact scope/rate determination (named leads surfaced in adCvdAdvisories below are advisory only, never a computed amount)",
   "Forced-labor measures (e.g. UFLPA detentions/withhold-release orders)",
 ];
@@ -88,6 +122,9 @@ export interface StackDutyInput {
   quantity?: number | null;
   unit?: string | null;
   claimedProgramme?: string | null;
+  steelContentValue?: number | null;
+  aluminumContentValue?: number | null;
+  usmcaQualification?: UsmcaQualificationInput | null;
   /**
    * ISO date (YYYY-MM-DD) the goods are/were imported. Every measure this
    * module resolves already carries its own effective date in its
@@ -100,15 +137,68 @@ export interface StackDutyInput {
   signal?: AbortSignal;
 }
 
+function resolveUsmcaQualification(
+  country: string,
+  input: UsmcaQualificationInput | null | undefined,
+): UsmcaQualificationAudit {
+  if (country !== "MX" && country !== "CA") {
+    return {
+      status: "not_applicable",
+      specialRateRequested: false,
+      explanation: "USMCA preference was not considered because the declared origin is neither Mexico nor Canada.",
+    };
+  }
+
+  if (!input) {
+    return {
+      status: "not_provided",
+      specialRateRequested: false,
+      explanation: `No verified USMCA qualification decision was supplied for ${country === "MX" ? "Mexico" : "Canada"}, so the Column 1 general rate was requested. Country of origin alone does not establish qualification.`,
+    };
+  }
+
+  const details = input.details?.trim() || null;
+  if (!input.verified || !input.decision || !details) {
+    return {
+      status: "incomplete",
+      specialRateRequested: false,
+      decision: input.decision,
+      details,
+      explanation: "The USMCA input was incomplete or not verified. A verified decision and supporting details are both required, so the Column 1 general rate was requested.",
+    };
+  }
+
+  const specialRateRequested = input.decision === "qualifies";
+  return {
+    status: "verified",
+    specialRateRequested,
+    decision: input.decision,
+    details,
+    explanation: specialRateRequested
+      ? `Caller verified that the goods qualify for USMCA and supplied this basis: ${details} Programme S was requested from the published USITC row.`
+      : `Caller verified that the goods do not qualify for USMCA and supplied this basis: ${details} The Column 1 general rate was requested.`,
+  };
+}
+
 export async function computeStackedDuty(input: StackDutyInput): Promise<StackedDutyResult | null> {
   const country = input.countryOfOrigin.trim().toUpperCase();
+  const usmcaQualification = resolveUsmcaQualification(country, input.usmcaQualification);
+  const legacyProgramme = input.claimedProgramme?.trim().toUpperCase() || null;
+  const isUsmcaProgramme = legacyProgramme === "S" || legacyProgramme === "S+";
+  const claimedProgramme = usmcaQualification.specialRateRequested
+    ? isUsmcaProgramme
+      ? legacyProgramme
+      : "S"
+    : isUsmcaProgramme
+      ? null
+      : legacyProgramme;
 
   const base: DutyQuote | null = await quoteDuty({
     htsCode: input.htsCode,
     value: input.value,
     quantity: input.quantity,
     unit: input.unit,
-    claimedProgramme: input.claimedProgramme,
+    claimedProgramme,
     signal: input.signal,
   });
   if (!base) return null;
@@ -117,10 +207,9 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
   const stackingExplanation: string[] = [];
   const unresolvedMeasures: string[] = [];
 
-  const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
   let importDate: string | null = null;
   if (input.importDate) {
-    if (ISO_DATE.test(input.importDate) && !Number.isNaN(Date.parse(input.importDate))) {
+    if (isStrictIsoDate(input.importDate)) {
       importDate = input.importDate;
     } else {
       stackingExplanation.push(
@@ -133,21 +222,27 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
     );
   }
 
-  const USMCA_COUNTRIES = ["MX", "CA"];
-  if (USMCA_COUNTRIES.includes(country) && !input.claimedProgramme) {
+  stackingExplanation.push(usmcaQualification.explanation);
+  if (isUsmcaProgramme && !usmcaQualification.specialRateRequested) {
     stackingExplanation.push(
-      `Country of origin is ${country === "MX" ? "Mexico" : "Canada"}. Goods that qualify under USMCA rules of origin may be entitled to the special (preferential) rate instead of the general rate quoted above — no programme symbol was claimed here, so the general rate was used. Run the goods through the USMCA tariff-shift/RVC qualification engine (lib/tariff/usmca.ts) before assuming either rate; Cante does not infer qualification from country of origin alone.`,
+      `Programme ${legacyProgramme} was present, but Cante did not send it to the USITC quote because an explicit verified USMCA qualifying decision with supporting details was not supplied.`,
     );
   }
 
   components.push({
     type: "base",
     label: `Column 1 ${base.column === "special" ? "special (FTA/preference)" : base.column === "column2" ? "column 2" : "general (NTR)"} duty`,
-    ratePercent: base.rate.parsed ? (base.rate.adValorem ?? (base.rate.free ? 0 : null)) : null,
+    ratePercent: base.rate.parsed && base.rate.specificAmount === null ? (base.rate.adValorem ?? (base.rate.free ? 0 : null)) : null,
     amount: base.computation.amount,
     citation: ["19 U.S.C. § 1202, HTSUS Column 1/2 as published by USITC"],
     explanation: base.caveats.join(" "),
   });
+
+  if (!base.rate.parsed || (base.rate.specificAmount !== null && base.computation.amount === null)) {
+    unresolvedMeasures.push(base.rate.specificAmount !== null
+      ? `Base specific duty requires quantity in ${base.rate.specificUnit} and any required shipment value`
+      : "Base duty expression could not be parsed");
+  }
 
   const refs = extractChapter99Refs(base.additionalDutiesNote);
 
@@ -182,6 +277,7 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
         continue;
       }
       if (importDate && importDate < measure.effectiveDate) {
+        unresolvedMeasures.push(`${measure.chapter99Code} historical rate before ${measure.effectiveDate}`);
         stackingExplanation.push(
           `${measure.list} (${measure.chapter99Code}) is cross-referenced on this row, but its current rate did not take effect until ${measure.effectiveDate}, after the given import date ${importDate}. An earlier rate may have applied instead — this is NOT included in the total below; verify the rate actually in force on ${importDate} against the citations (${measure.federalRegisterCitations.join("; ")}).`,
         );
@@ -207,21 +303,147 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
 
   const section232Match = lookupSection232BasicArticle(base.htsCode, country);
   if (section232Match) {
-    const amount =
-      input.value !== null ? Number((input.value * section232Match.ratePercent).toFixed(2)) : null;
+    // Basic (non-derivative) articles were never touched by the April 2026
+    // proclamation — that change is documented (see STANDING_NOT_EVALUATED)
+    // as affecting derivative assessment only, so no post-regime gate applies
+    // here. Russian aluminum still needs separate evaluation regardless of
+    // date, and a date before the initial effective date is unresolved.
+    const reason = section232Match.category === "aluminum" && country === "RU"
+      ? "Russian aluminum treatment requires separate evaluation."
+      : importDate && importDate < "2025-03-12"
+        ? "Section 232 historical treatment before 2025-03-12 is unresolved."
+        : null;
+    // No import date means "imported today" — use the current in-force rate
+    // lookupSection232BasicArticle already returned. A date between the
+    // initial 25% effective date and the June 2025 rate increase uses 25%.
+    const rate = reason
+      ? null
+      : importDate && importDate < "2025-06-04"
+        ? 0.25
+        : section232Match.ratePercent;
+    if (reason) unresolvedMeasures.push(`${section232Match.chapter99Code}: ${reason}`);
     components.push({
       type: "section232",
       label: section232Match.label,
-      ratePercent: section232Match.ratePercent,
-      amount,
+      ratePercent: rate,
+      amount: rate !== null && input.value !== null ? Number((input.value * rate).toFixed(2)) : null,
       citation: section232Match.federalRegisterCitations,
-      explanation: `${section232Match.note} Applies because HTS ${base.htsCode} is enumerated as a basic (non-derivative) ${section232Match.category} article under Chapter 99 heading ${section232Match.chapter99Code}. Stacks ON TOP of (adds to, does not replace) the Column 1 base duty above.`,
+      explanation: reason ?? `Section 232 basic ${section232Match.category} article: ${rate! * 100}% on full customs value${importDate ? ` for ${importDate}` : " (today's current in-force rate; no import date was given)"}. ${country === "GB" ? section232Match.note : ""}`,
     });
-    stackingExplanation.push(
-      `${section232Match.label} (${section232Match.chapter99Code}, ${(section232Match.ratePercent * 100).toFixed(1)}%) stacks additively on top of the Column 1 base duty — Section 232 duties are assessed in addition to other applicable duties, per the imposing proclamations (${section232Match.federalRegisterCitations.join("; ")}).`,
-    );
+    stackingExplanation.push(reason ?? `${section232Match.label} (${section232Match.chapter99Code}) stacks additively on top of the Column 1 base duty at ${rate! * 100}%, per the imposing proclamations (${section232Match.federalRegisterCitations.join("; ")}).`);
   }
 
+  const section232Derivative = lookupSection232Derivative(base.htsCode, country);
+  if (section232Derivative) {
+    const steelContentValue = input.steelContentValue ?? null;
+    const aluminumContentValue = input.aluminumContentValue ?? null;
+    const combinedContentValue = (steelContentValue ?? 0) + (aluminumContentValue ?? 0);
+
+    for (const measure of section232Derivative.measures) {
+      if (importDate && importDate < measure.effectiveDate && !(measure.category === "aluminum" && country === "RU")) {
+        stackingExplanation.push(
+          `${measure.label} under ${measure.chapter99Code} did not take effect until ${measure.effectiveDate}, after the given import date ${importDate}, so this measure was not added. Verify any other Section 232 measure that may have applied on the entry date.`,
+        );
+        continue;
+      }
+
+      if (!importDate || importDate >= SECTION232_FULL_VALUE_REGIME_EFFECTIVE_DATE) {
+        const reason = !importDate
+          ? `An import date is required because Section 232 derivative treatment changed on ${SECTION232_FULL_VALUE_REGIME_EFFECTIVE_DATE}.`
+          : `The verified content-value rule is not used on or after ${SECTION232_FULL_VALUE_REGIME_EFFECTIVE_DATE}; a later proclamation changed assessment to full customs value and revised the covered-product annexes and rates.`;
+        unresolvedMeasures.push(`${measure.chapter99Code} entry-date Section 232 treatment for HTS ${base.htsCode}`);
+        components.push({
+          type: "section232",
+          label: measure.label,
+          ratePercent: null,
+          contentCategory: measure.category,
+          amount: null,
+          citation: [...measure.citations, SECTION232_FULL_VALUE_REGIME_CITATION],
+          explanation: `${reason} This bounded calculator therefore withholds the measure and aggregate totals instead of extending the 2025 content-value rule beyond its verified date range.`,
+        });
+        stackingExplanation.push(reason);
+        continue;
+      }
+
+      if (measure.category === "aluminum" && country === "RU") {
+        unresolvedMeasures.push(`Russian aluminum derivative treatment for HTS ${base.htsCode}`);
+        components.push({
+          type: "section232",
+          label: measure.label,
+          ratePercent: null,
+          contentCategory: measure.category,
+          amount: null,
+          citation: [...measure.citations, "CBP CSMS #64348288 (Mar. 7, 2025), Duties for Aluminum from Russia"],
+          explanation: "Russian-origin aluminum derivatives were subject to a separate 200% full-entered-value regime during this period. This bounded content-value calculator does not compute that regime, so the measure and aggregate totals are withheld.",
+        });
+        stackingExplanation.push(
+          "The declared country is Russia, so the ordinary aluminum-content derivative rate cannot be used. The separate Russian aluminum regime must be evaluated before a legal total is shown.",
+        );
+        continue;
+      }
+
+      const applicableRate = [...measure.rateHistory]
+        .reverse()
+        .find((period) => importDate >= period.effectiveDate)?.ratePercent ?? measure.ratePercent;
+      const contentValue = measure.contentValueField === "steelContentValue"
+        ? steelContentValue
+        : aluminumContentValue;
+      const contentInvalid =
+        contentValue !== null &&
+        (!Number.isFinite(contentValue) ||
+          contentValue < 0 ||
+          (input.value !== null && contentValue > input.value) ||
+          (input.value !== null && combinedContentValue > input.value));
+      const unresolvedLabel = `${measure.chapter99Code} ${measure.category} content value for HTS ${base.htsCode}`;
+
+      if (contentValue === null || contentInvalid) {
+        unresolvedMeasures.push(unresolvedLabel);
+        components.push({
+          type: "section232",
+          label: measure.label,
+          ratePercent: null,
+          contentRatePercent: applicableRate,
+          contentCategory: measure.category,
+          amount: null,
+          citation: measure.citations,
+          explanation: contentInvalid
+            ? `${measure.note} The supplied content value is invalid or exceeds the shipment value, so no duty amount was computed.`
+            : `${measure.note} This HTS classification is in the verified derivative subset, but ${measure.contentValueField} was not supplied, so no duty amount was computed.`,
+        });
+        stackingExplanation.push(
+          `${measure.label} applies to this verified derivative classification at ${(applicableRate * 100).toFixed(0)}% of ${measure.category} content value. The required content value is missing or invalid, so both legal totals are withheld rather than treating the charge as a percentage of total shipment value.`,
+        );
+        continue;
+      }
+
+      const amount = Number((contentValue * applicableRate).toFixed(2));
+      components.push({
+        type: "section232",
+        label: measure.label,
+        ratePercent: null,
+        contentRatePercent: applicableRate,
+        contentValue,
+        contentCategory: measure.category,
+        amount,
+        citation: measure.citations,
+        explanation: `${measure.note} USD ${contentValue.toFixed(2)} ${measure.category} content value × ${(applicableRate * 100).toFixed(0)}% = USD ${amount.toFixed(2)}.`,
+      });
+      stackingExplanation.push(
+        `${measure.label} (${measure.chapter99Code}, effective ${measure.effectiveDate}) adds USD ${amount.toFixed(2)}, calculated only from the supplied USD ${contentValue.toFixed(2)} ${measure.category} content value. It is not represented as an ad valorem rate on total shipment value.`,
+      );
+    }
+  }
+
+  // Finite inputs can still overflow multiplication or aggregate addition.
+  for (const component of components) {
+    if (component.amount !== null && !Number.isFinite(component.amount)) {
+      component.amount = null;
+      unresolvedMeasures.push(`${component.label}: arithmetic overflow`);
+    }
+  }
+  if (!Number.isFinite(components.reduce((sum, c) => sum + (c.amount ?? 0), 0))) {
+    unresolvedMeasures.push("Aggregate duty arithmetic overflow");
+  }
   const allAdValoremResolved = components.every((c) => c.ratePercent !== null) && unresolvedMeasures.length === 0;
   const totalRatePercent = allAdValoremResolved
     ? Number(components.reduce((sum, c) => sum + (c.ratePercent ?? 0), 0).toFixed(6))
@@ -251,6 +473,7 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
     stackingExplanation,
     notEvaluated: STANDING_NOT_EVALUATED,
     unresolvedMeasures,
+    usmcaQualification,
     adCvdAdvisories,
   };
 }

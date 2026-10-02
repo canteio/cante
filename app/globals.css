@@ -785,6 +785,16 @@ a:hover {
 .landing-page,
 .login-page { font-family: var(--font-public), sans-serif; letter-spacing: 0; }
 
+/* iOS/Android rubber-band overscroll reveals whatever html/body paint behind
+   a shorter fixed-height page. The app shell is intentionally dark, but the
+   public landing and login pages are light, so scope the page background to
+   html/body as well whenever a light page is mounted — otherwise overscroll
+   flashes the dark app-shell color through the white landing surface. */
+html:has(.landing-page),
+html:has(.landing-page) body {
+  background: #ffffff;
+}
+
 .landing-page {
   align-items: stretch;
   padding: clamp(24px, 3.2vw, 44px) clamp(22px, 5vw, 72px);
