@@ -19,6 +19,7 @@ const PROTECTED_PREFIXES = [
   "/suppliers",
   "/workqueue",
   "/import-monitor",
+  "/tariff",
 ];
 
 const PUBLIC_API_PATHS = new Set(["/api/demo-login", "/api/logout", "/api/waitlist"]);
@@ -88,6 +89,7 @@ export const config = {
     "/suppliers/:path*",
     "/workqueue/:path*",
     "/import-monitor/:path*",
+    "/tariff/:path*",
     "/api/:path*",
   ],
 };

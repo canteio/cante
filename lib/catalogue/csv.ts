@@ -16,7 +16,9 @@ export interface CsvTable {
   rows: Record<string, string>[];
 }
 
-export function parseCsv(input: string): CsvTable {
+export interface CsvLimits { columns: number; rawRows: number; cellCharacters: number }
+
+export function parseCsv(input: string, limits?: CsvLimits): CsvTable {
   const text = input.replace(/^﻿/, "");
   const records: string[][] = [];
   let field = "";
@@ -24,6 +26,10 @@ export function parseCsv(input: string): CsvTable {
   let inQuotes = false;
 
   for (let i = 0; i < text.length; i += 1) {
+    // Enforce structural limits while scanning, before constructing row objects.
+    if (limits && (record.length >= limits.columns || records.length >= limits.rawRows || field.length > limits.cellCharacters)) {
+      throw new Error("CSV exceeds column, raw-row, or cell limit.");
+    }
     const char = text[i];
 
     if (inQuotes) {
@@ -62,6 +68,9 @@ export function parseCsv(input: string): CsvTable {
     records.push(record);
   }
 
+  if (limits && (record.length > limits.columns || records.length > limits.rawRows || field.length > limits.cellCharacters || records.some((r) => r.length > limits.columns || r.some((c) => c.length > limits.cellCharacters)))) {
+    throw new Error("CSV exceeds column, raw-row, or cell limit.");
+  }
   const nonEmpty = records.filter((r) => r.some((cell) => cell.trim() !== ""));
   if (nonEmpty.length === 0) return { headers: [], rows: [] };
 

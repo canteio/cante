@@ -1,9 +1,17 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
+import type { Viewport } from "next";
 import { BrandMark } from "@/components/brand-mark";
 import { WaitlistForm } from "@/components/waitlist-form";
 
 type LandingStyle = CSSProperties & { "--d": string };
+
+// This page is light; without an explicit theme-color, mobile browsers
+// (Safari, Chrome, in-app browsers like Telegram's) default the address-bar
+// and system-UI tint to black, which reads as a black bar around the page.
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+};
 
 const signalSteps = [
   { time: "06:00", label: "Federal Register", value: "Source checked" },

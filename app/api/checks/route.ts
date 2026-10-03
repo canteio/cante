@@ -9,7 +9,7 @@ export const runtime = "nodejs";
 // The judgment stage shells out to the Claude Code CLI and can run for
 // minutes. Never statically evaluate this route.
 export const dynamic = "force-dynamic";
-export const maxDuration = 800;
+export const maxDuration = 300;
 
 /** GET /api/checks — run history for a customer. */
 export async function GET(request: Request) {

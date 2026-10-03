@@ -78,6 +78,50 @@ CANTE_LLM_LOCKED=true
 ```
 Vercel receives the Supabase URL/publishable key and one hosted AI key. The Supabase secret key belongs only on the trusted local sync worker and must not be added to Vercel.
 
+---
+
+## Tariff-stacking calculator (new, additive — `/chat` is unchanged)
+
+`GET /api/tariff/stack?code=<HTS code>&country=<origin>&value=<USD>` answers the
+question Kate Chang (The Toro Company, customer-discovery interview,
+2026-10-01 — see `gbrain cante/interviews/kate-chang-toro-company`) described
+as Cante's clearest V1: upload an HTS code + country of origin and get back
+the total landed duty rate, broken down by component, with the stacking
+logic spelled out in plain English and a citation for each applicable rule.
+
+What it computes for real today:
+- **Base/Column 1 duty** — live from the USITC HTS schedule (`lib/tariff/rates.ts`).
+- **China Section 301** — resolved from the HTS row's own Chapter 99
+  cross-reference (e.g. "See 9903.88.03") against a verified table of the
+  four List actions (`lib/tariff/section301.ts`), each entry carrying its
+  current in-force rate, effective date, and Federal Register citation(s).
+  Only applies when country of origin is China; the response says so
+  explicitly either way.
+- **Section 232 steel/aluminum "basic article" tariffs** — resolved from a
+  fixed, enumerated list of Chapter 72/73/76 headings
+  (`lib/tariff/section232.ts`) at the current 50% ad valorem rate (25% for
+  United Kingdom origin under the US-UK Economic Prosperity Deal), citing
+  Proclamations 10895/10896/10947 and their Federal Register notices
+  (90 FR 11249, 90 FR 11251, 90 FR 24199). Deliberately does NOT cover
+  Section 232 *derivative* products (manufactured goods that merely contain
+  steel/aluminum, e.g. washing machines) — that list is actively expanding
+  via BIS's inclusions process and a snapshot of it would misrepresent
+  coverage as complete.
+
+What it deliberately does NOT compute yet, and says so in every response's
+`notEvaluated` list rather than guessing: Section 232 derivative-product
+tariffs, USMCA/FTA rules-of-origin qualification beyond a claimed
+programme symbol, AD/CVD scope, and forced-labor (UFLPA) measures. A
+Chapter 99 cross-reference this table doesn't recognize is surfaced in
+`unresolvedMeasures` and voids the total (never silently under-states it) —
+see `lib/tariff/stack.ts` for the full policy.
+
+This is the honest-failure discipline the rest of Cante already follows,
+applied to the specific narrow tool a real prospect asked for: real accuracy
+on the HTS codes it does cover beats broad fake coverage. Demo bar: run
+Kate's real HTS codes through it and compare against Toro's spreadsheet,
+targeted for after Oracle GTM go-live (mid-December 2026).
+
 The migration qualifies pgvector's cosine operator through the `extensions`
 schema so its retrieval function remains compatible with the hardened empty
 Postgres search path.
@@ -145,7 +189,9 @@ Two properties of the source that can't be engineered away, so the judgment stag
 lib/llm/          types.ts (the seam) · claude-code.ts (works) · api.ts (stub) · index.ts
 lib/sources/      registry.ts (sources + profile activation) · fetch.ts (JSON/RSS/HTML/CSV parsers)
 lib/screening/    csl.ts · us-trade-controls.ts · us-isf.ts · us-export-controls.ts
-lib/tariff/       insw.ts (INSW / NTR) · usitc.ts · usmca.ts · quota-ledger.ts (PI & Quota Ledger)
+lib/tariff/       insw.ts (INSW / NTR) · rates.ts (live USITC HTS column 1/2) · duty-expression.ts (duty-string parser)
+                   · section301.ts (China 301 List 1-4A reference table) · stack.ts (stacking engine) · usmca.ts
+                   · quota-ledger.ts (PI & Quota Ledger)
 lib/substances/   us-chemical-controls.ts (EPA TSCA PFAS/PBT, CA Prop 65)
 lib/documents/    discrepancy.ts (Doc Cross-Check & OCR Engine) · extract-file.ts
 lib/workflow/     actions.ts · draft.ts (PPJK, Ops, Supplier) · us-cbp-response.ts · audit-vault.ts

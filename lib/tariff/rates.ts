@@ -42,7 +42,11 @@ export interface TariffRow {
 }
 
 export class TariffLookupError extends Error {
-  readonly status = 502;
+  readonly status: number;
+  constructor(message = "Tariff lookup unavailable.", status = 502) {
+    super(message);
+    this.status = status;
+  }
 }
 
 /**
@@ -51,6 +55,44 @@ export class TariffLookupError extends Error {
  */
 const cache = new Map<string, { row: TariffRow | null; expiresAt: number }>();
 const CACHE_TTL_MS = 60 * 60 * 1000;
+
+export const MAX_TARIFF_CACHE_ENTRIES = 256;
+export const MAX_SHARED_LOOKUPS = 5;
+const MAX_QUEUED_LOOKUPS = 100;
+let activeLookups = 0;
+const lookupQueue: Array<() => void> = [];
+
+/** Shared, bounded semaphore; cancellation removes queued work without taking a permit. */
+async function acquireLookup(signal: AbortSignal): Promise<() => void> {
+  signal.throwIfAborted();
+  if (activeLookups >= MAX_SHARED_LOOKUPS) {
+    if (lookupQueue.length >= MAX_QUEUED_LOOKUPS) throw new TariffLookupError();
+    await new Promise<void>((resolve, reject) => {
+      const cancel = () => {
+        const index = lookupQueue.indexOf(start);
+        if (index >= 0) lookupQueue.splice(index, 1);
+        reject(new TariffLookupError());
+      };
+      const start = () => { signal.removeEventListener("abort", cancel); resolve(); };
+      lookupQueue.push(start);
+      signal.addEventListener("abort", cancel, { once: true });
+    });
+  } else {
+    activeLookups += 1;
+  }
+  return () => {
+    const next = lookupQueue.shift();
+    if (next) next(); // transfer the permit, never briefly expose a free slot
+    else activeLookups -= 1;
+  };
+}
+
+function cacheRow(key: string, row: TariffRow | null, now: number) {
+  for (const [key, entry] of cache) if (entry.expiresAt <= now) cache.delete(key);
+  cache.delete(key);
+  while (cache.size >= MAX_TARIFF_CACHE_ENTRIES) cache.delete(cache.keys().next().value!);
+  cache.set(key, { row, expiresAt: now + CACHE_TTL_MS });
+}
 
 export function resetTariffCacheForTests(): void {
   cache.clear();
@@ -93,10 +135,12 @@ export async function lookupTariff(
   code: string,
   options: { signal?: AbortSignal; now?: number } = {},
 ): Promise<TariffRow | null> {
+  options.signal?.throwIfAborted();
   const key = digits(code);
-  if (!key) throw new TariffLookupError(`"${code}" is not a usable tariff code.`);
+  if (!key) throw new TariffLookupError("The provided code is not a usable tariff code.", 400);
 
   const now = options.now ?? Date.now();
+  for (const [key, entry] of cache) if (entry.expiresAt <= now) cache.delete(key);
   const cached = cache.get(key);
   if (cached && cached.expiresAt > now) return cached.row;
 
@@ -104,21 +148,29 @@ export async function lookupTariff(
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
+  const signal = options.signal ? AbortSignal.any([options.signal, controller.signal]) : controller.signal;
+  let release: (() => void) | undefined;
   let payload: unknown;
   try {
+    release = await acquireLookup(signal);
+    signal.throwIfAborted();
     const res = await fetch(url, {
-      signal: options.signal ?? controller.signal,
+      signal,
       headers: { Accept: "application/json" },
     });
     if (!res.ok) throw new TariffLookupError(`USITC HTS returned HTTP ${res.status}.`);
     payload = await res.json();
   } catch (error) {
     if (error instanceof TariffLookupError) throw error;
-    throw new TariffLookupError(
-      `Could not reach the USITC HTS service: ${error instanceof Error ? error.message : "unknown error"}.`,
-    );
+    // Never surface the raw underlying error message here — a synthetic or
+    // attacker-influenced fetch failure (DNS, TLS, proxy, or a crafted
+    // AggregateError) could otherwise leak internal network details through
+    // a public API response. Only structured, pre-vetted messages thrown
+    // above (HTTP status, payload shape) are safe to disclose as-is.
+    throw new TariffLookupError("Could not reach the USITC HTS service.");
   } finally {
     clearTimeout(timer);
+    release?.();
   }
 
   if (!Array.isArray(payload)) {
@@ -136,7 +188,7 @@ export async function lookupTariff(
 
   const match = candidates[0];
   if (!match) {
-    cache.set(key, { row: null, expiresAt: now + CACHE_TTL_MS });
+    cacheRow(key, null, now);
     return null;
   }
 
@@ -153,7 +205,7 @@ export async function lookupTariff(
     fetchedAt: new Date(now).toISOString(),
   };
 
-  cache.set(key, { row, expiresAt: now + CACHE_TTL_MS });
+  cacheRow(key, row, now);
   return row;
 }
 
