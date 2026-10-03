@@ -6,20 +6,23 @@
  */
 
 :root {
-  /* Neutral, near-black app chrome — dark theme */
-  --app-background: #000000;
-  --app-surface: #0a0a0a;
-  --app-surface-hover: #161616;
-  --app-surface-active: #1f1f1f;
-  --app-floating: #0d0d0d;
+  /* Light system theme — dashboard/sidebar/chat/every authenticated page.
+     The public landing and login pages keep their own separately-scoped
+     literal colors (`.landing-page`, `.login-page`) and are unaffected by
+     these tokens. */
+  --app-background: #ffffff;
+  --app-surface: #f7f7f8;
+  --app-surface-hover: #eef0f2;
+  --app-surface-active: #e5e7eb;
+  --app-floating: #fafafa;
 
-  --text: #f5f5f5;
-  --text-secondary: #d1d5db;
-  --text-muted: #9ca3af;
-  --text-faint: #6b7280;
+  --text: #111827;
+  --text-secondary: #374151;
+  --text-muted: #6b7280;
+  --text-faint: #9ca3af;
 
-  --border: #262626;
-  --border-soft: #1a1a1a;
+  --border: #e5e7eb;
+  --border-soft: #f0f1f3;
 
   /* Mike's azure */
   --azure: 0, 136, 255;
@@ -45,7 +48,7 @@ html,
 body {
   margin: 0;
   padding: 0;
-  background: var(--app-background);
+  background: #ffffff;
   color: var(--text);
   font-family: var(--font-inter), system-ui, sans-serif;
   font-size: 14px;
@@ -978,6 +981,14 @@ html:has(.landing-page) body {
   display: grid;
   grid-template-columns: 244px 1fr;
   min-height: 100vh;
+  background: var(--app-background);
+  color: var(--text);
+}
+
+.simple-auth-page {
+  min-height: 100vh;
+  background: var(--app-background);
+  color: var(--text);
 }
 
 /* ─── Memory entries ───────────────────────────────────────────── */
@@ -1066,12 +1077,12 @@ html:has(.landing-page) body {
 
 .nav a[data-active="true"],
 .memory-nav[data-active="true"] {
-  background: #fff;
+  background: #ffffff;
   color: var(--text);
   font-weight: 500;
   box-shadow:
-    0 1px 2px rgba(15, 23, 42, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    0 1px 2px rgba(15, 23, 42, 0.08),
+    inset 0 0 0 1px var(--border);
 }
 
 .nav-subtree {
@@ -2315,7 +2326,7 @@ html:has(.landing-page) body {
 
 .icon-btn:disabled {
   cursor: default;
-  background: linear-gradient(to bottom, #525252, #000);
+  background: linear-gradient(to bottom, #f3f4f6, #e5e7eb);
   opacity: 0.5;
 }
 
