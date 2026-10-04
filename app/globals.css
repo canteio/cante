@@ -6,15 +6,16 @@
  */
 
 :root {
-  /* Light system theme — dashboard/sidebar/chat/every authenticated page.
-     The public landing and login pages keep their own separately-scoped
-     literal colors (`.landing-page`, `.login-page`) and are unaffected by
-     these tokens. */
-  --app-background: #ffffff;
-  --app-surface: #f7f7f8;
-  --app-surface-hover: #eef0f2;
-  --app-surface-active: #e5e7eb;
-  --app-floating: #fafafa;
+  /* Unified light theme across the whole app — same subtle off-white the
+     landing page's hero gradient settled into (#fafafa), not stark #ffffff.
+     Flat, not a gradient, so it tiles cleanly across every surface: cards,
+     sidebar, landing, login. Pure white reads harsh/clinical at app scale;
+     this is closer to what Linear/Notion/Stripe actually ship. */
+  --app-background: #fafafa;
+  --app-surface: #ffffff;
+  --app-surface-hover: #f1f1f2;
+  --app-surface-active: #e8e9eb;
+  --app-floating: #ffffff;
 
   --text: #111827;
   --text-secondary: #374151;
@@ -789,29 +790,30 @@ a:hover {
 .login-page { font-family: var(--font-public), sans-serif; letter-spacing: 0; }
 
 /* iOS/Android rubber-band overscroll reveals whatever html/body paint behind
-   a shorter fixed-height page. The app shell is intentionally dark, but the
-   public landing and login pages are light, so scope the page background to
-   html/body as well whenever a light page is mounted — otherwise overscroll
-   flashes the dark app-shell color through the white landing surface.
+   a shorter fixed-height page. Scope the page background to html/body
+   whenever a light page (landing or plain login) is mounted — otherwise
+   overscroll flashes a different color through the white surface.
    color-scheme: light stops a device/browser in dark mode from painting its
    own dark UA default (scrollbar track, unstyled chrome, pull-to-refresh
    background) black before/around the white page content. */
 html:has(.landing-page),
-html:has(.landing-page) body {
-  background: #ffffff;
+html:has(.landing-page) body,
+html:has(.login-page),
+html:has(.login-page) body {
+  background: #fafafa;
   color-scheme: light;
 }
 
 .landing-page {
   align-items: stretch;
   padding: clamp(24px, 3.2vw, 44px) clamp(22px, 5vw, 72px);
-  background: #ffffff;
+  background: #fafafa;
   color: #111827;
   color-scheme: light;
 }
 
 .landing-video { display: none; }
-.landing-shade { background: radial-gradient(circle at 50% 20%, #fdfdfd, #f3f4f6 70%); box-shadow: none; }
+.landing-shade { background: #fafafa; box-shadow: none; }
 
 .landing-header {
   position: relative;
@@ -900,27 +902,27 @@ html:has(.landing-page) body {
 
 @keyframes landingStreamRise { to { transform: translateY(calc(var(--stream-cycle) * -1)); } }
 
-/* Plain login */
-.login-page { display: grid; place-items: center; min-height: 100vh; min-height: 100dvh; overflow: auto; padding: 80px 24px 40px; background: #000; color: #fff; }
+/* Plain login — unified with the landing page and app-wide off-white theme. */
+.login-page { display: grid; place-items: center; min-height: 100vh; min-height: 100dvh; overflow: auto; padding: 80px 24px 40px; background: #fafafa; color: #111827; }
 .login-header { position: absolute; top: clamp(24px,4vw,42px); left: clamp(24px,4vw,48px); width: auto; }
 .login-shell { display: block; width: min(100%,360px); margin: 0; padding: 0; }
 .login-card { display: flex; width: 100%; margin: 0; padding: 0; gap: 18px; border: 0; border-radius: 0; background: transparent; box-shadow: none; backdrop-filter: none; }
 .login-card-head { margin: 0 0 14px; }
-.login-card h1 { margin: 0; color: #fff; font-size: 1.72rem; font-weight: 650; line-height: 1.2; }
-.login-card-head p { margin-top: 8px; color: rgba(255,255,255,0.62); font-size: 0.86rem; }
-.login-field { gap: 7px; color: rgba(255,255,255,0.72); font-size: 0.78rem; font-weight: 650; }
-.login-field input { height: 48px; padding: 0 13px; border: 1px solid rgba(255,255,255,0.22); border-radius: 6px; background: rgba(255,255,255,0.06); color: #fff; font-size: 0.92rem; box-shadow: none; }
-.login-field textarea { width: 100%; min-height: 112px; padding: 12px 13px; resize: vertical; border: 1px solid rgba(255,255,255,0.22); border-radius: 6px; outline: 0; background: rgba(255,255,255,0.06); color: #fff; font: inherit; font-size: 0.92rem; line-height: 1.5; }
-.login-field input::placeholder { color: rgba(255,255,255,0.4); }
-.login-field textarea::placeholder { color: rgba(255,255,255,0.4); }
+.login-card h1 { margin: 0; color: #111827; font-size: 1.72rem; font-weight: 650; line-height: 1.2; }
+.login-card-head p { margin-top: 8px; color: rgba(17,24,39,0.62); font-size: 0.86rem; }
+.login-field { gap: 7px; color: rgba(17,24,39,0.72); font-size: 0.78rem; font-weight: 650; }
+.login-field input { height: 48px; padding: 0 13px; border: 1px solid #e5e7eb; border-radius: 6px; background: #fdfdfe; color: #111827; font-size: 0.92rem; box-shadow: none; }
+.login-field textarea { width: 100%; min-height: 112px; padding: 12px 13px; resize: vertical; border: 1px solid #e5e7eb; border-radius: 6px; outline: 0; background: #fdfdfe; color: #111827; font: inherit; font-size: 0.92rem; line-height: 1.5; }
+.login-field input::placeholder { color: rgba(17,24,39,0.38); }
+.login-field textarea::placeholder { color: rgba(17,24,39,0.38); }
 .login-field input:focus,
-.login-field textarea:focus { border-color: #fff; background: rgba(255,255,255,0.1); box-shadow: 0 0 0 3px rgba(255,255,255,0.12); }
-.login-submit { height: 48px; margin-top: 2px; border-radius: 6px; background: #fff; color: #111; box-shadow: none; font-size: 0.86rem; font-weight: 700; }
-.login-submit:hover:not(:disabled) { background: rgba(255,255,255,0.85); transform: none; box-shadow: none; }
-.login-error { margin: -4px 0 0; color: #ff8a80; }
-.login-demo-note { margin: -2px 0 0; color: rgba(255,255,255,0.5); font-size: 0.75rem; text-align: center; }
-.login-demo-note strong { color: #fff; }
-.login-home-link { align-self: center; margin-top: 4px; border: 0; color: rgba(255,255,255,0.55); font-size: 0.76rem; }
+.login-field textarea:focus { border-color: rgba(17,24,39,0.4); background: #ffffff; box-shadow: 0 0 0 3px rgba(17,24,39,0.08); }
+.login-submit { height: 48px; margin-top: 2px; border-radius: 6px; background: #111827; color: #fff; box-shadow: none; font-size: 0.86rem; font-weight: 700; }
+.login-submit:hover:not(:disabled) { background: #1f2937; transform: none; box-shadow: none; }
+.login-error { margin: -4px 0 0; color: #dc2626; }
+.login-demo-note { margin: -2px 0 0; color: rgba(17,24,39,0.55); font-size: 0.75rem; text-align: center; }
+.login-demo-note strong { color: #111827; }
+.login-home-link { align-self: center; margin-top: 4px; border: 0; color: rgba(17,24,39,0.55); font-size: 0.76rem; }
 .request-page { place-items: start center; overflow-y: auto; padding-top: 108px; }
 .request-shell { width: min(100%,420px); margin: 0 auto; }
 .request-card { gap: 16px; }
