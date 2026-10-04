@@ -40,8 +40,8 @@ export default function LandingPage() {
       <section className="landing-hero" aria-labelledby="landing-title">
         <div className="landing-pitch">
           <h1 id="landing-title" className="landing-title">
-            <span style={{ "--d": "0.14s" } as LandingStyle}>The AI compliance team{" "}</span>
-            <span style={{ "--d": "0.24s" } as LandingStyle}>you don't have.</span>
+            <span style={{ "--d": "0.14s" } as LandingStyle}>Simplify Import/Export{" "}</span>
+            <span style={{ "--d": "0.24s" } as LandingStyle}>Compliance.</span>
           </h1>
           <p className="landing-copy anim" style={{ "--d": "0.32s" } as LandingStyle}>
             Cante checks official sources daily and tells you which changes affect your operations.
