@@ -10,7 +10,7 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
   if (!customerId) return Response.json({ lanes: [] });
-  return Response.json({ lanes: listLanes(customerId) });
+  return Response.json({ lanes: await listLanes(customerId) });
 }
 
 export async function POST(request: Request) {
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
   }
 
   if (typeof payload.csv === "string") {
-    return Response.json({ summary: importLanesCsv(customerId, payload.csv) });
+    return Response.json({ summary: await importLanesCsv(customerId, payload.csv) });
   }
 
   const originCountry = payload.originCountry as string;
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const lane = upsertLane(
+  const lane = await upsertLane(
     customerId,
     {
       productId: (payload.productId as string) ?? null,
@@ -84,7 +84,7 @@ export async function DELETE(request: Request) {
     if (!customerId || !laneId) {
       return Response.json({ error: "customerId and laneId are required." }, { status: 400 });
     }
-    return Response.json({ deleted: deleteLane(customerId, laneId) });
+    return Response.json({ deleted: await deleteLane(customerId, laneId) });
   } catch (error) {
     return Response.json(
       { error: error instanceof Error ? error.message : "Failed to delete lane." },

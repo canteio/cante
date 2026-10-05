@@ -7,24 +7,9 @@ import {
 } from "@/lib/catalogue/products";
 import { listClassifications } from "@/lib/catalogue/classifications";
 import { extractTextFromFile, FileExtractionError } from "@/lib/documents/extract-file";
-import { getDataBackend } from "@/lib/auth/config";
-import { createClient } from "@/lib/supabase/server";
-import { importCloudCatalogue } from "@/lib/chat/attachments";
-import { randomUUID } from "node:crypto";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-function camel(value: any): any {
-  if (Array.isArray(value)) return value.map(camel);
-  if (!value || typeof value !== "object") return value;
-  return Object.fromEntries(
-    Object.entries(value).map(([key, item]) => [
-      key.replace(/_([a-z])/g, (_, letter: string) => letter.toUpperCase()),
-      camel(item),
-    ]),
-  );
-}
 
 /**
  * The product catalogue — item 2.
@@ -39,29 +24,11 @@ export async function GET(request: Request) {
   const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
   if (!customerId) return Response.json({ products: [] });
 
-  if (getDataBackend() === "supabase") {
-    const supabase = await createClient();
-    const { data, error } = await supabase
-      .from("products")
-      .select("*, product_classifications(*)")
-      .eq("customer_id", customerId)
-      .order("name");
-    if (error) return Response.json({ error: error.message }, { status: 500 });
-    return Response.json({
-      products: (data ?? []).map((row: any) => ({
-        ...camel(row),
-        classifications: camel(row.product_classifications ?? []).filter(
-          (item: any) => !item.supersededAt,
-        ),
-      })),
-    });
-  }
-
-  const products = listProducts(customerId);
-  const withCodes = products.map((product) => ({
+  const products = await listProducts(customerId);
+  const withCodes = await Promise.all(products.map(async (product) => ({
     ...product,
-    classifications: listClassifications(product.id).filter((c) => !c.supersededAt),
-  }));
+    classifications: (await listClassifications(product.id)).filter((c) => !c.supersededAt),
+  })));
   return Response.json({ products: withCodes });
 }
 
@@ -96,9 +63,7 @@ export async function POST(request: Request) {
         new Uint8Array(await file.arrayBuffer()),
       );
       const summary =
-        getDataBackend() === "supabase"
-          ? await importCloudCatalogue(customerId, extracted.text)
-          : importProductsCsv(customerId, extracted.text);
+        await importProductsCsv(customerId, extracted.text);
       return Response.json({
         summary,
         extraction: { format: extracted.format, warnings: extracted.warnings },
@@ -131,9 +96,7 @@ export async function POST(request: Request) {
 
   if (typeof payload.csv === "string") {
     const summary =
-      getDataBackend() === "supabase"
-        ? await importCloudCatalogue(customerId, payload.csv)
-        : importProductsCsv(customerId, payload.csv);
+      await importProductsCsv(customerId, payload.csv);
     return Response.json({ summary });
   }
 
@@ -156,38 +119,7 @@ export async function POST(request: Request) {
     notes: payload.notes as string | null,
   };
 
-  if (getDataBackend() === "supabase") {
-    const supabase = await createClient();
-    const { data: existing, error: readError } = await supabase
-      .from("products")
-      .select("id")
-      .eq("customer_id", customerId)
-      .eq("sku", sku)
-      .maybeSingle();
-    if (readError) return Response.json({ error: readError.message }, { status: 500 });
-    const values = {
-      customer_id: customerId,
-      sku,
-      name,
-      description: input.description ?? null,
-      materials: input.materials,
-      origin_country: input.originCountry ?? null,
-      unit_of_measure: input.unitOfMeasure ?? null,
-      unit_value: input.unitValue ?? null,
-      currency: input.currency || "USD",
-      product_class: input.productClass || "unknown",
-      notes: input.notes ?? null,
-      updated_at: new Date().toISOString(),
-    };
-    const query = existing
-      ? supabase.from("products").update(values).eq("id", existing.id).select("*").single()
-      : supabase.from("products").insert({ id: randomUUID(), ...values }).select("*").single();
-    const { data, error } = await query;
-    if (error) return Response.json({ error: error.message }, { status: 500 });
-    return Response.json({ product: camel(data), outcome: existing ? "updated" : "created" });
-  }
-
-  const result = upsertProduct(customerId, input);
+  const result = await upsertProduct(customerId, input);
 
   return Response.json(result);
 }
@@ -205,17 +137,8 @@ export async function DELETE(request: Request) {
     if (!customerId || !productId) {
       return Response.json({ error: "customerId and productId are required." }, { status: 400 });
     }
-    if (getDataBackend() === "supabase") {
-      const supabase = await createClient();
-      const { error, count } = await supabase
-        .from("products")
-        .delete({ count: "exact" })
-        .eq("customer_id", customerId)
-        .eq("id", productId);
-      if (error) return Response.json({ error: error.message }, { status: 500 });
-      return Response.json({ deleted: Boolean(count) });
-    }
-    return Response.json({ deleted: deleteProduct(customerId, productId) });
+
+    return Response.json({ deleted: await deleteProduct(customerId, productId) });
   } catch (error) {
     return Response.json(
       { error: error instanceof Error ? error.message : "Failed to delete product." },

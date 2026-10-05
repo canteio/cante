@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { getAuthMode, getDataBackend, DEMO_SESSION_COOKIE, DEMO_SESSION_VALUE } from "@/lib/auth/config";
 import { createClient, getAuthenticatedWorkspace } from "@/lib/supabase/server";
-import { sqliteMonitorStore, supabaseMonitorStore } from "@/pipelines/import-manifest/monitor/store";
+import { supabaseMonitorStore } from "@/pipelines/import-manifest/monitor/store";
 import { respondToMonitorQuery } from "@/pipelines/import-manifest/monitor/http";
 
 export const runtime = "nodejs";
@@ -17,15 +15,9 @@ export const dynamic = "force-dynamic";
 // status. Wrapped to match app/api/customers/route.ts's fix from this sweep.
 export async function GET(request: Request) {
   try {
-    let customerId: string | null = null;
-    if (getAuthMode() === "supabase") {
-      customerId = (await getAuthenticatedWorkspace())?.customerId ?? null;
-    } else if ((await cookies()).get(DEMO_SESSION_COOKIE)?.value === DEMO_SESSION_VALUE) {
-      const { getDefaultCustomerId } = await import("@/lib/db/queries");
-      customerId = await getDefaultCustomerId();
-    }
+    const customerId = (await getAuthenticatedWorkspace())?.customerId ?? null;
     return await respondToMonitorQuery(request, customerId, async id => {
-      const store = getDataBackend() === "supabase" ? supabaseMonitorStore(await createClient()) : await sqliteMonitorStore();
+      const store = supabaseMonitorStore(await createClient());
       return store.read(id);
     });
   } catch (error) {

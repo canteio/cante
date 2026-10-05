@@ -29,7 +29,7 @@ test("discovery imports without customer storage or document parsers", () => {
   ].join("\n");
   const child = spawnSync(process.execPath, ["--import", "tsx", "--input-type=module", "--eval", script], {
     cwd: process.cwd(),
-    env: { ...process.env, CANTE_DATA_BACKEND: "sqlite", CANTE_DB_PATH: "/dev/null/cante.db" },
+    env: { ...process.env, NEXT_PUBLIC_SUPABASE_URL: "", SUPABASE_SECRET_KEY: "" },
     encoding: "utf8",
   });
   assert.equal(child.status, 0, child.stderr || child.stdout);

@@ -1,7 +1,8 @@
+import type * as Schema from "@/lib/db/schema";
+import { createClient } from "@/lib/supabase/server";
 import { randomUUID } from "node:crypto";
-import { and, desc, eq } from "drizzle-orm";
-import { db } from "@/lib/db/client";
-import { findingActions, findings, type Finding, type FindingAction } from "@/lib/db/schema";
+
+import { type Finding, type FindingAction } from "@/lib/db/schema";
 
 /**
  * The action workflow — item 4.
@@ -62,11 +63,20 @@ export interface TransitionInput {
   reopen?: boolean;
 }
 
-export function getAction(findingId: string): FindingAction | undefined {
-  return db.select().from(findingActions).where(eq(findingActions.findingId, findingId)).get();
+export async function getAction(findingId: string): Promise<FindingAction | undefined> {
+  const supabase = await createClient();
+  return (cloudResult<typeof Schema.findingActions.$inferSelect | null>(
+    await supabase
+      .from("finding_actions")
+      .select("*")
+      .eq("finding_id", findingId)
+      .limit(1)
+      .maybeSingle(),
+  ) ?? undefined);
 }
 
-export function transition(input: TransitionInput): FindingAction {
+export async function transition(input: TransitionInput): Promise<FindingAction> {
+  const supabase = await createClient();
   if (!STATES.has(input.state)) {
     // Agent-usability audit: an AI client guessing at the state enum only
     // learns it guessed wrong, not what the right values are. List them so
@@ -77,7 +87,14 @@ export function transition(input: TransitionInput): FindingAction {
       `Unknown state "${input.state}". Valid states: ${Array.from(STATES).join(", ")}.`,
     );
   }
-  const finding = db.select().from(findings).where(eq(findings.id, input.findingId)).get();
+  const finding = (cloudResult<typeof Schema.findings.$inferSelect | null>(
+    await supabase
+      .from("findings")
+      .select("*")
+      .eq("id", input.findingId)
+      .limit(1)
+      .maybeSingle(),
+  ) ?? undefined);
   if (!finding) throw new WorkflowError("Finding not found.");
   if (finding.customerId !== input.customerId) {
     throw new WorkflowError("That finding belongs to a different customer.");
@@ -96,7 +113,7 @@ export function transition(input: TransitionInput): FindingAction {
   }
 
   const now = new Date().toISOString();
-  const existing = getAction(input.findingId);
+  const existing = await getAction(input.findingId);
 
   if (existing && TERMINAL.has(existing.state as ActionState) && !input.reopen) {
     throw new WorkflowError(
@@ -119,7 +136,12 @@ export function transition(input: TransitionInput): FindingAction {
   };
 
   if (existing) {
-    db.update(findingActions).set(values).where(eq(findingActions.id, existing.id)).run();
+    cloudResult(
+      await supabase
+        .from("finding_actions")
+        .update(snakeRow(values))
+        .eq("id", existing.id),
+    );
     return { ...existing, ...values };
   }
 
@@ -130,7 +152,11 @@ export function transition(input: TransitionInput): FindingAction {
     ...values,
     createdAt: now,
   };
-  db.insert(findingActions).values(row).run();
+  cloudResult(
+    await supabase
+      .from("finding_actions")
+      .insert(snakeRow(row)),
+  );
   return row as FindingAction;
 }
 
@@ -146,25 +172,28 @@ export interface FindingWithAction {
  * The work queue. Findings the monitor flagged, joined to whatever a human has
  * done about them, with untouched ones surfacing as `new` rather than absent.
  */
-export function listWorkQueue(
+export async function listWorkQueue(
   customerId: string,
-  options: { includeResolved?: boolean; now?: Date } = {},
-): FindingWithAction[] {
+  options: { includeResolved?: boolean; now?: Date; } = {},
+): Promise<FindingWithAction[]> {
+  const supabase = await createClient();
   const now = options.now ?? new Date();
-  const rows = db
-    .select()
-    .from(findings)
-    .where(eq(findings.customerId, customerId))
-    .orderBy(desc(findings.createdAt))
-    .all()
+  const rows = cloudResult<Array<typeof Schema.findings.$inferSelect>>(
+    await supabase
+      .from("findings")
+      .select("*")
+      .eq("customer_id", customerId)
+      .order("created_at", { ascending: false }),
+  )
     .filter((f) => f.relevance === "flagged" || f.relevance === "noted");
 
   const actions = new Map(
-    db
-      .select()
-      .from(findingActions)
-      .where(eq(findingActions.customerId, customerId))
-      .all()
+    cloudResult<Array<typeof Schema.findingActions.$inferSelect>>(
+      await supabase
+        .from("finding_actions")
+        .select("*")
+        .eq("customer_id", customerId),
+    )
       .map((a) => [a.findingId, a]),
   );
 
@@ -185,7 +214,7 @@ export function listWorkQueue(
 }
 
 /** Counts for the dashboard, including the untouched backlog. */
-export function workQueueSummary(customerId: string): Record<ActionState, number> {
+export async function workQueueSummary(customerId: string): Promise<Record<ActionState, number>> {
   const summary: Record<ActionState, number> = {
     new: 0,
     acknowledged: 0,
@@ -195,26 +224,54 @@ export function workQueueSummary(customerId: string): Record<ActionState, number
     irrelevant: 0,
     closed: 0,
   };
-  for (const row of listWorkQueue(customerId, { includeResolved: true })) {
+  for (const row of await listWorkQueue(customerId, { includeResolved: true })) {
     summary[row.state] += 1;
   }
   return summary;
 }
 
 /** Findings a given person owns right now. */
-export function listAssignedTo(customerId: string, assignee: string): FindingWithAction[] {
-  return listWorkQueue(customerId).filter(
+export async function listAssignedTo(customerId: string, assignee: string): Promise<FindingWithAction[]> {
+  return (await listWorkQueue(customerId)).filter(
     (row) => row.action?.assignee?.toLowerCase() === assignee.toLowerCase(),
   );
 }
 
-export function deleteAction(customerId: string, findingId: string): boolean {
-  const existing = db
-    .select()
-    .from(findingActions)
-    .where(and(eq(findingActions.customerId, customerId), eq(findingActions.findingId, findingId)))
-    .get();
+export async function deleteAction(customerId: string, findingId: string): Promise<boolean> {
+  const supabase = await createClient();
+  const existing = (cloudResult<typeof Schema.findingActions.$inferSelect | null>(
+    await supabase
+      .from("finding_actions")
+      .select("*")
+      .eq("customer_id", customerId)
+      .eq("finding_id", findingId)
+      .limit(1)
+      .maybeSingle(),
+  ) ?? undefined);
   if (!existing) return false;
-  db.delete(findingActions).where(eq(findingActions.id, existing.id)).run();
+  cloudResult(
+    await supabase
+      .from("finding_actions")
+      .delete()
+      .eq("id", existing.id),
+  );
   return true;
+}
+
+// Convert SQL column names only; JSON evidence keeps its original keys.
+function camelRow<T>(value: unknown): T {
+  if (Array.isArray(value)) return value.map((row) => camelRow(row)) as T;
+  if (!value || typeof value !== "object") return value as T;
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/_([a-z])/g, (_, letter: string) => letter.toUpperCase()), item,
+  ])) as T;
+}
+function snakeRow(value: Record<string, unknown>) {
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`), item,
+  ]));
+}
+function cloudResult<T = unknown>(result: { data?: unknown; error: { message: string; } | null; }): T {
+  if (result.error) throw new Error(`Supabase operation failed: ${result.error.message}`);
+  return camelRow<T>(result.data);
 }

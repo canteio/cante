@@ -1,7 +1,8 @@
+import type * as Schema from "@/lib/db/schema";
+import { createClient } from "@/lib/supabase/server";
 import { randomUUID } from "node:crypto";
-import { desc, eq } from "drizzle-orm";
-import { db } from "@/lib/db/client";
-import { screeningResults, suppliers, type ScreeningResultRow } from "@/lib/db/schema";
+
+import { type ScreeningResultRow } from "@/lib/db/schema";
 import { CslUpstreamError, screenExactNames } from "@/lib/screening/csl";
 
 /**
@@ -32,9 +33,17 @@ export async function screenSupplier(
   customerId: string,
   supplierId: string,
 ): Promise<ScreenSupplierResult> {
-  const supplier = db.select().from(suppliers).where(eq(suppliers.id, supplierId)).get();
+  const supabase = await createClient();
+  const supplier = (cloudResult<typeof Schema.suppliers.$inferSelect | null>(
+    await supabase
+      .from("suppliers")
+      .select("*")
+      .eq("id", supplierId)
+      .limit(1)
+      .maybeSingle(),
+  ) ?? undefined);
   if (!supplier) throw new Error("Supplier not found.");
-  return screenName(customerId, supplier.name, supplierId);
+  return await screenName(customerId, supplier.name, supplierId);
 }
 
 export async function screenName(
@@ -42,6 +51,7 @@ export async function screenName(
   name: string,
   supplierId: string | null = null,
 ): Promise<ScreenSupplierResult> {
+  const supabase = await createClient();
   const now = new Date().toISOString();
   const base = {
     id: randomUUID(),
@@ -71,7 +81,11 @@ export async function screenName(
       errorMessage: null,
       listVersion: result.fetchedAt,
     };
-    db.insert(screeningResults).values(row).run();
+    cloudResult(
+      await supabase
+        .from("screening_results")
+        .insert(snakeRow(row)),
+    );
     return { row: row as ScreeningResultRow, clear: matches.length === 0 };
   } catch (error) {
     const message =
@@ -88,7 +102,11 @@ export async function screenName(
       errorMessage: message,
       listVersion: null,
     };
-    db.insert(screeningResults).values(row).run();
+    cloudResult(
+      await supabase
+        .from("screening_results")
+        .insert(snakeRow(row)),
+    );
     // Deliberately not `clear`. A failed screen is an unscreened party.
     return { row: row as ScreeningResultRow, clear: false };
   }
@@ -101,7 +119,13 @@ export async function screenAllSuppliers(customerId: string): Promise<{
   errored: number;
   results: ScreeningResultRow[];
 }> {
-  const rows = db.select().from(suppliers).where(eq(suppliers.customerId, customerId)).all();
+  const supabase = await createClient();
+  const rows = cloudResult<Array<typeof Schema.suppliers.$inferSelect>>(
+    await supabase
+      .from("suppliers")
+      .select("*")
+      .eq("customer_id", customerId),
+  );
   const results: ScreeningResultRow[] = [];
   let matched = 0;
   let errored = 0;
@@ -116,29 +140,35 @@ export async function screenAllSuppliers(customerId: string): Promise<{
   return { screened: rows.length, matched, errored, results };
 }
 
-export function latestScreening(supplierId: string): ScreeningResultRow | undefined {
-  return db
-    .select()
-    .from(screeningResults)
-    .where(eq(screeningResults.supplierId, supplierId))
-    .orderBy(desc(screeningResults.screenedAt))
-    .get();
+export async function latestScreening(supplierId: string): Promise<ScreeningResultRow | undefined> {
+  const supabase = await createClient();
+  return (cloudResult<typeof Schema.screeningResults.$inferSelect | null>(
+    await supabase
+      .from("screening_results")
+      .select("*")
+      .eq("supplier_id", supplierId)
+      .order("screened_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+  ) ?? undefined);
 }
 
-export function screeningHistory(customerId: string): ScreeningResultRow[] {
-  return db
-    .select()
-    .from(screeningResults)
-    .where(eq(screeningResults.customerId, customerId))
-    .orderBy(desc(screeningResults.screenedAt))
-    .all();
+export async function screeningHistory(customerId: string): Promise<ScreeningResultRow[]> {
+  const supabase = await createClient();
+  return cloudResult<Array<typeof Schema.screeningResults.$inferSelect>>(
+    await supabase
+      .from("screening_results")
+      .select("*")
+      .eq("customer_id", customerId)
+      .order("screened_at", { ascending: false }),
+  );
 }
 
 export interface ScreeningCoverage {
   totalSuppliers: number;
   neverScreened: string[];
-  staleScreenings: Array<{ name: string; screenedAt: string; ageDays: number }>;
-  currentMatches: Array<{ name: string; matchCount: number }>;
+  staleScreenings: Array<{ name: string; screenedAt: string; ageDays: number; }>;
+  currentMatches: Array<{ name: string; matchCount: number; }>;
   erroredScreenings: string[];
 }
 
@@ -147,13 +177,19 @@ export interface ScreeningCoverage {
  * a screening feature that only reports on parties it has looked at tells you
  * nothing about the ones it has not.
  */
-export function screeningCoverage(
+export async function screeningCoverage(
   customerId: string,
-  options: { now?: Date; staleAfterDays?: number } = {},
-): ScreeningCoverage {
+  options: { now?: Date; staleAfterDays?: number; } = {},
+): Promise<ScreeningCoverage> {
+  const supabase = await createClient();
   const now = options.now ?? new Date();
   const staleAfter = options.staleAfterDays ?? 90;
-  const rows = db.select().from(suppliers).where(eq(suppliers.customerId, customerId)).all();
+  const rows = cloudResult<Array<typeof Schema.suppliers.$inferSelect>>(
+    await supabase
+      .from("suppliers")
+      .select("*")
+      .eq("customer_id", customerId),
+  );
 
   const coverage: ScreeningCoverage = {
     totalSuppliers: rows.length,
@@ -164,7 +200,7 @@ export function screeningCoverage(
   };
 
   for (const supplier of rows) {
-    const latest = latestScreening(supplier.id);
+    const latest = await latestScreening(supplier.id);
     if (!latest) {
       coverage.neverScreened.push(supplier.name);
       continue;
@@ -185,4 +221,22 @@ export function screeningCoverage(
   }
 
   return coverage;
+}
+
+// Convert SQL column names only; JSON evidence keeps its original keys.
+function camelRow<T>(value: unknown): T {
+  if (Array.isArray(value)) return value.map((row) => camelRow(row)) as T;
+  if (!value || typeof value !== "object") return value as T;
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/_([a-z])/g, (_, letter: string) => letter.toUpperCase()), item,
+  ])) as T;
+}
+function snakeRow(value: Record<string, unknown>) {
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`), item,
+  ]));
+}
+function cloudResult<T = unknown>(result: { data?: unknown; error: { message: string; } | null; }): T {
+  if (result.error) throw new Error(`Supabase operation failed: ${result.error.message}`);
+  return camelRow<T>(result.data);
 }

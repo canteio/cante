@@ -1,28 +1,18 @@
+import { operatingDb } from "@/lib/test-support/supabase-test-db";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { after, before, test } from "node:test";
+import { beforeEach, test } from "node:test";
 import { GET as discover } from "../../app/api/checks/openapi/route";
 import { buildChecksOpenApiSpec } from "./runs-openapi";
 
-process.env.CANTE_DB_PATH = ":memory:";
-process.env.CANTE_DATA_BACKEND = "sqlite";
 process.env.CANTE_AUTH_MODE = "none";
 let route: typeof import("../../app/api/checks/route");
-let database: typeof import("../db/client");
+let customerId: string;
 
-before(async () => {
+beforeEach(async () => {
   route = await import("../../app/api/checks/route");
-  database = await import("../db/client");
-  database.db.$client.exec(`
-    CREATE TABLE customers (id TEXT PRIMARY KEY, name TEXT NOT NULL);
-    CREATE TABLE check_runs (
-      id TEXT PRIMARY KEY, customer_id TEXT NOT NULL, jurisdiction TEXT NOT NULL,
-      started_at TEXT NOT NULL, completed_at TEXT, status TEXT NOT NULL, error_message TEXT
-    );
-    INSERT INTO customers VALUES ('customer-1', 'Acme');
-  `);
+  ({ customerId } = await operatingDb());
 });
-after(() => database.db.$client.close());
 
 const contract: any = buildChecksOpenApiSpec().paths["/api/checks"];
 
@@ -46,30 +36,28 @@ test("checks discovery imports without opening customer storage or invoking a pr
   ].join("\n");
   const child = spawnSync(process.execPath, ["--import", "tsx", "--input-type=module", "--eval", script], {
     cwd: process.cwd(),
-    env: { ...process.env, CANTE_DATA_BACKEND: "sqlite", CANTE_DB_PATH: "/dev/null/cante.db" },
+    env: { ...process.env, NEXT_PUBLIC_SUPABASE_URL: "", SUPABASE_SECRET_KEY: "" },
     encoding: "utf8",
   });
   assert.equal(child.status, 0, child.stderr || child.stdout);
 });
 
 test("the documented history envelope matches a real empty-history response", async () => {
-  const response = await route.GET(new Request("http://localhost/api/checks?customerId=customer-1&country=US"));
+  const response = await route.GET(new Request(`http://localhost/api/checks?customerId=${customerId}&country=US`));
   assert.equal(response.status, 200);
   const payload = await response.json();
-  assert.deepEqual(payload, { customerId: "customer-1", jurisdiction: "United States", runs: [] });
+  assert.deepEqual(payload, { customerId: customerId, jurisdiction: "United States", runs: [] });
   assert.deepEqual(contract.get.responses["200"].content["application/json"].schema.required, Object.keys(payload));
 });
 
 test("direct Supabase checks return the documented scheduler-only conflict", async () => {
-  process.env.CANTE_DATA_BACKEND = "supabase";
   try {
-    const response = await route.POST(new Request("http://localhost/api/checks", { method: "POST" }));
+    const response = await route.POST();
     assert.equal(response.status, 409);
     const payload = await response.json();
     assert.deepEqual(Object.keys(payload), contract.post.responses["409"].content["application/json"].schema.required);
     assert.equal(payload.ok, false);
-    assert.match(payload.error, /trusted local scheduler/);
+    assert.match(payload.error, /trusted worker/);
   } finally {
-    process.env.CANTE_DATA_BACKEND = "sqlite";
   }
 });

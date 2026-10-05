@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { operatingDb } from "@/lib/test-support/operating-db";
+import { operatingDb } from "@/lib/test-support/supabase-test-db";
 import { POST } from "../../app/api/suppliers/route";
 
 // Regression for the "Unknown action" agent-usability audit (continuing the

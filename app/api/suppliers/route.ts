@@ -31,17 +31,17 @@ export async function GET(request: Request) {
   const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
   if (!customerId) return Response.json({ suppliers: [] });
 
-  const suppliers = listSuppliers(customerId).map((supplier) => ({
+  const suppliers = await Promise.all((await listSuppliers(customerId)).map(async (supplier) => ({
     ...supplier,
-    documents: listSupplierDocuments(supplier.id),
-    latestScreening: latestScreening(supplier.id) ?? null,
-  }));
+    documents: await listSupplierDocuments(supplier.id),
+    latestScreening: await latestScreening(supplier.id) ?? null,
+  })));
 
   return Response.json({
     suppliers,
-    gaps: evidenceGaps(customerId),
-    suggestions: suggestedEvidence(customerId),
-    screeningCoverage: screeningCoverage(customerId),
+    gaps: await evidenceGaps(customerId),
+    suggestions: await suggestedEvidence(customerId),
+    screeningCoverage: await screeningCoverage(customerId),
   });
 }
 
@@ -70,7 +70,7 @@ export async function POST(request: Request) {
       const name = payload.name as string;
       if (!name?.trim()) return Response.json({ error: "name is required." }, { status: 400 });
       return Response.json({
-        supplier: upsertSupplier(
+        supplier: await upsertSupplier(
           customerId,
           {
             name,
@@ -92,7 +92,7 @@ export async function POST(request: Request) {
         return Response.json({ error: "supplierId and docType are required." }, { status: 400 });
       }
       return Response.json({
-        document: upsertEvidence({
+        document: await upsertEvidence({
           supplierId,
           docType,
           productId: (payload.productId as string) ?? null,
@@ -112,7 +112,7 @@ export async function POST(request: Request) {
       }
       // `delivered: false` travels with the response. The UI must not render
       // this as "sent" — nothing was sent.
-      return Response.json(requestEvidence(supplierId, docType, (payload.productId as string) ?? null));
+      return Response.json(await requestEvidence(supplierId, docType, (payload.productId as string) ?? null));
     }
 
     if (action === "screen") {

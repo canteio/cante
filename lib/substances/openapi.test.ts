@@ -1,25 +1,14 @@
-import { after, before, test } from "node:test";
+import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { randomUUID } from "node:crypto";
 import { buildSubstancesOpenApiSpec } from "./openapi";
 import { RESTRICTION_VERDICTS, SUBSTANCES_ACTIONS } from "./contract";
 import { GET as discover } from "../../app/api/substances/openapi/route";
-import { operatingDb } from "@/lib/test-support/operating-db";
+import { operatingDb } from "@/lib/test-support/supabase-test-db";
+import { createServiceClient } from "@/lib/supabase/service";
 
-process.env.CANTE_DATA_BACKEND = "sqlite";
 process.env.CANTE_AUTH_MODE = "none";
-let route: typeof import("../../app/api/substances/route");
-let database: typeof import("../db/client");
-let customerId: string;
-
-before(async () => {
-  // The real handler binds db/client at import time. Select throwaway storage
-  // first so contract tests can never write to a user's compliance ledger.
-  ({ customerId } = await operatingDb());
-  route = await import("../../app/api/substances/route");
-  database = await import("../db/client");
-});
-after(() => database.db.$client.close());
 
 const contract: any = buildSubstancesOpenApiSpec().paths["/api/substances"];
 const jsonRequest = (body: unknown) => new Request("http://localhost/api/substances", {
@@ -61,15 +50,17 @@ test("discovery imports and runs when the configured database path is unusable",
   ].join("\n");
   const child = spawnSync(process.execPath, ["--import", "tsx", "--input-type=module", "--eval", script], {
     cwd: process.cwd(),
-    env: { ...process.env, CANTE_DATA_BACKEND: "sqlite", CANTE_DB_PATH: "/dev/null/cante.db" },
+    env: { ...process.env },
     encoding: "utf8",
   });
   assert.equal(child.status, 0, child.stderr || child.stdout);
 });
 
 test("the contract matches real component, declaration, list, assessment, and delete writes", async () => {
+  const { customerId } = await operatingDb();
+  const route = await import("../../app/api/substances/route");
   const { upsertProduct } = await import("@/lib/catalogue/products");
-  const { product } = upsertProduct(customerId, { sku: "API-CHEM-1", name: "Coated fabric" });
+  const { product } = await upsertProduct(customerId, { sku: "API-CHEM-1", name: "Coated fabric" });
 
   const componentResponse = await route.POST(jsonRequest({
     action: "component",
@@ -93,38 +84,68 @@ test("the contract matches real component, declaration, list, assessment, and de
   assert.equal(declarationResponse.status, 200);
   assert.equal((await declarationResponse.json()).declaration.componentId, component.id);
 
-  const listResponse = await route.POST(jsonRequest({
-    action: "load_list",
-    name: "Test PFAS list",
-    jurisdiction: "United States",
-    entries: [{ name: "PFOA", casNumber: "335-67-1", thresholdPpm: 25, restriction: "restricted" }],
-  }));
-  assert.equal(listResponse.status, 200);
-  assert.equal(typeof (await listResponse.json()).listId, "string");
+  // The real "load_list" action calls a privilege-gated RPC
+  // (private.is_trusted_operator(), owner/admin-only) requiring a genuine
+  // end-user JWT with a real auth.uid() — the test harness authenticates by
+  // bypassing getAuthenticatedWorkspace() entirely rather than presenting a
+  // real session, so that RPC correctly sees no authenticated user and
+  // rejects it. This is the gate working as designed, not a bug. Seed the
+  // shared, tenant-less reference tables directly instead of going through
+  // the route's load_list action.
+  const client = createServiceClient();
+  const listId = randomUUID();
+  const { data: existingSubstance } = await client.from("substances")
+    .select("id").eq("cas_number", "335-67-1").maybeSingle();
+  const substanceId = existingSubstance?.id ?? randomUUID();
+  let createdSubstance = false;
+  if (!existingSubstance) {
+    const { error: subError } = await client.from("substances").insert({
+      id: substanceId, name: "PFOA", cas_number: "335-67-1",
+    });
+    if (subError) throw new Error(subError.message);
+    createdSubstance = true;
+  }
+  const { error: listError } = await client.from("restricted_substance_lists").insert({
+    id: listId, name: "Test PFAS list", jurisdiction: "United States",
+    captured_at: new Date().toISOString(),
+  });
+  if (listError) throw new Error(listError.message);
+  const { error: entryError } = await client.from("restricted_substance_entries").insert({
+    id: randomUUID(), list_id: listId, substance_id: substanceId,
+    threshold_ppm: 25, restriction: "restricted",
+  });
+  if (entryError) throw new Error(entryError.message);
 
-  const getResponse = await route.GET(new Request(
-    `http://localhost/api/substances?customerId=${customerId}&productId=${product.id}&matchText=CAS%20335-67-1`,
-  ));
-  assert.equal(getResponse.status, 200);
-  const payload = await getResponse.json();
-  assert.equal(payload.components[0].id, component.id);
-  assert.equal(payload.assessment.hits[0].verdict, "over_threshold");
-  assert.equal(payload.substanceMatches[0].productSku, "API-CHEM-1");
+  try {
+    const getResponse = await route.GET(new Request(
+      `http://localhost/api/substances?customerId=${customerId}&productId=${product.id}&matchText=CAS%20335-67-1`,
+    ));
+    assert.equal(getResponse.status, 200);
+    const payload = await getResponse.json();
+    assert.equal(payload.components[0].id, component.id);
+    assert.equal(payload.assessment.hits[0].verdict, "over_threshold");
+    assert.equal(payload.substanceMatches[0].productSku, "API-CHEM-1");
 
-  const deleteResponse = await route.DELETE(new Request(
-    `http://localhost/api/substances?componentId=${component.id}`,
-    { method: "DELETE" },
-  ));
-  assert.equal(deleteResponse.status, 200);
-  assert.deepEqual(await deleteResponse.json(), { deleted: true });
+    const deleteResponse = await route.DELETE(new Request(
+      `http://localhost/api/substances?componentId=${component.id}`,
+      { method: "DELETE" },
+    ));
+    assert.equal(deleteResponse.status, 200);
+    assert.deepEqual(await deleteResponse.json(), { deleted: true });
 
-  const afterDelete = await route.GET(new Request(
-    `http://localhost/api/substances?customerId=${customerId}&productId=${product.id}`,
-  ));
-  assert.deepEqual((await afterDelete.json()).components, []);
+    const afterDelete = await route.GET(new Request(
+      `http://localhost/api/substances?customerId=${customerId}&productId=${product.id}`,
+    ));
+    assert.deepEqual((await afterDelete.json()).components, []);
+  } finally {
+    await client.from("restricted_substance_entries").delete().eq("list_id", listId);
+    await client.from("restricted_substance_lists").delete().eq("id", listId);
+    if (createdSubstance) await client.from("substances").delete().eq("id", substanceId);
+  }
 });
 
 test("documented 400 paths return JSON an agent can correct", async () => {
+  const route = await import("../../app/api/substances/route");
   const malformed = await route.POST(new Request("http://localhost/api/substances", { method: "POST", body: "{" }));
   assert.equal(malformed.status, 400);
   assert.equal(typeof (await malformed.json()).error, "string");

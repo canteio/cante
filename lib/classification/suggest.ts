@@ -1,3 +1,5 @@
+import type * as Schema from "@/lib/db/schema";
+import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
 import { completeJson } from "@/lib/llm";
 import type { LlmProvider } from "@/lib/llm/types";
@@ -9,9 +11,9 @@ import {
   recordClassification,
   ClassificationApprovalError,
 } from "@/lib/catalogue/classifications";
-import { db } from "@/lib/db/client";
-import { productClassifications, products, type Product } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+
+import { type Product } from "@/lib/db/schema";
+
 import { SUGGESTION_CONFIDENCE_LEVELS } from "./suggest-contract";
 
 /**
@@ -110,7 +112,7 @@ interface RawHtsRow {
  */
 export async function searchCandidateHeadings(
   terms: string[],
-  options: { signal?: AbortSignal } = {},
+  options: { signal?: AbortSignal; } = {},
 ): Promise<CandidateHeading[]> {
   const found = new Map<string, CandidateHeading>();
 
@@ -157,7 +159,7 @@ export async function searchCandidateHeadings(
 /** CBP rulings on similar goods. Research evidence, never binding here. */
 export async function searchSupportingRulings(
   terms: string[],
-  options: { signal?: AbortSignal } = {},
+  options: { signal?: AbortSignal; } = {},
 ): Promise<SupportingRuling[]> {
   const term = terms[0];
   if (!term) return [];
@@ -174,7 +176,7 @@ export async function searchSupportingRulings(
       { signal: options.signal, headers: { Accept: "application/json" } },
     );
     if (!res.ok) return [];
-    const payload = (await res.json()) as { rulings?: unknown };
+    const payload = await res.json() as { rulings?: unknown; };
     if (!Array.isArray(payload.rulings)) return [];
 
     return payload.rulings
@@ -285,9 +287,9 @@ export class SuggestionError extends Error {
  */
 export async function suggestClassification(
   provider: LlmProvider,
-  input: { customerId: string; sku: string; signal?: AbortSignal },
+  input: { customerId: string; sku: string; signal?: AbortSignal; },
 ): Promise<SuggestionResult> {
-  const product = getProductBySku(input.customerId, input.sku);
+  const product = await getProductBySku(input.customerId, input.sku);
   if (!product) throw new SuggestionError(`No product with SKU "${input.sku}".`);
 
   const terms = searchTermsFor(product);
@@ -305,7 +307,7 @@ export async function suggestClassification(
   if (candidates.length === 0) {
     throw new SuggestionError(
       `No official HTS rows matched ${product.sku} on the terms ${terms.join(", ")}. ` +
-        "No suggestion was produced — an empty candidate set means the description needs improving, not that a code should be guessed.",
+      "No suggestion was produced — an empty candidate set means the description needs improving, not that a code should be guessed.",
     );
   }
 
@@ -342,8 +344,8 @@ export async function suggestClassification(
   if (value.noSuitableCandidate) {
     throw new SuggestionError(
       `The model found none of the ${candidates.length} retrieved candidates suitable for ${product.sku}` +
-        `${value.uncertainties.length ? `: ${value.uncertainties.join(" ")}` : "."} ` +
-        "No classification was recorded. Improve the product description, or classify by hand.",
+      `${value.uncertainties.length ? `: ${value.uncertainties.join(" ")}` : "."} ` +
+      "No classification was recorded. Improve the product description, or classify by hand.",
     );
   }
 
@@ -353,7 +355,7 @@ export async function suggestClassification(
   if (!codes.has(value.recommendedCode)) {
     throw new SuggestionError(
       `The model returned ${value.recommendedCode}, which was not among the ${candidates.length} official candidate rows it was given. ` +
-        "The suggestion was discarded rather than recorded — a code outside the candidate set is not a classification.",
+      "The suggestion was discarded rather than recorded — a code outside the candidate set is not a classification.",
     );
   }
 
@@ -385,10 +387,10 @@ export async function suggestClassification(
  * that — a caller cannot ask this function for a stronger tier, so no future
  * refactor can quietly turn a model suggestion into an established fact.
  */
-export function recordSuggestion(
+export async function recordSuggestion(
   productId: string,
   result: SuggestionResult,
-  options: { system?: string; jurisdiction?: string | null } = {},
+  options: { system?: string; jurisdiction?: string | null; } = {},
 ) {
   const { suggestion } = result;
   const rationale = [
@@ -404,7 +406,7 @@ export function recordSuggestion(
     .filter(Boolean)
     .join(" ");
 
-  return recordClassification({
+  return await recordClassification({
     productId,
     system: options.system ?? "hts",
     jurisdiction: options.jurisdiction ?? null,
@@ -423,13 +425,13 @@ export function recordSuggestion(
       })),
       ...(result.chosenRow
         ? [
-            {
-              kind: "hts_row",
-              ref: result.chosenRow.htsCode,
-              title: result.chosenRow.description,
-              url: `https://hts.usitc.gov/search?query=${encodeURIComponent(result.chosenRow.htsCode)}`,
-            },
-          ]
+          {
+            kind: "hts_row",
+            ref: result.chosenRow.htsCode,
+            title: result.chosenRow.description,
+            url: `https://hts.usitc.gov/search?query=${encodeURIComponent(result.chosenRow.htsCode)}`,
+          },
+        ]
         : []),
     ],
   });
@@ -445,16 +447,20 @@ export function recordSuggestion(
  * classification, which is exactly what `approveClassification()` refuses to do
  * for lead-tier codes.
  */
-export function adoptSuggestion(
+export async function adoptSuggestion(
   classificationId: string,
   adoptedBy: string,
   reason: string,
 ) {
-  const row = db
-    .select()
-    .from(productClassifications)
-    .where(eq(productClassifications.id, classificationId))
-    .get();
+  const supabase = await createClient();
+  const row = (cloudResult<typeof Schema.productClassifications.$inferSelect | null>(
+    await supabase
+      .from("product_classifications")
+      .select("*")
+      .eq("id", classificationId)
+      .limit(1)
+      .maybeSingle(),
+  ) ?? undefined);
 
   if (!row) throw new SuggestionError("Classification not found.");
   if (row.tier !== "lead") {
@@ -472,16 +478,18 @@ export function adoptSuggestion(
   const basis =
     `${row.basis} Adopted by ${adoptedBy.trim()} on ${new Date().toISOString().slice(0, 10)}: ${reason.trim()}`;
 
-  db.update(productClassifications)
-    .set({ tier: "human", basis })
-    .where(eq(productClassifications.id, classificationId))
-    .run();
+  cloudResult(
+    await supabase
+      .from("product_classifications")
+      .update(snakeRow({ tier: "human", basis }))
+      .eq("id", classificationId),
+  );
 
   return { ...row, tier: "human", basis };
 }
 
 /** Suggestions awaiting a human, across the catalogue. */
-export function pendingSuggestions(customerId: string) {
+export async function pendingSuggestions(customerId: string) {
   const out: Array<{
     productSku: string;
     classificationId: string;
@@ -491,8 +499,8 @@ export function pendingSuggestions(customerId: string) {
     rationale: string | null;
   }> = [];
 
-  for (const product of listProducts(customerId)) {
-    for (const row of listClassifications(product.id)) {
+  for (const product of await listProducts(customerId)) {
+    for (const row of await listClassifications(product.id)) {
       if (row.tier !== "lead" || row.supersededAt || row.status === "rejected") continue;
       if (!row.basis.startsWith("Model suggestion")) continue;
       out.push({
@@ -509,4 +517,22 @@ export function pendingSuggestions(customerId: string) {
 }
 
 /** Re-exported so callers need one import for the whole review flow. */
-export { approveClassification, ClassificationApprovalError, products };
+export { approveClassification, ClassificationApprovalError };
+
+// Convert SQL column names only; JSON evidence keeps its original keys.
+function camelRow<T>(value: unknown): T {
+  if (Array.isArray(value)) return value.map((row) => camelRow(row)) as T;
+  if (!value || typeof value !== "object") return value as T;
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/_([a-z])/g, (_, letter: string) => letter.toUpperCase()), item,
+  ])) as T;
+}
+function snakeRow(value: Record<string, unknown>) {
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`), item,
+  ]));
+}
+function cloudResult<T = unknown>(result: { data?: unknown; error: { message: string; } | null; }): T {
+  if (result.error) throw new Error(`Supabase operation failed: ${result.error.message}`);
+  return camelRow<T>(result.data);
+}

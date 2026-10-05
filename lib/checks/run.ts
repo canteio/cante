@@ -1,16 +1,7 @@
 import { randomUUID } from "node:crypto";
 import path from "node:path";
-import { and, desc, eq } from "drizzle-orm";
-import { db } from "@/lib/db/client";
-import {
-  alerts,
-  checkRuns,
-  findings,
-  sourceResults,
-  sources,
-  type JurisdictionProfile,
-  type Memory,
-} from "@/lib/db/schema";
+import { createServiceClient } from "@/lib/supabase/service";
+import type { JurisdictionProfile, Memory } from "@/lib/db/schema";
 import {
   getCustomerWithProfile,
   getJurisdictionProfile,
@@ -47,17 +38,22 @@ export async function runCheck(
   providerChoice?: LlmProviderChoice,
   jurisdiction: JurisdictionName = DEFAULT_JURISDICTION,
 ): Promise<{ runId: string }> {
+  // runCheck runs both from HTTP routes and standalone CLI/cron scripts
+  // (scripts/run-check.ts, scripts/scheduled-check.ts) with no cookie/user
+  // session available. The `sources` table it writes to is shared
+  // operational metadata (last-fetched timestamps, registry state), not
+  // per-tenant data, so the trusted service client — which intentionally
+  // bypasses RLS — is the correct client here, not the cookie-backed one.
+  const supabase = createServiceClient();
   const target = await getCustomerWithProfile(customerId);
   if (!target) throw new Error(`No customer/profile found for ${customerId}`);
 
   // A killed process leaves its run row saying "running" forever, and the
   // dashboard shows a check that looks like it is still working.
-  reapStaleRuns();
+  await reapStaleRuns();
 
   const runId = randomUUID();
-  db.insert(checkRuns)
-    .values({ id: runId, customerId, jurisdiction, status: "running" })
-    .run();
+  await checked(supabase.from("check_runs").insert({ id: runId, customer_id: customerId, jurisdiction, status: "running" }));
 
   try {
     const provider = getProvider(providerChoice);
@@ -68,23 +64,17 @@ export async function runCheck(
     const rawDir = path.join(process.cwd(), "raw");
     const jurisdictionProfile = await getJurisdictionProfile(customerId, jurisdiction);
     const memoryRows = await listMemories(customerId, jurisdiction);
-    const previousRun = db
-      .select({ completedAt: checkRuns.completedAt })
-      .from(checkRuns)
-      .where(
-        and(
-          eq(checkRuns.customerId, customerId),
-          eq(checkRuns.jurisdiction, jurisdiction),
-          eq(checkRuns.status, "complete"),
-        ),
-      )
-      .orderBy(desc(checkRuns.completedAt))
-      .get();
+    const { data: previousRun, error: previousRunError } = await supabase
+      .from("check_runs").select("completed_at")
+      .eq("customer_id", customerId).eq("jurisdiction", jurisdiction)
+      .eq("status", "complete").order("completed_at", { ascending: false })
+      .limit(1).maybeSingle();
+    if (previousRunError) throw new Error(`Previous run lookup failed: ${previousRunError.message}`);
     const selection = selectMonitoredSources(
       jurisdiction,
       sourceProfileWithConfirmedMemory(jurisdictionProfile, memoryRows, target.profile.sideOfTrade),
       {
-        lastCompletedAt: previousRun?.completedAt ?? null,
+        lastCompletedAt: previousRun?.completed_at ?? null,
         locations:
           jurisdiction === "Indonesia"
             ? [target.customer.city, target.customer.country].filter((value): value is string => Boolean(value))
@@ -96,31 +86,17 @@ export async function runCheck(
       throw new Error(`No monitored sources are registered for ${jurisdiction}.`);
     }
     for (const source of monitored) {
-      db.insert(sources)
-        .values({
-          id: source.id,
-          country: source.country,
-          name: source.name,
-          domain: source.domain,
-          url: source.url,
-          regulationType: source.regulationType,
-          reliabilityStatus: source.reliabilityStatus,
-          view: source.view ?? null,
-          notes: source.notes ?? null,
-        })
-        .onConflictDoUpdate({
-          target: sources.id,
-          set: {
-            name: source.name,
-            domain: source.domain,
-            url: source.url,
-            regulationType: source.regulationType,
-            reliabilityStatus: source.reliabilityStatus,
-            view: source.view ?? null,
-            notes: source.notes ?? null,
-          },
-        })
-        .run();
+      await checked(supabase.from("sources").upsert({
+        id: source.id,
+        country: source.country,
+        name: source.name,
+        domain: source.domain,
+        url: source.url,
+        regulation_type: source.regulationType,
+        reliability_status: source.reliabilityStatus,
+        view: source.view ?? null,
+        notes: source.notes ?? null,
+      }, { onConflict: "id" }));
     }
     const report = await fetchAllSources(monitored, rawDir, selection.coverageCaveats);
 
@@ -131,23 +107,17 @@ export async function runCheck(
     const fallbacks = selectFallbackSources(report);
     if (fallbacks.length > 0) {
       for (const source of fallbacks) {
-        db.insert(sources)
-          .values({
-            id: source.id,
-            country: source.country,
-            name: source.name,
-            domain: source.domain,
-            url: source.url,
-            regulationType: source.regulationType,
-            reliabilityStatus: source.reliabilityStatus,
-            view: source.view ?? null,
-            notes: source.notes ?? null,
-          })
-          .onConflictDoUpdate({
-            target: sources.id,
-            set: { name: source.name, url: source.url, notes: source.notes ?? null },
-          })
-          .run();
+        await checked(supabase.from("sources").upsert({
+          id: source.id,
+          country: source.country,
+          name: source.name,
+          domain: source.domain,
+          url: source.url,
+          regulation_type: source.regulationType,
+          reliability_status: source.reliabilityStatus,
+          view: source.view ?? null,
+          notes: source.notes ?? null,
+        }, { onConflict: "id" }));
       }
       const backup = await fetchAllSources(fallbacks, rawDir);
       report.outcomes.push(...backup.outcomes);
@@ -160,25 +130,20 @@ export async function runCheck(
     }
 
     for (const outcome of report.outcomes) {
-      db.insert(sourceResults)
-        .values({
-          id: randomUUID(),
-          checkRunId: runId,
-          sourceId: outcome.sourceId,
-          success: outcome.success,
-          errorMessage: outcome.errorMessage,
-          entriesParsed: outcome.entriesParsed,
-          parseWarning: outcome.parseWarning,
-          rawContentPath: outcome.rawContentPath,
-          fetchedAt: outcome.fetchedAt,
-        })
-        .run();
+      await checked(supabase.from("source_results").insert({
+        id: randomUUID(),
+        check_run_id: runId,
+        source_id: outcome.sourceId,
+        success: outcome.success,
+        error_message: outcome.errorMessage,
+        entries_parsed: outcome.entriesParsed,
+        parse_warning: outcome.parseWarning,
+        raw_content_path: outcome.rawContentPath,
+        fetched_at: outcome.fetchedAt,
+      }));
 
       if (outcome.success) {
-        db.update(sources)
-          .set({ lastSuccessAt: outcome.fetchedAt })
-          .where(eq(sources.id, outcome.sourceId))
-          .run();
+        await checked(supabase.from("sources").update({ last_success_at: outcome.fetchedAt }).eq("id", outcome.sourceId));
       }
     }
 
@@ -188,7 +153,7 @@ export async function runCheck(
 
     const seen = await getSeenRegulations(customerId, jurisdiction);
     const fetchedInventoryCount = report.regulations.length;
-    const changes = selectSourceChanges(
+    const changes = await selectSourceChanges(
       customerId,
       jurisdiction,
       report.regulations,
@@ -231,12 +196,12 @@ export async function runCheck(
       jurisdictionProfile,
       report,
       seen: seenForPrompt,
-      lastRunAt: previousRun?.completedAt ?? null,
+      lastRunAt: previousRun?.completed_at ?? null,
       memories: memoryRows,
     });
     console.log(
       `[judgment] ${report.regulations.length} entries in ${judgment.batches} batch(es) — ` +
-        `${judgment.findings.length} verdicts, ${judgment.failedBatches} batch failure(s)`,
+      `${judgment.findings.length} verdicts, ${judgment.failedBatches} batch failure(s)`,
     );
 
     // --- Completion pass -----------------------------------------------------
@@ -283,7 +248,7 @@ export async function runCheck(
               jurisdictionProfile,
               report: { ...report, regulations: batch },
               seen: retrySeen,
-              lastRunAt: previousRun?.completedAt ?? null,
+              lastRunAt: previousRun?.completed_at ?? null,
               memories: memoryRows,
             });
             // Only accept verdicts for entries actually in the missed set — the
@@ -305,9 +270,9 @@ export async function runCheck(
           finalMessage +=
             lang === "en"
               ? `\n\n[Follow-up pass — ${newlySurfaced.length} item(s) missed on the first pass:]\n` +
-                newlySurfaced.map((f) => `- ${f.regulationRef}: ${f.summaryEn ?? f.reasoning}`).join("\n")
+              newlySurfaced.map((f) => `- ${f.regulationRef}: ${f.summaryEn ?? f.reasoning}`).join("\n")
               : `\n\n[Ditemukan di pemeriksaan lanjutan — ${newlySurfaced.length} item terlewat di pass pertama:]\n` +
-                newlySurfaced.map((f) => `- ${f.regulationRef}: ${f.summaryId ?? f.reasoning}`).join("\n");
+              newlySurfaced.map((f) => `- ${f.regulationRef}: ${f.summaryId ?? f.reasoning}`).join("\n");
         }
 
         allCaveats = [
@@ -341,27 +306,25 @@ export async function runCheck(
     );
     console.log(
       `[coverage] ${coverage.totalEntries} entries — ${coverage.judged} judged, ` +
-        `${coverage.alreadySeen} already seen, ${coverage.unaccounted.length} unaccounted`,
+      `${coverage.alreadySeen} already seen, ${coverage.unaccounted.length} unaccounted`,
     );
     let linksStored = 0;
     for (const finding of allFindings) {
       const findingId = randomUUID();
-      db.insert(findings)
-        .values({
-          id: findingId,
-          checkRunId: runId,
-          customerId,
-          sourceId: finding.sourceId ?? null,
-          regulationRef: finding.regulationRef,
-          title: finding.title,
-          url: finding.url,
-          enactedOn: finding.enactedOn,
-          summaryId: finding.summaryId,
-          summaryEn: finding.summaryEn,
-          relevance: finding.relevance,
-          reasoning: finding.reasoning,
-        })
-        .run();
+      await checked(supabase.from("findings").insert({
+        id: findingId,
+        check_run_id: runId,
+        customer_id: customerId,
+        source_id: finding.sourceId ?? null,
+        regulation_ref: finding.regulationRef,
+        title: finding.title,
+        url: finding.url,
+        enacted_on: finding.enactedOn,
+        summary_id: finding.summaryId,
+        summary_en: finding.summaryEn,
+        relevance: finding.relevance,
+        reasoning: finding.reasoning,
+      }));
 
       // "Permendag 12/2026 is the fifth amendment to 23/2023" is the single most
       // useful fact about a finding, and lifecycle.ts has been able to read it
@@ -370,13 +333,13 @@ export async function runCheck(
       // a `clear` verdict is not a rule anyone is tracking.
       if (finding.relevance === "flagged" || finding.relevance === "noted") {
         try {
-          linksStored += linkRegulation(customerId, {
+          linksStored += (await linkRegulation(customerId, {
             id: findingId,
             title: finding.title,
             summaryEn: finding.summaryEn,
             reasoning: finding.reasoning,
             regulationRef: finding.regulationRef,
-          }).length;
+          })).length;
         } catch {
           // A missing amendment link is a lost nicety; it must not cost the run.
         }
@@ -433,35 +396,27 @@ export async function runCheck(
       .join("")
       .trim();
 
-    db.insert(alerts)
-      .values({
-        id: randomUUID(),
-        checkRunId: runId,
-        customerId,
-        findingId: null,
-        body,
-        channel: "manual",
-        deliveryStatus: "pending",
-      })
-      .run();
+    await checked(supabase.from("alerts").insert({
+      id: randomUUID(),
+      check_run_id: runId,
+      customer_id: customerId,
+      finding_id: null,
+      body,
+      channel: "manual",
+      delivery_status: "pending",
+    }));
 
-    db.update(checkRuns)
-      .set({ status: "complete", completedAt: new Date().toISOString() })
-      .where(eq(checkRuns.id, runId))
-      .run();
+    await checked(supabase.from("check_runs").update({ status: "complete", completed_at: new Date().toISOString() }).eq("id", runId));
 
     await refreshChecklistForCustomer(customerId, jurisdiction);
 
     return { runId };
   } catch (err) {
-    db.update(checkRuns)
-      .set({
-        status: "failed",
-        completedAt: new Date().toISOString(),
-        errorMessage: err instanceof Error ? err.message : String(err),
-      })
-      .where(eq(checkRuns.id, runId))
-      .run();
+    await checked(supabase.from("check_runs").update({
+      status: "failed",
+      completed_at: new Date().toISOString(),
+      error_message: err instanceof Error ? err.message : String(err),
+    }).eq("id", runId));
     throw err;
   }
 }
@@ -512,4 +467,10 @@ function sourceProfileWithConfirmedMemory(
     exportCountries: [...profile.exportCountries, ...values("market")],
     regulatedProductFlags: [...profile.regulatedProductFlags, ...values("product_flag")],
   };
+}
+
+/** Supabase reports write failures as values; never mark a run successful after one. */
+async function checked(query: PromiseLike<{ error: { message: string } | null }>): Promise<void> {
+  const { error } = await query;
+  if (error) throw new Error(`Check persistence failed: ${error.message}`);
 }

@@ -1,23 +1,18 @@
 import assert from "node:assert/strict";
-import { after, before, test } from "node:test";
+import { beforeEach, test } from "node:test";
 import { buildLanesOpenApiSpec } from "./lanes-openapi";
 import { GET as discover } from "../../app/api/lanes/openapi/route";
-import { operatingDb } from "@/lib/test-support/operating-db";
+import { operatingDb } from "@/lib/test-support/supabase-test-db";
 
-process.env.CANTE_DATA_BACKEND = "sqlite";
 process.env.CANTE_AUTH_MODE = "none";
 let route: typeof import("../../app/api/lanes/route");
-let database: typeof import("../db/client");
 let customerId: string;
 
-before(async () => {
-  // Set the isolated path before importing the real handler: db/client binds
-  // CANTE_DB_PATH once, and must never fall through to a user's ledger.
+beforeEach(async () => {
+  // Create the real throwaway Supabase customer before importing the route.
   ({ customerId } = await operatingDb());
   route = await import("../../app/api/lanes/route");
-  database = await import("../db/client");
 });
-after(() => database.db.$client.close());
 
 const contract = buildLanesOpenApiSpec().paths["/api/lanes"];
 function jsonRequest(body: unknown) {

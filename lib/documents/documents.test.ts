@@ -1,10 +1,7 @@
 import assert from "node:assert/strict";
 import test, { before } from "node:test";
-import { operatingDb } from "@/lib/test-support/operating-db";
+import { operatingDb } from "@/lib/test-support/supabase-test-db";
 
-before(async () => {
-  await operatingDb();
-});
 
 const PEB = `
 PEMBERITAHUAN EKSPOR BARANG
@@ -22,8 +19,8 @@ Total Value: 80000.00
 test("a document with no readable content fails loudly instead of reading as clean", async () => {
   const { customerId } = await operatingDb();
   const { ingestDocument, DocumentInputError } = await import("@/lib/documents/audit");
-  assert.throws(
-    () => ingestDocument({ customerId, docType: "peb", filename: "scan.pdf", text: "   " }),
+  await assert.rejects(
+    async () => (await ingestDocument({ customerId, docType: "peb", filename: "scan.pdf", text: "   " })),
     (error: Error) => error instanceof DocumentInputError && /OCR are not supported/.test(error.message),
   );
 });
@@ -33,8 +30,8 @@ test("header and line items are extracted, and parse status reflects what was re
   const { importProductsCsv } = await import("@/lib/catalogue/products");
   const { ingestDocument } = await import("@/lib/documents/audit");
 
-  importProductsCsv(customerId, "sku,name\nPVC-100,Blue tarp\nPVC-200,Green tarp\n");
-  const doc = ingestDocument({ customerId, docType: "peb", filename: "peb.txt", text: PEB });
+  (await importProductsCsv(customerId, "sku,name\nPVC-100,Blue tarp\nPVC-200,Green tarp\n"));
+  const doc = (await ingestDocument({ customerId, docType: "peb", filename: "peb.txt", text: PEB }));
 
   assert.equal(doc.parseStatus, "parsed");
   assert.equal(doc.documentNumber, "000123");
@@ -67,13 +64,13 @@ test("a document with lines but no header is `partial`, and says so", async () =
   const { importProductsCsv } = await import("@/lib/catalogue/products");
   const { ingestDocument } = await import("@/lib/documents/audit");
 
-  importProductsCsv(customerId, "sku,name\nPVC-100,Blue tarp\n");
-  const doc = ingestDocument({
+  (await importProductsCsv(customerId, "sku,name\nPVC-100,Blue tarp\n"));
+  const doc = (await ingestDocument({
     customerId,
     docType: "commercial_invoice",
     filename: "inv.txt",
     text: "PVC-100  Blue tarp  6306.12.00  100 pcs  4000.00\n",
-  });
+  }));
   assert.equal(doc.parseStatus, "partial");
   assert.match(doc.parseNote ?? "", /no document number or date/);
 });
@@ -84,19 +81,19 @@ test("audit reports both sides of a code mismatch and the tier of the expectatio
   const { recordClassification } = await import("@/lib/catalogue/classifications");
   const { ingestDocument, auditDocument } = await import("@/lib/documents/audit");
 
-  importProductsCsv(customerId, "sku,name\nPVC-100,Blue tarp\nPVC-200,Green tarp\n");
-  const product = getProductBySku(customerId, "PVC-100");
+  (await importProductsCsv(customerId, "sku,name\nPVC-100,Blue tarp\nPVC-200,Green tarp\n"));
+  const product = (await getProductBySku(customerId, "PVC-100"));
   assert.ok(product);
-  recordClassification({
+  (await recordClassification({
     productId: product.id,
     system: "hs",
     code: "3921.90.00",
     tier: "lead",
     basis: "seed guess",
-  });
+  }));
 
-  const doc = ingestDocument({ customerId, docType: "peb", filename: "peb.txt", text: PEB });
-  const found = auditDocument(doc.id);
+  const doc = (await ingestDocument({ customerId, docType: "peb", filename: "peb.txt", text: PEB }));
+  const found = (await auditDocument(doc.id));
 
   const mismatch = found.find((f) => f.kind === "code_mismatch");
   assert.ok(mismatch, "the document's 6306.12.00 contradicts the catalogue's 3921.90.00");
@@ -111,9 +108,9 @@ test("origin mismatch is high severity and names both values", async () => {
   const { upsertProduct } = await import("@/lib/catalogue/products");
   const { ingestDocument, auditDocument } = await import("@/lib/documents/audit");
 
-  upsertProduct(customerId, { sku: "PVC-100", name: "Blue tarp", originCountry: "Vietnam" });
-  const doc = ingestDocument({ customerId, docType: "peb", filename: "peb.txt", text: PEB });
-  const found = auditDocument(doc.id);
+  (await upsertProduct(customerId, { sku: "PVC-100", name: "Blue tarp", originCountry: "Vietnam" }));
+  const doc = (await ingestDocument({ customerId, docType: "peb", filename: "peb.txt", text: PEB }));
+  const found = (await auditDocument(doc.id));
 
   const origin = found.find((f) => f.kind === "origin_mismatch");
   assert.ok(origin);
@@ -128,14 +125,14 @@ test("a document promotes codes to document tier — still proposed, never auto-
   const { resolveProductCodes } = await import("@/lib/catalogue/classifications");
   const { ingestDocument, promoteCodesFromDocument } = await import("@/lib/documents/audit");
 
-  importProductsCsv(customerId, "sku,name\nPVC-100,Blue tarp\nPVC-200,Green tarp\n");
-  const doc = ingestDocument({ customerId, docType: "peb", filename: "peb.txt", text: PEB });
-  const result = promoteCodesFromDocument(doc.id);
+  (await importProductsCsv(customerId, "sku,name\nPVC-100,Blue tarp\nPVC-200,Green tarp\n"));
+  const doc = (await ingestDocument({ customerId, docType: "peb", filename: "peb.txt", text: PEB }));
+  const result = (await promoteCodesFromDocument(doc.id));
 
   assert.equal(result.promoted.length, 2);
-  const product = getProductBySku(customerId, "PVC-100");
+  const product = (await getProductBySku(customerId, "PVC-100"));
   assert.ok(product);
-  const resolved = resolveProductCodes(product.id, "hs");
+  const resolved = (await resolveProductCodes(product.id, "hs"));
   assert.equal(resolved.documentVerified, true, "this is the only automated path to document tier");
   assert.equal(resolved.document[0].status, "proposed", "a human still approves");
   assert.match(resolved.document[0].basis, /peb 000123 dated 2026-08-12/i);
@@ -146,14 +143,14 @@ test("an uncitable document promotes nothing", async () => {
   const { importProductsCsv } = await import("@/lib/catalogue/products");
   const { ingestDocument, promoteCodesFromDocument } = await import("@/lib/documents/audit");
 
-  importProductsCsv(customerId, "sku,name\nPVC-100,Blue tarp\n");
-  const doc = ingestDocument({
+  (await importProductsCsv(customerId, "sku,name\nPVC-100,Blue tarp\n"));
+  const doc = (await ingestDocument({
     customerId,
     docType: "peb",
     filename: "fragment.txt",
     text: "PVC-100  6306.12.00  100 pcs\n",
-  });
-  const result = promoteCodesFromDocument(doc.id);
+  }));
+  const result = (await promoteCodesFromDocument(doc.id));
   assert.equal(result.promoted.length, 0);
   assert.match(result.skipped[0], /cannot be cited as evidence/);
 });

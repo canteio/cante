@@ -4,8 +4,6 @@ const isDev = process.env.NODE_ENV !== "production";
 
 const config: NextConfig = {
   poweredByHeader: false,
-  // better-sqlite3 is a native module — it must not be bundled by webpack.
-  serverExternalPackages: ["better-sqlite3"],
   async headers() {
     return [
       {

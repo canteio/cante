@@ -14,7 +14,6 @@ import { getProvider, normalizeProviderChoice, PROVIDER_COOKIE } from "@/lib/llm
 import type { SearchResult } from "@/lib/llm/types";
 import { normalizeJurisdiction, type JurisdictionName } from "@/lib/countries";
 import { fileAttachments, renderAttachmentOutcomes } from "@/lib/chat/attachments";
-import { getDataBackend } from "@/lib/auth/config";
 import { retrieveCustomerContext } from "@/lib/supabase/server";
 
 /** One tool call, stored with the message so a reopened chat replays it. */
@@ -231,14 +230,12 @@ export async function POST(request: Request) {
   const memoryEntries = await listMemories(customerId, jurisdiction);
   const memoryBlock = renderMemoryForPrompt(memoryEntries);
   const retrievedContext =
-    getDataBackend() === "supabase"
-      ? await retrieveCustomerContext({
+    await retrieveCustomerContext({
           customerId,
           jurisdiction,
           query: asked,
           limit: 10,
-        }).catch(() => [])
-      : [];
+        }).catch(() => []);
 
   // History stores what the person wrote plus which files they attached, not the
   // full dump — a reopened conversation should stay readable. The model still

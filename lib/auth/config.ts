@@ -2,14 +2,9 @@ export const DEMO_SESSION_COOKIE = "cante_demo_session";
 export const DEMO_SESSION_VALUE = "demo";
 
 export type AuthMode = "demo" | "supabase";
-export type DataBackend = "sqlite" | "supabase";
 
 export function getAuthMode(): AuthMode {
   return process.env.CANTE_AUTH_MODE === "supabase" ? "supabase" : "demo";
-}
-
-export function getDataBackend(): DataBackend {
-  return process.env.CANTE_DATA_BACKEND === "supabase" ? "supabase" : "sqlite";
 }
 
 export function hasSupabaseEnv() {

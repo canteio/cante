@@ -6,14 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "db:push": "drizzle-kit push",
     "db:seed": "tsx scripts/seed.ts",
     "db:cloud:dry-run": "tsx scripts/sync-supabase.ts --dry-run",
     "db:cloud:sync": "tsx scripts/sync-supabase.ts",
     "db:cloud:pull": "tsx scripts/sync-supabase.ts --pull-inputs",
     "db:cloud:verify": "tsx scripts/sync-supabase.ts --verify",
     "check": "tsx scripts/run-check.ts",
-    "test": "node --import tsx --test lib/**/*.test.ts pipelines/import-manifest/**/*.test.ts",
+    "test": "node --import tsx --import ./lib/test-support/supabase-test-loader.mjs --test lib/**/*.test.ts pipelines/import-manifest/**/*.test.ts",
     "check:scheduled": "tsx scripts/scheduled-check.ts",
     "imports:validate": "node --import tsx scripts/validate-import-shipments.ts",
     "imports:refresh": "node --import tsx scripts/refresh-import-monitor.ts"
@@ -22,7 +21,6 @@
     "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.112.3",
     "@vercel/analytics": "^2.0.1",
-    "better-sqlite3": "^13.0.3",
     "cheerio": "^1.0.0",
     "drizzle-orm": "^0.45.3",
     "fflate": "^0.8.3",
@@ -36,11 +34,9 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.12",
     "@types/node": "^22.10.7",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
-    "drizzle-kit": "^0.31.11",
     "supabase": "^2.118.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"

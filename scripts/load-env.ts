@@ -12,8 +12,7 @@ import path from "node:path";
  * refuses to ship.
  *
  * Imported first, on its own line, because CommonJS executes imports in order
- * and some modules (lib/db/client.ts and CANTE_DB_PATH) read the environment
- * at module load. Keep it above the other imports.
+ * and some modules read the environment at module load.
  *
  * Real environment variables always win: `loadEnvFile` does not overwrite a
  * value that is already set, so an export or a plist entry still overrides the

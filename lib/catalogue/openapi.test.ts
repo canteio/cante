@@ -1,23 +1,19 @@
-import { after, before, test } from "node:test";
+import { beforeEach, test } from "node:test";
 import assert from "node:assert/strict";
 import { buildProductsOpenApiSpec } from "./openapi";
 import { GET as discover } from "../../app/api/products/openapi/route";
-import { operatingDb } from "@/lib/test-support/operating-db";
+import { operatingDb } from "@/lib/test-support/supabase-test-db";
 
-process.env.CANTE_DATA_BACKEND = "sqlite";
 process.env.CANTE_AUTH_MODE = "none";
 let route: typeof import("../../app/api/products/route");
-let database: typeof import("../db/client");
 let customerId: string;
 
-before(async () => {
+beforeEach(async () => {
   // Bind the real route to throwaway storage before db/client's one-time import,
   // so contract tests can exercise persistence without touching the user ledger.
   ({ customerId } = await operatingDb());
   route = await import("../../app/api/products/route");
-  database = await import("../db/client");
 });
-after(() => database.db.$client.close());
 
 const contract = buildProductsOpenApiSpec().paths["/api/products"];
 function jsonRequest(body: unknown) {

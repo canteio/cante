@@ -29,7 +29,7 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
   if (!customerId) return Response.json({ pending: [] });
-  return Response.json({ pending: pendingSuggestions(customerId) });
+  return Response.json({ pending: await pendingSuggestions(customerId) });
 }
 
 export async function POST(request: Request) {
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
   try {
     const result = await suggestClassification(provider, { customerId, sku });
     const productId = payload.productId as string | undefined;
-    const stored = productId ? recordSuggestion(productId, result) : null;
+    const stored = productId ? await recordSuggestion(productId, result) : null;
 
     return Response.json({
       suggestion: result.suggestion,
@@ -94,7 +94,7 @@ export async function PATCH(request: Request) {
 
   try {
     return Response.json({
-      classification: adoptSuggestion(
+      classification: await adoptSuggestion(
         payload.classificationId as string,
         (payload.adoptedBy as string) ?? "",
         (payload.reason as string) ?? "",
