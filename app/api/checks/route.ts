@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
-import { runCheck } from "@/lib/checks/run";
 import { getRunHistory, resolveCustomerId } from "@/lib/db/queries";
-import { normalizeProviderChoice, PROVIDER_COOKIE } from "@/lib/llm";
 import { normalizeJurisdiction } from "@/lib/countries";
-import { getDataBackend } from "@/lib/auth/config";
 
 export const runtime = "nodejs";
 // The judgment stage shells out to the Claude Code CLI and can run for
@@ -17,7 +14,7 @@ export async function GET(request: Request) {
   const customerId = await resolveCustomerId(url.searchParams.get("customerId"));
   const jurisdiction = normalizeJurisdiction(url.searchParams.get("country"));
   if (!customerId) {
-    return NextResponse.json({ error: "No customers. Run `npm run db:seed`." }, { status: 404 });
+    return NextResponse.json({ error: "No accessible customer workspace." }, { status: 404 });
   }
   return NextResponse.json({
     customerId,
@@ -26,42 +23,10 @@ export async function GET(request: Request) {
   });
 }
 
-/** POST /api/checks — trigger a check run. A scheduler can call this unchanged. */
-export async function POST(request: Request) {
-  if (getDataBackend() === "supabase") {
-    return NextResponse.json(
-      {
-        ok: false,
-        error:
-          "Production checks run on the trusted local scheduler and sync to Supabase after verification.",
-      },
-      { status: 409 },
-    );
-  }
-  let customerId: string | null = null;
-  try {
-    const body = await request.json().catch(() => ({}));
-    customerId = await resolveCustomerId(body.customerId);
-    if (!customerId) {
-      return NextResponse.json({ error: "No customers. Run `npm run db:seed`." }, { status: 404 });
-    }
-
-    const cookieProvider = request.headers
-      .get("cookie")
-      ?.split(";")
-      .map((part) => part.trim().split("="))
-      .find(([name]) => name === PROVIDER_COOKIE)?.[1];
-    const providerChoice = normalizeProviderChoice(body.provider ?? cookieProvider);
-    const jurisdiction = normalizeJurisdiction(body.country);
-
-    const { runId } = await runCheck(customerId, providerChoice, jurisdiction);
-    return NextResponse.json({ ok: true, runId, jurisdiction });
-  } catch (err) {
-    // The run row is already marked failed with this message by runCheck; the
-    // response says so plainly rather than returning a bare 500.
-    return NextResponse.json(
-      { ok: false, error: err instanceof Error ? err.message : String(err) },
-      { status: 500 },
-    );
-  }
+/** Checks remain a trusted-worker operation, independent of storage configuration. */
+export async function POST() {
+  return NextResponse.json(
+    { ok: false, error: "Checks run on the trusted worker and persist results in Supabase." },
+    { status: 409 },
+  );
 }

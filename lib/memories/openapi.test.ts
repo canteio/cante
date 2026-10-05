@@ -1,46 +1,21 @@
+import { operatingDb } from "@/lib/test-support/supabase-test-db";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { after, before, test } from "node:test";
+import { beforeEach, test } from "node:test";
 import { GET as discover } from "../../app/api/memories/openapi/route";
 import { MEMORY_KINDS } from "./contract";
 import { buildMemoriesOpenApiSpec } from "./openapi";
 
-process.env.CANTE_DB_PATH = ":memory:";
-process.env.CANTE_DATA_BACKEND = "sqlite";
 process.env.CANTE_AUTH_MODE = "none";
 let route: typeof import("../../app/api/memories/route");
-let database: typeof import("../db/client");
+let customerId: string;
 
-before(async () => {
+beforeEach(async () => {
   // Bind the real handler to isolated storage before its database imports run.
   route = await import("../../app/api/memories/route");
-  database = await import("../db/client");
-  database.db.$client.exec(`
-    CREATE TABLE customers (
-      id TEXT PRIMARY KEY, name TEXT NOT NULL, country TEXT NOT NULL,
-      city TEXT, created_at TEXT NOT NULL
-    );
-    CREATE TABLE customer_profiles (
-      id TEXT PRIMARY KEY, customer_id TEXT NOT NULL, product_description TEXT NOT NULL,
-      business_type TEXT, side_of_trade TEXT NOT NULL DEFAULT 'export',
-      hs_codes TEXT NOT NULL, kbli_codes TEXT NOT NULL, destination_markets TEXT NOT NULL,
-      hs_codes_confirmed INTEGER NOT NULL DEFAULT 0,
-      destinations_confirmed INTEGER NOT NULL DEFAULT 0,
-      relevance_guidance TEXT NOT NULL
-    );
-    CREATE TABLE memories (
-      id TEXT PRIMARY KEY, customer_id TEXT NOT NULL,
-      jurisdiction TEXT NOT NULL DEFAULT 'United States',
-      kind TEXT NOT NULL DEFAULT 'other', content TEXT NOT NULL,
-      source TEXT, origin TEXT NOT NULL DEFAULT 'manual',
-      confirmed INTEGER NOT NULL DEFAULT 0,
-      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
-    );
-    INSERT INTO customers VALUES ('customer-1', 'Acme', 'United States', NULL, '2026-09-20T00:00:00Z');
-  `);
+  ({ customerId } = await operatingDb());
 });
 
-after(() => database.db.$client.close());
 
 const contract: any = buildMemoriesOpenApiSpec().paths["/api/memories"];
 function jsonRequest(method: "POST" | "PATCH", body: unknown) {
@@ -73,7 +48,7 @@ test("memory discovery imports without initializing storage", () => {
   ].join("\n");
   const child = spawnSync(process.execPath, ["--import", "tsx", "--input-type=module", "--eval", script], {
     cwd: process.cwd(),
-    env: { ...process.env, CANTE_DB_PATH: "/dev/null/cante.db" },
+    env: { ...process.env, NEXT_PUBLIC_SUPABASE_URL: "", SUPABASE_SECRET_KEY: "" },
     encoding: "utf8",
   });
   assert.equal(child.status, 0, child.stderr || child.stdout);
@@ -81,7 +56,7 @@ test("memory discovery imports without initializing storage", () => {
 
 test("real routes create, list, update, and delete a memory", async () => {
   const createdResponse = await route.POST(jsonRequest("POST", {
-    customerId: "customer-1",
+    customerId: customerId,
     country: "US",
     kind: "product",
     content: "  Imports wooden toys  ",
@@ -94,7 +69,7 @@ test("real routes create, list, update, and delete a memory", async () => {
   assert.equal(created.kind, "product");
   assert.equal(created.confirmed, true);
 
-  const listedResponse = await route.GET(new Request("http://localhost/api/memories?customerId=customer-1&country=USA"));
+  const listedResponse = await route.GET(new Request(`http://localhost/api/memories?customerId=${customerId}&country=USA`));
   assert.equal(listedResponse.status, 200);
   const listed = await listedResponse.json();
   assert.equal(listed.jurisdiction, "United States");
@@ -105,7 +80,7 @@ test("real routes create, list, update, and delete a memory", async () => {
   assert.deepEqual(await updated.json(), { ok: true });
 
   const duplicate = await route.POST(jsonRequest("POST", {
-    customerId: "customer-1",
+    customerId: customerId,
     content: "imports wooden toys",
   }));
   assert.equal(duplicate.status, 409);
@@ -113,7 +88,7 @@ test("real routes create, list, update, and delete a memory", async () => {
   const removed = await route.DELETE(new Request(`http://localhost/api/memories?id=${created.id}`, { method: "DELETE" }));
   assert.equal(removed.status, 200);
   assert.deepEqual(await removed.json(), { ok: true });
-  const empty = await route.GET(new Request("http://localhost/api/memories?customerId=customer-1"));
+  const empty = await route.GET(new Request(`http://localhost/api/memories?customerId=${customerId}`));
   assert.deepEqual((await empty.json()).memories, []);
 });
 

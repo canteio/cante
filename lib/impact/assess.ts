@@ -1,14 +1,8 @@
+import type * as Schema from "@/lib/db/schema";
+import { createClient } from "@/lib/supabase/server";
 import { randomUUID } from "node:crypto";
-import { eq } from "drizzle-orm";
-import { db } from "@/lib/db/client";
-import {
-  impactAssessments,
-  tradeLanes,
-  type Finding,
-  type ImpactAssessment,
-  type Product,
-  type TradeLane,
-} from "@/lib/db/schema";
+
+import { type Finding, type ImpactAssessment, type Product, type TradeLane } from "@/lib/db/schema";
 import { listProducts } from "@/lib/catalogue/products";
 import { annualShipmentsOf, listLanes } from "@/lib/catalogue/lanes";
 import { listClassifications, resolveProductCodes } from "@/lib/catalogue/classifications";
@@ -71,11 +65,11 @@ export interface ProductMatch {
  * Returns matches with their kind so the caller can present a prefix or
  * material match as the weaker signal it is.
  */
-export function matchProducts(
+export async function matchProducts(
   customerId: string,
   finding: Pick<Finding, "title" | "summaryEn" | "reasoning" | "regulationRef">,
-): ProductMatch[] {
-  const catalogue = listProducts(customerId);
+): Promise<ProductMatch[]> {
+  const catalogue = await listProducts(customerId);
   const mentioned = codesMentionedIn(finding).map(digitsOf);
   const haystack = [finding.title, finding.summaryEn, finding.reasoning]
     .filter(Boolean)
@@ -85,7 +79,7 @@ export function matchProducts(
   const matches: ProductMatch[] = [];
 
   for (const product of catalogue) {
-    const classifications = listClassifications(product.id).filter(
+    const classifications = (await listClassifications(product.id)).filter(
       (c) => !c.supersededAt && c.status !== "rejected",
     );
 
@@ -171,21 +165,21 @@ function weakestConfidence(a: Confidence, b: Confidence): Confidence {
 /**
  * Build (but do not store) the impact of one finding across the catalogue.
  *
- * Kept pure so it can be tested without a run, and so the caller decides
+ * Reads the catalogue without writing an assessment, so the caller decides
  * whether a draft is worth persisting.
  */
-export function assessImpact(input: AssessInput): AssessmentDraft[] {
+export async function assessImpact(input: AssessInput): Promise<AssessmentDraft[]> {
   const { finding, customerId } = input;
   const now = input.now ?? new Date();
   const effectiveOn = input.effectiveOn ?? null;
-  const matches = matchProducts(customerId, finding);
-  const allLanes = listLanes(customerId);
+  const matches = await matchProducts(customerId, finding);
+  const allLanes = await listLanes(customerId);
   const drafts: AssessmentDraft[] = [];
 
   if (matches.length === 0) {
     // No product matched. That is a real answer, and it is not "no impact" —
     // an empty catalogue and a genuinely irrelevant rule look identical here.
-    const catalogueSize = listProducts(customerId).length;
+    const catalogueSize = (await listProducts(customerId)).length;
     drafts.push({
       productId: null,
       laneId: null,
@@ -308,8 +302,7 @@ export function assessImpact(input: AssessInput): AssessmentDraft[] {
 /**
  * Resolve real duty rates for drafts and attach the annual duty at risk.
  *
- * Kept separate from `assessImpact()` so the matching and arithmetic stay pure
- * and testable without a network, and so a tariff-service outage degrades one
+ * Kept separate from `assessImpact()` so a tariff-service outage degrades one
  * field instead of failing the whole assessment.
  *
  * What this can and cannot know: the USITC publishes **today's** rate. For a
@@ -321,8 +314,9 @@ export function assessImpact(input: AssessInput): AssessmentDraft[] {
  */
 export async function enrichDraftsWithTariff(
   drafts: AssessmentDraft[],
-  options: { signal?: AbortSignal } = {},
+  options: { signal?: AbortSignal; } = {},
 ): Promise<AssessmentDraft[]> {
+  const supabase = await createClient();
   const out: AssessmentDraft[] = [];
 
   for (const draft of drafts) {
@@ -331,12 +325,19 @@ export async function enrichDraftsWithTariff(
       continue;
     }
 
-    const resolved = resolveProductCodes(draft.productId, "hts").current
-      ? resolveProductCodes(draft.productId, "hts")
-      : resolveProductCodes(draft.productId, "hs");
+    const resolved = (await resolveProductCodes(draft.productId, "hts")).current
+      ? await resolveProductCodes(draft.productId, "hts")
+      : await resolveProductCodes(draft.productId, "hs");
     const classification = resolved.current ?? resolved.document[0] ?? resolved.human[0] ?? null;
     const lane = draft.laneId
-      ? db.select().from(tradeLanes).where(eq(tradeLanes.id, draft.laneId)).get()
+      ? (cloudResult<typeof Schema.tradeLanes.$inferSelect | null>(
+        await supabase
+          .from("trade_lanes")
+          .select("*")
+          .eq("id", draft.laneId)
+          .limit(1)
+          .maybeSingle(),
+      ) ?? undefined)
       : null;
 
     if (!classification || !lane?.annualValue) {
@@ -401,51 +402,55 @@ export async function enrichDraftsWithTariff(
 }
 
 /** Persist drafts for a finding, replacing any previous assessment of it. */
-export function storeImpact(
+export async function storeImpact(
   customerId: string,
   findingId: string,
   drafts: AssessmentDraft[],
-): ImpactAssessment[] {
+): Promise<ImpactAssessment[]> {
+  const supabase = await createClient();
   const stored: ImpactAssessment[] = [];
-  db.transaction(() => {
-    db.delete(impactAssessments).where(eq(impactAssessments.findingId, findingId)).run();
-    for (const draft of drafts) {
-      const row = {
-        id: randomUUID(),
-        findingId,
-        customerId,
-        productId: draft.productId,
-        laneId: draft.laneId,
-        matchReason: draft.matchReason,
-        matchKind: draft.matchKind,
-        effectiveOn: draft.effectiveOn,
-        nextAffectedShipmentAt: draft.nextAffectedShipmentAt,
-        dutyRateBefore: draft.dutyRateBefore,
-        dutyRateAfter: draft.dutyRateAfter,
-        estimatedAnnualExposure: draft.estimatedAnnualExposure,
-        estimatedMonthlyExposure: draft.estimatedMonthlyExposure,
-        currency: draft.currency,
-        delayRisk: draft.delayRisk,
-        annualDutyAtRisk: draft.annualDutyAtRisk ?? null,
-        tariffCode: draft.tariffCode ?? null,
-        tariffBasis: draft.tariffBasis ?? null,
-        basis: draft.basis,
-        confidence: draft.confidence,
-        createdAt: new Date().toISOString(),
-      };
-      db.insert(impactAssessments).values(row).run();
-      stored.push(row as ImpactAssessment);
-    }
-  });
+  for (const draft of drafts) {
+    const row = {
+      id: randomUUID(),
+      findingId,
+      customerId,
+      productId: draft.productId,
+      laneId: draft.laneId,
+      matchReason: draft.matchReason,
+      matchKind: draft.matchKind,
+      effectiveOn: draft.effectiveOn,
+      nextAffectedShipmentAt: draft.nextAffectedShipmentAt,
+      dutyRateBefore: draft.dutyRateBefore,
+      dutyRateAfter: draft.dutyRateAfter,
+      estimatedAnnualExposure: draft.estimatedAnnualExposure,
+      estimatedMonthlyExposure: draft.estimatedMonthlyExposure,
+      currency: draft.currency,
+      delayRisk: draft.delayRisk,
+      annualDutyAtRisk: draft.annualDutyAtRisk ?? null,
+      tariffCode: draft.tariffCode ?? null,
+      tariffBasis: draft.tariffBasis ?? null,
+      basis: draft.basis,
+      confidence: draft.confidence,
+      direction: "unknown",
+      createdAt: new Date().toISOString(),
+    };
+    stored.push(row as ImpactAssessment);
+  }
+  cloudResult(
+    await supabase
+      .rpc("replace_impact_assessments", { target_customer_id: customerId, target_finding_id: findingId, replacement: stored.map(snakeRow) }),
+  );
   return stored;
 }
 
-export function listImpactForFinding(findingId: string): ImpactAssessment[] {
-  return db
-    .select()
-    .from(impactAssessments)
-    .where(eq(impactAssessments.findingId, findingId))
-    .all();
+export async function listImpactForFinding(findingId: string): Promise<ImpactAssessment[]> {
+  const supabase = await createClient();
+  return cloudResult<Array<typeof Schema.impactAssessments.$inferSelect>>(
+    await supabase
+      .from("impact_assessments")
+      .select("*")
+      .eq("finding_id", findingId),
+  );
 }
 
 /** One human-readable block. Refuses to print a figure without its basis. */
@@ -468,4 +473,22 @@ export function renderImpact(assessment: ImpactAssessment, productSku?: string):
   }
   lines.push(`Basis: ${assessment.basis.join(" ")}`);
   return lines.join("\n");
+}
+
+// Convert SQL column names only; JSON evidence keeps its original keys.
+function camelRow<T>(value: unknown): T {
+  if (Array.isArray(value)) return value.map((row) => camelRow(row)) as T;
+  if (!value || typeof value !== "object") return value as T;
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/_([a-z])/g, (_, letter: string) => letter.toUpperCase()), item,
+  ])) as T;
+}
+function snakeRow(value: Record<string, unknown>) {
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`), item,
+  ]));
+}
+function cloudResult<T = unknown>(result: { data?: unknown; error: { message: string; } | null; }): T {
+  if (result.error) throw new Error(`Supabase operation failed: ${result.error.message}`);
+  return camelRow<T>(result.data);
 }

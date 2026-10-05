@@ -32,8 +32,8 @@ export async function GET(request: Request) {
   const jurisdiction = url.searchParams.get("jurisdiction");
 
   return Response.json({
-    history: listClassifications(productId),
-    ...(system ? { resolved: resolveProductCodes(productId, system, jurisdiction) } : {}),
+    history: await listClassifications(productId),
+    ...(system ? { resolved: await resolveProductCodes(productId, system, jurisdiction) } : {}),
   });
 }
 
@@ -77,7 +77,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const row = recordClassification({
+  const row = await recordClassification({
     productId,
     system,
     code,
@@ -106,11 +106,11 @@ export async function PATCH(request: Request) {
       if (!reason.trim()) {
         return Response.json({ error: "Rejecting requires a reason." }, { status: 400 });
       }
-      rejectClassification(id, reason);
+      await rejectClassification(id, reason);
       return Response.json({ ok: true });
     }
 
-    const classification = approveClassification(
+    const classification = await approveClassification(
       id,
       (payload.approvedBy as string) ?? "",
       (payload.rationale as string) ?? "",

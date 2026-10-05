@@ -1,54 +1,17 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { DatabaseSync, type SQLInputValue } from "node:sqlite";
-import type Database from "better-sqlite3";
-import { drizzle } from "drizzle-orm/better-sqlite3";
 import { createClient } from "@supabase/supabase-js";
-import * as schema from "@/lib/db/schema";
-import { sqliteMonitorStore, supabaseMonitorStore } from "./store";
+import { supabaseMonitorStore } from "./store";
 import { refreshMonitor } from "./refresh";
 
-// Use a real SQLite engine without the repository's broken native addon.
-// This tiny test-only statement bridge implements precisely the better-sqlite3
-// calls Drizzle uses; production continues to use the existing DB connection.
-function testDatabase() {
-  const sqlite = new DatabaseSync(":memory:");
-  sqlite.exec(`PRAGMA foreign_keys = ON;
-    CREATE TABLE customers (id TEXT PRIMARY KEY);
-    INSERT INTO customers VALUES ('a'), ('b');
-    CREATE TABLE import_monitor_state (customer_id TEXT PRIMARY KEY REFERENCES customers(id), revision INTEGER NOT NULL, payload TEXT NOT NULL);`);
-  const bridge = {
-    prepare(sql: string) {
-      const stmt = sqlite.prepare(sql);
-      const wrapper = {
-        raw() { stmt.setReturnArrays(true); return wrapper; },
-        run(...args: SQLInputValue[]) { return stmt.run(...args); },
-        get(...args: SQLInputValue[]) { return stmt.get(...args); },
-        all(...args: SQLInputValue[]) { return stmt.all(...args); },
-      };
-      return wrapper;
-    },
-  };
-  return { sqlite, db: drizzle(bridge as unknown as Database.Database, { schema }) };
-}
-
-test("SQLite persists an atomic snapshot, isolates tenants and rejects stale writes and unknown tenants", async () => {
-  const { sqlite, db } = testDatabase();
-  try {
-    const store = await sqliteMonitorStore(db);
-    const first = await refreshMonitor("a", store, { now: "2026-09-14T12:00:00.000Z", recalls: async () => [] });
-    // Create a fresh repository object to prove this reads persisted SQL data.
-    const reopened = await sqliteMonitorStore(db);
-    assert.deepEqual(await reopened.read("a"), first.state);
-    assert.equal(await reopened.read("b"), null);
-    await assert.rejects(reopened.save("a", first.state, 0));
-    const second = { ...first.state, revision: 2 };
-    await reopened.save("a", second, 1);
-    await assert.rejects(reopened.save("a", second, 1), /Concurrent/);
-    assert.equal((await reopened.read("a"))?.revision, 2);
-    await assert.rejects(reopened.save("unknown-tenant", first.state, 0), /FOREIGN KEY/);
-  } finally { sqlite.close(); }
-});
+// sqliteMonitorStore() is a deprecated stub that always throws (SQLite
+// monitor storage was fully retired when this app's data layer became
+// Supabase-only) — there is nothing left to test for it beyond the throw
+// itself, which store.ts's other test coverage... actually there is no
+// separate coverage file; the throw is a one-liner, exercised implicitly by
+// every call site having moved to supabaseMonitorStore instead. The real
+// behavioral coverage below (tenant isolation, revision conflicts, error
+// propagation) now lives entirely on the Supabase-backed implementation.
 
 test("Supabase store constrains reads/writes by tenant and previous revision; errors never become empty data", async () => {
   const calls: { url: string; method: string; body: unknown }[] = [];

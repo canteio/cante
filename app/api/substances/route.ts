@@ -29,9 +29,9 @@ export async function GET(request: Request) {
   const matchText = url.searchParams.get("matchText");
 
   return Response.json({
-    assessment: assessRestrictions(customerId),
-    ...(productId ? { components: componentTree(productId) } : {}),
-    ...(matchText ? { substanceMatches: productsContainingSubstanceNamedIn(customerId, matchText) } : {}),
+    assessment: await assessRestrictions(customerId),
+    ...(productId ? { components: await componentTree(productId) } : {}),
+    ...(matchText ? { substanceMatches: await productsContainingSubstanceNamedIn(customerId, matchText) } : {}),
   });
 }
 
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
         return Response.json({ error: "productId and name are required." }, { status: 400 });
       }
       return Response.json({
-        component: addComponent({
+        component: await addComponent({
           productId,
           name,
           parentComponentId: (payload.parentComponentId as string) ?? null,
@@ -87,7 +87,7 @@ export async function POST(request: Request) {
           { status: 400 },
         );
       }
-      const substance = upsertSubstance({
+      const substance = await upsertSubstance({
         name,
         casNumber: (payload.casNumber as string) ?? null,
         ecNumber: (payload.ecNumber as string) ?? null,
@@ -95,7 +95,7 @@ export async function POST(request: Request) {
       });
       return Response.json({
         substance,
-        declaration: declareSubstance({
+        declaration: await declareSubstance({
           componentId,
           substanceId: substance.id,
           concentrationPpm:
@@ -118,7 +118,7 @@ export async function POST(request: Request) {
         );
       }
       return Response.json({
-        listId: loadRestrictionList({
+        listId: await loadRestrictionList({
           name,
           jurisdiction,
           authority: payload.authority as string | null,
@@ -149,7 +149,7 @@ export async function DELETE(request: Request) {
   try {
     const componentId = new URL(request.url).searchParams.get("componentId");
     if (!componentId) return Response.json({ error: "componentId is required." }, { status: 400 });
-    deleteComponent(componentId);
+    await deleteComponent(componentId);
     return Response.json({ deleted: true });
   } catch (error) {
     return Response.json(

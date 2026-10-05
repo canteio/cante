@@ -1,22 +1,9 @@
 import assert from "node:assert/strict";
-import { after, before, test } from "node:test";
-
-// Use the real route and SQLite writes without touching any customer's ledger.
-process.env.CANTE_DB_PATH = ":memory:";
-process.env.CANTE_DATA_BACKEND = "sqlite";
-let route: typeof import("../../app/api/checklist/route");
-let database: typeof import("../db/client");
-let statuses: typeof import("./checklist-status");
-before(async () => {
-  route = await import("../../app/api/checklist/route");
-  database = await import("../db/client");
-  statuses = await import("./checklist-status");
-  database.db.$client.exec(`
-    CREATE TABLE checklist_items (id TEXT PRIMARY KEY, status TEXT, updated_at TEXT);
-    INSERT INTO checklist_items VALUES ('test-item', 'required', 'initial');
-  `);
-});
-after(() => database.db.$client.close());
+import { test } from "node:test";
+import { createServiceClient } from "@/lib/supabase/service";
+import { operatingDb } from "@/lib/test-support/supabase-test-db";
+import * as route from "../../app/api/checklist/route";
+import * as statuses from "./checklist-status";
 
 function patch(body: string) {
   return route.PATCH(new Request("http://localhost/api/checklist", {
@@ -24,6 +11,23 @@ function patch(body: string) {
     headers: { "Content-Type": "application/json" },
     body,
   }));
+}
+
+async function seedItem(customerId: string) {
+  const client = createServiceClient();
+  const id = "test-item";
+  const { error } = await client.from("checklist_items").insert({
+    id, customer_id: customerId, title: "Test checklist item", status: "required",
+  });
+  if (error) throw new Error(error.message);
+  return id;
+}
+
+async function readItem(id: string) {
+  const client = createServiceClient();
+  const { data, error } = await client.from("checklist_items").select("*").eq("id", id).maybeSingle();
+  if (error) throw new Error(error.message);
+  return data;
 }
 
 const invalidBodies: [string, string][] = [
@@ -43,7 +47,9 @@ const invalidBodies: [string, string][] = [
 
 for (const [label, body] of invalidBodies) {
   test(`checklist PATCH rejects ${label} with usable guidance and no write`, async () => {
-    const before = database.db.$client.prepare("SELECT * FROM checklist_items").all();
+    const { customerId } = await operatingDb();
+    const id = await seedItem(customerId);
+    const before = await readItem(id);
     const response = await patch(body);
     assert.equal(response.status, 400);
     assert.match(response.headers.get("content-type") ?? "", /application\/json/);
@@ -51,15 +57,18 @@ for (const [label, body] of invalidBodies) {
     assert.match(payload.error, /non-empty string `id`/);
     assert.deepEqual(payload.shape.status.enum, statuses.checklistStatusSchema.options);
     assert.ok(payload.issues.length > 0);
-    assert.deepEqual(database.db.$client.prepare("SELECT * FROM checklist_items").all(), before);
+    assert.deepEqual(await readItem(id), before);
   });
 }
 
 test("checklist PATCH persists every documented status, including all UI actions", async () => {
+  const { customerId } = await operatingDb();
+  const id = await seedItem(customerId);
   for (const status of statuses.checklistStatusSchema.options) {
-    const response = await patch(JSON.stringify({ id: "test-item", status }));
+    const response = await patch(JSON.stringify({ id, status }));
     assert.equal(response.status, 200);
     assert.deepEqual(await response.json(), { ok: true });
-    assert.deepEqual(database.db.$client.prepare("SELECT status FROM checklist_items WHERE id = ?").get("test-item"), { status });
+    const row = await readItem(id);
+    assert.equal(row?.status, status);
   }
 });

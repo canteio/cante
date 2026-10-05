@@ -1,9 +1,9 @@
+import type * as Schema from "@/lib/db/schema";
+import { createClient } from "@/lib/supabase/server";
 import { randomUUID } from "node:crypto";
-import { and, asc, eq } from "drizzle-orm";
-import { db } from "@/lib/db/client";
-import { productClassifications, products, type Product } from "@/lib/db/schema";
+
+import { type Product } from "@/lib/db/schema";
 import { parseCsv } from "@/lib/catalogue/csv";
-import { recordClassification } from "@/lib/catalogue/classifications";
 
 /**
  * The product catalogue — item 2, and the keystone for lanes, impact, document
@@ -52,21 +52,28 @@ export interface ImportSummary {
   caveats: string[];
 }
 
-export function listProducts(customerId: string): Product[] {
-  return db
-    .select()
-    .from(products)
-    .where(eq(products.customerId, customerId))
-    .orderBy(asc(products.sku))
-    .all();
+export async function listProducts(customerId: string): Promise<Product[]> {
+  const supabase = await createClient();
+  return cloudResult<Array<typeof Schema.products.$inferSelect>>(
+    await supabase
+      .from("products")
+      .select("*")
+      .eq("customer_id", customerId)
+      .order("sku", { ascending: true }),
+  );
 }
 
-export function getProductBySku(customerId: string, sku: string): Product | undefined {
-  return db
-    .select()
-    .from(products)
-    .where(and(eq(products.customerId, customerId), eq(products.sku, sku)))
-    .get();
+export async function getProductBySku(customerId: string, sku: string): Promise<Product | undefined> {
+  const supabase = await createClient();
+  return (cloudResult<typeof Schema.products.$inferSelect | null>(
+    await supabase
+      .from("products")
+      .select("*")
+      .eq("customer_id", customerId)
+      .eq("sku", sku)
+      .limit(1)
+      .maybeSingle(),
+  ) ?? undefined);
 }
 
 function normaliseMaterials(value: string | string[] | undefined | null): string[] {
@@ -88,17 +95,12 @@ function parseNumber(value: string | number | null | undefined): number | null {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
-export function upsertProduct(
-  customerId: string,
-  input: ProductInput,
-): { product: Product; outcome: "created" | "updated" | "unchanged" } {
+function normaliseProduct(input: ProductInput) {
   const sku = input.sku.trim();
-  const existing = getProductBySku(customerId, sku);
-  const now = new Date().toISOString();
   const productClass =
     input.productClass && PRODUCT_CLASSES.has(input.productClass) ? input.productClass : "unknown";
 
-  const next = {
+  return {
     sku,
     name: input.name.trim(),
     description: input.description?.trim() || null,
@@ -110,10 +112,25 @@ export function upsertProduct(
     productClass,
     notes: input.notes?.trim() || null,
   };
+}
+
+export async function upsertProduct(
+  customerId: string,
+  input: ProductInput,
+): Promise<{ product: Product; outcome: "created" | "updated" | "unchanged"; }> {
+  const supabase = await createClient();
+  const sku = input.sku.trim();
+  const existing = await getProductBySku(customerId, sku);
+  const now = new Date().toISOString();
+  const next = normaliseProduct(input);
 
   if (!existing) {
     const created = { id: randomUUID(), customerId, ...next, active: true, createdAt: now, updatedAt: now };
-    db.insert(products).values(created).run();
+    cloudResult(
+      await supabase
+        .from("products")
+        .insert(snakeRow(created)),
+    );
     return { product: created as Product, outcome: "created" };
   }
 
@@ -130,7 +147,12 @@ export function upsertProduct(
 
   if (!changed) return { product: existing, outcome: "unchanged" };
 
-  db.update(products).set({ ...next, updatedAt: now }).where(eq(products.id, existing.id)).run();
+  cloudResult(
+    await supabase
+      .from("products")
+      .update(snakeRow({ ...next, updatedAt: now }))
+      .eq("id", existing.id),
+  );
   return { product: { ...existing, ...next, updatedAt: now }, outcome: "updated" };
 }
 
@@ -187,7 +209,9 @@ const CODE_COLUMNS: Record<string, string> = {
  * spreadsheet is not an export document, and letting a CSV column write a
  * `document`-tier code would destroy the only tier distinction that matters.
  */
-export function importProductsCsv(customerId: string, csv: string): ImportSummary {
+export async function importProductsCsv(customerId: string, csv: string): Promise<ImportSummary> {
+  const supabase = await createClient();
+  const pending: Array<{ line: number; product: ReturnType<typeof normaliseProduct>; codes: Array<{ system: string; code: string; basis: string; }>; }> = [];
   const table = parseCsv(csv);
   const rows: ImportRowOutcome[] = [];
   const caveats: string[] = [];
@@ -246,69 +270,73 @@ export function importProductsCsv(customerId: string, csv: string): ImportSummar
 
   const seenInFile = new Set<string>();
 
-  db.transaction(() => {
-    table.rows.forEach((row, index) => {
-      const line = index + 2;
-      const sku = value(row, "sku");
-      if (!sku) {
-        rejected += 1;
-        rows.push({ line, sku: "", outcome: "rejected", reason: "Missing SKU." });
-        return;
-      }
-      if (seenInFile.has(sku)) {
-        rejected += 1;
-        rows.push({
-          line,
-          sku,
-          outcome: "rejected",
-          reason: "Duplicate SKU within the same file; the earlier row was kept.",
-        });
-        return;
-      }
-      seenInFile.add(sku);
-
-      const name = value(row, "name") || sku;
-      const result = upsertProduct(customerId, {
-        sku,
-        name,
-        description: value(row, "description"),
-        materials: normaliseMaterials(value(row, "materials")),
-        originCountry: value(row, "origin_country"),
-        unitOfMeasure: value(row, "unit_of_measure"),
-        unitValue: parseNumber(value(row, "unit_value")),
-        currency: value(row, "currency"),
-        productClass: value(row, "product_class").toLowerCase(),
-        notes: value(row, "notes"),
-      });
-
-      const codesRecorded: string[] = [];
-      for (const [header, system] of Object.entries(CODE_COLUMNS)) {
-        const code = row[header]?.trim();
-        if (!code) continue;
-        recordClassification({
-          productId: result.product.id,
-          system,
-          code,
-          tier: "lead",
-          basis: `Imported from catalogue CSV column "${header}" on ${new Date()
-            .toISOString()
-            .slice(0, 10)}. A spreadsheet is not an export document.`,
-        });
-        codesRecorded.push(`${system}:${code}`);
-      }
-
-      if (result.outcome === "created") created += 1;
-      else if (result.outcome === "updated") updated += 1;
-      else unchanged += 1;
-
+  for (const [index, row] of table.rows.entries()) {
+    const line = index + 2;
+    const sku = value(row, "sku");
+    if (!sku) {
+      rejected += 1;
+      rows.push({ line, sku: "", outcome: "rejected", reason: "Missing SKU." });
+      continue;
+    }
+    if (seenInFile.has(sku)) {
+      rejected += 1;
       rows.push({
         line,
         sku,
-        outcome: result.outcome,
-        ...(codesRecorded.length ? { codesRecorded } : {}),
+        outcome: "rejected",
+        reason: "Duplicate SKU within the same file; the earlier row was kept.",
       });
+      continue;
+    }
+    seenInFile.add(sku);
+
+    const name = value(row, "name") || sku;
+    const product = normaliseProduct({
+      sku,
+      name,
+      description: value(row, "description"),
+      materials: normaliseMaterials(value(row, "materials")),
+      originCountry: value(row, "origin_country"),
+      unitOfMeasure: value(row, "unit_of_measure"),
+      unitValue: parseNumber(value(row, "unit_value")),
+      currency: value(row, "currency"),
+      productClass: value(row, "product_class").toLowerCase(),
+      notes: value(row, "notes"),
     });
-  });
+
+    const codes: Array<{ system: string; code: string; basis: string; }> = [];
+    for (const [header, system] of Object.entries(CODE_COLUMNS)) {
+      const code = row[header]?.trim();
+      if (!code) continue;
+      codes.push({
+        system,
+        code,
+        basis: `Imported from catalogue CSV column "${header}" on ${new Date()
+          .toISOString()
+          .slice(0, 10)}. A spreadsheet is not an export document.`,
+      });
+    }
+
+    pending.push({ line, product, codes });
+  }
+  if (pending.length) {
+    const outcomes = cloudResult<Array<{ line: number; sku: string; outcome: "created" | "updated" | "unchanged"; }>>(
+
+      await supabase
+        .rpc("import_cante_products", {
+          target_customer_id: customerId,
+          entries: pending.map((item) => ({ ...item, product: snakeRow(item.product) })),
+        }),
+    );
+    for (const outcome of outcomes) {
+      const codes = pending.find((item) => item.line === outcome.line)!.codes;
+      rows.push({ ...outcome, ...(codes.length ? { codesRecorded: codes.map((code) => `${code.system}:${code.code}`) } : {}) });
+      if (outcome.outcome === "created") created += 1;
+      else if (outcome.outcome === "updated") updated += 1;
+      else unchanged += 1;
+    }
+    rows.sort((a, b) => a.line - b.line);
+  }
 
   if (ignoredColumns.length) {
     caveats.push(
@@ -326,16 +354,42 @@ export function importProductsCsv(customerId: string, csv: string): ImportSummar
 }
 
 /** Delete a product and its classification history. Used by tests and manual cleanup. */
-export function deleteProduct(customerId: string, productId: string): boolean {
-  const existing = db
-    .select()
-    .from(products)
-    .where(and(eq(products.customerId, customerId), eq(products.id, productId)))
-    .get();
+export async function deleteProduct(customerId: string, productId: string): Promise<boolean> {
+  const supabase = await createClient();
+  const existing = (cloudResult<typeof Schema.products.$inferSelect | null>(
+    await supabase
+      .from("products")
+      .select("*")
+      .eq("customer_id", customerId)
+      .eq("id", productId)
+      .limit(1)
+      .maybeSingle(),
+  ) ?? undefined);
   if (!existing) return false;
-  db.transaction(() => {
-    db.delete(productClassifications).where(eq(productClassifications.productId, productId)).run();
-    db.delete(products).where(eq(products.id, productId)).run();
-  });
+  cloudResult(
+    await supabase
+      .from("products")
+      .delete()
+      .eq("id", productId)
+      .eq("customer_id", customerId),
+  );
   return true;
+}
+
+// Convert SQL column names only; JSON evidence keeps its original keys.
+function camelRow<T>(value: unknown): T {
+  if (Array.isArray(value)) return value.map((row) => camelRow(row)) as T;
+  if (!value || typeof value !== "object") return value as T;
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/_([a-z])/g, (_, letter: string) => letter.toUpperCase()), item,
+  ])) as T;
+}
+function snakeRow(value: Record<string, unknown>) {
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`), item,
+  ]));
+}
+function cloudResult<T = unknown>(result: { data?: unknown; error: { message: string; } | null; }): T {
+  if (result.error) throw new Error(`Supabase operation failed: ${result.error.message}`);
+  return camelRow<T>(result.data);
 }

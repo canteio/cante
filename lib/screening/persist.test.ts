@@ -1,8 +1,7 @@
+import { mockExternalFetch } from "@/lib/test-support/supabase-test-db";
 import assert from "node:assert/strict";
-import { randomUUID } from "node:crypto";
 import test from "node:test";
-import Database from "better-sqlite3";
-import { operatingDb } from "@/lib/test-support/operating-db";
+import { operatingDb } from "@/lib/test-support/supabase-test-db";
 
 /**
  * Coverage for lib/screening/persist.ts — this file previously had zero
@@ -22,27 +21,19 @@ function cslResponse(records: unknown[]) {
   });
 }
 
-function insertSupplier(dbPath: string, customerId: string, name: string) {
-  const sqlite = new Database(dbPath);
-  const id = `supplier-${randomUUID()}`;
-  const now = new Date().toISOString();
-  sqlite
-    .prepare(
-      "INSERT INTO suppliers (id, customer_id, name, country, address, contact_email, role, active, notes, created_at, updated_at) VALUES (?, ?, ?, NULL, NULL, NULL, 'supplier', 1, NULL, ?, ?)",
-    )
-    .run(id, customerId, name, now, now);
-  sqlite.close();
-  return id;
+async function insertSupplier(customerId: string, name: string) {
+  const { upsertSupplier } = await import("@/lib/catalogue/lanes");
+  return (await upsertSupplier(customerId, { name })).id;
 }
 
 test("screenName records a clear outcome and reports clear: true", async () => {
-  const { dbPath, customerId } = await operatingDb();
+  const { customerId } = await operatingDb();
   const { resetCslCacheForTests } = await import("@/lib/screening/csl");
   const { screenName } = await import("@/lib/screening/persist");
   resetCslCacheForTests();
 
   const originalFetch = global.fetch;
-  global.fetch = (async () => cslResponse([])) as typeof fetch;
+  global.fetch = mockExternalFetch((async () => cslResponse([])) as typeof fetch);
   try {
     const { row, clear } = await screenName(customerId, "Nobody Of Concern LLC");
     assert.equal(clear, true);
@@ -55,13 +46,13 @@ test("screenName records a clear outcome and reports clear: true", async () => {
 });
 
 test("screenName records a match outcome with source details, never clear", async () => {
-  const { dbPath, customerId } = await operatingDb();
+  const { customerId } = await operatingDb();
   const { resetCslCacheForTests } = await import("@/lib/screening/csl");
   const { screenName } = await import("@/lib/screening/persist");
   resetCslCacheForTests();
 
   const originalFetch = global.fetch;
-  global.fetch = (async () =>
+  global.fetch = mockExternalFetch((async () =>
     cslResponse([
       {
         name: "SANCTIONED PARTY LTD",
@@ -73,7 +64,7 @@ test("screenName records a match outcome with source details, never clear", asyn
           { address: "1 Test Rd", city: "Testville", state: null, postal_code: "00000", country: "XX" },
         ],
       },
-    ])) as typeof fetch;
+    ])) as typeof fetch);
   try {
     const { row, clear } = await screenName(customerId, "Sanctioned Party Ltd");
     assert.equal(clear, false);
@@ -92,7 +83,7 @@ test("screenName on upstream failure stores outcome: error and is never clear", 
   resetCslCacheForTests();
 
   const originalFetch = global.fetch;
-  global.fetch = (async () => new Response("boom", { status: 500 })) as typeof fetch;
+  global.fetch = mockExternalFetch((async () => new Response("boom", { status: 500 })) as typeof fetch);
   try {
     const { row, clear } = await screenName(customerId, "Some Supplier");
     assert.equal(clear, false, "an upstream error must never be reported clear");
@@ -105,22 +96,22 @@ test("screenName on upstream failure stores outcome: error and is never clear", 
 });
 
 test("screenSupplier resolves the supplier name then screens it, and rejects unknown ids", async () => {
-  const { dbPath, customerId } = await operatingDb();
+  const { customerId } = await operatingDb();
   const { resetCslCacheForTests } = await import("@/lib/screening/csl");
   const { screenSupplier } = await import("@/lib/screening/persist");
   resetCslCacheForTests();
 
-  const supplierId = insertSupplier(dbPath, customerId, "Known Supplier Co");
+  const supplierId = await insertSupplier(customerId, "Known Supplier Co");
 
   const originalFetch = global.fetch;
-  global.fetch = (async () => cslResponse([])) as typeof fetch;
+  global.fetch = mockExternalFetch((async () => cslResponse([])) as typeof fetch);
   try {
     const { row } = await screenSupplier(customerId, supplierId);
     assert.equal(row.screenedName, "Known Supplier Co");
     assert.equal(row.supplierId, supplierId);
 
     await assert.rejects(
-      () => screenSupplier(customerId, "not-a-real-id"),
+      async () => (await screenSupplier(customerId, "not-a-real-id")),
       /Supplier not found/,
     );
   } finally {
@@ -129,15 +120,15 @@ test("screenSupplier resolves the supplier name then screens it, and rejects unk
 });
 
 test("screeningCoverage separates never-screened, matched, errored, and stale suppliers", async () => {
-  const { dbPath, customerId } = await operatingDb();
+  const { customerId } = await operatingDb();
   const { resetCslCacheForTests } = await import("@/lib/screening/csl");
   const { screenSupplier, screeningCoverage } = await import("@/lib/screening/persist");
   resetCslCacheForTests();
 
-  const clearId = insertSupplier(dbPath, customerId, "Clear Supplier");
-  const matchId = insertSupplier(dbPath, customerId, "Flagged Supplier");
-  const erroredId = insertSupplier(dbPath, customerId, "Errored Supplier");
-  insertSupplier(dbPath, customerId, "Never Screened Supplier");
+  const clearId = await insertSupplier(customerId, "Clear Supplier");
+  const matchId = await insertSupplier(customerId, "Flagged Supplier");
+  const erroredId = await insertSupplier(customerId, "Errored Supplier");
+  await insertSupplier(customerId, "Never Screened Supplier");
 
   const originalFetch = global.fetch;
 
@@ -149,11 +140,11 @@ test("screeningCoverage separates never-screened, matched, errored, and stale su
   // hitting their own mocked fetch response, masking the "error" outcome
   // this test exists to verify. Reset before each call so every mock is
   // actually exercised.
-  global.fetch = (async () => cslResponse([])) as typeof fetch;
+  global.fetch = mockExternalFetch((async () => cslResponse([])) as typeof fetch);
   await screenSupplier(customerId, clearId);
 
   resetCslCacheForTests();
-  global.fetch = (async () =>
+  global.fetch = mockExternalFetch((async () =>
     cslResponse([
       {
         name: "FLAGGED SUPPLIER",
@@ -163,16 +154,16 @@ test("screeningCoverage separates never-screened, matched, errored, and stale su
         source_information_url: "https://www.bis.gov/",
         addresses: [],
       },
-    ])) as typeof fetch;
+    ])) as typeof fetch);
   await screenSupplier(customerId, matchId);
 
   resetCslCacheForTests();
-  global.fetch = (async () => new Response("boom", { status: 500 })) as typeof fetch;
+  global.fetch = mockExternalFetch((async () => new Response("boom", { status: 500 })) as typeof fetch);
   await screenSupplier(customerId, erroredId);
 
   global.fetch = originalFetch;
 
-  const coverage = screeningCoverage(customerId, { now: new Date() });
+  const coverage = (await screeningCoverage(customerId, { now: new Date() }));
   assert.equal(coverage.totalSuppliers, 4);
   assert.deepEqual(coverage.neverScreened, ["Never Screened Supplier"]);
   assert.deepEqual(coverage.erroredScreenings, ["Errored Supplier"]);
@@ -181,14 +172,14 @@ test("screeningCoverage separates never-screened, matched, errored, and stale su
 });
 
 test("screeningCoverage flags a screening older than staleAfterDays", async () => {
-  const { dbPath, customerId } = await operatingDb();
+  const { customerId } = await operatingDb();
   const { resetCslCacheForTests } = await import("@/lib/screening/csl");
   const { screenSupplier, screeningCoverage } = await import("@/lib/screening/persist");
   resetCslCacheForTests();
 
-  const supplierId = insertSupplier(dbPath, customerId, "Aging Supplier");
+  const supplierId = await insertSupplier(customerId, "Aging Supplier");
   const originalFetch = global.fetch;
-  global.fetch = (async () => cslResponse([])) as typeof fetch;
+  global.fetch = mockExternalFetch((async () => cslResponse([])) as typeof fetch);
   try {
     await screenSupplier(customerId, supplierId);
   } finally {
@@ -196,7 +187,7 @@ test("screeningCoverage flags a screening older than staleAfterDays", async () =
   }
 
   const farFuture = new Date(Date.now() + 200 * 86_400_000);
-  const coverage = screeningCoverage(customerId, { now: farFuture, staleAfterDays: 90 });
+  const coverage = (await screeningCoverage(customerId, { now: farFuture, staleAfterDays: 90 }));
   assert.equal(coverage.staleScreenings.length, 1);
   assert.equal(coverage.staleScreenings[0]?.name, "Aging Supplier");
   assert.ok(coverage.staleScreenings[0]!.ageDays >= 200);

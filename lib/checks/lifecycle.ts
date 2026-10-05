@@ -1,7 +1,8 @@
+import type * as Schema from "@/lib/db/schema";
+import { createClient } from "@/lib/supabase/server";
 import { randomUUID } from "node:crypto";
-import { desc, eq } from "drizzle-orm";
-import { db } from "@/lib/db/client";
-import { findings, regulationLinks, type Finding, type RegulationLink } from "@/lib/db/schema";
+
+import { type Finding, type RegulationLink } from "@/lib/db/schema";
 
 /**
  * Regulation lifecycle — linking a rule to the rule it changes.
@@ -101,10 +102,11 @@ export function detectRegulationLinks(text: string): DetectedLink[] {
  * Detect and store links for a finding, resolving the target to an earlier
  * finding where we have actually seen it.
  */
-export function linkRegulation(
+export async function linkRegulation(
   customerId: string,
   finding: Pick<Finding, "id" | "title" | "summaryEn" | "reasoning" | "regulationRef">,
-): RegulationLink[] {
+): Promise<RegulationLink[]> {
+  const supabase = await createClient();
   const text = [finding.title, finding.summaryEn, finding.reasoning].filter(Boolean).join(" ");
   const detected = detectRegulationLinks(text);
   if (detected.length === 0) return [];
@@ -112,40 +114,44 @@ export function linkRegulation(
   const stored: RegulationLink[] = [];
   const now = new Date().toISOString();
 
-  db.transaction(() => {
-    for (const link of detected) {
-      const row = {
-        id: randomUUID(),
-        customerId,
-        findingId: finding.id,
-        relation: link.relation,
-        targetRef: link.targetRef,
-        targetFindingId: resolveTargetFinding(customerId, link.targetRef),
-        evidence: link.evidence,
-        // Read from the document's own words, so `stated` rather than inferred.
-        confidence: "stated",
-        createdAt: now,
-      };
-      db.insert(regulationLinks).values(row).run();
-      stored.push(row as RegulationLink);
-    }
-  });
+  for (const link of detected) {
+    const row = {
+      id: randomUUID(),
+      customerId,
+      findingId: finding.id,
+      relation: link.relation,
+      targetRef: link.targetRef,
+      targetFindingId: await resolveTargetFinding(customerId, link.targetRef),
+      evidence: link.evidence,
+      // Read from the document's own words, so `stated` rather than inferred.
+      confidence: "stated",
+      createdAt: now,
+    };
+    stored.push(row as RegulationLink);
+  }
+  if (stored.length) cloudResult(
+    await supabase
+      .from("regulation_links")
+      .insert(stored.map(snakeRow)),
+  );
 
   return stored;
 }
 
 /** Match a cited rule against findings we already hold, by number and year. */
-function resolveTargetFinding(customerId: string, targetRef: string): string | null {
+async function resolveTargetFinding(customerId: string, targetRef: string): Promise<string | null> {
+  const supabase = await createClient();
   const numberYear = targetRef.match(/(\d+)[^\d]{0,20}?(\d{4})/);
   if (!numberYear) return null;
   const [, number, year] = numberYear;
 
-  const candidates = db
-    .select()
-    .from(findings)
-    .where(eq(findings.customerId, customerId))
-    .orderBy(desc(findings.createdAt))
-    .all();
+  const candidates = cloudResult<Array<typeof Schema.findings.$inferSelect>>(
+    await supabase
+      .from("findings")
+      .select("*")
+      .eq("customer_id", customerId)
+      .order("created_at", { ascending: false }),
+  );
 
   const match = candidates.find((candidate) => {
     const haystack = `${candidate.regulationRef ?? ""} ${candidate.title}`;
@@ -154,8 +160,14 @@ function resolveTargetFinding(customerId: string, targetRef: string): string | n
   return match?.id ?? null;
 }
 
-export function listLinksForFinding(findingId: string): RegulationLink[] {
-  return db.select().from(regulationLinks).where(eq(regulationLinks.findingId, findingId)).all();
+export async function listLinksForFinding(findingId: string): Promise<RegulationLink[]> {
+  const supabase = await createClient();
+  return cloudResult<Array<typeof Schema.regulationLinks.$inferSelect>>(
+    await supabase
+      .from("regulation_links")
+      .select("*")
+      .eq("finding_id", findingId),
+  );
 }
 
 /**
@@ -166,22 +178,31 @@ export function listLinksForFinding(findingId: string): RegulationLink[] {
  * not a legal conclusion, so the caller must present it as something to verify
  * rather than as settled.
  */
-export function supersededFindings(customerId: string): Array<{
+export async function supersededFindings(customerId: string): Promise<Array<{
   finding: Finding;
   supersededBy: RegulationLink;
   caveat: string;
-}> {
-  const links = db
-    .select()
-    .from(regulationLinks)
-    .where(eq(regulationLinks.customerId, customerId))
-    .all()
+}>> {
+  const supabase = await createClient();
+  const links = cloudResult<Array<typeof Schema.regulationLinks.$inferSelect>>(
+    await supabase
+      .from("regulation_links")
+      .select("*")
+      .eq("customer_id", customerId),
+  )
     .filter((link) => link.relation === "revokes" || link.relation === "supersedes");
 
-  const out: Array<{ finding: Finding; supersededBy: RegulationLink; caveat: string }> = [];
+  const out: Array<{ finding: Finding; supersededBy: RegulationLink; caveat: string; }> = [];
   for (const link of links) {
     if (!link.targetFindingId) continue;
-    const target = db.select().from(findings).where(eq(findings.id, link.targetFindingId)).get();
+    const target = (cloudResult<typeof Schema.findings.$inferSelect | null>(
+      await supabase
+        .from("findings")
+        .select("*")
+        .eq("id", link.targetFindingId)
+        .limit(1)
+        .maybeSingle(),
+    ) ?? undefined);
     if (!target) continue;
     out.push({
       finding: target,
@@ -226,4 +247,22 @@ export function classifyDirection(input: {
   if (isFavorable && !isUnfavorable) return "favorable";
   if (isUnfavorable && !isFavorable) return "unfavorable";
   return "unknown";
+}
+
+// Convert SQL column names only; JSON evidence keeps its original keys.
+function camelRow<T>(value: unknown): T {
+  if (Array.isArray(value)) return value.map((row) => camelRow(row)) as T;
+  if (!value || typeof value !== "object") return value as T;
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/_([a-z])/g, (_, letter: string) => letter.toUpperCase()), item,
+  ])) as T;
+}
+function snakeRow(value: Record<string, unknown>) {
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`), item,
+  ]));
+}
+function cloudResult<T = unknown>(result: { data?: unknown; error: { message: string; } | null; }): T {
+  if (result.error) throw new Error(`Supabase operation failed: ${result.error.message}`);
+  return camelRow<T>(result.data);
 }

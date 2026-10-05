@@ -30,7 +30,7 @@ test("LLM discovery imports without storage or model executables", () => {
   ].join("\n");
   const child = spawnSync(process.execPath, ["--import", "tsx", "--input-type=module", "--eval", script], {
     cwd: process.cwd(),
-    env: { ...process.env, CANTE_DB_PATH: "/dev/null/cante.db", PATH: "/definitely/missing" },
+    env: { ...process.env, PATH: "/definitely/missing" },
     encoding: "utf8",
   });
   assert.equal(child.status, 0, child.stderr || child.stdout);

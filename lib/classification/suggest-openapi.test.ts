@@ -1,25 +1,21 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { after, before, test } from "node:test";
+import { beforeEach, test } from "node:test";
 import { GET as discover } from "../../app/api/classifications/suggest/openapi/route";
 import { SUGGESTION_CONFIDENCE_LEVELS } from "./suggest-contract";
 import { buildClassificationSuggestOpenApiSpec } from "./suggest-openapi";
-import { operatingDb } from "@/lib/test-support/operating-db";
+import { operatingDb } from "@/lib/test-support/supabase-test-db";
 
-process.env.CANTE_DATA_BACKEND = "sqlite";
 process.env.CANTE_AUTH_MODE = "none";
 let route: typeof import("../../app/api/classifications/suggest/route");
-let database: typeof import("../db/client");
 let customerId: string;
 
-before(async () => {
+beforeEach(async () => {
   // Keep discovery statically importable while binding the stateful route to
   // throwaway storage before db/client resolves its one-time database path.
   ({ customerId } = await operatingDb());
   route = await import("../../app/api/classifications/suggest/route");
-  database = await import("../db/client");
 });
-after(() => database.db.$client.close());
 
 const contract: any = buildClassificationSuggestOpenApiSpec().paths["/api/classifications/suggest"];
 const jsonRequest = (method: string, body: unknown) => new Request(
@@ -62,8 +58,6 @@ test("discovery imports and runs without a usable database or model provider", (
     cwd: process.cwd(),
     env: {
       ...process.env,
-      CANTE_DATA_BACKEND: "sqlite",
-      CANTE_DB_PATH: "/dev/null/cante.db",
       ANTHROPIC_API_KEY: "",
       OPENAI_API_KEY: "",
     },
@@ -75,15 +69,15 @@ test("discovery imports and runs without a usable database or model provider", (
 test("the real route lists, adopts, and rejects primitive JSON bodies cleanly", async () => {
   const { upsertProduct } = await import("@/lib/catalogue/products");
   const { recordClassification } = await import("@/lib/catalogue/classifications");
-  const { product } = upsertProduct(customerId, { sku: "API-SUGGEST-1", name: "Steel fastener" });
-  const lead = recordClassification({
+  const { product } = (await upsertProduct(customerId, { sku: "API-SUGGEST-1", name: "Steel fastener" }));
+  const lead = (await recordClassification({
     productId: product.id,
     system: "hts",
     code: "7318.15.20",
     tier: "lead",
     basis: "Model suggestion (medium confidence) from official USITC candidates.",
     rationale: "Candidate for human review.",
-  });
+  }));
 
   const listing = await route.GET(new Request(
     `http://localhost/api/classifications/suggest?customerId=${customerId}`,

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { parseCsv } from "@/lib/catalogue/csv";
-import { operatingDb } from "@/lib/test-support/operating-db";
+import { operatingDb } from "@/lib/test-support/supabase-test-db";
 
 test("CSV reader handles quoted commas, embedded quotes, and CRLF", () => {
   const table = parseCsv(
@@ -18,41 +18,41 @@ test("import reports created, updated, unchanged and rejected separately", async
   const { customerId } = await operatingDb();
   const { importProductsCsv, listProducts } = await import("@/lib/catalogue/products");
 
-  const first = importProductsCsv(
+  const first = (await importProductsCsv(
     customerId,
     "sku,name,hs_code\nPVC-100,Blue tarp 12oz,6306.12.00\nPVC-200,Green tarp,\n",
-  );
+  ));
   assert.equal(first.created, 2);
   assert.equal(first.rejected, 0);
 
   // Same file again: unchanged, not a duplicate and not an "update".
-  const second = importProductsCsv(
+  const second = (await importProductsCsv(
     customerId,
     "sku,name,hs_code\nPVC-100,Blue tarp 12oz,6306.12.00\nPVC-200,Green tarp,\n",
-  );
+  ));
   assert.equal(second.unchanged, 2);
   assert.equal(second.created, 0);
 
-  const third = importProductsCsv(
+  const third = (await importProductsCsv(
     customerId,
     "sku,name\nPVC-100,Blue tarp 14oz\n,No sku here\nPVC-200,Green tarp\nPVC-200,Duplicate row\n",
-  );
+  ));
   assert.equal(third.updated, 1, "PVC-100 name changed");
   assert.equal(third.unchanged, 1, "PVC-200 unchanged");
   assert.equal(third.rejected, 2, "missing SKU and in-file duplicate");
   assert.match(third.rows[1].reason ?? "", /Missing SKU/);
   assert.match(third.rows[3].reason ?? "", /Duplicate SKU/);
 
-  assert.equal(listProducts(customerId).length, 2);
+  assert.equal((await listProducts(customerId)).length, 2);
 });
 
 test("a file with no SKU column is rejected wholesale rather than half-imported", async () => {
   const { customerId } = await operatingDb();
   const { importProductsCsv, listProducts } = await import("@/lib/catalogue/products");
-  const result = importProductsCsv(customerId, "name,description\nThing,Some thing\n");
+  const result = (await importProductsCsv(customerId, "name,description\nThing,Some thing\n"));
   assert.equal(result.created, 0);
   assert.equal(result.rejected, 1);
-  assert.equal(listProducts(customerId).length, 0);
+  assert.equal((await listProducts(customerId)).length, 0);
   assert.match(result.caveats[0], /No SKU column/);
 });
 
@@ -61,11 +61,11 @@ test("CSV codes land as unapproved leads, never as verified", async () => {
   const { importProductsCsv, getProductBySku } = await import("@/lib/catalogue/products");
   const { resolveProductCodes } = await import("@/lib/catalogue/classifications");
 
-  importProductsCsv(customerId, "sku,name,hs_code\nPVC-100,Blue tarp,6306.12.00\n");
-  const product = getProductBySku(customerId, "PVC-100");
+  (await importProductsCsv(customerId, "sku,name,hs_code\nPVC-100,Blue tarp,6306.12.00\n"));
+  const product = (await getProductBySku(customerId, "PVC-100"));
   assert.ok(product);
 
-  const resolved = resolveProductCodes(product.id, "hs");
+  const resolved = (await resolveProductCodes(product.id, "hs"));
   assert.equal(resolved.documentVerified, false);
   assert.equal(resolved.leads.length, 1);
   assert.equal(resolved.leads[0].code, "6306.12.00");
@@ -84,53 +84,53 @@ test("approval refuses lead-tier codes, requires a rationale, and supersedes the
     ClassificationApprovalError,
   } = await import("@/lib/catalogue/classifications");
 
-  const { product } = upsertProduct(customerId, { sku: "PVC-100", name: "Blue tarp" });
+  const { product } = (await upsertProduct(customerId, { sku: "PVC-100", name: "Blue tarp" }));
 
-  const lead = recordClassification({
+  const lead = (await recordClassification({
     productId: product.id,
     system: "hs",
     code: "3921.90",
     tier: "lead",
     basis: "model suggestion",
-  });
-  assert.throws(
-    () => approveClassification(lead.id, "j", "looks right"),
+  }));
+  await assert.rejects(
+    async () => (await approveClassification(lead.id, "j", "looks right")),
     (error: Error) => error instanceof ClassificationApprovalError && /lead-tier/.test(error.message),
     "a model suggestion must not be approvable",
   );
 
-  const human = recordClassification({
+  const human = (await recordClassification({
     productId: product.id,
     system: "hs",
     code: "6306.12.00",
     tier: "human",
     basis: "broker email",
-  });
-  assert.throws(
-    () => approveClassification(human.id, "j", "   "),
+  }));
+  await assert.rejects(
+    async () => (await approveClassification(human.id, "j", "   ")),
     (error: Error) => error instanceof ClassificationApprovalError && /rationale/.test(error.message),
   );
 
-  approveClassification(human.id, "j", "Confirmed with broker against GRI 1 and heading text.");
-  let resolved = resolveProductCodes(product.id, "hs");
+  (await approveClassification(human.id, "j", "Confirmed with broker against GRI 1 and heading text."));
+  let resolved = (await resolveProductCodes(product.id, "hs"));
   assert.equal(resolved.current?.code, "6306.12.00");
 
   // A document-tier code arrives later and is approved: the old one is
   // superseded, not deleted — the history has to survive.
-  const doc = recordClassification({
+  const doc = (await recordClassification({
     productId: product.id,
     system: "hs",
     code: "6306.19.90",
     tier: "document",
     basis: "PEB 000123",
-  });
-  approveClassification(doc.id, "j", "Read off PEB 000123.");
+  }));
+  (await approveClassification(doc.id, "j", "Read off PEB 000123."));
 
-  resolved = resolveProductCodes(product.id, "hs");
+  resolved = (await resolveProductCodes(product.id, "hs"));
   assert.equal(resolved.current?.code, "6306.19.90");
   assert.equal(resolved.documentVerified, true);
 
-  const history = listClassifications(product.id);
+  const history = (await listClassifications(product.id));
   assert.equal(history.length, 3, "every code ever asserted is retained");
   const superseded = history.find((h) => h.code === "6306.12.00");
   assert.equal(superseded?.status, "superseded");
@@ -145,11 +145,11 @@ test("upsertProduct defaults currency to USD and falls back to unknown for an in
   const { customerId } = await operatingDb();
   const { upsertProduct } = await import("@/lib/catalogue/products");
 
-  const { product } = upsertProduct(customerId, {
+  const { product } = (await upsertProduct(customerId, {
     sku: "PVC-300",
     name: "Grey tarp",
     productClass: "not-a-real-class",
-  });
+  }));
   assert.equal(product.currency, "USD", "currency defaults to USD when omitted");
   assert.equal(
     product.productClass,
@@ -157,12 +157,12 @@ test("upsertProduct defaults currency to USD and falls back to unknown for an in
     "an unrecognised product class must never be stored verbatim",
   );
 
-  const { product: withCurrency } = upsertProduct(customerId, {
+  const { product: withCurrency } = (await upsertProduct(customerId, {
     sku: "PVC-301",
     name: "Black tarp",
     currency: "eur",
     productClass: "industrial",
-  });
+  }));
   assert.equal(withCurrency.currency, "EUR", "currency is upper-cased");
   assert.equal(withCurrency.productClass, "industrial", "a valid class is kept as-is");
 });
@@ -174,15 +174,15 @@ test("CSV import parses unit_value through currency symbols and thousands separa
   const { customerId } = await operatingDb();
   const { importProductsCsv, getProductBySku } = await import("@/lib/catalogue/products");
 
-  importProductsCsv(
+  (await importProductsCsv(
     customerId,
     'sku,name,unit_value\nPVC-400,Red tarp,"$1,234.56"\nPVC-401,Torn label,-\n',
-  );
+  ));
 
-  const withValue = getProductBySku(customerId, "PVC-400");
+  const withValue = (await getProductBySku(customerId, "PVC-400"));
   assert.equal(withValue?.unitValue, 1234.56);
 
-  const withoutValue = getProductBySku(customerId, "PVC-401");
+  const withoutValue = (await getProductBySku(customerId, "PVC-401"));
   assert.equal(withoutValue?.unitValue, null, "a bare dash is not a number");
 });
 
@@ -199,22 +199,22 @@ test("deleteProduct removes the product and its classification history, and repo
     "@/lib/catalogue/classifications"
   );
 
-  const { product } = upsertProduct(customerId, { sku: "PVC-500", name: "White tarp" });
-  recordClassification({
+  const { product } = (await upsertProduct(customerId, { sku: "PVC-500", name: "White tarp" }));
+  (await recordClassification({
     productId: product.id,
     system: "hs",
     code: "6306.12.00",
     tier: "lead",
     basis: "test fixture",
-  });
-  assert.equal(listClassifications(product.id).length, 1);
+  }));
+  assert.equal((await listClassifications(product.id)).length, 1);
 
-  assert.equal(deleteProduct(customerId, "not-a-real-id"), false);
+  assert.equal((await deleteProduct(customerId, "not-a-real-id")), false);
 
-  const removed = deleteProduct(customerId, product.id);
+  const removed = (await deleteProduct(customerId, product.id));
   assert.equal(removed, true);
-  assert.equal(getProductBySku(customerId, "PVC-500"), undefined);
-  assert.equal(listClassifications(product.id).length, 0, "classification history is cleaned up too");
+  assert.equal((await getProductBySku(customerId, "PVC-500")), undefined);
+  assert.equal((await listClassifications(product.id)).length, 0, "classification history is cleaned up too");
 });
 
 // Added: rejectClassification previously ran an unconditional UPDATE with no
@@ -233,42 +233,42 @@ test("rejectClassification refuses an unknown id, an empty reason, and a row tha
     ClassificationApprovalError,
   } = await import("@/lib/catalogue/classifications");
 
-  const { product } = upsertProduct(customerId, { sku: "PVC-600", name: "Tan tarp" });
+  const { product } = (await upsertProduct(customerId, { sku: "PVC-600", name: "Tan tarp" }));
 
-  assert.throws(
-    () => rejectClassification("not-a-real-id", "wrong code"),
+  await assert.rejects(
+    async () => (await rejectClassification("not-a-real-id", "wrong code")),
     (error: Error) => error instanceof ClassificationApprovalError && /not found/.test(error.message),
   );
 
-  const human = recordClassification({
+  const human = (await recordClassification({
     productId: product.id,
     system: "hs",
     code: "6306.12.00",
     tier: "human",
     basis: "broker email",
-  });
-  assert.throws(
-    () => rejectClassification(human.id, "   "),
+  }));
+  await assert.rejects(
+    async () => (await rejectClassification(human.id, "   ")),
     (error: Error) => error instanceof ClassificationApprovalError && /reason/.test(error.message),
   );
 
-  approveClassification(human.id, "j", "Confirmed with broker.");
-  const doc = recordClassification({
+  (await approveClassification(human.id, "j", "Confirmed with broker."));
+  const doc = (await recordClassification({
     productId: product.id,
     system: "hs",
     code: "6306.19.90",
     tier: "document",
     basis: "PEB 000456",
-  });
-  approveClassification(doc.id, "j", "Read off PEB 000456.");
+  }));
+  (await approveClassification(doc.id, "j", "Read off PEB 000456."));
   // `human` is now superseded by `doc`'s approval — rejecting it after the
   // fact must not be allowed to rewrite its supersededAt.
-  assert.throws(
-    () => rejectClassification(human.id, "trying to reject a superseded row"),
+  await assert.rejects(
+    async () => (await rejectClassification(human.id, "trying to reject a superseded row")),
     (error: Error) => error instanceof ClassificationApprovalError && /superseded/.test(error.message),
   );
 
-  rejectClassification(doc.id, "wrong HS heading, corrected on re-audit");
+  (await rejectClassification(doc.id, "wrong HS heading, corrected on re-audit"));
 });
 
 test("a stronger tier upgrades an existing code without inventing approval", async () => {
@@ -278,23 +278,23 @@ test("a stronger tier upgrades an existing code without inventing approval", asy
     "@/lib/catalogue/classifications"
   );
 
-  const { product } = upsertProduct(customerId, { sku: "PVC-100", name: "Blue tarp" });
-  recordClassification({
+  const { product } = (await upsertProduct(customerId, { sku: "PVC-100", name: "Blue tarp" }));
+  (await recordClassification({
     productId: product.id,
     system: "hs",
     code: "6306.12.00",
     tier: "lead",
     basis: "CSV import",
-  });
-  recordClassification({
+  }));
+  (await recordClassification({
     productId: product.id,
     system: "hs",
     code: "6306.12.00",
     tier: "document",
     basis: "PEB 000123",
-  });
+  }));
 
-  const resolved = resolveProductCodes(product.id, "hs");
+  const resolved = (await resolveProductCodes(product.id, "hs"));
   assert.equal(resolved.document.length, 1, "upgraded in place, not duplicated");
   assert.equal(resolved.leads.length, 0);
   assert.equal(resolved.document[0].status, "proposed", "still awaiting a human");

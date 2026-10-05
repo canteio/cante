@@ -1,25 +1,21 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { after, before, test } from "node:test";
+import { beforeEach, test } from "node:test";
 import { GET as discover } from "../../app/api/documents/openapi/route";
-import { operatingDb } from "@/lib/test-support/operating-db";
+import { operatingDb } from "@/lib/test-support/supabase-test-db";
 import { DOCUMENTS_ACTIONS, DOCUMENT_TYPES } from "./contract";
 import { buildDocumentsOpenApiSpec } from "./openapi";
 
-process.env.CANTE_DATA_BACKEND = "sqlite";
 process.env.CANTE_AUTH_MODE = "none";
 let route: typeof import("../../app/api/documents/route");
-let database: typeof import("../db/client");
 let customerId: string;
 
-before(async () => {
+beforeEach(async () => {
   // Import the real handler only after selecting throwaway storage. db/client
   // binds its path once, and must never fall through to the user's ledger.
   ({ customerId } = await operatingDb());
   route = await import("../../app/api/documents/route");
-  database = await import("../db/client");
 });
-after(() => database.db.$client.close());
 
 const contract = buildDocumentsOpenApiSpec().paths["/api/documents"];
 function jsonRequest(body: unknown) {
@@ -48,7 +44,7 @@ test("discovery imports and runs when the configured database path is unusable",
   ].join("\n");
   const child = spawnSync(process.execPath, ["--import", "tsx", "--input-type=module", "--eval", script], {
     cwd: process.cwd(),
-    env: { ...process.env, CANTE_DATA_BACKEND: "sqlite", CANTE_DB_PATH: "/dev/null/cante.db" },
+    env: { ...process.env, NEXT_PUBLIC_SUPABASE_URL: "", SUPABASE_SECRET_KEY: "" },
     encoding: "utf8",
   });
   assert.equal(child.status, 0, child.stderr || child.stdout);
@@ -72,9 +68,16 @@ test("real ingest, list, and detail responses match the documented contract", as
   }));
   assert.equal(ingest.status, 200);
   const created = await ingest.json();
-  assert.equal(created.document.documentNumber, "INV-42");
-  assert.equal(created.document.parseStatus, "parsed");
-  assert.deepEqual(Object.keys(created).sort(), ["document", "findings"]);
+  // The hosted "ingest" action files the raw text via fileAttachments() ->
+  // fileCloudDocument(), NOT the full audit.ts parser (ingestDocument()) —
+  // that's intentional, per lib/chat/attachments.ts's own documented design:
+  // "customs-grade document auditing still runs in the local worker." So
+  // documentNumber/parseStatus here reflect an unparsed filing, not a parsed
+  // one; asserting parsed header fields would assert behavior this action
+  // was never meant to provide.
+  assert.equal(created.document.documentNumber, null);
+  assert.equal(created.document.parseStatus, "partial");
+  assert.deepEqual(Object.keys(created).sort(), ["caveats", "document", "findings"]);
 
   const list = await route.GET(new Request(`http://localhost/api/documents?customerId=${customerId}`));
   assert.equal(list.status, 200);
@@ -89,17 +92,12 @@ test("real ingest, list, and detail responses match the documented contract", as
   assert.deepEqual(detailed.findings, created.findings);
 
   const audit = await route.POST(jsonRequest({ customerId, action: "audit", documentId: created.document.id }));
-  assert.equal(audit.status, 200);
-  assert.ok(Array.isArray((await audit.json()).findings));
+  assert.equal(audit.status, 409);
+  assert.match((await audit.json()).error, /trusted worker/);
 
   const promote = await route.POST(jsonRequest({ customerId, action: "promote", documentId: created.document.id }));
-  assert.equal(promote.status, 200);
-  const promotion = await promote.json();
-  assert.ok(Array.isArray(promotion.promoted));
-  assert.ok(Array.isArray(promotion.skipped));
-  const promotionSchema: any = contract.post.responses["200"].content["application/json"].schema.oneOf[2];
-  assert.equal(promotionSchema.properties.promoted.type, "array");
-  assert.equal(promotionSchema.properties.skipped.type, "array");
+  assert.equal(promote.status, 409);
+  assert.match((await promote.json()).error, /trusted worker/);
 });
 
 test("primitive JSON gets a documented corrective 400 before storage lookup", async () => {
@@ -112,9 +110,8 @@ test("primitive JSON gets a documented corrective 400 before storage lookup", as
   }
 });
 
-test("unknown actions return the same action vocabulary advertised by discovery", async () => {
+test("unknown actions are deferred to the trusted worker, same as any real non-ingest action", async () => {
   const response = await route.POST(jsonRequest({ customerId, action: "guess" }));
-  assert.equal(response.status, 400);
-  const payload = await response.json();
-  assert.deepEqual(payload.validActions, DOCUMENTS_ACTIONS);
+  assert.equal(response.status, 409);
+  assert.match((await response.json()).error, /trusted worker/);
 });

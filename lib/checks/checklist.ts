@@ -1,19 +1,9 @@
+import type * as Schema from "@/lib/db/schema";
+import { createClient } from "@/lib/supabase/server";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
-import { and, eq } from "drizzle-orm";
-import { db } from "@/lib/db/client";
-import {
-  checklistItems,
-  customerProfiles,
-  customers,
-  jurisdictionProfiles,
-  kbliRecords,
-  memories,
-  type ChecklistItem,
-  type Customer,
-  type CustomerProfile,
-  type Memory,
-} from "@/lib/db/schema";
+
+import { type ChecklistItem, type Customer, type CustomerProfile, type Memory } from "@/lib/db/schema";
 import { extractKbliCodes, resolveHsCodes } from "@/lib/checks/facts";
 import { DEFAULT_JURISDICTION, type JurisdictionName } from "@/lib/countries";
 
@@ -45,12 +35,23 @@ export async function refreshChecklistForCustomer(
   customerId: string,
   jurisdiction: JurisdictionName = DEFAULT_JURISDICTION,
 ): Promise<void> {
-  const customer = db.select().from(customers).where(eq(customers.id, customerId)).get();
-  const profile = db
-    .select()
-    .from(customerProfiles)
-    .where(eq(customerProfiles.customerId, customerId))
-    .get();
+  const supabase = await createClient();
+  const customer = (cloudResult<typeof Schema.customers.$inferSelect | null>(
+    await supabase
+      .from("customers")
+      .select("*")
+      .eq("id", customerId)
+      .limit(1)
+      .maybeSingle(),
+  ) ?? undefined);
+  const profile = (cloudResult<typeof Schema.customerProfiles.$inferSelect | null>(
+    await supabase
+      .from("customer_profiles")
+      .select("*")
+      .eq("customer_id", customerId)
+      .limit(1)
+      .maybeSingle(),
+  ) ?? undefined);
   if (!customer || !profile) return;
 
   if (jurisdiction === "United States") {
@@ -58,19 +59,21 @@ export async function refreshChecklistForCustomer(
     return;
   }
 
-  const memoryRows = db
-    .select()
-    .from(memories)
-    .where(
-      and(
-        eq(memories.customerId, customerId),
-        eq(memories.jurisdiction, jurisdiction),
-      ),
-    )
-    .all();
+  const memoryRows = cloudResult<Array<typeof Schema.memories.$inferSelect>>(
+    await supabase
+      .from("memories")
+      .select("*")
+      .eq("customer_id", customerId)
+      .eq("jurisdiction", jurisdiction),
+  );
   await rememberKbliLeads(customerId, memoryRows);
 
-  const kbliRows = db.select().from(kbliRecords).where(eq(kbliRecords.customerId, customerId)).all();
+  const kbliRows = cloudResult<Array<typeof Schema.kbliRecords.$inferSelect>>(
+    await supabase
+      .from("kbli_records")
+      .select("*")
+      .eq("customer_id", customerId),
+  );
   const unconfirmedMemories = memoryRows.filter((m) => !m.confirmed);
   const confirmedKbli = kbliRows.filter((k) => k.confirmed || k.status === "confirmed");
   const unconfirmedKbli = kbliRows.filter((k) => !k.confirmed && k.status !== "confirmed");
@@ -142,8 +145,8 @@ export async function refreshChecklistForCustomer(
         ? []
         : hs.human.length > 0
           ? [
-              `Do the confirmed codes (${hs.human.map((h) => h.code).join(", ")}) match the last PEB or invoice?`,
-            ]
+            `Do the confirmed codes (${hs.human.map((h) => h.code).join(", ")}) match the last PEB or invoice?`,
+          ]
           : ["Which HS code appears on the last real export document?"],
     },
     {
@@ -313,7 +316,7 @@ export async function refreshChecklistForCustomer(
     await upsertChecklistItem(customerId, jurisdiction, draft);
   }
 
-  pruneObsoleteChecklistItems(customerId, jurisdiction, drafts);
+  await pruneObsoleteChecklistItems(customerId, jurisdiction, drafts);
 }
 
 async function refreshUsChecklist(
@@ -321,24 +324,24 @@ async function refreshUsChecklist(
   customer: Customer,
   baseProfile: CustomerProfile,
 ): Promise<void> {
+  const supabase = await createClient();
   const jurisdiction = "United States" as const;
-  const us = db
-    .select()
-    .from(jurisdictionProfiles)
-    .where(
-      and(
-        eq(jurisdictionProfiles.customerId, customerId),
-        eq(jurisdictionProfiles.country, jurisdiction),
-      ),
-    )
-    .get();
-  const memoryRows = db
-    .select()
-    .from(memories)
-    .where(
-      and(eq(memories.customerId, customerId), eq(memories.jurisdiction, jurisdiction)),
-    )
-    .all();
+  const us = (cloudResult<typeof Schema.jurisdictionProfiles.$inferSelect | null>(
+    await supabase
+      .from("jurisdiction_profiles")
+      .select("*")
+      .eq("customer_id", customerId)
+      .eq("country", jurisdiction)
+      .limit(1)
+      .maybeSingle(),
+  ) ?? undefined);
+  const memoryRows = cloudResult<Array<typeof Schema.memories.$inferSelect>>(
+    await supabase
+      .from("memories")
+      .select("*")
+      .eq("customer_id", customerId)
+      .eq("jurisdiction", jurisdiction),
+  );
   const unconfirmedMemories = memoryRows.filter((memory) => !memory.confirmed);
   const confirmedMemory = memoryRows.filter((memory) => memory.confirmed);
   const remembered = (kind: string) =>
@@ -375,9 +378,9 @@ async function refreshUsChecklist(
     exportCountries: [...(us?.exportCountries ?? []), ...remembered("market")],
     flags: [...(us?.regulatedProductFlags ?? []), ...remembered("product_flag")],
   };
-  const codeFacts = (label: string, rows: { code: string; basis: string; confirmed: boolean }[]) =>
+  const codeFacts = (label: string, rows: { code: string; basis: string; confirmed: boolean; }[]) =>
     rows.map((row) => `${label} ${row.code} (${row.confirmed ? "confirmed" : "needs evidence"}): ${row.basis}`);
-  const confirmedCodes = (rows: { confirmed: boolean }[]) =>
+  const confirmedCodes = (rows: { confirmed: boolean; }[]) =>
     rows.length > 0 && rows.every((row) => row.confirmed);
   const hasNorthCarolinaFacility = facts.facilities.some((address) =>
     /\b(NC|North Carolina|Charlotte|Mecklenburg)\b/i.test(address),
@@ -651,7 +654,7 @@ async function refreshUsChecklist(
   ];
 
   for (const draft of drafts) await upsertChecklistItem(customerId, jurisdiction, draft);
-  pruneObsoleteChecklistItems(customerId, jurisdiction, drafts);
+  await pruneObsoleteChecklistItems(customerId, jurisdiction, drafts);
 }
 
 /**
@@ -663,32 +666,41 @@ async function refreshUsChecklist(
  * catches renames somebody remembered to add to it. Rows a person created
  * (`origin` != system) are never touched.
  */
-function pruneObsoleteChecklistItems(
+async function pruneObsoleteChecklistItems(
   customerId: string,
   jurisdiction: JurisdictionName,
   drafts: ChecklistDraft[],
-): void {
+): Promise<void> {
+  const supabase = await createClient();
   const live = new Set(drafts.map((d) => d.key));
-  const rows = db
-    .select()
-    .from(checklistItems)
-    .where(
-      and(
-        eq(checklistItems.customerId, customerId),
-        eq(checklistItems.jurisdiction, jurisdiction),
-      ),
-    )
-    .all();
+  const rows = cloudResult<Array<typeof Schema.checklistItems.$inferSelect>>(
+    await supabase
+      .from("checklist_items")
+      .select("*")
+      .eq("customer_id", customerId)
+      .eq("jurisdiction", jurisdiction),
+  );
 
   for (const row of rows) {
     if (row.origin !== "system") continue;
     if (row.key && live.has(row.key)) continue;
-    db.delete(checklistItems).where(eq(checklistItems.id, row.id)).run();
+    cloudResult(
+      await supabase
+        .from("checklist_items")
+        .delete()
+        .eq("id", row.id),
+    );
   }
 }
 
 async function rememberKbliLeads(customerId: string, memoryRows: Memory[]): Promise<void> {
-  const existing = db.select().from(kbliRecords).where(eq(kbliRecords.customerId, customerId)).all();
+  const supabase = await createClient();
+  const existing = cloudResult<Array<typeof Schema.kbliRecords.$inferSelect>>(
+    await supabase
+      .from("kbli_records")
+      .select("*")
+      .eq("customer_id", customerId),
+  );
   const existingByCode = new Map(existing.map((row) => [row.code, row]));
 
   for (const memory of memoryRows) {
@@ -698,30 +710,34 @@ async function rememberKbliLeads(customerId: string, memoryRows: Memory[]): Prom
       const existingRow = existingByCode.get(code);
       if (existingRow) {
         if (memory.confirmed && !existingRow.confirmed) {
-          db.update(kbliRecords)
-            .set({
-              confirmed: true,
-              status: "confirmed",
-              updatedAt: new Date().toISOString(),
-            })
-            .where(eq(kbliRecords.id, existingRow.id))
-            .run();
+          cloudResult(
+            await supabase
+              .from("kbli_records")
+              .update(snakeRow({
+                confirmed: true,
+                status: "confirmed",
+                updatedAt: new Date().toISOString(),
+              }))
+              .eq("id", existingRow.id),
+          );
           existingByCode.set(code, { ...existingRow, confirmed: true, status: "confirmed" });
         }
         continue;
       }
       const id = randomUUID();
       const now = new Date().toISOString();
-      db.insert(kbliRecords)
-        .values({
-          id,
-          customerId,
-          code,
-          source: memory.source ?? "memory",
-          status: memory.confirmed ? "confirmed" : "unconfirmed",
-          confirmed: memory.confirmed,
-        })
-        .run();
+      cloudResult(
+        await supabase
+          .from("kbli_records")
+          .insert(snakeRow({
+            id,
+            customerId,
+            code,
+            source: memory.source ?? "memory",
+            status: memory.confirmed ? "confirmed" : "unconfirmed",
+            confirmed: memory.confirmed,
+          })),
+      );
       existingByCode.set(code, {
         id,
         customerId,
@@ -748,33 +764,32 @@ async function upsertChecklistItem(
   jurisdiction: JurisdictionName,
   draft: ChecklistDraft,
 ): Promise<void> {
+  const supabase = await createClient();
   const now = new Date().toISOString();
   const existing =
-    db
-      .select()
-      .from(checklistItems)
-      .where(
-        and(
-          eq(checklistItems.customerId, customerId),
-          eq(checklistItems.jurisdiction, jurisdiction),
-          eq(checklistItems.key, draft.key),
-        ),
-      )
-      .get() ??
+    (cloudResult<typeof Schema.checklistItems.$inferSelect | null>(
+      await supabase
+        .from("checklist_items")
+        .select("*")
+        .eq("customer_id", customerId)
+        .eq("jurisdiction", jurisdiction)
+        .eq("key", draft.key)
+        .limit(1)
+        .maybeSingle(),
+    ) ?? undefined) ??
     // Rows created before keys existed — adopt them by title once, rather than
     // leaving a duplicate behind.
-    db
-      .select()
-      .from(checklistItems)
-      .where(
-        and(
-          eq(checklistItems.customerId, customerId),
-          eq(checklistItems.jurisdiction, jurisdiction),
-          eq(checklistItems.category, draft.category),
-          eq(checklistItems.title, draft.title),
-        ),
-      )
-      .get();
+    (cloudResult<typeof Schema.checklistItems.$inferSelect | null>(
+      await supabase
+        .from("checklist_items")
+        .select("*")
+        .eq("customer_id", customerId)
+        .eq("jurisdiction", jurisdiction)
+        .eq("category", draft.category)
+        .eq("title", draft.title)
+        .limit(1)
+        .maybeSingle(),
+    ) ?? undefined);
 
   const values = {
     key: draft.key,
@@ -792,23 +807,48 @@ async function upsertChecklistItem(
   };
 
   if (existing) {
-    db.update(checklistItems).set(values).where(eq(checklistItems.id, existing.id)).run();
+    cloudResult(
+      await supabase
+        .from("checklist_items")
+        .update(snakeRow(values))
+        .eq("id", existing.id),
+    );
     return;
   }
 
-  db.insert(checklistItems)
-    .values({
-      id: randomUUID(),
-      customerId,
-      jurisdiction,
-      category: draft.category,
-      ...values,
-    })
-    .run();
+  cloudResult(
+    await supabase
+      .from("checklist_items")
+      .insert(snakeRow({
+        id: randomUUID(),
+        customerId,
+        jurisdiction,
+        category: draft.category,
+        ...values,
+      })),
+  );
 }
 
 export function countOpenChecklistItems(items: ChecklistItem[]): number {
   return items.filter(
     (item) => !["completed", "not_required", "verified", "not_applicable"].includes(item.status),
   ).length;
+}
+
+// Convert SQL column names only; JSON evidence keeps its original keys.
+function camelRow<T>(value: unknown): T {
+  if (Array.isArray(value)) return value.map((row) => camelRow(row)) as T;
+  if (!value || typeof value !== "object") return value as T;
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/_([a-z])/g, (_, letter: string) => letter.toUpperCase()), item,
+  ])) as T;
+}
+function snakeRow(value: Record<string, unknown>) {
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`), item,
+  ]));
+}
+function cloudResult<T = unknown>(result: { data?: unknown; error: { message: string; } | null; }): T {
+  if (result.error) throw new Error(`Supabase operation failed: ${result.error.message}`);
+  return camelRow<T>(result.data);
 }

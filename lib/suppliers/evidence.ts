@@ -1,12 +1,8 @@
+import type * as Schema from "@/lib/db/schema";
+import { createClient } from "@/lib/supabase/server";
 import { randomUUID } from "node:crypto";
-import { eq } from "drizzle-orm";
-import { db } from "@/lib/db/client";
-import {
-  supplierDocuments,
-  suppliers,
-  type Supplier,
-  type SupplierDocument,
-} from "@/lib/db/schema";
+
+import { type Supplier, type SupplierDocument } from "@/lib/db/schema";
 import { listProducts } from "@/lib/catalogue/products";
 import { EVIDENCE_STATUSES, EVIDENCE_TYPES, type EvidenceStatus } from "./contract";
 
@@ -34,12 +30,14 @@ export class EvidenceError extends Error {
   readonly status = 400;
 }
 
-export function listSupplierDocuments(supplierId: string): SupplierDocument[] {
-  return db
-    .select()
-    .from(supplierDocuments)
-    .where(eq(supplierDocuments.supplierId, supplierId))
-    .all();
+export async function listSupplierDocuments(supplierId: string): Promise<SupplierDocument[]> {
+  const supabase = await createClient();
+  return cloudResult<Array<typeof Schema.supplierDocuments.$inferSelect>>(
+    await supabase
+      .from("supplier_documents")
+      .select("*")
+      .eq("supplier_id", supplierId),
+  );
 }
 
 export interface EvidenceInput {
@@ -52,7 +50,8 @@ export interface EvidenceInput {
   notes?: string | null;
 }
 
-export function upsertEvidence(input: EvidenceInput): SupplierDocument {
+export async function upsertEvidence(input: EvidenceInput): Promise<SupplierDocument> {
+  const supabase = await createClient();
   // Reject values outside the discovery enum instead of silently persisting a
   // document type that API clients cannot read back through the contract.
   if (!DOCUMENT_TYPES.has(input.docType)) {
@@ -62,7 +61,7 @@ export function upsertEvidence(input: EvidenceInput): SupplierDocument {
     throw new EvidenceError(`Unknown status "${input.status}".`);
   }
   const now = new Date().toISOString();
-  const existing = listSupplierDocuments(input.supplierId).find(
+  const existing = (await listSupplierDocuments(input.supplierId)).find(
     (d) => d.docType === input.docType && (d.productId ?? null) === (input.productId ?? null),
   );
 
@@ -80,7 +79,12 @@ export function upsertEvidence(input: EvidenceInput): SupplierDocument {
   };
 
   if (existing) {
-    db.update(supplierDocuments).set(values).where(eq(supplierDocuments.id, existing.id)).run();
+    cloudResult(
+      await supabase
+        .from("supplier_documents")
+        .update(snakeRow(values))
+        .eq("id", existing.id),
+    );
     return { ...existing, ...values };
   }
 
@@ -91,7 +95,11 @@ export function upsertEvidence(input: EvidenceInput): SupplierDocument {
     ...values,
     createdAt: now,
   };
-  db.insert(supplierDocuments).values(row).run();
+  cloudResult(
+    await supabase
+      .from("supplier_documents")
+      .insert(snakeRow(row)),
+  );
   return row as SupplierDocument;
 }
 
@@ -99,15 +107,23 @@ export function upsertEvidence(input: EvidenceInput): SupplierDocument {
  * Record that evidence was requested. Does not send anything — see the file
  * header. The returned `draftMessage` is text a human sends by hand.
  */
-export function requestEvidence(
+export async function requestEvidence(
   supplierId: string,
   docType: string,
   productId?: string | null,
-): { record: SupplierDocument; draftMessage: string; delivered: false } {
-  const supplier = db.select().from(suppliers).where(eq(suppliers.id, supplierId)).get();
+): Promise<{ record: SupplierDocument; draftMessage: string; delivered: false; }> {
+  const supabase = await createClient();
+  const supplier = (cloudResult<typeof Schema.suppliers.$inferSelect | null>(
+    await supabase
+      .from("suppliers")
+      .select("*")
+      .eq("id", supplierId)
+      .limit(1)
+      .maybeSingle(),
+  ) ?? undefined);
   if (!supplier) throw new EvidenceError("Supplier not found.");
 
-  const record = upsertEvidence({ supplierId, docType, productId, status: "requested" });
+  const record = await upsertEvidence({ supplierId, docType, productId, status: "requested" });
   const readable = docType.replace(/_/g, " ");
   const draftMessage =
     `Dear ${supplier.name},\n\n` +
@@ -135,17 +151,23 @@ export interface EvidenceGap {
  * Expiry is computed against a horizon so "expires in three weeks" surfaces
  * before it becomes "expired", which is the entire operational point.
  */
-export function evidenceGaps(
+export async function evidenceGaps(
   customerId: string,
-  options: { now?: Date; horizonDays?: number } = {},
-): EvidenceGap[] {
+  options: { now?: Date; horizonDays?: number; } = {},
+): Promise<EvidenceGap[]> {
+  const supabase = await createClient();
   const now = options.now ?? new Date();
   const horizon = new Date(now.getTime() + (options.horizonDays ?? 60) * 86_400_000);
-  const rows = db.select().from(suppliers).where(eq(suppliers.customerId, customerId)).all();
+  const rows = cloudResult<Array<typeof Schema.suppliers.$inferSelect>>(
+    await supabase
+      .from("suppliers")
+      .select("*")
+      .eq("customer_id", customerId),
+  );
   const gaps: EvidenceGap[] = [];
 
   for (const supplier of rows) {
-    const docs = listSupplierDocuments(supplier.id);
+    const docs = await listSupplierDocuments(supplier.id);
     if (docs.length === 0) {
       gaps.push({
         supplier,
@@ -218,8 +240,8 @@ export function evidenceGaps(
  * A suggestion, explicitly labelled as one — material keywords are a prompt to
  * ask a question, never a determination that a rule applies.
  */
-export function suggestedEvidence(customerId: string): Array<{ sku: string; docType: string; why: string }> {
-  const suggestions: Array<{ sku: string; docType: string; why: string }> = [];
+export async function suggestedEvidence(customerId: string): Promise<Array<{ sku: string; docType: string; why: string; }>> {
+  const suggestions: Array<{ sku: string; docType: string; why: string; }> = [];
   const triggers: Array<[RegExp, string]> = [
     [/pfas|fluor|ptfe/i, "pfas"],
     [/phthalate|pvc|plasticis|plasticiz/i, "material_declaration"],
@@ -227,7 +249,7 @@ export function suggestedEvidence(customerId: string): Array<{ sku: string; docT
     [/textile|polyester|scrim|fabric/i, "test_report"],
   ];
 
-  for (const product of listProducts(customerId)) {
+  for (const product of await listProducts(customerId)) {
     const haystack = [product.description, ...product.materials].filter(Boolean).join(" ");
     for (const [pattern, docType] of triggers) {
       if (pattern.test(haystack)) {
@@ -241,4 +263,22 @@ export function suggestedEvidence(customerId: string): Array<{ sku: string; docT
   }
 
   return suggestions;
+}
+
+// Convert SQL column names only; JSON evidence keeps its original keys.
+function camelRow<T>(value: unknown): T {
+  if (Array.isArray(value)) return value.map((row) => camelRow(row)) as T;
+  if (!value || typeof value !== "object") return value as T;
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/_([a-z])/g, (_, letter: string) => letter.toUpperCase()), item,
+  ])) as T;
+}
+function snakeRow(value: Record<string, unknown>) {
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`), item,
+  ]));
+}
+function cloudResult<T = unknown>(result: { data?: unknown; error: { message: string; } | null; }): T {
+  if (result.error) throw new Error(`Supabase operation failed: ${result.error.message}`);
+  return camelRow<T>(result.data);
 }

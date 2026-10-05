@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { after, before, test } from "node:test";
+import { beforeEach, test } from "node:test";
 import { GET as discover } from "../../app/api/classifications/openapi/route";
 import {
   CLASSIFICATION_PATCH_ACTIONS,
@@ -9,22 +9,18 @@ import {
   DIRECT_CLASSIFICATION_TIERS,
 } from "./classifications-contract";
 import { buildClassificationsOpenApiSpec } from "./classifications-openapi";
-import { operatingDb } from "@/lib/test-support/operating-db";
+import { operatingDb } from "@/lib/test-support/supabase-test-db";
 
-process.env.CANTE_DATA_BACKEND = "sqlite";
 process.env.CANTE_AUTH_MODE = "none";
 let route: typeof import("../../app/api/classifications/route");
-let database: typeof import("../db/client");
 let customerId: string;
 
-before(async () => {
+beforeEach(async () => {
   // Import the stateful handler only after throwaway storage exists. Discovery
   // stays statically imported above to prove it has no database dependency.
   ({ customerId } = await operatingDb());
   route = await import("../../app/api/classifications/route");
-  database = await import("../db/client");
 });
-after(() => database.db.$client.close());
 
 const contract: any = buildClassificationsOpenApiSpec().paths["/api/classifications"];
 const jsonRequest = (method: string, body: unknown) => new Request("http://localhost/api/classifications", {
@@ -67,7 +63,7 @@ test("discovery imports and runs when the configured database path is unusable",
   ].join("\n");
   const child = spawnSync(process.execPath, ["--import", "tsx", "--input-type=module", "--eval", script], {
     cwd: process.cwd(),
-    env: { ...process.env, CANTE_DATA_BACKEND: "sqlite", CANTE_DB_PATH: "/dev/null/cante.db" },
+    env: { ...process.env, NEXT_PUBLIC_SUPABASE_URL: "", SUPABASE_SECRET_KEY: "" },
     encoding: "utf8",
   });
   assert.equal(child.status, 0, child.stderr || child.stdout);
@@ -75,7 +71,7 @@ test("discovery imports and runs when the configured database path is unusable",
 
 test("the documented proposal, resolve, approval, rejection, and error paths use the real route", async () => {
   const { upsertProduct } = await import("@/lib/catalogue/products");
-  const { product } = upsertProduct(customerId, { sku: "API-CLASS-1", name: "Steel fastener" });
+  const { product } = (await upsertProduct(customerId, { sku: "API-CLASS-1", name: "Steel fastener" }));
 
   const missingProduct = await route.GET(new Request("http://localhost/api/classifications"));
   assert.equal(missingProduct.status, 400);

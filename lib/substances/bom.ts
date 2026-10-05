@@ -1,15 +1,8 @@
+import type * as Schema from "@/lib/db/schema";
+import { createClient } from "@/lib/supabase/server";
 import { randomUUID } from "node:crypto";
-import { and, eq, inArray } from "drizzle-orm";
-import { db } from "@/lib/db/client";
-import {
-  componentSubstances,
-  productComponents,
-  restrictedSubstanceEntries,
-  restrictedSubstanceLists,
-  substances,
-  type ProductComponent,
-  type Substance,
-} from "@/lib/db/schema";
+
+import { type ProductComponent, type Substance } from "@/lib/db/schema";
 import { listProducts } from "@/lib/catalogue/products";
 
 /**
@@ -44,7 +37,8 @@ export interface ComponentInput {
   notes?: string | null;
 }
 
-export function addComponent(input: ComponentInput): ProductComponent {
+export async function addComponent(input: ComponentInput): Promise<ProductComponent> {
+  const supabase = await createClient();
   const row = {
     id: randomUUID(),
     productId: input.productId,
@@ -58,16 +52,22 @@ export function addComponent(input: ComponentInput): ProductComponent {
     notes: input.notes?.trim() || null,
     createdAt: new Date().toISOString(),
   };
-  db.insert(productComponents).values(row).run();
+  cloudResult(
+    await supabase
+      .from("product_components")
+      .insert(snakeRow(row)),
+  );
   return row as ProductComponent;
 }
 
-export function listComponents(productId: string): ProductComponent[] {
-  return db
-    .select()
-    .from(productComponents)
-    .where(eq(productComponents.productId, productId))
-    .all();
+export async function listComponents(productId: string): Promise<ProductComponent[]> {
+  const supabase = await createClient();
+  return cloudResult<Array<typeof Schema.productComponents.$inferSelect>>(
+    await supabase
+      .from("product_components")
+      .select("*")
+      .eq("product_id", productId),
+  );
 }
 
 /** Components as a tree, so an assembly reads the way an engineer drew it. */
@@ -75,8 +75,8 @@ export interface ComponentNode extends ProductComponent {
   children: ComponentNode[];
 }
 
-export function componentTree(productId: string): ComponentNode[] {
-  const rows = listComponents(productId);
+export async function componentTree(productId: string): Promise<ComponentNode[]> {
+  const rows = await listComponents(productId);
   const byId = new Map(rows.map((row) => [row.id, { ...row, children: [] as ComponentNode[] }]));
   const roots: ComponentNode[] = [];
 
@@ -93,16 +93,24 @@ function normaliseCas(cas: string): string {
 }
 
 /** Find or create a substance. CAS is the identity when present. */
-export function upsertSubstance(input: {
+export async function upsertSubstance(input: {
   name: string;
   casNumber?: string | null;
   ecNumber?: string | null;
   synonyms?: string[];
-}): Substance {
+}): Promise<Substance> {
+  const supabase = await createClient();
   const cas = input.casNumber ? normaliseCas(input.casNumber) : null;
 
   if (cas) {
-    const existing = db.select().from(substances).where(eq(substances.casNumber, cas)).get();
+    const existing = (cloudResult<typeof Schema.substances.$inferSelect | null>(
+      await supabase
+        .from("substances")
+        .select("*")
+        .eq("cas_number", cas)
+        .limit(1)
+        .maybeSingle(),
+    ) ?? undefined);
     if (existing) return existing;
   }
 
@@ -114,11 +122,15 @@ export function upsertSubstance(input: {
     synonyms: input.synonyms ?? [],
     createdAt: new Date().toISOString(),
   };
-  db.insert(substances).values(row).run();
+  cloudResult(
+    await supabase
+      .from("substances")
+      .insert(snakeRow(row)),
+  );
   return row as Substance;
 }
 
-export function declareSubstance(input: {
+export async function declareSubstance(input: {
   componentId: string;
   substanceId: string;
   concentrationPpm?: number | null;
@@ -126,6 +138,7 @@ export function declareSubstance(input: {
   basis: string;
   supplierDocumentId?: string | null;
 }) {
+  const supabase = await createClient();
   const row = {
     id: randomUUID(),
     componentId: input.componentId,
@@ -136,7 +149,11 @@ export function declareSubstance(input: {
     supplierDocumentId: input.supplierDocumentId ?? null,
     createdAt: new Date().toISOString(),
   };
-  db.insert(componentSubstances).values(row).run();
+  cloudResult(
+    await supabase
+      .from("component_substances")
+      .insert(snakeRow(row)),
+  );
   return row;
 }
 
@@ -159,7 +176,7 @@ export interface RestrictionHit {
 export interface RestrictionAssessment {
   hits: RestrictionHit[];
   /** Components with no substance declaration at all — unknown, not clean. */
-  undeclaredComponents: Array<{ productSku: string; componentName: string }>;
+  undeclaredComponents: Array<{ productSku: string; componentName: string; }>;
   caveats: string[];
 }
 
@@ -172,13 +189,18 @@ export interface RestrictionAssessment {
  * Collapsing these into "compliant / non-compliant" is the failure mode this
  * whole file exists to avoid.
  */
-export function assessRestrictions(customerId: string): RestrictionAssessment {
-  const products = listProducts(customerId);
+export async function assessRestrictions(customerId: string): Promise<RestrictionAssessment> {
+  const supabase = await createClient();
+  const products = await listProducts(customerId);
   const hits: RestrictionHit[] = [];
   const undeclaredComponents: RestrictionAssessment["undeclaredComponents"] = [];
   const caveats: string[] = [];
 
-  const lists = db.select().from(restrictedSubstanceLists).all();
+  const lists = cloudResult<Array<typeof Schema.restrictedSubstanceLists.$inferSelect>>(
+    await supabase
+      .from("restricted_substance_lists")
+      .select("*"),
+  );
   if (lists.length === 0) {
     return {
       hits: [],
@@ -190,7 +212,11 @@ export function assessRestrictions(customerId: string): RestrictionAssessment {
   }
 
   const listById = new Map(lists.map((list) => [list.id, list]));
-  const entries = db.select().from(restrictedSubstanceEntries).all();
+  const entries = cloudResult<Array<typeof Schema.restrictedSubstanceEntries.$inferSelect>>(
+    await supabase
+      .from("restricted_substance_entries")
+      .select("*"),
+  );
   const entriesBySubstance = new Map<string, typeof entries>();
   for (const entry of entries) {
     const bucket = entriesBySubstance.get(entry.substanceId) ?? [];
@@ -199,16 +225,17 @@ export function assessRestrictions(customerId: string): RestrictionAssessment {
   }
 
   for (const product of products) {
-    const components = listComponents(product.id);
+    const components = await listComponents(product.id);
     if (components.length === 0) continue;
 
     const componentIds = components.map((c) => c.id);
     const declarations = componentIds.length
-      ? db
-          .select()
-          .from(componentSubstances)
-          .where(inArray(componentSubstances.componentId, componentIds))
-          .all()
+      ? cloudResult<Array<typeof Schema.componentSubstances.$inferSelect>>(
+        await supabase
+          .from("component_substances")
+          .select("*")
+          .in("component_id", componentIds),
+      )
       : [];
 
     const declaredByComponent = new Map<string, typeof declarations>();
@@ -221,7 +248,12 @@ export function assessRestrictions(customerId: string): RestrictionAssessment {
     const substanceIds = [...new Set(declarations.map((d) => d.substanceId))];
     const substanceById = new Map(
       (substanceIds.length
-        ? db.select().from(substances).where(inArray(substances.id, substanceIds)).all()
+        ? cloudResult<Array<typeof Schema.substances.$inferSelect>>(
+          await supabase
+            .from("substances")
+            .select("*")
+            .in("id", substanceIds),
+        )
         : []
       ).map((s) => [s.id, s]),
     );
@@ -310,16 +342,21 @@ export function assessRestrictions(customerId: string): RestrictionAssessment {
  * names a chemical, not an HS heading, and the affected SKU is whichever one
  * has that chemical somewhere in its bill of materials.
  */
-export function productsContainingSubstanceNamedIn(
+export async function productsContainingSubstanceNamedIn(
   customerId: string,
   text: string,
-): Array<{ productSku: string; componentName: string; substanceName: string; casNumber: string | null }> {
+): Promise<Array<{ productSku: string; componentName: string; substanceName: string; casNumber: string | null; }>> {
+  const supabase = await createClient();
   const haystack = text.toLowerCase();
   const casMentioned = new Set(
     [...text.matchAll(/\b(\d{2,7}-\d{2}-\d)\b/g)].map((m) => normaliseCas(m[1])),
   );
 
-  const all = db.select().from(substances).all();
+  const all = cloudResult<Array<typeof Schema.substances.$inferSelect>>(
+    await supabase
+      .from("substances")
+      .select("*"),
+  );
   const matched = all.filter((substance) => {
     if (substance.casNumber && casMentioned.has(substance.casNumber)) return true;
     if (substance.name && haystack.includes(substance.name.toLowerCase())) return true;
@@ -328,25 +365,27 @@ export function productsContainingSubstanceNamedIn(
   if (matched.length === 0) return [];
 
   const matchedIds = matched.map((s) => s.id);
-  const declarations = db
-    .select()
-    .from(componentSubstances)
-    .where(inArray(componentSubstances.substanceId, matchedIds))
-    .all();
+  const declarations = cloudResult<Array<typeof Schema.componentSubstances.$inferSelect>>(
+    await supabase
+      .from("component_substances")
+      .select("*")
+      .in("substance_id", matchedIds),
+  );
   if (declarations.length === 0) return [];
 
   const components = new Map(
-    db
-      .select()
-      .from(productComponents)
-      .where(inArray(productComponents.id, [...new Set(declarations.map((d) => d.componentId))]))
-      .all()
+    cloudResult<Array<typeof Schema.productComponents.$inferSelect>>(
+      await supabase
+        .from("product_components")
+        .select("*")
+        .in("id", [...new Set(declarations.map((d) => d.componentId))]),
+    )
       .map((c) => [c.id, c]),
   );
-  const products = new Map(listProducts(customerId).map((p) => [p.id, p]));
+  const products = new Map((await listProducts(customerId)).map((p) => [p.id, p]));
   const substanceById = new Map(matched.map((s) => [s.id, s]));
 
-  const out: Array<{ productSku: string; componentName: string; substanceName: string; casNumber: string | null }> = [];
+  const out: Array<{ productSku: string; componentName: string; substanceName: string; casNumber: string | null; }> = [];
   for (const declaration of declarations) {
     const component = components.get(declaration.componentId);
     if (!component) continue;
@@ -365,7 +404,7 @@ export function productsContainingSubstanceNamedIn(
 }
 
 /** Load a restriction list snapshot. Kept explicit so provenance is recorded. */
-export function loadRestrictionList(input: {
+export async function loadRestrictionList(input: {
   name: string;
   jurisdiction: string;
   authority?: string | null;
@@ -380,44 +419,47 @@ export function loadRestrictionList(input: {
     citation?: string | null;
   }>;
 }) {
+  const supabase = await createClient();
   const listId = randomUUID();
-  db.transaction(() => {
-    db.insert(restrictedSubstanceLists)
-      .values({
-        id: listId,
-        name: input.name,
-        jurisdiction: input.jurisdiction,
-        authority: input.authority ?? null,
-        version: input.version ?? null,
-        sourceUrl: input.sourceUrl ?? null,
-        capturedAt: new Date().toISOString(),
-      })
-      .run();
-
-    for (const entry of input.entries) {
-      const substance = upsertSubstance({ name: entry.name, casNumber: entry.casNumber });
-      db.insert(restrictedSubstanceEntries)
-        .values({
-          id: randomUUID(),
-          listId,
-          substanceId: substance.id,
-          thresholdPpm: entry.thresholdPpm ?? null,
-          restriction: entry.restriction ?? "restricted",
-          effectiveOn: entry.effectiveOn ?? null,
-          citation: entry.citation ?? null,
-        })
-        .run();
-    }
-  });
+  cloudResult(
+    await supabase
+      .rpc("load_cante_restriction_list", {
+        list_row: {
+          id: listId, name: input.name, jurisdiction: input.jurisdiction,
+          authority: input.authority ?? null, version: input.version ?? null,
+          source_url: input.sourceUrl ?? null, captured_at: new Date().toISOString(),
+        },
+        entries: input.entries.map((entry) => snakeRow({ ...entry, casNumber: entry.casNumber ? normaliseCas(entry.casNumber) : null })),
+      }),
+  );
   return listId;
 }
 
 /** Remove a component and everything declared on it. */
-export function deleteComponent(componentId: string): void {
-  db.transaction(() => {
-    db.delete(componentSubstances).where(eq(componentSubstances.componentId, componentId)).run();
-    db.delete(productComponents)
-      .where(and(eq(productComponents.id, componentId)))
-      .run();
-  });
+export async function deleteComponent(componentId: string): Promise<void> {
+  const supabase = await createClient();
+  cloudResult(
+    await supabase
+      .from("product_components")
+      .delete()
+      .eq("id", componentId),
+  );
+}
+
+// Convert SQL column names only; JSON evidence keeps its original keys.
+function camelRow<T>(value: unknown): T {
+  if (Array.isArray(value)) return value.map((row) => camelRow(row)) as T;
+  if (!value || typeof value !== "object") return value as T;
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/_([a-z])/g, (_, letter: string) => letter.toUpperCase()), item,
+  ])) as T;
+}
+function snakeRow(value: Record<string, unknown>) {
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`), item,
+  ]));
+}
+function cloudResult<T = unknown>(result: { data?: unknown; error: { message: string; } | null; }): T {
+  if (result.error) throw new Error(`Supabase operation failed: ${result.error.message}`);
+  return camelRow<T>(result.data);
 }

@@ -1,44 +1,18 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { after, before, test } from "node:test";
+import { test } from "node:test";
+import { randomUUID } from "node:crypto";
 import { GET as discover } from "../../app/api/customers/openapi/route";
 import { PROVIDER_OPTIONS } from "../llm/provider-choice";
 import { buildCustomersOpenApiSpec } from "./openapi";
+import { createServiceClient } from "@/lib/supabase/service";
+import { operatingDb } from "@/lib/test-support/supabase-test-db";
 
-process.env.CANTE_DB_PATH = ":memory:";
-process.env.CANTE_DATA_BACKEND = "sqlite";
 process.env.CANTE_AUTH_MODE = "none";
 process.env.CANTE_LLM_LOCKED = "true";
 process.env.CANTE_LLM = "api";
 delete process.env.OPENAI_API_KEY;
 delete process.env.ANTHROPIC_API_KEY;
-let route: typeof import("../../app/api/customers/route");
-let database: typeof import("../db/client");
-
-before(async () => {
-  // Import the stateful route only after its isolated database settings exist.
-  route = await import("../../app/api/customers/route");
-  database = await import("../db/client");
-  database.db.$client.exec(`
-    CREATE TABLE customers (
-      id TEXT PRIMARY KEY, name TEXT NOT NULL, country TEXT NOT NULL,
-      city TEXT, created_at TEXT NOT NULL
-    );
-    CREATE TABLE sources (
-      id TEXT PRIMARY KEY, country TEXT NOT NULL, name TEXT NOT NULL,
-      domain TEXT NOT NULL, url TEXT NOT NULL, regulation_type TEXT NOT NULL,
-      reliability_status TEXT NOT NULL, view TEXT, notes TEXT, last_success_at TEXT
-    );
-    INSERT INTO customers VALUES
-      ('customer-z', 'Zulu Imports', 'United States', NULL, '2026-09-20T00:00:00Z'),
-      ('customer-a', 'Acme Goods', 'United States', 'Chicago', '2026-09-19T00:00:00Z');
-    INSERT INTO sources VALUES
-      ('source-z', 'United States', 'Zulu Register', 'zulu.example', 'https://zulu.example', 'trade', 'working', NULL, NULL, NULL),
-      ('source-a', 'United States', 'Agency Notices', 'agency.example', 'https://agency.example', 'national', 'working', 'notices', 'Official notices', '2026-09-20T01:00:00Z');
-  `);
-});
-
-after(() => database.db.$client.close());
 
 const contract: any = buildCustomersOpenApiSpec().paths["/api/customers"].get;
 
@@ -63,22 +37,66 @@ test("customer discovery imports without initializing storage or probing a model
   ].join("\n");
   const child = spawnSync(process.execPath, ["--import", "tsx", "--input-type=module", "--eval", script], {
     cwd: process.cwd(),
-    env: { ...process.env, CANTE_DB_PATH: "/dev/null/cante.db", PATH: "/definitely/missing" },
+    env: { ...process.env, PATH: "/definitely/missing" },
     encoding: "utf8",
   });
   assert.equal(child.status, 0, child.stderr || child.stdout);
 });
 
+// Setup/teardown live inside this one test — the harness's afterEach
+// deletes every owned customer after EACH test, so a shared before()/after()
+// across multiple tests would leave later tests with already-deleted rows.
 test("real customer route returns ordered rows and provider health", async () => {
-  const response = await route.GET();
-  assert.equal(response.status, 200);
-  const payload = await response.json();
-  assert.deepEqual(payload.customers.map(({ name }: { name: string }) => name), ["Acme Goods", "Zulu Imports"]);
-  assert.equal(payload.customers[0].city, "Chicago");
-  assert.deepEqual(payload.sources.map(({ name }: { name: string }) => name), ["Agency Notices", "Zulu Register"]);
-  assert.deepEqual(payload.llm, {
-    provider: "api",
-    ok: false,
-    detail: "Set OPENAI_API_KEY or ANTHROPIC_API_KEY for the hosted runtime.",
-  });
+  const route = await import("../../app/api/customers/route");
+  const { customerId: zuluId } = await operatingDb();
+  const { customerId: acmeId } = await operatingDb();
+  const client = createServiceClient();
+  const { data: zulu, error: zuluErr } = await client.from("customers")
+    .select("name").eq("id", zuluId).single();
+  if (zuluErr) throw new Error(zuluErr.message);
+  const { data: acme, error: acmeErr } = await client.from("customers")
+    .select("name").eq("id", acmeId).single();
+  if (acmeErr) throw new Error(acmeErr.message);
+  const { error: updateError } = await client.from("customers").update({ city: null }).eq("id", zuluId);
+  if (updateError) throw new Error(updateError.message);
+  const { error: updateError2 } = await client.from("customers").update({ city: "Chicago" }).eq("id", acmeId);
+  if (updateError2) throw new Error(updateError2.message);
+  const customerNames = { a: acme!.name as string, z: zulu!.name as string };
+
+  const zuluSourceId = randomUUID();
+  const acmeSourceId = randomUUID();
+  const { error: sourceError } = await client.from("sources").insert([
+    { id: zuluSourceId, country: "United States", name: "Zulu Register", domain: "zulu.example", url: "https://zulu.example", regulation_type: "trade", reliability_status: "working" },
+    { id: acmeSourceId, country: "United States", name: "Agency Notices", domain: "agency.example", url: "https://agency.example", regulation_type: "national", reliability_status: "working", view: "notices", notes: "Official notices", last_success_at: "2026-09-20T01:00:00Z" },
+  ]);
+  if (sourceError) throw new Error(sourceError.message);
+
+  try {
+    const response = await route.GET();
+    assert.equal(response.status, 200);
+    const payload = await response.json();
+    const customerByName = new Map<string, { name: string; city: string | null }>(
+      payload.customers.map((c: { name: string; city: string | null }) => [c.name, c]),
+    );
+    const ourNames = [customerNames.a, customerNames.z].sort();
+    const positions = payload.customers
+      .map((c: { name: string }, i: number) => ({ name: c.name, i }))
+      .filter((c: { name: string }) => ourNames.includes(c.name))
+      .sort((x: { i: number }, y: { i: number }) => x.i - y.i)
+      .map((c: { name: string }) => c.name);
+    assert.deepEqual(positions, ourNames);
+    assert.equal(customerByName.get(customerNames.a)?.city, "Chicago");
+    assert.equal(customerByName.get(customerNames.z)?.city, null);
+    const sourceNames = payload.sources.map(({ name }: { name: string }) => name);
+    assert.ok(sourceNames.includes("Agency Notices"));
+    assert.ok(sourceNames.includes("Zulu Register"));
+    assert.ok(sourceNames.indexOf("Agency Notices") < sourceNames.indexOf("Zulu Register"));
+    assert.deepEqual(payload.llm, {
+      provider: "api",
+      ok: false,
+      detail: "CANTE_HOSTED_PROVIDER=openai, but its API key is missing.",
+    });
+  } finally {
+    await client.from("sources").delete().in("id", [acmeSourceId, zuluSourceId]);
+  }
 });

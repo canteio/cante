@@ -1,14 +1,8 @@
+import type * as Schema from "@/lib/db/schema";
+import { createClient } from "@/lib/supabase/server";
 import { randomUUID } from "node:crypto";
-import { asc, eq } from "drizzle-orm";
-import { db } from "@/lib/db/client";
-import {
-  documentFindings,
-  tradeDocuments,
-  type DocumentFinding,
-  type ExtractedDocument,
-  type ExtractedLine,
-  type TradeDocument,
-} from "@/lib/db/schema";
+
+import { type DocumentFinding, type ExtractedDocument, type ExtractedLine, type TradeDocument } from "@/lib/db/schema";
 import { getProductBySku, listProducts } from "@/lib/catalogue/products";
 import { listClassifications, recordClassification } from "@/lib/catalogue/classifications";
 import { compareDuty } from "@/lib/tariff/rates";
@@ -187,7 +181,8 @@ export class DocumentInputError extends Error {
 }
 
 /** Store an uploaded document with an honest parse status. */
-export function ingestDocument(input: IngestInput): TradeDocument {
+export async function ingestDocument(input: IngestInput): Promise<TradeDocument> {
+  const supabase = await createClient();
   if (!DOC_TYPES.has(input.docType)) {
     throw new DocumentInputError(
       `Unknown document type "${input.docType}". Expected one of: ${[...DOC_TYPES].join(", ")}.`,
@@ -197,7 +192,7 @@ export function ingestDocument(input: IngestInput): TradeDocument {
     throw new DocumentInputError("The document had no readable text. PDF and image OCR are not supported; paste the text or upload a text export.");
   }
 
-  const skus = listProducts(input.customerId).map((p) => p.sku);
+  const skus = (await listProducts(input.customerId)).map((p) => p.sku);
   const extracted = extractDocument(input.text, skus);
 
   const hasHeader = Boolean(extracted.documentNumber || extracted.documentDate);
@@ -223,21 +218,35 @@ export function ingestDocument(input: IngestInput): TradeDocument {
     rawText: input.text.slice(0, 200_000),
     uploadedAt: new Date().toISOString(),
   };
-  db.insert(tradeDocuments).values(row).run();
+  cloudResult(
+    await supabase
+      .from("trade_documents")
+      .insert(snakeRow(row)),
+  );
   return row as TradeDocument;
 }
 
-export function getDocument(documentId: string): TradeDocument | undefined {
-  return db.select().from(tradeDocuments).where(eq(tradeDocuments.id, documentId)).get();
+export async function getDocument(documentId: string): Promise<TradeDocument | undefined> {
+  const supabase = await createClient();
+  return (cloudResult<typeof Schema.tradeDocuments.$inferSelect | null>(
+    await supabase
+      .from("trade_documents")
+      .select("*")
+      .eq("id", documentId)
+      .limit(1)
+      .maybeSingle(),
+  ) ?? undefined);
 }
 
-export function listDocuments(customerId: string): TradeDocument[] {
-  return db
-    .select()
-    .from(tradeDocuments)
-    .where(eq(tradeDocuments.customerId, customerId))
-    .orderBy(asc(tradeDocuments.uploadedAt))
-    .all();
+export async function listDocuments(customerId: string): Promise<TradeDocument[]> {
+  const supabase = await createClient();
+  return cloudResult<Array<typeof Schema.tradeDocuments.$inferSelect>>(
+    await supabase
+      .from("trade_documents")
+      .select("*")
+      .eq("customer_id", customerId)
+      .order("uploaded_at", { ascending: true }),
+  );
 }
 
 function digits(code: string | null | undefined): string {
@@ -252,8 +261,9 @@ function digits(code: string | null | undefined): string {
  * cannot be read as "the document is wrong". Often the document is the more
  * authoritative of the two, which is precisely why it can promote a code.
  */
-export function auditDocument(documentId: string): DocumentFinding[] {
-  const doc = getDocument(documentId);
+export async function auditDocument(documentId: string): Promise<DocumentFinding[]> {
+  const supabase = await createClient();
+  const doc = await getDocument(documentId);
   if (!doc) throw new DocumentInputError("Document not found.");
   const extracted = doc.extracted;
   if (!extracted) return [];
@@ -279,102 +289,101 @@ export function auditDocument(documentId: string): DocumentFinding[] {
       dutyBasis: [] as string[],
       ...finding,
     };
-    db.insert(documentFindings).values(row).run();
     found.push(row as DocumentFinding);
   };
 
-  db.transaction(() => {
-    db.delete(documentFindings).where(eq(documentFindings.documentId, documentId)).run();
+  for (const line of extracted.lines) {
+    const product = line.sku ? await getProductBySku(doc.customerId, line.sku) : undefined;
 
-    for (const line of extracted.lines) {
-      const product = line.sku ? getProductBySku(doc.customerId, line.sku) : undefined;
-
-      if (line.sku && !product) {
-        add({
-          productId: null,
-          kind: "missing_field",
-          severity: "medium",
-          message: `Line ${line.lineNumber}: SKU "${line.sku}" appears on the document but is not in the catalogue.`,
-          documentValue: line.sku,
-          expectedValue: null,
-          expectationTier: "document",
-          status: "open",
-        });
-        continue;
-      }
-      if (!product) continue;
-
-      if (line.hsCode) {
-        const live = listClassifications(product.id).filter(
-          (c) => !c.supersededAt && c.status !== "rejected" && (c.system === "hs" || c.system === "hts"),
-        );
-        const docDigits = digits(line.hsCode);
-        const match = live.find((c) => {
-          const known = digits(c.code);
-          return known === docDigits || known.startsWith(docDigits) || docDigits.startsWith(known);
-        });
-
-        if (live.length > 0 && !match) {
-          const strongest = live.reduce((a, b) => (a.tier === "document" ? a : b));
-          add({
-            productId: product.id,
-            kind: "code_mismatch",
-            severity: strongest.tier === "document" ? "high" : "medium",
-            message: `Line ${line.lineNumber}: the document declares ${line.hsCode} for ${product.sku}, but the catalogue holds ${live.map((c) => c.code).join(", ")}.`,
-            documentValue: line.hsCode,
-            expectedValue: live.map((c) => c.code).join(", "),
-            expectationTier: strongest.tier,
-            status: "open",
-          });
-        }
-      }
-
-      if (line.originCountry && product.originCountry) {
-        const docOrigin = line.originCountry.trim().toLowerCase();
-        const known = product.originCountry.trim().toLowerCase();
-        if (docOrigin !== known && !known.startsWith(docOrigin) && !docOrigin.startsWith(known)) {
-          add({
-            productId: product.id,
-            kind: "origin_mismatch",
-            severity: "high",
-            message: `Line ${line.lineNumber}: the document states origin "${line.originCountry}" for ${product.sku}, but the catalogue records "${product.originCountry}".`,
-            documentValue: line.originCountry,
-            expectedValue: product.originCountry,
-            expectationTier: "human",
-            status: "open",
-          });
-        }
-      }
-
-      if (line.unitOfMeasure && product.unitOfMeasure) {
-        if (line.unitOfMeasure.toLowerCase() !== product.unitOfMeasure.toLowerCase()) {
-          add({
-            productId: product.id,
-            kind: "uom_mismatch",
-            severity: "low",
-            message: `Line ${line.lineNumber}: unit "${line.unitOfMeasure}" differs from the catalogue's "${product.unitOfMeasure}" for ${product.sku}.`,
-            documentValue: line.unitOfMeasure,
-            expectedValue: product.unitOfMeasure,
-            expectationTier: "human",
-            status: "open",
-          });
-        }
-      }
-    }
-
-    if (extracted.lines.length > 0 && !extracted.documentNumber) {
+    if (line.sku && !product) {
       add({
         productId: null,
         kind: "missing_field",
-        severity: "low",
-        message: "No document number could be read, so this document cannot be cited as evidence for a classification.",
-        documentValue: null,
-        expectedValue: "a document/registration number",
+        severity: "medium",
+        message: `Line ${line.lineNumber}: SKU "${line.sku}" appears on the document but is not in the catalogue.`,
+        documentValue: line.sku,
+        expectedValue: null,
         expectationTier: "document",
         status: "open",
       });
+      continue;
     }
-  });
+    if (!product) continue;
+
+    if (line.hsCode) {
+      const live = (await listClassifications(product.id)).filter(
+        (c) => !c.supersededAt && c.status !== "rejected" && (c.system === "hs" || c.system === "hts"),
+      );
+      const docDigits = digits(line.hsCode);
+      const match = live.find((c) => {
+        const known = digits(c.code);
+        return known === docDigits || known.startsWith(docDigits) || docDigits.startsWith(known);
+      });
+
+      if (live.length > 0 && !match) {
+        const strongest = live.reduce((a, b) => (a.tier === "document" ? a : b));
+        add({
+          productId: product.id,
+          kind: "code_mismatch",
+          severity: strongest.tier === "document" ? "high" : "medium",
+          message: `Line ${line.lineNumber}: the document declares ${line.hsCode} for ${product.sku}, but the catalogue holds ${live.map((c) => c.code).join(", ")}.`,
+          documentValue: line.hsCode,
+          expectedValue: live.map((c) => c.code).join(", "),
+          expectationTier: strongest.tier,
+          status: "open",
+        });
+      }
+    }
+
+    if (line.originCountry && product.originCountry) {
+      const docOrigin = line.originCountry.trim().toLowerCase();
+      const known = product.originCountry.trim().toLowerCase();
+      if (docOrigin !== known && !known.startsWith(docOrigin) && !docOrigin.startsWith(known)) {
+        add({
+          productId: product.id,
+          kind: "origin_mismatch",
+          severity: "high",
+          message: `Line ${line.lineNumber}: the document states origin "${line.originCountry}" for ${product.sku}, but the catalogue records "${product.originCountry}".`,
+          documentValue: line.originCountry,
+          expectedValue: product.originCountry,
+          expectationTier: "human",
+          status: "open",
+        });
+      }
+    }
+
+    if (line.unitOfMeasure && product.unitOfMeasure) {
+      if (line.unitOfMeasure.toLowerCase() !== product.unitOfMeasure.toLowerCase()) {
+        add({
+          productId: product.id,
+          kind: "uom_mismatch",
+          severity: "low",
+          message: `Line ${line.lineNumber}: unit "${line.unitOfMeasure}" differs from the catalogue's "${product.unitOfMeasure}" for ${product.sku}.`,
+          documentValue: line.unitOfMeasure,
+          expectedValue: product.unitOfMeasure,
+          expectationTier: "human",
+          status: "open",
+        });
+      }
+    }
+  }
+
+  if (extracted.lines.length > 0 && !extracted.documentNumber) {
+    add({
+      productId: null,
+      kind: "missing_field",
+      severity: "low",
+      message: "No document number could be read, so this document cannot be cited as evidence for a classification.",
+      documentValue: null,
+      expectedValue: "a document/registration number",
+      expectationTier: "document",
+      status: "open",
+    });
+  }
+  cloudResult(
+    await supabase
+      .rpc("replace_document_findings", { target_document_id: documentId, replacement: found.map(snakeRow) }),
+  );
 
   return found;
 }
@@ -382,7 +391,7 @@ export function auditDocument(documentId: string): DocumentFinding[] {
 /**
  * Price the code mismatches on a document.
  *
- * `auditDocument()` stays synchronous and network-free — it establishes *that*
+ * `auditDocument()` reads the stored catalogue — it establishes *that*
  * the declared code differs from the catalogue. This second pass asks the
  * official tariff schedule what that difference is worth, which is what turns
  * a compliance observation into a business event a finance person will read.
@@ -395,15 +404,16 @@ export function auditDocument(documentId: string): DocumentFinding[] {
  */
 export async function priceDocumentFindings(
   documentId: string,
-  options: { signal?: AbortSignal } = {},
+  options: { signal?: AbortSignal; } = {},
 ): Promise<DocumentFinding[]> {
-  const doc = getDocument(documentId);
+  const supabase = await createClient();
+  const doc = await getDocument(documentId);
   if (!doc) throw new DocumentInputError("Document not found.");
 
   const priced: DocumentFinding[] = [];
   const lines = doc.extracted?.lines ?? [];
 
-  for (const finding of listDocumentFindings(documentId)) {
+  for (const finding of await listDocumentFindings(documentId)) {
     if (finding.kind !== "code_mismatch" || !finding.documentValue || !finding.expectedValue) {
       continue;
     }
@@ -446,22 +456,30 @@ export async function priceDocumentFindings(
       ];
     }
 
-    db.update(documentFindings)
-      .set({ dutyDifference, dutyBasis })
-      .where(eq(documentFindings.id, finding.id))
-      .run();
+    cloudResult(
+      await supabase
+        .from("document_findings")
+        .update(snakeRow({ dutyDifference, dutyBasis }))
+        .eq("id", finding.id),
+    );
     priced.push({ ...finding, dutyDifference, dutyBasis });
   }
 
   return priced;
 }
 
-export function listDocumentFindings(documentId: string): DocumentFinding[] {
-  return db.select().from(documentFindings).where(eq(documentFindings.documentId, documentId)).all();
+export async function listDocumentFindings(documentId: string): Promise<DocumentFinding[]> {
+  const supabase = await createClient();
+  return cloudResult<Array<typeof Schema.documentFindings.$inferSelect>>(
+    await supabase
+      .from("document_findings")
+      .select("*")
+      .eq("document_id", documentId),
+  );
 }
 
 export interface PromotionResult {
-  promoted: Array<{ sku: string; code: string }>;
+  promoted: Array<{ sku: string; code: string; }>;
   skipped: string[];
 }
 
@@ -474,8 +492,8 @@ export interface PromotionResult {
  *   - the line must name a SKU that exists;
  *   - the resulting row is still `proposed`, so a person still approves it.
  */
-export function promoteCodesFromDocument(documentId: string): PromotionResult {
-  const doc = getDocument(documentId);
+export async function promoteCodesFromDocument(documentId: string): Promise<PromotionResult> {
+  const doc = await getDocument(documentId);
   if (!doc) throw new DocumentInputError("Document not found.");
   const promoted: PromotionResult["promoted"] = [];
   const skipped: string[] = [];
@@ -494,12 +512,12 @@ export function promoteCodesFromDocument(documentId: string): PromotionResult {
 
   for (const line of doc.extracted.lines) {
     if (!line.sku || !line.hsCode) continue;
-    const product = getProductBySku(doc.customerId, line.sku);
+    const product = await getProductBySku(doc.customerId, line.sku);
     if (!product) {
       skipped.push(`SKU ${line.sku} is not in the catalogue.`);
       continue;
     }
-    recordClassification({
+    await recordClassification({
       productId: product.id,
       system: "hs",
       code: line.hsCode,
@@ -511,4 +529,22 @@ export function promoteCodesFromDocument(documentId: string): PromotionResult {
   }
 
   return { promoted, skipped };
+}
+
+// Convert SQL column names only; JSON evidence keeps its original keys.
+function camelRow<T>(value: unknown): T {
+  if (Array.isArray(value)) return value.map((row) => camelRow(row)) as T;
+  if (!value || typeof value !== "object") return value as T;
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/_([a-z])/g, (_, letter: string) => letter.toUpperCase()), item,
+  ])) as T;
+}
+function snakeRow(value: Record<string, unknown>) {
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`), item,
+  ]));
+}
+function cloudResult<T = unknown>(result: { data?: unknown; error: { message: string; } | null; }): T {
+  if (result.error) throw new Error(`Supabase operation failed: ${result.error.message}`);
+  return camelRow<T>(result.data);
 }

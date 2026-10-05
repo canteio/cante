@@ -1,11 +1,8 @@
+import type * as Schema from "@/lib/db/schema";
+import { createClient } from "@/lib/supabase/server";
 import { randomUUID } from "node:crypto";
-import { and, asc, eq, isNull } from "drizzle-orm";
-import { db } from "@/lib/db/client";
-import {
-  productClassifications,
-  type ClassificationRef,
-  type ProductClassification,
-} from "@/lib/db/schema";
+
+import { type ClassificationRef, type ProductClassification } from "@/lib/db/schema";
 import type { HsCodeTier } from "@/lib/checks/facts";
 
 /**
@@ -35,19 +32,19 @@ export interface RecordClassificationInput {
   supportingRefs?: ClassificationRef[];
 }
 
-const APPROVABLE_TIERS = new Set<HsCodeTier>(["document", "human"]);
-
 function normaliseCode(code: string): string {
   return code.replace(/\s+/g, "").trim();
 }
 
-export function listClassifications(productId: string): ProductClassification[] {
-  return db
-    .select()
-    .from(productClassifications)
-    .where(eq(productClassifications.productId, productId))
-    .orderBy(asc(productClassifications.createdAt))
-    .all();
+export async function listClassifications(productId: string): Promise<ProductClassification[]> {
+  const supabase = await createClient();
+  return cloudResult<Array<typeof Schema.productClassifications.$inferSelect>>(
+    await supabase
+      .from("product_classifications")
+      .select("*")
+      .eq("product_id", productId)
+      .order("created_at", { ascending: true }),
+  );
 }
 
 /**
@@ -58,22 +55,20 @@ export function listClassifications(productId: string): ProductClassification[] 
  * repeat sighting does refresh nothing silently either; the original basis and
  * date are kept.
  */
-export function recordClassification(input: RecordClassificationInput): ProductClassification {
+export async function recordClassification(input: RecordClassificationInput): Promise<ProductClassification> {
+  const supabase = await createClient();
   const code = normaliseCode(input.code);
   const jurisdiction = input.jurisdiction ?? null;
 
-  const existing = db
-    .select()
-    .from(productClassifications)
-    .where(
-      and(
-        eq(productClassifications.productId, input.productId),
-        eq(productClassifications.system, input.system),
-        eq(productClassifications.code, code),
-        isNull(productClassifications.supersededAt),
-      ),
-    )
-    .all()
+  const existing = cloudResult<Array<typeof Schema.productClassifications.$inferSelect>>(
+    await supabase
+      .from("product_classifications")
+      .select("*")
+      .eq("product_id", input.productId)
+      .eq("system", input.system)
+      .eq("code", code)
+      .is("superseded_at", null),
+  )
     .find((row) => (row.jurisdiction ?? null) === jurisdiction);
 
   if (existing) {
@@ -81,10 +76,12 @@ export function recordClassification(input: RecordClassificationInput): ProductC
     // turns up on a PEB should stop being a lead — but it must not silently
     // become approved.
     if (tierRank(input.tier as HsCodeTier) > tierRank(existing.tier as HsCodeTier)) {
-      db.update(productClassifications)
-        .set({ tier: input.tier, basis: input.basis })
-        .where(eq(productClassifications.id, existing.id))
-        .run();
+      cloudResult(
+        await supabase
+          .from("product_classifications")
+          .update(snakeRow({ tier: input.tier, basis: input.basis }))
+          .eq("id", existing.id),
+      );
       return { ...existing, tier: input.tier, basis: input.basis };
     }
     return existing;
@@ -107,7 +104,11 @@ export function recordClassification(input: RecordClassificationInput): ProductC
     supersededBy: null,
     createdAt: new Date().toISOString(),
   };
-  db.insert(productClassifications).values(row).run();
+  cloudResult(
+    await supabase
+      .from("product_classifications")
+      .insert(snakeRow(row)),
+  );
   return row as ProductClassification;
 }
 
@@ -129,59 +130,17 @@ export class ClassificationApprovalError extends Error {
  * first establishing it from a document or a person is exactly the laundering
  * step this project exists to prevent.
  */
-export function approveClassification(
+export async function approveClassification(
   classificationId: string,
   approvedBy: string,
   rationale: string,
-): ProductClassification {
-  const row = db
-    .select()
-    .from(productClassifications)
-    .where(eq(productClassifications.id, classificationId))
-    .get();
-  if (!row) throw new ClassificationApprovalError("Classification not found.");
-  if (row.supersededAt) throw new ClassificationApprovalError("That classification is superseded.");
-  if (!approvedBy.trim()) throw new ClassificationApprovalError("Approval requires a named approver.");
-  if (!rationale.trim()) {
-    throw new ClassificationApprovalError("Approval requires a written rationale.");
-  }
-  if (!APPROVABLE_TIERS.has(row.tier as HsCodeTier)) {
-    throw new ClassificationApprovalError(
-      `A ${row.tier}-tier code cannot be approved. Establish it from a document or confirm it as a person first.`,
-    );
-  }
-
-  const now = new Date().toISOString();
-
-  db.transaction(() => {
-    const siblings = db
-      .select()
-      .from(productClassifications)
-      .where(
-        and(
-          eq(productClassifications.productId, row.productId),
-          eq(productClassifications.system, row.system),
-          eq(productClassifications.status, "approved"),
-          isNull(productClassifications.supersededAt),
-        ),
-      )
-      .all()
-      .filter((s) => (s.jurisdiction ?? null) === (row.jurisdiction ?? null) && s.id !== row.id);
-
-    for (const sibling of siblings) {
-      db.update(productClassifications)
-        .set({ status: "superseded", supersededAt: now, supersededBy: row.id })
-        .where(eq(productClassifications.id, sibling.id))
-        .run();
-    }
-
-    db.update(productClassifications)
-      .set({ status: "approved", approvedBy, approvedAt: now, rationale })
-      .where(eq(productClassifications.id, row.id))
-      .run();
-  });
-
-  return { ...row, status: "approved", approvedBy, approvedAt: now, rationale };
+): Promise<ProductClassification> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("approve_product_classification", {
+    target_id: classificationId, approver: approvedBy, reason: rationale,
+  }).single();
+  if (error?.code === "P0001") throw new ClassificationApprovalError(error.message);
+  return cloudResult<ProductClassification>({ data, error });
 }
 
 /**
@@ -195,12 +154,16 @@ export function approveClassification(
  * this; rejectClassification is the other half of the same decision and must
  * hold itself to the same standard.
  */
-export function rejectClassification(classificationId: string, reason: string): void {
-  const row = db
-    .select()
-    .from(productClassifications)
-    .where(eq(productClassifications.id, classificationId))
-    .get();
+export async function rejectClassification(classificationId: string, reason: string): Promise<void> {
+  const supabase = await createClient();
+  const row = (cloudResult<typeof Schema.productClassifications.$inferSelect | null>(
+    await supabase
+      .from("product_classifications")
+      .select("*")
+      .eq("id", classificationId)
+      .limit(1)
+      .maybeSingle(),
+  ) ?? undefined);
   if (!row) throw new ClassificationApprovalError("Classification not found.");
   if (row.supersededAt) {
     throw new ClassificationApprovalError("That classification is superseded.");
@@ -209,10 +172,12 @@ export function rejectClassification(classificationId: string, reason: string): 
     throw new ClassificationApprovalError("Rejection requires a written reason.");
   }
 
-  db.update(productClassifications)
-    .set({ status: "rejected", rationale: reason, supersededAt: new Date().toISOString() })
-    .where(eq(productClassifications.id, classificationId))
-    .run();
+  cloudResult(
+    await supabase
+      .from("product_classifications")
+      .update(snakeRow({ status: "rejected", rationale: reason, supersededAt: new Date().toISOString() }))
+      .eq("id", classificationId),
+  );
 }
 
 export interface ResolvedProductCodes {
@@ -230,12 +195,12 @@ export interface ResolvedProductCodes {
  * The per-SKU answer to "what is this classified as", tiered exactly like
  * `resolveHsCodes()` does at customer level, so the two cannot disagree.
  */
-export function resolveProductCodes(
+export async function resolveProductCodes(
   productId: string,
   system: string,
   jurisdiction: string | null = null,
-): ResolvedProductCodes {
-  const rows = listClassifications(productId).filter(
+): Promise<ResolvedProductCodes> {
+  const rows = (await listClassifications(productId)).filter(
     (row) =>
       row.system === system &&
       !row.supersededAt &&
@@ -276,4 +241,22 @@ export function describeProductCodes(resolved: ResolvedProductCodes): string {
     return `${resolved.leads.map((l) => l.code).join(", ")} — unapproved leads only, nothing established`;
   }
   return "no classification on record";
+}
+
+// Convert SQL column names only; JSON evidence keeps its original keys.
+function camelRow<T>(value: unknown): T {
+  if (Array.isArray(value)) return value.map((row) => camelRow(row)) as T;
+  if (!value || typeof value !== "object") return value as T;
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/_([a-z])/g, (_, letter: string) => letter.toUpperCase()), item,
+  ])) as T;
+}
+function snakeRow(value: Record<string, unknown>) {
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`), item,
+  ]));
+}
+function cloudResult<T = unknown>(result: { data?: unknown; error: { message: string; } | null; }): T {
+  if (result.error) throw new Error(`Supabase operation failed: ${result.error.message}`);
+  return camelRow<T>(result.data);
 }

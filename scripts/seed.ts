@@ -1,15 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { eq } from "drizzle-orm";
-import { db } from "../lib/db/client";
-import {
-  customerProfiles,
-  customers,
-  jurisdictionProfiles,
-  sourcePacks,
-  sources,
-} from "../lib/db/schema";
+import { createServiceClient } from "../lib/supabase/service";
 import { SOURCE_REGISTRY } from "../lib/sources/registry";
 
 const INDONESIA_SOURCE_PACKS = [
@@ -170,6 +162,10 @@ const US_SOURCE_PACKS = [
       : "Coverage is represented in the checklist but requires location/product-specific official research or evidence.",
 }));
 
+function cloudError(scope: string, error: { message: string } | null) {
+  if (error) throw new Error(`Supabase ${scope} failed: ${error.message}`);
+}
+
 /**
  * Seeds a fictional example customer and both jurisdiction source lists.
  *
@@ -180,63 +176,49 @@ const US_SOURCE_PACKS = [
 async function main() {
   const configPath = path.join(process.cwd(), "config", "customer.json");
   const config = JSON.parse(await readFile(configPath, "utf-8"));
+  const supabase = createServiceClient();
 
   for (const source of SOURCE_REGISTRY) {
-    db.insert(sources)
-      .values({
-        id: source.id,
-        country: source.country,
-        name: source.name,
-        domain: source.domain,
-        url: source.url,
-        regulationType: source.regulationType,
-        reliabilityStatus: source.reliabilityStatus,
-        view: source.view ?? null,
-        notes: source.notes ?? null,
-      })
-      .onConflictDoUpdate({
-        target: sources.id,
-        set: {
-          name: source.name,
-          domain: source.domain,
-          url: source.url,
-          regulationType: source.regulationType,
-          reliabilityStatus: source.reliabilityStatus,
-          view: source.view ?? null,
-          notes: source.notes ?? null,
-        },
-      })
-      .run();
+    const { error } = await supabase.from("sources").upsert({
+      id: source.id,
+      country: source.country,
+      name: source.name,
+      domain: source.domain,
+      url: source.url,
+      regulation_type: source.regulationType,
+      reliability_status: source.reliabilityStatus,
+      view: source.view ?? null,
+      notes: source.notes ?? null,
+    }, { onConflict: "id" });
+    cloudError("sources seed", error);
   }
   console.log(`Seeded ${SOURCE_REGISTRY.length} sources.`);
 
   // Superseded by the instrument-specific Setneg and Permen/Kepmen packs.
-  db.delete(sourcePacks).where(eq(sourcePacks.id, "id-national-law")).run();
+  const { error: deleteError } = await supabase.from("source_packs").delete().eq("id", "id-national-law");
+  cloudError("source pack cleanup", deleteError);
 
   for (const pack of [...INDONESIA_SOURCE_PACKS, ...US_SOURCE_PACKS]) {
-    db.insert(sourcePacks)
-      .values(pack)
-      .onConflictDoUpdate({
-        target: sourcePacks.id,
-        set: {
-          country: pack.country,
-          jurisdiction: pack.jurisdiction,
-          name: pack.name,
-          category: pack.category,
-          status: pack.status,
-          notes: pack.notes,
-          updatedAt: new Date().toISOString(),
-        },
-      })
-      .run();
+    const { error } = await supabase.from("source_packs").upsert({
+      id: pack.id,
+      country: pack.country,
+      jurisdiction: pack.jurisdiction,
+      name: pack.name,
+      category: pack.category,
+      status: pack.status,
+      notes: pack.notes,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: "id" });
+    cloudError("source pack seed", error);
   }
   console.log(
     `Seeded ${INDONESIA_SOURCE_PACKS.length} Indonesia and ${US_SOURCE_PACKS.length} United States source packs.`,
   );
 
-  const existing = db.select().from(customers).all();
-  if (existing.length > 0) {
-    ensureUsProfiles(existing.map((customer) => customer.id));
+  const { data: existing, error: existingError } = await supabase.from("customers").select("id, name");
+  cloudError("customers read", existingError);
+  if (existing && existing.length > 0) {
+    await ensureUsProfiles(supabase, existing.map((customer) => customer.id as string));
     console.log(`Customers already present (${existing.map((c) => c.name).join(", ")}) — skipping.`);
     return;
   }
@@ -244,35 +226,35 @@ async function main() {
   const customerId = randomUUID();
   const c = config.customer;
 
-  db.insert(customers)
-    .values({ id: customerId, name: c.name, country: c.country, city: c.city })
-    .run();
+  const { error: customerError } = await supabase.from("customers").insert({
+    id: customerId, name: c.name, country: c.country, city: c.city,
+  });
+  cloudError("customer seed", customerError);
 
-  db.insert(customerProfiles)
-    .values({
-      id: randomUUID(),
-      customerId,
-      productDescription: c.product,
-      businessType: "manufacturer",
-      sideOfTrade: c.side_of_trade,
-      hsCodes: config.hs_codes.candidates.map((h: Record<string, unknown>) => ({
-        code: h.code as string,
-        basis: h.basis as string,
-        confirmed: Boolean(h.confirmed),
-      })),
-      kbliCodes: [],
-      destinationMarkets: config.destination_markets.countries ?? [],
-      hsCodesConfirmed: Boolean(config.hs_codes.confirmed),
-      destinationsConfirmed: Boolean(config.destination_markets.confirmed),
-      relevanceGuidance: {
-        likelyRelevant: config.relevance_guidance.likely_relevant,
-        almostNeverRelevant: config.relevance_guidance.almost_never_relevant,
-        note: config.relevance_guidance._note,
-      },
-    })
-    .run();
+  const { error: profileError } = await supabase.from("customer_profiles").insert({
+    id: randomUUID(),
+    customer_id: customerId,
+    product_description: c.product,
+    business_type: "manufacturer",
+    side_of_trade: c.side_of_trade,
+    hs_codes: config.hs_codes.candidates.map((h: Record<string, unknown>) => ({
+      code: h.code as string,
+      basis: h.basis as string,
+      confirmed: Boolean(h.confirmed),
+    })),
+    kbli_codes: [],
+    destination_markets: config.destination_markets.countries ?? [],
+    hs_codes_confirmed: Boolean(config.hs_codes.confirmed),
+    destinations_confirmed: Boolean(config.destination_markets.confirmed),
+    relevance_guidance: {
+      likelyRelevant: config.relevance_guidance.likely_relevant,
+      almostNeverRelevant: config.relevance_guidance.almost_never_relevant,
+      note: config.relevance_guidance._note,
+    },
+  });
+  cloudError("customer profile seed", profileError);
 
-  ensureUsProfiles([customerId]);
+  await ensureUsProfiles(supabase, [customerId]);
 
   console.log(`Seeded customer ${c.name} (${customerId}).`);
   console.log(
@@ -282,19 +264,19 @@ async function main() {
   );
 }
 
-function ensureUsProfiles(customerIds: string[]): void {
-  const existing = new Set(
-    db
-      .select({ customerId: jurisdictionProfiles.customerId, country: jurisdictionProfiles.country })
-      .from(jurisdictionProfiles)
-      .all()
-      .map((row) => `${row.customerId}:${row.country}`),
-  );
+async function ensureUsProfiles(
+  supabase: ReturnType<typeof createServiceClient>,
+  customerIds: string[],
+): Promise<void> {
+  const { data, error } = await supabase.from("jurisdiction_profiles").select("customer_id, country");
+  cloudError("jurisdiction profiles read", error);
+  const existing = new Set((data ?? []).map((row) => `${row.customer_id}:${row.country}`));
   for (const customerId of customerIds) {
     if (existing.has(`${customerId}:United States`)) continue;
-    db.insert(jurisdictionProfiles)
-      .values({ id: randomUUID(), customerId, country: "United States" })
-      .run();
+    const { error: insertError } = await supabase.from("jurisdiction_profiles").insert({
+      id: randomUUID(), customer_id: customerId, country: "United States",
+    });
+    cloudError("jurisdiction profile seed", insertError);
   }
 }
 

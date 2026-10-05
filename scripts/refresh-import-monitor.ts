@@ -1,7 +1,6 @@
 import "./load-env";
-import { createClient } from "@supabase/supabase-js";
-import { getDataBackend } from "@/lib/auth/config";
-import { sqliteMonitorStore, supabaseMonitorStore } from "@/pipelines/import-manifest/monitor/store";
+import { createServiceClient } from "@/lib/supabase/service";
+import { supabaseMonitorStore } from "@/pipelines/import-manifest/monitor/store";
 import { refreshMonitor } from "@/pipelines/import-manifest/monitor/refresh";
 
 /** Schedule this repo-owned entry point on the existing trusted worker. No
@@ -10,15 +9,7 @@ import { refreshMonitor } from "@/pipelines/import-manifest/monitor/refresh";
 async function main() {
   const customerId = process.env.CANTE_IMPORT_CUSTOMER_ID;
   if (!customerId) throw new Error("CANTE_IMPORT_CUSTOMER_ID is required");
-  let store;
-  if (getDataBackend() === "supabase") {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.SUPABASE_SECRET_KEY;
-    if (!url || !key) throw new Error("Worker Supabase URL and secret are required");
-    store = supabaseMonitorStore(createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } }));
-  } else {
-    store = await sqliteMonitorStore();
-  }
+  const store = supabaseMonitorStore(createServiceClient());
   const { state, healthy, errors } = await refreshMonitor(customerId, store, { file: process.env.CANTE_IMPORT_SHIPMENTS_FILE });
   console.log(JSON.stringify({ updatedAt: state.updatedAt, sources: state.sources,
     newImporters: state.leads.filter(l => state.newLeadIds.includes(l.id)) }, null, 2));

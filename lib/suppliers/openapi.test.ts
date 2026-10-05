@@ -1,25 +1,21 @@
-import { after, before, test } from "node:test";
+import { mockExternalFetch } from "@/lib/test-support/supabase-test-db";
+import { beforeEach, test } from "node:test";
 import assert from "node:assert/strict";
 import { buildSuppliersOpenApiSpec } from "./openapi";
 import { EVIDENCE_TYPES } from "./contract";
 import { resetCslCacheForTests } from "@/lib/screening/csl";
 import { GET as discover } from "../../app/api/suppliers/openapi/route";
-import { operatingDb } from "@/lib/test-support/operating-db";
+import { operatingDb } from "@/lib/test-support/supabase-test-db";
 
-process.env.CANTE_DATA_BACKEND = "sqlite";
 process.env.CANTE_AUTH_MODE = "none";
 let route: typeof import("../../app/api/suppliers/route");
-let database: typeof import("../db/client");
 let customerId: string;
 
-before(async () => {
-  // Import the real route only after throwaway storage is selected. db/client
-  // resolves CANTE_DB_PATH once, so reversing this order risks the user ledger.
+beforeEach(async () => {
+  // Create the real throwaway Supabase customer before importing the route.
   ({ customerId } = await operatingDb());
   route = await import("../../app/api/suppliers/route");
-  database = await import("../db/client");
 });
-after(() => database.db.$client.close());
 
 const contract = buildSuppliersOpenApiSpec().paths["/api/suppliers"];
 function jsonRequest(body: unknown) {
@@ -102,6 +98,8 @@ test("supplier contract matches a real POST write and joined GET read", async ()
 });
 
 test("evidence and request contracts match real persisted action responses", async () => {
+  const seeded = await route.POST(jsonRequest({ customerId, action: "upsert", name: "Acme Components", country: "Mexico" }));
+  assert.equal(seeded.status, 200);
   const list = await route.GET(new Request(`http://localhost/api/suppliers?customerId=${customerId}`));
   const supplierId = (await list.json()).suppliers[0].id;
 
@@ -136,6 +134,8 @@ test("evidence and request contracts match real persisted action responses", asy
 });
 
 test("screen action persists the mocked Trade.gov match joined by the next GET", async () => {
+  const seeded = await route.POST(jsonRequest({ customerId, action: "upsert", name: "Acme Components", country: "Mexico" }));
+  assert.equal(seeded.status, 200);
   const list = await route.GET(new Request(`http://localhost/api/suppliers?customerId=${customerId}`));
   const supplierId = (await list.json()).suppliers[0].id;
   const originalFetch = global.fetch;
@@ -143,7 +143,7 @@ test("screen action persists the mocked Trade.gov match joined by the next GET",
   // Clear the shared 15-minute snapshot so this request must exercise the
   // mocked Trade.gov boundary instead of reusing data from another test.
   resetCslCacheForTests();
-  global.fetch = (async () =>
+  global.fetch = mockExternalFetch((async () =>
     new Response(
       JSON.stringify({
         results: [
@@ -165,7 +165,7 @@ test("screen action persists the mocked Trade.gov match joined by the next GET",
         ],
       }),
       { status: 200, headers: { "content-type": "application/json" } },
-    )) as typeof fetch;
+    )) as typeof fetch);
 
   try {
     const screen = await route.POST(jsonRequest({ customerId, action: "screen", supplierId }));
@@ -201,6 +201,8 @@ test("documented 400 responses match malformed, unknown-action, and invalid-enum
   assert.equal(unknown.status, 400);
   assert.deepEqual((await unknown.json()).validActions, ["upsert", "evidence", "request", "screen"]);
 
+  const seeded = await route.POST(jsonRequest({ customerId, action: "upsert", name: "Acme Components", country: "Mexico" }));
+  assert.equal(seeded.status, 200);
   const list = await route.GET(new Request(`http://localhost/api/suppliers?customerId=${customerId}`));
   const supplierId = (await list.json()).suppliers[0].id;
   const invalidType = await route.POST(jsonRequest({

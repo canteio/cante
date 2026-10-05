@@ -1,30 +1,21 @@
+import { operatingDb } from "@/lib/test-support/supabase-test-db";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { after, before, test } from "node:test";
+import { beforeEach, test } from "node:test";
 import { GET as discover } from "../../app/api/onboarding/website/openapi/route";
 import { WEBSITE_URL_MAX_LENGTH, WebsiteProfileSchema } from "./onboarding";
 import { buildOnboardingWebsiteOpenApiSpec } from "./onboarding-website-openapi";
 
-process.env.CANTE_DB_PATH = ":memory:";
-process.env.CANTE_DATA_BACKEND = "sqlite";
 process.env.CANTE_AUTH_MODE = "none";
 let route: typeof import("../../app/api/onboarding/website/route");
-let database: typeof import("../db/client");
+let customerId: string;
 
-before(async () => {
+beforeEach(async () => {
   // Import the stateful route only after its isolated database settings exist.
   route = await import("../../app/api/onboarding/website/route");
-  database = await import("../db/client");
-  database.db.$client.exec(`
-    CREATE TABLE customers (
-      id TEXT PRIMARY KEY, name TEXT NOT NULL, country TEXT NOT NULL,
-      city TEXT, created_at TEXT NOT NULL
-    );
-    INSERT INTO customers VALUES ('customer-1', 'Acme', 'United States', NULL, '2026-09-20T00:00:00Z');
-  `);
+  ({ customerId } = await operatingDb());
 });
 
-after(() => database.db.$client.close());
 
 const contract: any = buildOnboardingWebsiteOpenApiSpec().paths["/api/onboarding/website"].post;
 const request = (body: BodyInit) => new Request("http://localhost/api/onboarding/website", {
@@ -58,7 +49,7 @@ test("website onboarding discovery imports without storage, networking, or model
   ].join("\n");
   const child = spawnSync(process.execPath, ["--import", "tsx", "--input-type=module", "--eval", script], {
     cwd: process.cwd(),
-    env: { ...process.env, CANTE_DB_PATH: "/dev/null/cante.db", PATH: "/definitely/missing" },
+    env: { ...process.env, NEXT_PUBLIC_SUPABASE_URL: "", SUPABASE_SECRET_KEY: "", PATH: "/definitely/missing" },
     encoding: "utf8",
   });
   assert.equal(child.status, 0, child.stderr || child.stdout);

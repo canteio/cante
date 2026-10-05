@@ -1,53 +1,50 @@
 import assert from "node:assert/strict";
-import test, { before } from "node:test";
-import Database from "better-sqlite3";
-import { operatingDb } from "@/lib/test-support/operating-db";
+import test from "node:test";
+import { operatingDb } from "@/lib/test-support/supabase-test-db";
+import { createServiceClient } from "@/lib/supabase/service";
 import { chunkMessage, telegramConfig } from "@/lib/delivery/telegram";
 
-before(async () => {
-  await operatingDb();
-});
-
-function seedRunWithAlert(
-  dbPath: string,
+async function seedRunWithAlert(
   customerId: string,
   opts: { runId: string; alertId: string; body?: string; sourcesOk?: number; sourcesFailed?: number },
 ) {
-  const sqlite = new Database(dbPath);
-  sqlite
-    .prepare(
-      "INSERT INTO check_runs (id, customer_id, jurisdiction, status) VALUES (?, ?, ?, ?)",
-    )
-    .run(opts.runId, customerId, "Indonesia", "complete");
-  sqlite
-    .prepare(
-      "INSERT INTO alerts (id, customer_id, check_run_id, body, channel, delivery_status, delivery_attempts, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-    )
-    .run(
-      opts.alertId,
-      customerId,
-      opts.runId,
-      opts.body ?? "Tidak ada perubahan relevan hari ini.",
-      "manual",
-      "pending",
-      0,
-      new Date().toISOString(),
-    );
-  for (let i = 0; i < (opts.sourcesOk ?? 2); i += 1) {
-    sqlite
-      .prepare(
-        "INSERT INTO source_results (id, check_run_id, source_id, success, entries_parsed) VALUES (?, ?, ?, 1, 5)",
-      )
-      .run(`ok-${opts.runId}-${i}`, opts.runId, "src");
+  const client = createServiceClient();
+  // source_results.source_id is a real FK to sources(id) in Postgres (the
+  // old SQLite schema never enforced it) — ensure the two fixture source
+  // ids this file uses actually exist before inserting rows that reference
+  // them.
+  for (const sourceId of ["src", "src2"]) {
+    const { data: existing } = await client.from("sources").select("id").eq("id", sourceId).maybeSingle();
+    if (!existing) {
+      const { error: sourceError } = await client.from("sources").insert({
+        id: sourceId, country: "Indonesia", name: `Test source ${sourceId}`,
+        domain: `${sourceId}.example`, url: `https://${sourceId}.example`,
+        regulation_type: "trade", reliability_status: "working",
+      });
+      if (sourceError) throw new Error(sourceError.message);
+    }
   }
-  for (let i = 0; i < (opts.sourcesFailed ?? 0); i += 1) {
-    sqlite
-      .prepare(
-        "INSERT INTO source_results (id, check_run_id, source_id, success, entries_parsed, error_message) VALUES (?, ?, ?, 0, 0, ?)",
-      )
-      .run(`bad-${opts.runId}-${i}`, opts.runId, "src2", "timeout");
+  const { error: runError } = await client.from("check_runs").insert({
+    id: opts.runId, customer_id: customerId, jurisdiction: "Indonesia", status: "complete",
+  });
+  if (runError) throw new Error(runError.message);
+  const { error: alertError } = await client.from("alerts").insert({
+    id: opts.alertId, customer_id: customerId, check_run_id: opts.runId,
+    body: opts.body ?? "Tidak ada perubahan relevan hari ini.",
+    channel: "manual", delivery_status: "pending", delivery_attempts: 0,
+  });
+  if (alertError) throw new Error(alertError.message);
+  const okRows = Array.from({ length: opts.sourcesOk ?? 2 }, (_, i) => ({
+    id: `ok-${opts.runId}-${i}`, check_run_id: opts.runId, source_id: "src", success: true, entries_parsed: 5,
+  }));
+  const failedRows = Array.from({ length: opts.sourcesFailed ?? 0 }, (_, i) => ({
+    id: `bad-${opts.runId}-${i}`, check_run_id: opts.runId, source_id: "src2",
+    success: false, entries_parsed: 0, error_message: "timeout",
+  }));
+  if (okRows.length || failedRows.length) {
+    const { error: resultsError } = await client.from("source_results").insert([...okRows, ...failedRows]);
+    if (resultsError) throw new Error(resultsError.message);
   }
-  sqlite.close();
 }
 
 test("long alerts split on line boundaries, never mid-caveat where avoidable", () => {
@@ -78,24 +75,24 @@ test("an unconfigured channel is null, not an error", () => {
 });
 
 test("no configured channel is skipped, not failed — nobody tried", async () => {
-  const { customerId, dbPath } = await operatingDb();
+  const { customerId } = await operatingDb();
   const { dispatchRun, alertForRun } = await import("@/lib/delivery/dispatch");
-  seedRunWithAlert(dbPath, customerId, { runId: `r1-${customerId}`, alertId: `a1-${customerId}` });
+  await seedRunWithAlert(customerId, { runId: `r1-${customerId}`, alertId: `a1-${customerId}` });
 
   const result = await dispatchRun(`r1-${customerId}`, { env: {} });
   assert.equal(result.outcome, "skipped");
   assert.match(result.detail, /waiting in the dashboard/);
 
-  const alert = alertForRun(`r1-${customerId}`);
+  const alert = await alertForRun(`r1-${customerId}`);
   assert.equal(alert?.deliveryStatus, "skipped");
   assert.equal(alert?.deliveredAt, null);
   assert.match(alert?.deliveryError ?? "", /not set/);
 });
 
 test("a configured channel that rejects the send is recorded as failed, with the reason", async () => {
-  const { customerId, dbPath } = await operatingDb();
+  const { customerId } = await operatingDb();
   const { dispatchRun, alertForRun } = await import("@/lib/delivery/dispatch");
-  seedRunWithAlert(dbPath, customerId, { runId: `r2-${customerId}`, alertId: `a2-${customerId}` });
+  await seedRunWithAlert(customerId, { runId: `r2-${customerId}`, alertId: `a2-${customerId}` });
 
   const realFetch = globalThis.fetch;
   globalThis.fetch = (async () =>
@@ -113,7 +110,7 @@ test("a configured channel that rejects the send is recorded as failed, with the
     globalThis.fetch = realFetch;
   }
 
-  const alert = alertForRun(`r2-${customerId}`);
+  const alert = await alertForRun(`r2-${customerId}`);
   assert.equal(alert?.deliveryStatus, "failed");
   assert.equal(alert?.deliveredAt, null, "a failed send has no delivery time");
   assert.equal(alert?.deliveryAttempts, 1);
@@ -121,9 +118,9 @@ test("a configured channel that rejects the send is recorded as failed, with the
 });
 
 test("a successful send is delivered, timestamped, and carries the run header", async () => {
-  const { customerId, dbPath } = await operatingDb();
+  const { customerId } = await operatingDb();
   const { dispatchRun, alertForRun } = await import("@/lib/delivery/dispatch");
-  seedRunWithAlert(dbPath, customerId, {
+  await seedRunWithAlert(customerId, {
     runId: `r3-${customerId}`,
     alertId: `a3-${customerId}`,
     sourcesOk: 11,
@@ -152,7 +149,7 @@ test("a successful send is delivered, timestamped, and carries the run header", 
   assert.match(sentText, /11\/13 sources OK/);
   assert.match(sentText, /2 FAILED/);
 
-  const alert = alertForRun(`r3-${customerId}`);
+  const alert = await alertForRun(`r3-${customerId}`);
   assert.equal(alert?.deliveryStatus, "delivered");
   assert.equal(alert?.channel, "telegram");
   assert.ok(alert?.deliveredAt);
@@ -160,21 +157,21 @@ test("a successful send is delivered, timestamped, and carries the run header", 
 });
 
 test("a run with no alert row is a failure, not a quiet day", async () => {
-  const { customerId, dbPath } = await operatingDb();
+  const { customerId } = await operatingDb();
   const { dispatchRun } = await import("@/lib/delivery/dispatch");
-  const sqlite = new Database(dbPath);
-  sqlite
-    .prepare("INSERT INTO check_runs (id, customer_id, jurisdiction, status) VALUES (?, ?, ?, ?)")
-    .run(`r4-${customerId}`, customerId, "Indonesia", "failed");
-  sqlite.close();
+  const runId = `r4-${customerId}`;
+  const { error } = await createServiceClient().from("check_runs").insert({
+    id: runId, customer_id: customerId, jurisdiction: "Indonesia", status: "failed",
+  });
+  if (error) throw new Error(error.message);
 
-  const result = await dispatchRun(`r4-${customerId}`, { env: {} });
+  const result = await dispatchRun(runId, { env: {} });
   assert.equal(result.outcome, "failed");
   assert.match(result.detail, /no alert row/);
 });
 
 test("delivery health surfaces a channel that has been broken for days", async () => {
-  const { customerId, dbPath } = await operatingDb();
+  const { customerId } = await operatingDb();
   const { dispatchRun, deliveryHealth } = await import("@/lib/delivery/dispatch");
 
   const realFetch = globalThis.fetch;
@@ -185,7 +182,7 @@ test("delivery health surfaces a channel that has been broken for days", async (
     })) as typeof fetch;
   try {
     for (const n of [1, 2, 3]) {
-      seedRunWithAlert(dbPath, customerId, {
+      await seedRunWithAlert(customerId, {
         runId: `r5${n}-${customerId}`,
         alertId: `a5${n}-${customerId}`,
       });
@@ -197,29 +194,28 @@ test("delivery health surfaces a channel that has been broken for days", async (
     globalThis.fetch = realFetch;
   }
 
-  const health = deliveryHealth(customerId);
+  const health = await deliveryHealth(customerId);
   assert.equal(health.consecutiveFailures, 3);
   assert.equal(health.lastDeliveredAt, null);
 });
 
 test("formatTelegramDigest renders short status and scanned sources", async () => {
-  const { customerId, dbPath } = await operatingDb();
+  const { customerId } = await operatingDb();
   const { formatTelegramDigest } = await import("@/lib/delivery/dispatch");
   const runId = `r6-${customerId}`;
   const alertId = `a6-${customerId}`;
-  seedRunWithAlert(dbPath, customerId, {
+  await seedRunWithAlert(customerId, {
     runId,
     alertId,
     sourcesOk: 3,
     sourcesFailed: 1,
   });
 
-  const digest = formatTelegramDigest(runId);
+  const digest = await formatTelegramDigest(runId);
   assert.match(digest, /Cante — Indonesia/);
   assert.match(digest, /3\/4 sources OK · 1 FAILED/);
   assert.match(digest, /All clear — nothing new/);
   assert.match(digest, /Sources checked:/);
-  assert.match(digest, /✓ src: 5 entries/);
-  assert.match(digest, /✗ src2: FAILED/);
+  assert.match(digest, /✓ Test source src: 5 entries/);
+  assert.match(digest, /✗ Test source src2: FAILED/);
 });
-

@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
-import { db } from "@/lib/db/client";
-import { findings } from "@/lib/db/schema";
+import type * as Schema from "@/lib/db/schema";
+import { createClient } from "@/lib/supabase/server";
+
 import { getCustomerWithProfile, resolveCustomerId } from "@/lib/db/queries";
 import {
   listWorkQueue,
@@ -44,9 +44,9 @@ export async function GET(request: Request) {
   const jurisdiction = normalizeJurisdiction(url.searchParams.get("country"));
   const target = await getCustomerWithProfile(customerId);
   const includeResolved = includeResolvedParam === "true";
-  const queue = listWorkQueue(customerId, { includeResolved }).map((row) => ({
+  const queue = await Promise.all((await listWorkQueue(customerId, { includeResolved })).map(async (row) => ({
     ...row,
-    impact: listImpactForFinding(row.finding.id),
+    impact: await listImpactForFinding(row.finding.id),
     drafts: generateActionDrafts(
       {
         customerName: target?.customer.name ?? "Customer",
@@ -57,9 +57,9 @@ export async function GET(request: Request) {
       },
       jurisdiction,
     ),
-  }));
+  })));
 
-  return Response.json({ queue, summary: workQueueSummary(customerId) });
+  return Response.json({ queue, summary: await workQueueSummary(customerId) });
 }
 
 export async function POST(request: Request) {
@@ -92,14 +92,22 @@ export async function POST(request: Request) {
   if (!findingId) return Response.json({ error: "findingId is required." }, { status: 400 });
 
   if (payload.action === "assess") {
-    const finding = db.select().from(findings).where(eq(findings.id, findingId)).get();
+    const supabase = await createClient();
+    const finding = (cloudResult<typeof Schema.findings.$inferSelect | null>(
+      await supabase
+        .from("findings")
+        .select("*")
+        .eq("id", findingId)
+        .limit(1)
+        .maybeSingle(),
+    ) ?? undefined);
     if (!finding) return Response.json({ error: "Finding not found." }, { status: 404 });
     if (finding.customerId !== customerId) {
       return Response.json({ error: "That finding belongs to a different customer." }, { status: 403 });
     }
 
-    const duty = payload.duty as { before?: number; after?: number } | undefined;
-    const drafts = assessImpact({
+    const duty = payload.duty as { before?: number; after?: number; } | undefined;
+    const drafts = await assessImpact({
       finding,
       customerId,
       effectiveOn: (payload.effectiveOn as string) ?? finding.enactedOn ?? null,
@@ -107,11 +115,11 @@ export async function POST(request: Request) {
     });
     // Resolve real duty rates before storing, so the queue shows the money.
     const enriched = await enrichDraftsWithTariff(drafts);
-    return Response.json({ impact: storeImpact(customerId, findingId, enriched) });
+    return Response.json({ impact: await storeImpact(customerId, findingId, enriched) });
   }
 
   try {
-    const action = transition({
+    const action = await transition({
       findingId,
       customerId,
       state: payload.state as ActionState,
@@ -129,4 +137,17 @@ export async function POST(request: Request) {
     }
     return Response.json({ error: "Could not update the finding." }, { status: 500 });
   }
+}
+
+// Convert SQL column names only; JSON evidence keeps its original keys.
+function camelRow<T>(value: unknown): T {
+  if (Array.isArray(value)) return value.map((row) => camelRow(row)) as T;
+  if (!value || typeof value !== "object") return value as T;
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/_([a-z])/g, (_, letter: string) => letter.toUpperCase()), item,
+  ])) as T;
+}
+function cloudResult<T = unknown>(result: { data?: unknown; error: { message: string; } | null; }): T {
+  if (result.error) throw new Error(`Supabase operation failed: ${result.error.message}`);
+  return camelRow<T>(result.data);
 }

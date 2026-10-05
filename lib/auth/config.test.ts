@@ -3,7 +3,6 @@ import { afterEach, beforeEach, test } from "node:test";
 import {
   emailIsAllowed,
   getAuthMode,
-  getDataBackend,
   hasSupabaseEnv,
 } from "./config";
 
@@ -12,10 +11,13 @@ import {
 // documented env-var contract and the emailIsAllowed() whitespace-trim fix
 // (a copy-pasted email with stray spaces used to be rejected even when it
 // was on the allowlist).
+//
+// getDataBackend()/CANTE_DATA_BACKEND were removed when this app's data
+// layer became Supabase-only (SQLite fully retired) — there is only one
+// backend now, so there is nothing left to test there.
 
 const ENV_KEYS = [
   "CANTE_AUTH_MODE",
-  "CANTE_DATA_BACKEND",
   "CANTE_ALLOWED_EMAILS",
   "NEXT_PUBLIC_SUPABASE_URL",
   "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
@@ -41,14 +43,6 @@ test("getAuthMode defaults to demo and only switches on exact 'supabase'", () =>
   assert.equal(getAuthMode(), "demo");
   process.env.CANTE_AUTH_MODE = "supabase";
   assert.equal(getAuthMode(), "supabase");
-});
-
-test("getDataBackend defaults to sqlite and only switches on exact 'supabase'", () => {
-  assert.equal(getDataBackend(), "sqlite");
-  process.env.CANTE_DATA_BACKEND = "SUPABASE";
-  assert.equal(getDataBackend(), "sqlite");
-  process.env.CANTE_DATA_BACKEND = "supabase";
-  assert.equal(getDataBackend(), "supabase");
 });
 
 test("hasSupabaseEnv requires both url and publishable key", () => {

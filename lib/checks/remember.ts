@@ -1,13 +1,12 @@
+
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { addMemory } from "@/lib/db/queries";
 import { refreshChecklistForCustomer } from "@/lib/checks/checklist";
 import { completeJson, getProvider, type LlmProviderChoice } from "@/lib/llm";
-import { db } from "@/lib/db/client";
-import { kbliRecords, suppliers, type Memory } from "@/lib/db/schema";
-import { upsertProduct } from "@/lib/catalogue/products";
+
+import { type Memory } from "@/lib/db/schema";
 import type { JurisdictionName } from "@/lib/countries";
-import { getDataBackend } from "@/lib/auth/config";
 import { createClient } from "@/lib/supabase/server";
 
 /**
@@ -56,8 +55,8 @@ const ExtractionSchema = z.object({
           .boolean()
           .describe(
             "True when the USER stated this fact about their own business, or asked for it to be " +
-              "remembered. False when you inferred or derived it, or when it came from the " +
-              "assistant\x27s own research rather than from the customer.",
+            "remembered. False when you inferred or derived it, or when it came from the " +
+            "assistant\x27s own research rather than from the customer.",
           ),
       }),
     )
@@ -125,123 +124,95 @@ export async function extractMemories(input: {
         changed = true;
 
         // Auto-sync into operations tables if stated by user
-        if (m.statedByUser && getDataBackend() === "supabase") {
+        if (m.statedByUser) {
           try {
             const supabase = await createClient();
             if (m.kind === "product" || m.kind === "material") {
               const skuSeed = m.content.slice(0, 12).replace(/[^a-zA-Z0-9]/g, "-").toUpperCase();
               const sku = skuSeed.length >= 3 ? skuSeed : `SKU-${Date.now().toString().slice(-4)}`;
-              const { data: existing } = await supabase
+              const { data: existing, error: readError } = await supabase
                 .from("products")
                 .select("id")
                 .eq("customer_id", input.customerId)
                 .eq("sku", sku)
                 .maybeSingle();
+              if (readError) throw new Error(readError.message);
               if (!existing) {
-                await supabase.from("products").insert({
-                  id: randomUUID(),
-                  customer_id: input.customerId,
-                  sku,
-                  name: m.content,
-                  materials: m.kind === "material" ? [m.content] : [],
-                });
+                cloudResult(
+                  await supabase
+                    .from("products")
+                    .insert({
+                      id: randomUUID(),
+                      customer_id: input.customerId,
+                      sku,
+                      name: m.content,
+                      materials: m.kind === "material" ? [m.content] : [],
+                    }),
+                );
               }
             }
             if (m.kind === "kbli") {
               const code = m.content.match(/\b\d{5}\b/)?.[0];
               if (code) {
-                const { data: existing } = await supabase
+                const { data: existing, error: readError } = await supabase
                   .from("kbli_records")
                   .select("id")
                   .eq("customer_id", input.customerId)
                   .eq("code", code)
                   .maybeSingle();
+                if (readError) throw new Error(readError.message);
                 if (!existing) {
-                  await supabase.from("kbli_records").insert({
-                    id: randomUUID(),
-                    customer_id: input.customerId,
-                    code,
-                    title: m.content,
-                    confirmed: true,
-                    status: "confirmed",
-                    source: "chat",
-                  });
+                  cloudResult(
+                    await supabase
+                      .from("kbli_records")
+                      .insert({
+                        id: randomUUID(),
+                        customer_id: input.customerId,
+                        code,
+                        title: m.content,
+                        confirmed: true,
+                        status: "confirmed",
+                        source: "chat",
+                      }),
+                  );
                 }
               }
             }
             if (m.kind === "supplier" || m.content.toLowerCase().includes("supplier")) {
-              await supabase.from("suppliers").insert({
-                id: randomUUID(),
-                customer_id: input.customerId,
-                name: m.content.slice(0, 60),
-                country: input.jurisdiction === "Indonesia" ? "ID" : "US",
-              });
+              cloudResult(
+                await supabase
+                  .from("suppliers")
+                  .insert({
+                    id: randomUUID(),
+                    customer_id: input.customerId,
+                    name: m.content.slice(0, 60),
+                    country: input.jurisdiction === "Indonesia" ? "ID" : "US",
+                  }),
+              );
             }
           } catch {
             // The memory itself is already durable; operations sync is best effort.
           }
-        } else if (m.statedByUser) {
-          // 1. Sync Products and Raw Materials into Catalogue
-          if (m.kind === "product" || m.kind === "material") {
-            try {
-              const skuSeed = m.content.slice(0, 12).replace(/[^a-zA-Z0-9]/g, "-").toUpperCase();
-              const sku = skuSeed.length >= 3 ? skuSeed : `SKU-${Date.now().toString().slice(-4)}`;
-              upsertProduct(input.customerId, {
-                sku,
-                name: m.content,
-                materials: m.kind === "material" ? [m.content] : undefined,
-              });
-            } catch {
-              // Non-blocking
-            }
-          }
-
-          // 2. Sync KBLI records
-          if (m.kind === "kbli") {
-            try {
-              const codeMatch = m.content.match(/\b\d{5}\b/);
-              if (codeMatch) {
-                db.insert(kbliRecords)
-                  .values({
-                    id: randomUUID(),
-                    customerId: input.customerId,
-                    code: codeMatch[0],
-                    title: m.content,
-                    confirmed: true,
-                    status: "confirmed",
-                    source: "chat",
-                  })
-                  .onConflictDoNothing()
-                  .run();
-              }
-            } catch {
-              // Non-blocking
-            }
-          }
-
-          // 3. Sync Suppliers
-          if (m.kind === "supplier" || m.content.toLowerCase().includes("supplier")) {
-            try {
-              db.insert(suppliers)
-                .values({
-                  id: randomUUID(),
-                  customerId: input.customerId,
-                  name: m.content.slice(0, 60),
-                  country: input.jurisdiction === "Indonesia" ? "ID" : "US",
-                })
-                .onConflictDoNothing()
-                .run();
-            } catch {
-              // Non-blocking
-            }
-          }
         }
       }
     }
-    if (changed && getDataBackend() === "sqlite") {
+    if (changed) {
       await refreshChecklistForCustomer(input.customerId, input.jurisdiction);
     }
   } catch {
     // Best effort by design — see the note above.
   }
+}
+
+// Convert SQL column names only; JSON evidence keeps its original keys.
+function camelRow<T>(value: unknown): T {
+  if (Array.isArray(value)) return value.map((row) => camelRow(row)) as T;
+  if (!value || typeof value !== "object") return value as T;
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [
+    key.replace(/_([a-z])/g, (_, letter: string) => letter.toUpperCase()), item,
+  ])) as T;
+}
+function cloudResult<T = unknown>(result: { data?: unknown; error: { message: string; } | null; }): T {
+  if (result.error) throw new Error(`Supabase operation failed: ${result.error.message}`);
+  return camelRow<T>(result.data);
 }
