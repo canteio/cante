@@ -1,7 +1,6 @@
 import Link from "next/link";
 import {
   Boxes,
-  Brain,
   Building2,
   Calculator,
   ClipboardCheck,
@@ -12,13 +11,35 @@ import {
   Sparkles,
   Truck,
 } from "lucide-react";
-import { cookies } from "next/headers";
 import { BrandMark } from "@/components/brand-mark";
+import { AccountMenu } from "@/components/dashboard/account-menu";
 import { ChatNav } from "@/components/dashboard/chat-nav";
-import { ProviderSwitcher } from "@/components/dashboard/provider-switcher";
-import { listCustomers } from "@/lib/db/queries";
-import { normalizeProviderChoice, PROVIDER_COOKIE } from "@/lib/llm";
+import { getAuthMode, hasSupabaseEnv } from "@/lib/auth/config";
 import { DEFAULT_JURISDICTION, type JurisdictionName } from "@/lib/countries";
+
+/** The signed-in account's email, or null in demo mode / when unauthenticated. */
+async function currentAccountEmail(): Promise<string | null> {
+  if (getAuthMode() !== "supabase" || !hasSupabaseEnv()) return null;
+  try {
+    const { createClient } = await import("@/lib/supabase/server");
+    const supabase = await createClient();
+    const { data, error } = await supabase.auth.getClaims();
+    if (error) return null;
+    const claims = data?.claims;
+    if (typeof claims?.email === "string") return claims.email;
+    const metadataEmail =
+      typeof claims?.user_metadata === "object" &&
+      claims.user_metadata &&
+      "email" in claims.user_metadata &&
+      typeof claims.user_metadata.email === "string"
+        ? claims.user_metadata.email
+        : null;
+    return metadataEmail;
+  } catch {
+    // Sidebar renders without an account label rather than failing the page.
+    return null;
+  }
+}
 
 /**
  * Enterprise Navigation Sidebar (Linear / Stripe / Salesforce inspired)
@@ -43,8 +64,7 @@ export async function Sidebar({
   activeConversationId?: string | null;
   jurisdiction?: JurisdictionName;
 }) {
-  const customers = await listCustomers();
-  const selectedProvider = normalizeProviderChoice((await cookies()).get(PROVIDER_COOKIE)?.value);
+  const email = await currentAccountEmail();
   const countryQuery = `?country=${encodeURIComponent(jurisdiction)}`;
 
   return (
@@ -121,44 +141,9 @@ export async function Sidebar({
         </nav>
       </div>
 
-      {/* Active Customer Workspace */}
-      <div className="side-section fade-2" style={{ marginTop: "auto" }}>
-        <div className="side-label">Active Workspace</div>
-        {customers.length === 0 ? (
-          <div style={{ padding: "0 10px", fontSize: "0.8125rem", color: "var(--text-muted)" }}>
-            None yet — run <code className="mono">npm run db:seed</code>
-          </div>
-        ) : (
-          customers.map((c) => (
-            <div key={c.id} className="customer-row" style={{ background: "var(--app-surface-active)", borderRadius: 6, border: "1px solid var(--border)" }}>
-              <div className="avatar" style={{ background: "var(--accent-primary, #0284c7)", color: "#fff", fontWeight: 600 }}>
-                {c.name.slice(0, 1)}
-              </div>
-              <div style={{ minWidth: 0 }}>
-                <strong style={{ display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {c.name}
-                </strong>
-                <small style={{ color: "var(--text-muted)", display: "flex", alignItems: "center", gap: 4 }}>
-                  <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "var(--ok)" }} />
-                  {c.city ? `${c.city}, ` : ""}{c.country}
-                </small>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
-
-      {/* Bottom Footer: Memory & LLM Provider */}
-      <div className="sidebar-foot fade-3">
-        <Link
-          href={`/memory${countryQuery}`}
-          className="memory-nav"
-          data-active={active === "memory"}
-        >
-          <Brain size={14} strokeWidth={1.75} />
-          Memory & Facts
-        </Link>
-        <ProviderSwitcher initialProvider={selectedProvider} />
+      {/* Bottom Footer: Account */}
+      <div className="sidebar-foot fade-3" style={{ marginTop: "auto" }}>
+        <AccountMenu email={email} memoryHref={`/memory${countryQuery}`} />
       </div>
     </aside>
   );
