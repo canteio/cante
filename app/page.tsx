@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import type { Viewport } from "next";
 import { BrandMark } from "@/components/brand-mark";
 import { WaitlistForm } from "@/components/waitlist-form";
+import { getAuthMode, hasSupabaseEnv, DEMO_SESSION_COOKIE, DEMO_SESSION_VALUE } from "@/lib/auth/config";
 
 type LandingStyle = CSSProperties & { "--d": string };
 
@@ -20,7 +21,33 @@ const signalSteps = [
   { time: "06:05", label: "Daily brief", value: "Ready" },
 ];
 
-export default function LandingPage() {
+/**
+ * True when the visitor already has a live session — demo cookie, or a
+ * verified Supabase session — so the header button can skip straight to
+ * the dashboard instead of making an already-signed-in visitor log in again.
+ */
+async function isAlreadySignedIn(): Promise<boolean> {
+  const { cookies } = await import("next/headers");
+  const jar = await cookies();
+
+  if (getAuthMode() !== "supabase") {
+    return jar.get(DEMO_SESSION_COOKIE)?.value === DEMO_SESSION_VALUE;
+  }
+  if (!hasSupabaseEnv()) return false;
+  try {
+    const { createClient } = await import("@/lib/supabase/server");
+    const supabase = await createClient();
+    const { data, error } = await supabase.auth.getClaims();
+    return Boolean(data?.claims && !error);
+  } catch {
+    // The landing page renders a plain "Sign in" link rather than failing.
+    return false;
+  }
+}
+
+export default async function LandingPage() {
+  const signedIn = await isAlreadySignedIn();
+
   return (
     <main className="landing-page">
       <div className="landing-bg" aria-hidden="true">
@@ -29,6 +56,10 @@ export default function LandingPage() {
         </video>
         <div className="landing-shade" />
       </div>
+
+      <Link className="landing-login-btn" href={signedIn ? "/chat" : "/login"}>
+        {signedIn ? "Go to dashboard" : "Sign in"}
+      </Link>
 
       <header className="landing-header">
         <Link className="landing-wordmark" href="/" aria-label="Cante home">
