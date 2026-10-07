@@ -1,6 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { isStrictIsoDate } from "@/lib/tariff/date";
+import { easternIsoDate, isStrictIsoDate } from "@/lib/tariff/date";
+
+test("uses the U.S. Eastern calendar date across UTC midnight", () => {
+  assert.equal(easternIsoDate(new Date("2026-10-07T03:54:00Z")), "2026-10-06");
+  assert.equal(easternIsoDate(new Date("2026-10-07T04:01:00Z")), "2026-10-07");
+  assert.equal(easternIsoDate(new Date("2026-01-07T04:54:00Z")), "2026-01-06");
+  assert.equal(easternIsoDate(new Date("2026-01-07T05:01:00Z")), "2026-01-07");
+});
 
 test("accepts real calendar dates in exact YYYY-MM-DD form", () => {
   assert.equal(isStrictIsoDate("2024-02-29"), true);

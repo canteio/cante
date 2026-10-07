@@ -107,17 +107,20 @@ What it computes for real today:
   steel/aluminum, e.g. washing machines) — that list is actively expanding
   via BIS's inclusions process and a snapshot of it would misrepresent
   coverage as complete.
-- **Section 301 List 4A supplemental fallback** (`lib/tariff/section301.ts`,
-  `lookupSection301SupplementalList4A`) — verified 2026-10-06 against live
-  USITC HTS rows: footwear (6404.11/.19/.20) and consumer-electronics
-  speakers/telephony (8517.62, 8518.21, 8518.22) ARE on active Section 301
-  List 4A (9903.88.15, 7.5%), confirmed by CBP Ruling NY N346450 (2025) and
-  a CBP HQ ruling on Google Home/Nest devices (released Oct. 27-29, 2025) —
-  even though the USITC HTS REST API's own `additionalDuties` field comes
-  back empty for these specific rows. This table is consulted ONLY as a
-  fallback when the live row has no Chapter 99 text, is scoped to the
-  handful of codes verified against a primary CBP ruling, and never
-  overrides an authoritative cross-reference the row does carry.
+- **Section 301 supplemental fallback** (`lookupSection301Supplemental`) —
+  matches only cited eight-digit subheadings (including statistical children)
+  or an exact ten-digit ruling classification, when the row's additional-duty
+  text is empty. No six-digit family matching. USTR 84 FR 43304 Annex A
+  supports 6404.11.20/.71/.79/.81/.89/.90 as active List 4A; Annex C's
+  .41/.49/.51/.59/.61/.69/.75/.85 receive no active fallback and remain
+  review-needed without a row reference. List 4B is suspended under
+  9903.88.16 (84 FR 69447); CBP CSMS #19-000238 and 84 FR 20459 establish
+  9903.88.04 as an active List 3 companion heading at the current 25% rate.
+  Missing membership evidence is explicitly unresolved. Both reference and
+  supplemental paths withhold the current rate for import dates before its
+  effective date. Future entry dates also withhold aggregate totals because
+  later legal changes are unknowable. This table does not implement a
+  historical rate schedule or establish comprehensive coverage.
 - **Section 338 Canada duties** (`lib/tariff/section338.ts`) — new Aug 22,
   2026 additional 50% ad valorem duty on Canada-origin goods under 19 U.S.C.
   1338, imposed by three parallel proclamations (alcohol, dairy, and a

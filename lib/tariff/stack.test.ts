@@ -88,7 +88,7 @@ test("the same HTS row from Vietnam does not pick up the China-only Section 301 
   }
 });
 
-test("a China row with no Chapter 99 cross-reference reports no Section 301 applies", async () => {
+test("a China row with no supported Section 301 evidence returns NEEDS_REVIEW instead of a zero", async () => {
   const restore = stubFetch([{ htsno: "0101.21.00.10", general: "Free" }]);
   try {
     const result = await computeStackedDuty({
@@ -98,16 +98,18 @@ test("a China row with no Chapter 99 cross-reference reports no Section 301 appl
     });
     assert.ok(result);
     assert.equal(result!.components.length, 1);
-    assert.equal(result!.totalRatePercent, 0);
-    assert.ok(result!.stackingExplanation.some((line) => line.includes("no Chapter 99 cross-reference")));
+    assert.equal(result!.totalRatePercent, null);
+    assert.equal(result!.totalAmount, null);
+    assert.ok(result!.unresolvedMeasures.some((measure) => measure.includes("Section 301 applicability")));
+    assert.ok(result!.stackingExplanation.some((line) => line.includes("remains unresolved")));
   } finally {
     restore();
   }
 });
 
-test("a suspended measure (List 4B) is explained but excluded from the total, never guessed", async () => {
+test("a suspended List 4B measure is explained but excluded from the total", async () => {
   const restore = stubFetch([
-    { htsno: "6109.10.00.00", general: "16.5%", additionalDuties: "9903.88.04" },
+    { htsno: "6109.10.00.00", general: "16.5%", additionalDuties: "9903.88.16" },
   ]);
   try {
     const result = await computeStackedDuty({

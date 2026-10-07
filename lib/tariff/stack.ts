@@ -2,7 +2,7 @@ import { quoteDuty, type DutyQuote } from "@/lib/tariff/rates";
 import {
   extractChapter99Refs,
   lookupSection301Measure,
-  lookupSection301SupplementalList4A,
+  lookupSection301Supplemental,
   type Section301Measure,
 } from "@/lib/tariff/section301";
 import {
@@ -11,7 +11,7 @@ import {
 } from "@/lib/tariff/section232";
 import { lookupSection338, SECTION_338_EFFECTIVE_DATE } from "@/lib/tariff/section338";
 import { lookupAdCvdAdvisories, type AdCvdAdvisory } from "@/lib/tariff/adcvd";
-import { isStrictIsoDate } from "@/lib/tariff/date";
+import { easternIsoDate, isStrictIsoDate } from "@/lib/tariff/date";
 
 /**
  * The tariff-stacking engine.
@@ -215,6 +215,13 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
   if (input.importDate) {
     if (isStrictIsoDate(input.importDate)) {
       importDate = input.importDate;
+      const today = easternIsoDate();
+      if (importDate > today) {
+        unresolvedMeasures.push(`Future import date ${importDate}: rates after ${today} are not yet established`);
+        stackingExplanation.push(
+          `Import date ${importDate} is after today's date (${today}). Components below show only current published rates for context; aggregate totals are withheld because later legal changes cannot be known yet.`,
+        );
+      }
     } else {
       stackingExplanation.push(
         `Import date "${input.importDate}" is not a usable ISO date (YYYY-MM-DD), so it was ignored. Every rate below reflects today's current in-force rate, not the rate in effect on any particular historical or future date.`,
@@ -261,14 +268,20 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
       );
     }
   } else if (refs.length === 0) {
-    const supplemental = lookupSection301SupplementalList4A(base.htsCode);
+    const supplemental = base.additionalDutiesNote?.trim() ? null : lookupSection301Supplemental(input.htsCode);
     if (!supplemental) {
+      unresolvedMeasures.push("Section 301 applicability: no supported Chapter 99 reference or exact supplemental match");
       stackingExplanation.push(
-        "Country of origin is China, but the HTS row published no Chapter 99 cross-reference, and this code is not in Cante's small verified List 4A supplemental table either, so no Section 301 List measure is applied. If this HTS code is in fact covered by an active List, that would mean Cante's reference data has a gap for it — verify against USTR's published List 1-4A annexes before relying on this result.",
+        "Country of origin is China, but no supported Chapter 99 reference or eligible exact supplemental match establishes Section 301 applicability. This remains unresolved, not a zero duty or an exemption; review the row text and USTR's published List annexes before relying on this result.",
       );
     } else {
       const measure = lookupSection301Measure(supplemental.chapter99Code);
-      if (measure && measure.ratePercent !== null && measure.status === "active") {
+      if (measure && importDate && importDate < measure.effectiveDate) {
+        unresolvedMeasures.push(`${measure.chapter99Code} historical rate before ${measure.effectiveDate}`);
+        stackingExplanation.push(
+          `${measure.list} (${measure.chapter99Code}) has an exact supplemental match, but the current rate took effect on ${measure.effectiveDate}, after import date ${importDate}. No Section 301 amount is included; verify the historical rate against ${measure.federalRegisterCitations.join("; ")}.`,
+        );
+      } else if (measure && measure.ratePercent !== null && measure.status === "active") {
         const amount =
           base.computation.amount !== null && input.value !== null
             ? Number((input.value * measure.ratePercent).toFixed(2))
