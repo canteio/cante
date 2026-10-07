@@ -9,7 +9,7 @@ import {
   lookupSection232BasicArticle,
   lookupSection232Derivative,
 } from "@/lib/tariff/section232";
-import { lookupSection338, SECTION_338_EFFECTIVE_DATE } from "@/lib/tariff/section338";
+import { lookupSection338, SECTION_338_EFFECTIVE_DATE, SECTION_338_IMPORT_BAN_DATE } from "@/lib/tariff/section338";
 import { lookupAdCvdAdvisories, type AdCvdAdvisory } from "@/lib/tariff/adcvd";
 import { easternIsoDate, isStrictIsoDate } from "@/lib/tariff/date";
 
@@ -115,6 +115,7 @@ const STANDING_NOT_EVALUATED = [
   "Anti-dumping/countervailing duty (AD/CVD) exact scope/rate determination (named leads surfaced in adCvdAdvisories below are advisory only, never a computed amount)",
   "Forced-labor measures (e.g. UFLPA detentions/withhold-release orders)",
   "Section 338 Canada duties outside the small verified alcohol/dairy/motor-vehicle-basket HTS lines in lib/tariff/section338.ts (the actual combined annex across all three proclamations covers roughly 554 eight-digit lines; only a verified subset is resolved here)",
+  "Section 338 Canada duties for goods imported on or after Sept 29, 2026: three Sept 8, 2026 proclamations convert each basket's 50% duty into an outright import ban for lines in a separate ban Annex Cante does not hold; this is reported as unresolved per matched line rather than guessed as a 50% duty or a ban (see section338.ts banDateAmbiguous)",
   "Section 338 Canada duties' Section 232 / civil-aircraft exclusion is applied only when this calculator's own Section 232 lookup already matched the same code — a code covered by Section 232 under data Cante does not have would be incorrectly stacked rather than excluded",
 ];
 
@@ -487,7 +488,7 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
   // the small verified table in lib/tariff/section338.ts (see
   // STANDING_NOT_EVALUATED for what that leaves out).
   if (!section232Match && !section232Derivative) {
-    const section338Match = lookupSection338(base.htsCode, country);
+    const section338Match = lookupSection338(base.htsCode, country, importDate);
     if (section338Match) {
       const beforeEffectiveDate = importDate !== null && importDate < SECTION_338_EFFECTIVE_DATE;
       if (beforeEffectiveDate) {
@@ -502,6 +503,25 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
         });
         stackingExplanation.push(
           `Section 338 Canada duties did not take effect until ${SECTION_338_EFFECTIVE_DATE}, after the given import date ${importDate}, so this measure was not added.`,
+        );
+      } else if (section338Match.banDateAmbiguous) {
+        // Three Sept 8, 2026 proclamations (effective Sept 29, 2026)
+        // convert this basket's 50% duty into an outright import ban for
+        // goods in the ban Annex. Cante does not hold that Annex, so it
+        // cannot tell whether THIS specific HTS line is banned or still
+        // dutiable at 50% on or after that date — report unresolved
+        // rather than guess either a rate or a ban. See section338.ts.
+        unresolvedMeasures.push(`${section338Match.chapter99Code}: import date on/after the Sept 29, 2026 Section 338 ban-conversion date, basket-specific Annex not held`);
+        components.push({
+          type: "section338",
+          label: section338Match.note.split(":")[0] ?? "Section 338 — Canada additional duty",
+          ratePercent: null,
+          amount: null,
+          citation: [...section338Match.federalRegisterCitations, ...(section338Match.banCitation ? [section338Match.banCitation] : [])],
+          explanation: section338Match.note,
+        });
+        stackingExplanation.push(
+          `Section 338 (${section338Match.chapter99Code}) is NOT included in the total: for goods imported on or after ${SECTION_338_IMPORT_BAN_DATE}, ${section338Match.banCitation} converted this basket's 50% duty into an outright import ban for the proclamation's covered lines. Cante does not hold that ban Annex, so it cannot confirm whether this exact HTS line is banned outright or still dutiable at 50% — treat this component as unresolved, not a confident 50% or a confident ban, until verified against the Annex.`,
         );
       } else {
         const amount =

@@ -765,6 +765,7 @@ test("Canada-origin whisky (2208.30) gets the verified 50% Section 338 alcohol d
       htsCode: "2208.30.60.85",
       countryOfOrigin: "CA",
       value: 20_000,
+      importDate: "2026-09-01",
     });
     assert.ok(result);
     const s338 = result.components.find((c) => c.type === "section338");
@@ -785,6 +786,7 @@ test("Canada-origin dairy (0402.10) gets the verified 50% Section 338 dairy duty
       htsCode: "0402.10.05.00",
       countryOfOrigin: "CA",
       value: 8_000,
+      importDate: "2026-09-01",
     });
     assert.ok(result);
     const s338 = result.components.find((c) => c.type === "section338");
@@ -823,6 +825,7 @@ test("Section 338 does not apply to a non-Canada origin even on a listed HTS cod
       htsCode: "2208.30.60.85",
       countryOfOrigin: "FR",
       value: 20_000,
+      importDate: "2026-09-01",
     });
     assert.ok(result);
     assert.ok(!result.components.some((c) => c.type === "section338"));
@@ -842,10 +845,75 @@ test("Section 338 is skipped when a Section 232 basic-article measure already ma
       htsCode: "7208.10.15.00",
       countryOfOrigin: "CA",
       value: 10_000,
+      importDate: "2026-09-01",
     });
     assert.ok(result);
     assert.ok(result.components.some((c) => c.type === "section232"));
     assert.ok(!result.components.some((c) => c.type === "section338"));
+  } finally {
+    restore();
+  }
+});
+
+// --- Section 338 import-ban conversion (Sept 29, 2026) ---
+
+test("Section 338 is withheld as unresolved, not a confident 50%, for goods imported on the Sept 29, 2026 ban-conversion date", async () => {
+  const restore = stubFetch([{ htsno: "2208.30.60.85", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "2208.30.60.85",
+      countryOfOrigin: "CA",
+      value: 20_000,
+      importDate: "2026-09-29",
+    });
+    assert.ok(result);
+    const s338 = result.components.find((c) => c.type === "section338");
+    assert.ok(s338);
+    assert.equal(s338!.ratePercent, null);
+    assert.equal(s338!.amount, null);
+    assert.ok(result.unresolvedMeasures.some((m) => m.includes("ban-conversion date")));
+    assert.equal(result.totalAmount, null);
+    assert.equal(result.totalRatePercent, null);
+    assert.ok(s338!.citation.some((c) => c.includes("2026-18835")));
+    assert.ok(result.stackingExplanation.some((line) => line.includes("import ban") && line.includes("9903.03.13")));
+  } finally {
+    restore();
+  }
+});
+
+test("Section 338 still resolves confidently at 50% for an import date just before the ban-conversion date", async () => {
+  const restore = stubFetch([{ htsno: "2208.30.60.85", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "2208.30.60.85",
+      countryOfOrigin: "CA",
+      value: 20_000,
+      importDate: "2026-09-28",
+    });
+    assert.ok(result);
+    const s338 = result.components.find((c) => c.type === "section338");
+    assert.ok(s338);
+    assert.equal(s338!.ratePercent, 0.5);
+    assert.equal(s338!.amount, 10_000);
+  } finally {
+    restore();
+  }
+});
+
+test("Section 338 ban-conversion unresolved state correctly cites the dairy basket's own ban proclamation (11062), not the alcohol one", async () => {
+  const restore = stubFetch([{ htsno: "0402.10.05.00", general: "10%" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "0402.10.05.00",
+      countryOfOrigin: "CA",
+      value: 8_000,
+      importDate: "2026-10-01",
+    });
+    assert.ok(result);
+    const s338 = result.components.find((c) => c.type === "section338");
+    assert.ok(s338);
+    assert.ok(s338!.citation.some((c) => c.includes("2026-18836")));
+    assert.ok(!s338!.citation.some((c) => c.includes("2026-18835")));
   } finally {
     restore();
   }

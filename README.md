@@ -130,7 +130,17 @@ What it computes for real today:
   lines, lamps and motorboats) — not the full ~554-line combined annex.
   Automatically skipped when a Section 232 basic-article or derivative
   measure already matched the same code, mirroring each proclamation's own
-  carve-out for Section-232-covered goods.
+  carve-out for Section-232-covered goods. For goods imported on or after
+  **Sept 29, 2026**, three further Sept 8, 2026 proclamations (11061/
+  2026-18835 alcohol, 11062/2026-18836 dairy, 11063/2026-18837 motor
+  vehicles) convert each basket's 50% duty into an outright import ban for
+  lines in a separate ban Annex Cante does not hold — rather than keep
+  guessing the pre-ban 50% rate past that date, the engine now reports
+  that component as explicitly unresolved (`banDateAmbiguous`), citing the
+  relevant ban proclamation, and withholds the aggregate total for that
+  row. This is the reliability principle in practice: a known legal status
+  change with no verified Annex data must fail closed, not keep returning
+  a stale number.
 
 What it deliberately does NOT compute: full-value AD/CVD cash-deposit
 amounts (Commerce's own orders say the HTS code is "for convenience only"

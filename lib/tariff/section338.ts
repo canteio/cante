@@ -33,6 +33,23 @@
  *   91 FR 58312-ish, doc 2026-18838): renumbers the dairy/alcohol heading
  *   from 9903.03.12 to 9903.03.13, adds cheese/fat/hide/fur/motorboat
  *   lines, and removes two bulk-whisky/liqueur lines.
+ * - Import ban effective Sept 29, 2026: three further Sept 8, 2026
+ *   proclamations convert each basket from a 50% duty to an outright
+ *   import exclusion, effective 12:01 a.m. ET Sept 29, 2026 — Proclamation
+ *   11061 (alcohol, 91 FR 58311, FR doc 2026-18835), Proclamation 11062
+ *   (dairy, 91 FR 58319, FR doc 2026-18836), Proclamation 11063 (motor
+ *   vehicles, FR doc 2026-18837). Each proclamation's clause (2) keeps
+ *   goods imported (arrived), but not yet entered for consumption or
+ *   withdrawn from warehouse, before Sept 29 at the 50% duty rate instead
+ *   of the ban — so the pivot is import/arrival date, which is exactly
+ *   this module's existing importDate input. Cante does NOT have each
+ *   proclamation's ban Annex (which HTS lines moved from duty to ban is
+ *   not the same enumerated set as the original duty annex), so this
+ *   module cannot tell whether a specific matched line is banned outright
+ *   or still only dutiable on or after that date — see
+ *   isSection338BanDateUnresolved below, which the caller (stack.ts) uses
+ *   to withhold a confident rate rather than guess 50% on a line that may
+ *   actually be prohibited.
  *
  * Scope, stated plainly: this table covers a small, verified subset of
  * each basket's enumerated HTS lines (the ones the primary-source Annex
@@ -48,6 +65,8 @@
  * or derivative measure already matched the same code).
  */
 
+import { easternIsoDate } from "@/lib/tariff/date";
+
 export type Section338Basket = "alcohol" | "dairy" | "motor_vehicle_basket";
 
 export interface Section338Measure {
@@ -58,6 +77,17 @@ export interface Section338Measure {
   effectiveDate: string;
   federalRegisterCitations: string[];
   note: string;
+  /**
+   * True when the given import date is on or after the Sept 29, 2026
+   * ban-conversion date, meaning this basket's 50% duty may have been
+   * replaced outright by an import exclusion for the goods' specific
+   * HTS line — Cante does not hold the ban Annex, so the ratePercent
+   * above must be treated as unresolved (not a confident 50% figure)
+   * whenever this is true. See isSection338ImportBanDateAmbiguous.
+   */
+  banDateAmbiguous: boolean;
+  /** Citation for the relevant basket's import-ban proclamation, present only when banDateAmbiguous is true. */
+  banCitation: string | null;
 }
 
 interface Section338TableEntry {
@@ -102,6 +132,16 @@ const BASKET_LABELS: Record<Section338Basket, string> = {
 const RATE = 0.5;
 const INITIAL_EFFECTIVE_DATE = "2026-08-22"; // actual first-collection date after the Aug 18 suspension lapsed
 const RENUMBER_DATE = "2026-09-15";
+/**
+ * 12:01 a.m. ET Sept 29, 2026 — the date on which Proclamations 11061
+ * (alcohol), 11062 (dairy), and 11063 (motor vehicles) convert each
+ * basket's 50% duty into an outright import exclusion for goods imported
+ * (arrived) on or after this date. Goods imported before this date, even
+ * if entered later, remain at the 50% duty rate per each proclamation's
+ * clause (2) — so this is an import/arrival-date test, not an entry-date
+ * test, matching this module's existing importDate semantics.
+ */
+const IMPORT_BAN_DATE = "2026-09-29";
 
 const CITATIONS_BY_BASKET: Record<Section338Basket, string[]> = {
   alcohol: [
@@ -119,8 +159,33 @@ const CITATIONS_BY_BASKET: Record<Section338Basket, string[]> = {
   ],
 };
 
+/**
+ * Import-ban proclamation citations, by basket — the three Sept 8, 2026
+ * proclamations (effective Sept 29, 2026) that convert each basket from a
+ * 50% duty to an outright import exclusion. Surfaced only in the
+ * unresolved explanation path (isSection338ImportBanDateAmbiguous), never
+ * merged into CITATIONS_BY_BASKET, since this module cannot confirm
+ * whether a specific matched line is actually in the ban Annex.
+ */
+const IMPORT_BAN_CITATIONS_BY_BASKET: Record<Section338Basket, string> = {
+  alcohol: "Proclamation 11061 of Sept 8, 2026 (91 FR 58311, FR doc 2026-18835)",
+  dairy: "Proclamation 11062 of Sept 8, 2026 (91 FR 58319, FR doc 2026-18836)",
+  motor_vehicle_basket: "Proclamation 11063 of Sept 8, 2026 (FR doc 2026-18837)",
+};
+
 function digits(code: string): string {
   return code.replace(/\D/g, "");
+}
+
+/**
+ * True when the given import/arrival date is on or after the Sept 29,
+ * 2026 ban-conversion date for Section 338 Canada baskets. A null date is
+ * treated as "imported today" using the US/Eastern calendar date, matching
+ * this module's other date comparisons.
+ */
+export function isSection338ImportBanDateAmbiguous(importDate: string | null): boolean {
+  const checkDate = importDate ?? easternIsoDate();
+  return checkDate >= IMPORT_BAN_DATE;
 }
 
 /**
@@ -134,8 +199,17 @@ function digits(code: string): string {
  * (stack.ts) is responsible for not calling this when a Section 232 basic
  * or derivative measure already matched, since that exclusion depends on
  * cross-module state this function does not have.
+ *
+ * @param importDate ISO date (YYYY-MM-DD) the goods are/were imported, or
+ *   null to use today's US/Eastern date. Used only to flag banDateAmbiguous
+ *   — it never changes which basket/rate table row is selected, since the
+ *   50%-duty rate itself has not changed since Aug 22, 2026.
  */
-export function lookupSection338(htsCode: string, countryOfOrigin: string): Section338Measure | null {
+export function lookupSection338(
+  htsCode: string,
+  countryOfOrigin: string,
+  importDate: string | null = null,
+): Section338Measure | null {
   if (countryOfOrigin.trim().toUpperCase() !== "CA") return null;
   const code = digits(htsCode);
   if (!code) return null;
@@ -143,13 +217,17 @@ export function lookupSection338(htsCode: string, countryOfOrigin: string): Sect
   const entry = SECTION_338_LINES.find((line) => code.startsWith(line.htsPrefix));
   if (!entry) return null;
 
+  const banDateAmbiguous = isSection338ImportBanDateAmbiguous(importDate);
+
   return {
     basket: entry.basket,
     chapter99Code: entry.renumberedSept2026 ? "9903.03.13" : "9903.03.14",
     ratePercent: RATE,
     effectiveDate: INITIAL_EFFECTIVE_DATE,
     federalRegisterCitations: CITATIONS_BY_BASKET[entry.basket],
-    note: `${BASKET_LABELS[entry.basket]}: 50% ad valorem additional duty on top of Column 1 base duty, imposed under 19 U.S.C. 1338 to offset Canadian trade discrimination. First collected ${INITIAL_EFFECTIVE_DATE} (not the nominal Aug 19 effective date — a 3-day suspension lapsed without a deal). ${entry.renumberedSept2026 ? `Reported under heading 9903.03.13 as of the ${RENUMBER_DATE} renumbering (originally 9903.03.12).` : "Reported under heading 9903.03.14 (motor-vehicle-basket proclamation)."} This duty does not apply if the code is also subject to Section 232 steel/aluminum/auto duties, or is civil aircraft under HTSUS General Note 6 — those exclusions are not independently re-verified by this lookup.`,
+    note: `${BASKET_LABELS[entry.basket]}: 50% ad valorem additional duty on top of Column 1 base duty, imposed under 19 U.S.C. 1338 to offset Canadian trade discrimination. First collected ${INITIAL_EFFECTIVE_DATE} (not the nominal Aug 19 effective date — a 3-day suspension lapsed without a deal). ${entry.renumberedSept2026 ? `Reported under heading 9903.03.13 as of the ${RENUMBER_DATE} renumbering (originally 9903.03.12).` : "Reported under heading 9903.03.14 (motor-vehicle-basket proclamation)."} This duty does not apply if the code is also subject to Section 232 steel/aluminum/auto duties, or is civil aircraft under HTSUS General Note 6 — those exclusions are not independently re-verified by this lookup.${banDateAmbiguous ? ` For goods imported on or after ${IMPORT_BAN_DATE}, this 50% rate may have been replaced by an outright import ban under ${IMPORT_BAN_CITATIONS_BY_BASKET[entry.basket]} — Cante does not hold that proclamation's ban Annex, so whether this specific HTS line is banned or still dutiable cannot be confirmed here; treat ratePercent as unresolved, not a confident 50%.` : ""}`,
+    banDateAmbiguous,
+    banCitation: banDateAmbiguous ? IMPORT_BAN_CITATIONS_BY_BASKET[entry.basket] : null,
   };
 }
 
@@ -157,4 +235,4 @@ export function isSection338ImportDateResolved(importDate: string | null): boole
   return importDate === null || importDate >= INITIAL_EFFECTIVE_DATE;
 }
 
-export { INITIAL_EFFECTIVE_DATE as SECTION_338_EFFECTIVE_DATE };
+export { INITIAL_EFFECTIVE_DATE as SECTION_338_EFFECTIVE_DATE, IMPORT_BAN_DATE as SECTION_338_IMPORT_BAN_DATE };
