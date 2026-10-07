@@ -337,6 +337,22 @@ to the alert as code-written coverage caveats.
 
 ## Status
 
+- **Tariff audit reconciled, live USITC regression test committed (7 Oct
+  2026).** `TARIFF_AUDIT.md`'s 2026-10-06 findings (Section 301 List
+  4A/4B membership corrections, Section 338 Annex II rebuild) were
+  verified integrated at current `HEAD` by direct code inspection, not
+  assumed from commit messages — the audit doc was stale, claiming
+  "integration paused" and "network unreachable" after the fixes had
+  already landed. `lib/tariff/section301-live.test.ts` (three tests that
+  call the real USITC endpoint through `lookupTariff` and assert the
+  6404.11/8518.22/8517.13 Chapter 99 facts against whatever the live
+  schedule returns today — no fixture, no mock) is now committed and
+  passing: 3/3 in this sandbox, reversing the original audit's "local
+  DNS/network restrictions prevent successful live verification" note.
+  Full suite: flaky, see Validation in TARIFF_AUDIT.md (770/771 then
+  771/771 on an unmodified re-run — an intermittent Supabase test-harness
+  clock issue, not a tariff-engine defect).
+  `npx tsc --noEmit`: clean.
 - **AD/CVD advisory table expanded, 10 new cited orders (7 Oct 2026).**
   Added China steel nails (A-570-909), steel threaded rod (A-570-932),
   aluminum extrusions (A-570-967), wooden bedroom furniture (A-570-890),
