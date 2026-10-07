@@ -135,7 +135,16 @@ What it computes for real today:
 What it deliberately does NOT compute: full-value AD/CVD cash-deposit
 amounts (Commerce's own orders say the HTS code is "for convenience only"
 and the written scope and exporter-specific rate control — see
-`lib/tariff/adcvd.ts` for why this is a scope decision, not a gap), IEEPA
+`lib/tariff/adcvd.ts` for why this is a scope decision, not a gap). The
+AD/CVD advisory table now covers 10 real, cited China/Malaysia/Serbia/
+Turkey/Vietnam orders (steel nails, steel threaded rod, aluminum
+extrusions, wooden bedroom furniture, quartz surface products, and the
+five-country mattress order) in addition to the existing solar cell and
+wood flooring entries, each carrying its case number, all-others/
+country-wide rate as of a specific cited Federal Register determination,
+and a scope note — always flagged `computed: false`, never a dollar
+amount, because the order's written scope and exporter-specific rate
+control, not the HTS code. IEEPA
 or "reciprocal" tariffs (struck down by the Supreme Court in 2026; the
 temporary Section 122 replacement expired July 24, 2026 — deliberately
 excluded so Cante stays accurate to current law), Section 232 derivative
@@ -301,6 +310,19 @@ to the alert as code-written coverage caveats.
 
 ## Status
 
+- **AD/CVD advisory table expanded, 10 new cited orders (7 Oct 2026).**
+  Added China steel nails (A-570-909), steel threaded rod (A-570-932),
+  aluminum extrusions (A-570-967), wooden bedroom furniture (A-570-890),
+  quartz surface products (A-570-084), and the five-country mattress order
+  (China A-570-092, Malaysia A-557-818, Serbia A-801-002, Turkey A-489-841,
+  Vietnam A-552-827), each with its real case number, all-others/
+  country-wide rate as of a cited Federal Register determination, and a
+  scope note. Red-teamed against primary sources: case numbers, HTS
+  chapters, and FR volume/year pairings all verified real and correctly
+  matched; no fabricated rates or citations. Two new regression tests
+  guard country-specificity and against over-broad HTS-prefix matching.
+  `lib/tariff/adcvd.ts` tests: 8 passed, 0 failed. `npx tsc --noEmit`:
+  clean.
 - **Public landing page added (21 Aug 2026).** `/` is now a single-viewport
   invite-only landing page adapted from the MotionSites AI Runtime visual
   direction: full-bleed video background, compact rounded nav, request-invite
