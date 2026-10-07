@@ -18,7 +18,7 @@ export interface CsvTable {
 
 export interface CsvLimits { columns: number; rawRows: number; cellCharacters: number }
 
-export function parseCsv(input: string, limits?: CsvLimits, strict = false): CsvTable {
+export function parseCsv(input: string, limits?: CsvLimits, strict = false, preserveHeaders = false): CsvTable {
   const text = input.replace(/^﻿/, "");
   const records: string[][] = [];
   let field = "";
@@ -81,12 +81,13 @@ export function parseCsv(input: string, limits?: CsvLimits, strict = false): Csv
   const nonEmpty = records.filter((r) => r.some((cell) => cell.trim() !== ""));
   if (nonEmpty.length === 0) return { headers: [], rows: [] };
 
-  const headers = nonEmpty[0].map((h) => h.trim().toLowerCase().replace(/\s+/g, "_"));
+  // Mapping needs the original labels; existing callers retain normalized headers.
+  const headers = preserveHeaders ? nonEmpty[0] : nonEmpty[0].map((h) => h.trim().toLowerCase().replace(/\s+/g, "_"));
   const rows = nonEmpty.slice(1).map((cells) => {
     if (strict && cells.length !== headers.length) throw new Error("Invalid CSV row width.");
     const row: Record<string, string> = {};
     headers.forEach((header, index) => {
-      row[header] = (cells[index] ?? "").trim();
+      Object.defineProperty(row, header, { value: (cells[index] ?? "").trim(), enumerable: true, writable: true, configurable: true });
     });
     return row;
   });

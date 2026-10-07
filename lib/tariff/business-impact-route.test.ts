@@ -4,6 +4,8 @@ import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { pathToFileURL } from "node:url";
 import { registerHooks } from "node:module";
+import { getProvider } from "@/lib/llm";
+import { canonicalFields, type ColumnMapping } from "./column-mapping";
 
 type State = { workspace: { customerId: string; role: string } | null; failure: boolean; calls: unknown[][]; run: unknown; client?: unknown };
 const state: State = { workspace: { customerId: "authenticated-tenant", role: "owner" }, failure: false, calls: [], run: null };
@@ -25,10 +27,12 @@ const hooks = registerHooks({ resolve(specifier, context, next) {
 } });
 let realStore: typeof import("./business-impact-store");
 let routes: typeof import("@/app/api/tariff/impact-runs/route");
+let proposalRoute: typeof import("@/app/api/tariff/impact-runs/propose-mapping/route");
 let detail: typeof import("@/app/api/tariff/impact-runs/[runId]/route");
 let download: typeof import("@/app/api/tariff/impact-runs/[runId]/export/route");
 test.before(async () => {
 routes = await import("@/app/api/tariff/impact-runs/route");
+proposalRoute = await import("@/app/api/tariff/impact-runs/propose-mapping/route");
 detail = await import("@/app/api/tariff/impact-runs/[runId]/route");
 download = await import("@/app/api/tariff/impact-runs/[runId]/export/route");
 realStore = await import("./business-impact-store");
@@ -98,4 +102,42 @@ test("store snapshots exact tenant matches, leaves ambiguous links empty, reads 
   assert.equal(savedRows[0].status, "error"); assert.equal((savedRows[0].raw_input as Record<string, string>).current_rate, "");
   assert.equal(await realStore.getImpactRun("foreign", String((savedRun as unknown as Record<string, unknown>).id)), null);
   for (const q of queries.slice(0, -1)) assert.equal(q.filters.customer_id, "tenant");
+});
+
+
+test("confirmed mappings bypass aliases and reject nonexistent, partial or malformed mappings", async () => {
+  const mapping = Object.fromEntries(canonicalFields.map(field => [field, null])) as ColumnMapping["mapping"];
+  mapping.sku = "品目";
+  const body = "品目,sku,qty\nSelected,Wrong,7";
+  const response = await routes.POST(request(body, { "x-column-mapping": encodeURIComponent(JSON.stringify(mapping)) }));
+  assert.equal(response.status, 201);
+  const { rows } = await response.json();
+  assert.equal(rows[0].sku, "Selected"); assert.equal(rows[0].quantity, null);
+  assert.equal(rows[0].raw_input.sku, "Wrong");
+  for (const invalid of ["%", "{}", JSON.stringify({ ...mapping, sku: "invented" })]) {
+    assert.equal((await routes.POST(request(body, { "x-column-mapping": invalid }))).status, 400);
+  }
+});
+
+test("mapping proposal keeps auth, content type, upload limits and returns raw preview", async t => {
+  state.workspace = null; assert.equal((await proposalRoute.POST(request("sku\nA"))).status, 401);
+  state.workspace = { customerId: "authenticated-tenant", role: "viewer" };
+  assert.equal((await proposalRoute.POST(request("sku\nA"))).status, 403);
+  state.workspace.role = "owner";
+  assert.equal((await proposalRoute.POST(request("{}", { "content-type": "application/json" }))).status, 415);
+  assert.equal((await proposalRoute.POST(request("x".repeat(2097153), { "content-length": "1" }))).status, 413);
+  assert.equal((await proposalRoute.POST(request("sku,sku\nA,B"))).status, 400);
+  const mapping = Object.fromEntries(canonicalFields.map(field => [field, field === "sku" ? "Product Label" : null]));
+  const confidence = Object.fromEntries(canonicalFields.map(field => [field, .8]));
+  const complete = t.mock.method(Object.getPrototypeOf(getProvider()), "complete", async () => ({ text: JSON.stringify({ mapping, confidence }), durationMs: 1, provider: "test" }));
+  const response = await proposalRoute.POST(request("Product Label\nA\nB\nC\nD\nE\nF"));
+  assert.equal(response.status, 200);
+  const result = await response.json();
+  assert.deepEqual(result.headers, ["Product Label"]);
+  assert.deepEqual(result.mapping, mapping); assert.deepEqual(result.confidence, confidence);
+  assert.equal(result.sampleRows.length, 5); assert.equal(result.sampleRows[0]["Product Label"], "A");
+  assert.ok(!state.calls.some(c => c[0] === "create"));
+  complete.mock.mockImplementation(async () => { throw new Error("private model data"); });
+  const failed = await proposalRoute.POST(request("sku\nA"));
+  assert.equal(failed.status, 500); assert.ok(!JSON.stringify(await failed.json()).includes("private"));
 });

@@ -21,7 +21,7 @@ test("real RPC forces tenant ownership, is atomic, and enforces immutable RLS", 
     assert.ifError((await service.from("customer_users").insert({ customer_id: customerId, user_id: userId, role: "owner" })).error);
     const client = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, { auth: { persistSession: false } });
     assert.ifError((await client.auth.signInWithPassword({ email, password })).error);
-    const rows = parseBusinessImpact("sku\nA"); // An honest input-error snapshot, no external lookup.
+    const rows = parseBusinessImpact("sku,quantity,chapter99_codes,exclusion_id,special_program_claim\nA,12,9903.01.01,EX-1,USMCA"); // An honest input-error snapshot, no external lookup.
     const run = { ...summarizeBusinessImpact(rows), id: randomUUID(), filename: "test.csv", input_sha256: "a".repeat(64), customer_id: other.customerId };
     const row = { ...rows[0], id: randomUUID(), customer_id: other.customerId, run_id: "spoofed" };
     const call = (r = run, rs = [row], target = customerId) => client.rpc("create_tariff_impact_run", { target_customer_id: target, run_data: r, row_data: rs });
@@ -30,6 +30,10 @@ test("real RPC forces tenant ownership, is atomic, and enforces immutable RLS", 
     assert.ifError(stored.error); assert.equal(stored.data.customer_id, customerId);
     const storedRows = await client.from("tariff_impact_rows").select("*").eq("run_id", run.id);
     assert.ifError(storedRows.error); assert.equal(storedRows.data![0].customer_id, customerId);
+    assert.equal(storedRows.data![0].quantity, 12);
+    assert.equal(storedRows.data![0].chapter99_codes, "9903.01.01");
+    assert.equal(storedRows.data![0].exclusion_id, "EX-1");
+    assert.equal(storedRows.data![0].special_program_claim, "USMCA");
     assert.ok((await client.from("tariff_impact_runs").update({ filename: "tampered" }).eq("id", run.id)).error);
     assert.ok((await client.from("tariff_impact_rows").insert({ ...storedRows.data![0], id: randomUUID(), row_number: 2 })).error);
     assert.ok((await call({ ...run, id: randomUUID() }, [{ ...row, id: randomUUID() }], other.customerId)).error);

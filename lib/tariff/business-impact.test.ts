@@ -73,3 +73,25 @@ test("streaming body limit cannot be bypassed by missing or false content length
   }
   assert.equal((await readImpactBody(new Request("https://cante.test", { method: "POST", body: "x".repeat(2097152) }))).length, 2097152);
 });
+
+test("optional context accepts aliases, bounds values, exports safely and never changes stack inputs", async () => {
+  const rows = parse(`${header},qty,ch99,exclusion_number,fta\nA,0101,CA,S,1000,5,0,"9903.01.01, custom",EX-1,USMCA`);
+  assert.equal(rows[0].input_valid, true);
+  assert.equal(rows[0].quantity, 0);
+  assert.equal(rows[0].chapter99_codes, "9903.01.01, custom");
+  assert.equal(rows[0].exclusion_id, "EX-1");
+  assert.equal(rows[0].special_program_claim, "USMCA");
+  await evaluate(rows, async args => {
+    assert.deepEqual(Object.keys(args).sort(), ["countryOfOrigin", "htsCode", "importDate", "signal", "value"]);
+    return result();
+  });
+  assert.ok(csv(rows).includes('"quantity","chapter99_codes","exclusion_id","special_program_claim"'));
+  assert.ok(csv(rows).includes('"0","9903.01.01, custom","EX-1","USMCA"'));
+  for (const qty of ["-1", "NaN", "Infinity", "1e3"]) assert.equal(parse(`${header},quantity\nA,0101,CA,S,1,0,${qty}`)[0].input_valid, false);
+  for (const column of ["chapter99_codes", "exclusion_id", "special_program_claim"]) {
+    assert.equal(parse(`${header},${column}\nA,0101,CA,S,1,0,${"x".repeat(501)}`)[0].input_valid, false);
+    assert.equal(parse(`${header},${column}\nA,0101,CA,S,1,0,${"x".repeat(500)}`)[0].input_valid, true);
+  }
+  assert.equal(parse(input())[0].quantity, null);
+  assert.equal(parse(`${header},qty,quantity\nA,0101,CA,S,1,0,1,2`)[0].input_valid, false);
+});

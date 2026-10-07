@@ -4,6 +4,17 @@ import { MonitorCandidates } from "./monitor-candidates";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import type { ImpactRow, summarizeBusinessImpact } from "@/lib/tariff/business-impact";
 
+import type { ColumnMapping, CanonicalField } from "@/lib/tariff/column-mapping";
+
+const fieldLabels: Record<CanonicalField, string> = {
+  sku: "SKU", hts: "HTS code", origin: "Country of origin", supplier: "Supplier",
+  annual_import_value_usd: "Annual import value (USD)", current_duty_rate: "Current duty rate (%)",
+  evaluation_date: "Import date (optional)", quantity: "Quantity (optional)",
+  chapter99_codes: "Chapter 99 codes (optional)", exclusion_id: "Exclusion ID (optional)",
+  special_program_claim: "Special program claim (optional)",
+};
+type MappingProposal = ColumnMapping & { headers: string[]; sampleRows: Record<string, string>[] };
+
 type ImpactRun = ReturnType<typeof summarizeBusinessImpact> & {
   id: string;
   filename: string;
@@ -32,6 +43,9 @@ function RowEvidence({ row }: { row: ImpactRow }) {
     <details>
       <summary>Row {row.row_number} details — {row.sku ?? "missing SKU"}</summary>
       <p>Evaluation date: {row.evaluation_date ?? "not provided"}</p>
+      <p>Quantity: {row.quantity ?? "not provided"} · Chapter 99 codes: {row.chapter99_codes ?? "not provided"}</p>
+      <p>Exclusion ID: {row.exclusion_id ?? "not provided"} · Special program claim: {row.special_program_claim ?? "not provided"}</p>
+      <p className="muted">These optional fields are saved as context and do not change the duty calculation.</p>
       {row.error && <p role="alert">{row.error}</p>}
       {row.stack_result ? (
         <>
@@ -45,12 +59,13 @@ function RowEvidence({ row }: { row: ImpactRow }) {
 
 export function BusinessImpactPanel() {
   const [file, setFile] = useState<File | null>(null);
+  const [proposal, setProposal] = useState<MappingProposal | null>(null);
   const [run, setRun] = useState<ImpactSnapshot | null>(null);
   const [runs, setRuns] = useState<ImpactRun[]>([]);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [historyError, setHistoryError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState<"upload" | "open" | "export" | null>(null);
+  const [busy, setBusy] = useState<"mapping" | "upload" | "open" | "export" | null>(null);
   const [progress, setProgress] = useState<number | null>(null);
   const [uploaded, setUploaded] = useState(false);
   const uploadRef = useRef<XMLHttpRequest | null>(null);
@@ -75,8 +90,23 @@ export function BusinessImpactPanel() {
     return () => { ++historyRequest.current; uploadRef.current?.abort(); };
   }, [loadHistory]);
 
+  async function propose(file: File | null) {
+    setFile(file);
+    setProposal(null);
+    setError(null);
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) { setError("CSV exceeds the 2 MiB upload limit."); return; }
+    setBusy("mapping");
+    try {
+      setProposal(await readResponse<MappingProposal>(await fetch(`${endpoint}/propose-mapping`, {
+        method: "POST", headers: { "Content-Type": "text/csv" }, body: file,
+      })));
+    } catch (e) { setError(e instanceof Error ? e.message : "Could not propose column mapping."); }
+    finally { setBusy(null); }
+  }
+
   async function upload() {
-    if (!file || busy) return;
+    if (!file || !proposal || busy) return;
     setError(null);
     if (file.size > 2 * 1024 * 1024) {
       setError("CSV exceeds the 2 MiB upload limit.");
@@ -94,6 +124,7 @@ export function BusinessImpactPanel() {
         uploadRef.current = xhr;
         xhr.open("POST", endpoint);
         xhr.setRequestHeader("Content-Type", "text/csv");
+        xhr.setRequestHeader("x-column-mapping", encodeURIComponent(JSON.stringify(proposal.mapping)));
         xhr.setRequestHeader("x-filename", file.name.replace(/[^a-zA-Z0-9._ -]/g, "_").slice(0, 160));
         xhr.responseType = "json";
         xhr.upload.onprogress = (event) => {
@@ -161,21 +192,38 @@ export function BusinessImpactPanel() {
       <form className="card" onSubmit={(event) => { event.preventDefault(); void upload(); }}>
         <label htmlFor="impact-csv" className="card-title">Import portfolio CSV</label>
         <p id="impact-csv-help" className="muted">
-          Required columns: <code>sku, hts_code, country_of_origin, supplier, annual_import_value, current_duty_rate_percent</code>.
-          Optional: <code>import_date</code> (YYYY-MM-DD). Use two-letter origins, USD values without separators,
+          Use any column names. Match columns for SKU, HTS code, country of origin, supplier, annual import value and current duty rate before analyzing.
+          Optional: import date (YYYY-MM-DD), quantity, Chapter 99 codes, exclusion ID and special program claim.
+          Use two-letter origins, USD values without separators,
           and percentage points (5 means 5%). Maximum 500 rows, 2 MiB.
         </p>
         <div className="row" style={{ flexWrap: "wrap" }}>
           <input id="impact-csv" className="input" type="file" accept=".csv,text/csv" aria-describedby="impact-csv-help"
-            disabled={busy !== null} onChange={(event) => setFile(event.target.files?.[0] ?? null)} />
-          <button className="btn btn-primary" type="submit" disabled={!file || busy !== null}>Analyze CSV</button>
+            disabled={busy !== null} onChange={(event) => void propose(event.target.files?.[0] ?? null)} />
+          {!proposal && file && <button className="btn" type="button" disabled={busy !== null} onClick={() => void propose(file)}>Retry column mapping</button>}
+          <button className="btn btn-primary" type="submit" disabled={!file || !proposal || busy !== null}>Confirm mapping and analyze</button>
         </div>
+        {proposal && <div style={{ overflowX: "auto" }}>
+          <p>We think these columns match. Check each selection before confirming; choose None when your file has no matching column.</p>
+          <table className="table">
+            <thead><tr><th scope="col">Field</th><th scope="col">Your column</th><th scope="col">AI confidence</th></tr></thead>
+            <tbody>{(Object.keys(fieldLabels) as CanonicalField[]).map(field => <tr key={field}>
+              <th scope="row"><label htmlFor={`mapping-${field}`}>{fieldLabels[field]}</label></th>
+              <td><select id={`mapping-${field}`} className="input" disabled={busy !== null} value={proposal.mapping[field] ?? ""}
+                onChange={event => setProposal({ ...proposal, mapping: { ...proposal.mapping, [field]: event.target.value || null } })}>
+                <option value="">None</option>
+                {proposal.headers.map(header => <option key={header} value={header}>{header}</option>)}
+              </select></td>
+              <td>{Math.round(proposal.confidence[field] * 100)}%</td>
+            </tr>)}</tbody>
+          </table>
+        </div>}
       </form>
       {error && <p className="pill pill-bad" role="alert" style={{ whiteSpace: "normal" }}>{error}</p>}
       {busy && (
         <div role="status" className="card">
           {busy === "upload" ? uploaded ? "Upload complete. Analyzing and saving results…" : `Uploading CSV${progress === null ? "…" : ` — ${progress}%`}`
-            : busy === "open" ? "Loading saved analysis…" : "Downloading CSV…"}
+            : busy === "mapping" ? "Suggesting column matches…" : busy === "open" ? "Loading saved analysis…" : "Downloading CSV…"}
           {busy === "upload" && !uploaded && <progress aria-label="CSV upload progress" max={100} value={progress ?? undefined} style={{ display: "block", marginTop: 8 }} />}
         </div>
       )}
