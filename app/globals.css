@@ -146,7 +146,7 @@ a:hover {
 .landing-login-btn {
   position: absolute;
   top: clamp(16px, 2.4vh, 28px);
-  left: clamp(14px, 3vw, 32px);
+  right: clamp(14px, 3vw, 32px);
   z-index: 3;
   display: inline-flex;
   align-items: center;

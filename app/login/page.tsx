@@ -102,7 +102,7 @@ export default function LoginPage() {
               autoComplete="current-password"
               name="password"
               onChange={(event) => setPassword(event.target.value)}
-              placeholder="demo"
+              placeholder="Enter password"
               type="password"
               value={password}
             />
