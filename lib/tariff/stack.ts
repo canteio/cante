@@ -16,6 +16,7 @@ import {
   isAlcoholSection232StackUnresolved,
 } from "@/lib/tariff/section338";
 import { lookupAdCvdAdvisories, type AdCvdAdvisory } from "@/lib/tariff/adcvd";
+import { lookupUflpaAdvisories, UFLPA_SCOPE_CAVEAT, type UflpaAdvisory } from "@/lib/tariff/uflpa";
 import { easternIsoDate, isStrictIsoDate } from "@/lib/tariff/date";
 
 /**
@@ -106,6 +107,8 @@ export interface StackedDutyResult {
   usmcaQualification: UsmcaQualificationAudit;
   /** Named AD/CVD leads to verify against the order's actual scope text — never a computed amount. */
   adCvdAdvisories: AdCvdAdvisory[];
+  /** FLETF high-priority UFLPA sector matches — never a forced-labor determination, see lib/tariff/uflpa.ts. */
+  uflpaAdvisories: UflpaAdvisory[];
 }
 
 const SECTION232_FULL_VALUE_REGIME_EFFECTIVE_DATE = "2026-04-06";
@@ -118,7 +121,7 @@ const STANDING_NOT_EVALUATED = [
   "Russian aluminum smelt/cast exposure when Russia is not the declared country of origin (the inputs do not collect smelt/cast countries)",
   "USMCA rules-of-origin analysis (a special rate is used only from an explicit caller-supplied verified decision and supporting details)",
   "Anti-dumping/countervailing duty (AD/CVD) exact scope/rate determination (named leads surfaced in adCvdAdvisories below are advisory only, never a computed amount)",
-  "Forced-labor measures (e.g. UFLPA detentions/withhold-release orders)",
+  `Forced-labor measures (UFLPA): this engine now flags whether the HTS code falls in one of FLETF's original six high-priority enforcement sectors for Chinese-origin goods (see uflpaAdvisories below) — it does NOT determine actual Xinjiang production or UFLPA Entity List membership, which requires supply-chain evidence no HTS code can supply. ${UFLPA_SCOPE_CAVEAT}`,
   "Section 338 Canada duties outside the small verified alcohol/dairy/motor-vehicle-basket HTS lines in lib/tariff/section338.ts (the actual combined annex across all three proclamations covers roughly 554 eight-digit lines; only a verified subset is resolved here)",
   "Section 338 Canada duties for goods imported on or after Sept 29, 2026: three Sept 8, 2026 proclamations convert each basket's 50% duty into an outright import ban for lines in a separate ban Annex Cante does not hold; this is reported as unresolved per matched line rather than guessed as a 50% duty or a ban (see section338.ts banDateAmbiguous)",
   "Section 338 Canada duties' Section 232 / civil-aircraft exclusion is applied only when this calculator's own Section 232 lookup already matched the same code — a code covered by Section 232 under data Cante does not have would be incorrectly stacked rather than excluded",
@@ -599,6 +602,15 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
     }
   }
 
+  const uflpaAdvisories = lookupUflpaAdvisories(base.htsCode, country);
+  if (uflpaAdvisories.length > 0) {
+    for (const advisory of uflpaAdvisories) {
+      stackingExplanation.push(
+        `UFLPA forced-labor lead (not a duty, not included in the total above): HTS ${base.htsCode} falls in FLETF's "${advisory.sector}" high-priority enforcement sector (${advisory.citation}). This is NOT a determination that this shipment was produced in Xinjiang or by a UFLPA Entity List member — review actual supply-chain evidence before relying on this. ${advisory.note}`,
+      );
+    }
+  }
+
   return {
     htsCode: base.htsCode,
     countryOfOrigin: country,
@@ -611,5 +623,6 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
     unresolvedMeasures,
     usmcaQualification,
     adCvdAdvisories,
+    uflpaAdvisories,
   };
 }

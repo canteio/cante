@@ -171,7 +171,36 @@ wood flooring entries, each carrying its case number, all-others/
 country-wide rate as of a specific cited Federal Register determination,
 and a scope note — always flagged `computed: false`, never a dollar
 amount, because the order's written scope and exporter-specific rate
-control, not the HTS code. IEEPA
+control, not the HTS code.
+
+- **Forced-labor (UFLPA) high-priority-sector advisory** (`lib/tariff/uflpa.ts`,
+  new 7 Oct 2026) — for China-origin HTS codes, flags whether the code
+  falls into one of six FLETF-designated high-priority UFLPA enforcement
+  sectors: cotton (HTS Chapter 52), polysilicon/silica (HTS 2804.61), and
+  tomatoes (HTS 0702/2002), all from the original June 17, 2022 FLETF
+  Strategy; plus PVC (HTS 3904), aluminum (HTS Chapter 76), and seafood
+  (HTS Chapter 03), added two years later by the separate "2024 Updates to
+  the Strategy" (July 9, 2024) — cited as a different document, not folded
+  into the 2022 one. Never a computed duty and never a forced-labor
+  determination for a specific shipment (`determinesForcedLaborStatus` is
+  always `false`) — it only says the HTS code sits in a sector FLETF has
+  named high-priority, citing real UFLPA Entity List examples (Hoshine
+  Silicon Industry, listed June 21, 2022 after a June 2021 CBP Withhold
+  Release Order; Esquel Group and its Changji/Turpan/Guangdong
+  subsidiaries, listed effective Nov. 1, 2024 per 89 FR 87391/FR Doc
+  2024-25423). Later-designated sectors from the 2025 Updates to the
+  Strategy (caustic soda, copper, lithium, red dates/jujubes, steel) are
+  named in `UFLPA_SCOPE_CAVEAT` as explicitly unmodeled rather than
+  guessed, since this module does not hold verified HTS mappings for them.
+  `lib/tariff/uflpa.ts` tests: 16 passed, 0 failed, including tests that
+  assert the PVC/aluminum/seafood citations point to the 2024 Updates
+  document (not 2022) and that the Esquel citation is 89 FR 87391, not the
+  superseded 89 FR 80588/80586. Red-teamed: an initial draft wrongly
+  attributed PVC/aluminum/seafood to the 2022 Strategy and cited the wrong
+  Federal Register notice for the Esquel additions; both were corrected
+  and reverified. `npx tsc --noEmit`: clean. Full suite: 787/787 passing.
+
+IEEPA
 or "reciprocal" tariffs (struck down by the Supreme Court in 2026; the
 temporary Section 122 replacement expired July 24, 2026 — deliberately
 excluded so Cante stays accurate to current law), Section 232 derivative
@@ -257,7 +286,7 @@ lib/sources/      registry.ts (sources + profile activation) · fetch.ts (JSON/R
 lib/screening/    csl.ts · us-trade-controls.ts · us-isf.ts · us-export-controls.ts
 lib/tariff/       insw.ts (INSW / NTR) · rates.ts (live USITC HTS column 1/2) · duty-expression.ts (duty-string parser)
                    · section301.ts (China 301 List 1-4A + verified supplemental fallback) · section232.ts (steel/aluminum)
-                   · section338.ts (Canada Section 338, new Aug 2026) · adcvd.ts (AD/CVD advisories) · stack.ts (stacking engine) · usmca.ts
+                   · section338.ts (Canada Section 338, new Aug 2026) · adcvd.ts (AD/CVD advisories) · uflpa.ts (UFLPA high-priority-sector advisory) · stack.ts (stacking engine) · usmca.ts
                    · quota-ledger.ts (PI & Quota Ledger)
 lib/substances/   us-chemical-controls.ts (EPA TSCA PFAS/PBT, CA Prop 65)
 lib/documents/    discrepancy.ts (Doc Cross-Check & OCR Engine) · extract-file.ts
@@ -337,6 +366,24 @@ to the alert as code-written coverage caveats.
 
 ## Status
 
+- **UFLPA (forced-labor) high-priority-sector advisory added (7 Oct 2026).**
+  `lib/tariff/uflpa.ts` is new: for China-origin HTS codes, flags whether
+  the code falls in one of six FLETF-designated high-priority UFLPA
+  enforcement sectors (cotton, polysilicon/silica, tomatoes — from the
+  original June 17, 2022 Strategy; PVC, aluminum, seafood — from the
+  separate 2024 Updates to the Strategy, July 9, 2024), with real cited
+  UFLPA Entity List examples. Never a computed duty, never a forced-labor
+  determination for a given shipment — `determinesForcedLaborStatus` is
+  hardcoded `false`. Wired additively into `lib/tariff/stack.ts`'s
+  `uflpaAdvisories` field and rendered in the tariff panel UI; it never
+  affects `totalRatePercent`/`totalAmount`. Red-teamed: a first draft
+  wrongly attributed PVC/aluminum/seafood to the 2022 Strategy and cited
+  the wrong Federal Register notice for the Esquel Group UFLPA Entity List
+  addition (89 FR 80588 instead of the correct 89 FR 87391, FR Doc
+  2024-25423, Nov. 1, 2024); both were corrected and reverified by a
+  second independent review before this push. `lib/tariff/uflpa.ts` tests:
+  16/16 passing, including citation-accuracy regression tests.
+  `npx tsc --noEmit`: clean. Full suite: 787/787 passing.
 - **Tariff audit reconciled, live USITC regression test committed (7 Oct
   2026).** `TARIFF_AUDIT.md`'s 2026-10-06 findings (Section 301 List
   4A/4B membership corrections, Section 338 Annex II rebuild) were

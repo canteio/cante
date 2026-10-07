@@ -34,6 +34,13 @@ interface AdCvdAdvisory {
   scopeNote: string;
 }
 
+interface UflpaAdvisory {
+  sector: string;
+  citation: string;
+  note: string;
+  listedEntityExamples: string[];
+}
+
 interface StackedDutyResult {
   htsCode: string;
   countryOfOrigin: string;
@@ -49,6 +56,7 @@ interface StackedDutyResult {
     | { status: "incomplete"; specialRateRequested: false; decision: string | null; details: string | null; explanation: string }
     | { status: "verified"; specialRateRequested: boolean; decision: string; details: string; explanation: string };
   adCvdAdvisories: AdCvdAdvisory[];
+  uflpaAdvisories: UflpaAdvisory[];
 }
 
 interface BulkRowResult {
@@ -147,6 +155,20 @@ function ResultCard({ result }: { result: StackedDutyResult }) {
           {result.adCvdAdvisories.map((advisory, i) => (
             <div key={i} className="pill pill-warn" role="alert" style={{ display: "block", whiteSpace: "normal", lineHeight: 1.5, marginTop: "0.35rem" }}>
               <AlertTriangle size={12} /> {advisory.title} ({advisory.caseNumbers.join(" / ")}) — all-others rate ~{advisory.allOthersRatePercent.toFixed(2)}% as of {advisory.asOfDeterminationCitation}. {advisory.scopeNote} Verify exact scope and exporter-specific rate at access.trade.gov.
+            </div>
+          ))}
+        </div>
+      )}
+
+      {result.uflpaAdvisories.length > 0 && (
+        <div style={{ marginTop: "0.75rem" }}>
+          <strong style={{ fontSize: "0.8125rem" }}>UFLPA forced-labor leads (not a duty, not computed)</strong>
+          {result.uflpaAdvisories.map((advisory, i) => (
+            <div key={i} className="pill pill-warn" role="alert" style={{ display: "block", whiteSpace: "normal", lineHeight: 1.5, marginTop: "0.35rem" }}>
+              <AlertTriangle size={12} /> {advisory.sector} ({advisory.citation}). {advisory.note} This is NOT a determination of Xinjiang production or UFLPA Entity List membership for this shipment — verify actual supply-chain evidence.
+              {advisory.listedEntityExamples.length > 0 && (
+                <> Examples of real listed entities in this sector: {advisory.listedEntityExamples.join("; ")}.</>
+              )}
             </div>
           ))}
         </div>
