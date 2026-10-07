@@ -174,31 +174,39 @@ amount, because the order's written scope and exporter-specific rate
 control, not the HTS code.
 
 - **Forced-labor (UFLPA) high-priority-sector advisory** (`lib/tariff/uflpa.ts`,
-  new 7 Oct 2026) — for China-origin HTS codes, flags whether the code
-  falls into one of six FLETF-designated high-priority UFLPA enforcement
-  sectors: cotton (HTS Chapter 52), polysilicon/silica (HTS 2804.61), and
-  tomatoes (HTS 0702/2002), all from the original June 17, 2022 FLETF
-  Strategy; plus PVC (HTS 3904), aluminum (HTS Chapter 76), and seafood
-  (HTS Chapter 03), added two years later by the separate "2024 Updates to
-  the Strategy" (July 9, 2024) — cited as a different document, not folded
-  into the 2022 one. Never a computed duty and never a forced-labor
-  determination for a specific shipment (`determinesForcedLaborStatus` is
-  always `false`) — it only says the HTS code sits in a sector FLETF has
-  named high-priority, citing real UFLPA Entity List examples (Hoshine
-  Silicon Industry, listed June 21, 2022 after a June 2021 CBP Withhold
-  Release Order; Esquel Group and its Changji/Turpan/Guangdong
-  subsidiaries, listed effective Nov. 1, 2024 per 89 FR 87391/FR Doc
-  2024-25423). Later-designated sectors from the 2025 Updates to the
-  Strategy (caustic soda, copper, lithium, red dates/jujubes, steel) are
-  named in `UFLPA_SCOPE_CAVEAT` as explicitly unmodeled rather than
-  guessed, since this module does not hold verified HTS mappings for them.
-  `lib/tariff/uflpa.ts` tests: 16 passed, 0 failed, including tests that
-  assert the PVC/aluminum/seafood citations point to the 2024 Updates
-  document (not 2022) and that the Esquel citation is 89 FR 87391, not the
-  superseded 89 FR 80588/80586. Red-teamed: an initial draft wrongly
-  attributed PVC/aluminum/seafood to the 2022 Strategy and cited the wrong
-  Federal Register notice for the Esquel additions; both were corrected
-  and reverified. `npx tsc --noEmit`: clean. Full suite: 787/787 passing.
+  new 7 Oct 2026, expanded same day to the 2025 sectors) — for China-origin
+  HTS codes, flags whether the code falls into one of ten FLETF-designated
+  high-priority UFLPA enforcement sectors: cotton (HTS Chapter 52),
+  polysilicon/silica (HTS 2804.61), and tomatoes (HTS 0702/2002), all from
+  the original June 17, 2022 FLETF Strategy; PVC (HTS 3904), aluminum (HTS
+  Chapter 76), and seafood (HTS Chapter 03), added two years later by the
+  separate "2024 Updates to the Strategy" (July 9, 2024); and caustic soda
+  (HTS 2815), copper (HTS Chapter 74), lithium (HTS 2825.20/2836.91), and
+  steel (HTS Chapter 72), added a year after that by the "2025 Updates to
+  the Strategy" (Aug. 19, 2025) — three separate dated documents, cited
+  distinctly, never folded into one another. Jujubes/red dates, the 2025
+  Strategy's eleventh new sector, is deliberately left unmapped: it has no
+  single bounded HTS line (it shares catch-all dried-fruit subheading
+  0813.40.90 with tamarinds, papayas, and other unrelated fruit), so a
+  chapter/heading match there would be a guess, not a verified mapping —
+  same treatment as apparel. Never a computed duty and never a
+  forced-labor determination for a specific shipment
+  (`determinesForcedLaborStatus` is always `false`) — it only says the HTS
+  code sits in a sector FLETF has named high-priority, citing real UFLPA
+  Entity List examples (Hoshine Silicon Industry, listed June 21, 2022
+  after a June 2021 CBP Withhold Release Order; Esquel Group and its
+  Changji/Turpan/Guangdong subsidiaries, listed effective Nov. 1, 2024 per
+  89 FR 87391/FR Doc 2024-25423; Xinjiang Zhongtai Group/Chemical for
+  caustic soda, Xinjiang Nonferrous Metals/Zijin Mining for copper, and
+  Xinjiang Hoshine/Xinjiang Nonferrous for lithium, all named in the 2025
+  Strategy report). `lib/tariff/uflpa.ts` tests: 24 passed, 0 failed,
+  including tests that the 2025-sector citations point to the Aug. 19,
+  2025 document (not 2022 or 2024), that Chapter 73 downstream steel
+  articles don't spuriously match the Chapter-72 steel sector, and that
+  jujubes stay unmapped. Red-teamed: an initial draft wrongly attributed
+  PVC/aluminum/seafood to the 2022 Strategy and cited the wrong Federal
+  Register notice for the Esquel additions; both were corrected and
+  reverified. `npx tsc --noEmit`: clean. Full suite: 795/795 passing.
 
 IEEPA
 or "reciprocal" tariffs (struck down by the Supreme Court in 2026; the
@@ -207,7 +215,8 @@ excluded so Cante stays accurate to current law), Section 232 derivative
 products outside the verified June 2025 appliance subset, USMCA/FTA
 rules-of-origin qualification beyond a claimed programme symbol, the full
 Section 338 annex beyond the verified lines above, and forced-labor
-(UFLPA) measures. A Chapter 99 cross-reference this table doesn't
+(UFLPA) measures beyond the ten HTS-mappable sectors in `lib/tariff/uflpa.ts`
+(jujubes/red dates remains unmapped — see above). A Chapter 99 cross-reference this table doesn't
 recognize is surfaced in `unresolvedMeasures` and voids the total (never
 silently under-states it) — see `lib/tariff/stack.ts` for the full policy.
 
@@ -366,6 +375,24 @@ to the alert as code-written coverage caveats.
 
 ## Status
 
+- **UFLPA advisory expanded to the 2025 high-priority sectors (7 Oct 2026,
+  same-day follow-up).** `lib/tariff/uflpa.ts` now maps 10 of FLETF's 12
+  designated high-priority sectors, up from 6: added caustic soda (HTS
+  2815), copper (HTS Chapter 74), lithium (HTS 2825.20/2836.91), and steel
+  (HTS Chapter 72) from the "2025 Updates to the Strategy" (Aug. 19, 2025)
+  — a third distinct dated FLETF document, cited separately from the 2022
+  and 2024 Strategy documents already in the table. Jujubes/red dates, the
+  2025 Strategy's eleventh new sector, is deliberately left unmapped: no
+  bounded HTS line exists for it (it shares catch-all dried-fruit
+  subheading 0813.40.90 with unrelated fruit), so this engine's
+  "resolve to a verified citation or say NEEDS_REVIEW, never guess"
+  principle keeps it out rather than attaching it to a shared heading.
+  Added 10 new tests (24/24 passing in `lib/tariff/uflpa.test.ts`),
+  including that Chapter 73 downstream steel articles don't spuriously
+  match the new Chapter-72 steel sector and that each 2025-sector citation
+  points to the Aug. 19, 2025 document specifically. `npx tsc --noEmit`:
+  clean. Full suite: 795/795 passing. Independent red-team review
+  dispatched and passed before this push.
 - **UFLPA (forced-labor) high-priority-sector advisory added (7 Oct 2026).**
   `lib/tariff/uflpa.ts` is new: for China-origin HTS codes, flags whether
   the code falls in one of six FLETF-designated high-priority UFLPA

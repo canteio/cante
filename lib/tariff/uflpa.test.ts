@@ -37,6 +37,44 @@ test("flags seafood (Chapter 3) from China", () => {
   assert.deepEqual(result.map((r) => r.sector), ["Seafood"]);
 });
 
+test("flags caustic soda (heading 2815) from China", () => {
+  const result = lookupUflpaAdvisories("2815.11.00.00", "CN");
+  assert.deepEqual(result.map((r) => r.sector), ["Caustic soda"]);
+  assert.ok(result[0].citation.includes("2025 Updates"));
+});
+
+test("flags copper (Chapter 74) from China", () => {
+  const result = lookupUflpaAdvisories("7408.11.30.00", "CN");
+  assert.deepEqual(result.map((r) => r.sector), ["Copper"]);
+});
+
+test("flags lithium carbonate (2836.91) and lithium hydroxide (2825.20) from China", () => {
+  const carbonate = lookupUflpaAdvisories("2836.91.00.00", "CN");
+  assert.deepEqual(carbonate.map((r) => r.sector), ["Lithium"]);
+  const hydroxide = lookupUflpaAdvisories("2825.20.00.00", "CN");
+  assert.deepEqual(hydroxide.map((r) => r.sector), ["Lithium"]);
+});
+
+test("does NOT flag an unrelated Chapter 28 inorganic chemical as lithium", () => {
+  const result = lookupUflpaAdvisories("2805.11.00.00", "CN");
+  assert.equal(result.some((r) => r.sector === "Lithium"), false);
+});
+
+test("flags steel (Chapter 72) from China, independent of Section 232 steel duty", () => {
+  const result = lookupUflpaAdvisories("7208.10.15.00", "CN");
+  assert.deepEqual(result.map((r) => r.sector), ["Steel"]);
+});
+
+test("does NOT flag Chapter 73 downstream steel articles as the Chapter-72 steel sector", () => {
+  const result = lookupUflpaAdvisories("7306.30.10.00", "CN");
+  assert.equal(result.some((r) => r.sector === "Steel"), false);
+});
+
+test("does NOT flag jujubes/red dates — no bounded HTS line is mapped", () => {
+  const result = lookupUflpaAdvisories("0813.40.90.00", "CN");
+  assert.deepEqual(result, []);
+});
+
 test("does NOT flag a non-high-priority HTS code from China", () => {
   const result = lookupUflpaAdvisories("8544.42.90.00", "CN");
   assert.deepEqual(result, []);
@@ -66,7 +104,7 @@ test("every table entry carries citations tied to a specific named FLETF strateg
     assert.ok(entry.citation.length > 10);
     assert.ok(entry.htsPrefixes.length > 0);
     assert.ok(
-      entry.citation.includes("2022") || entry.citation.includes("2024"),
+      entry.citation.includes("2022") || entry.citation.includes("2024") || entry.citation.includes("2025"),
       `citation for ${entry.sector} must name a specific dated FLETF strategy document, got: ${entry.citation}`,
     );
   }
@@ -93,6 +131,17 @@ test("cotton/tomatoes/polysilicon cite the original June 17, 2022 Strategy", () 
   }
 });
 
+test("caustic soda/copper/lithium/steel cite the 2025 Updates, not an earlier document", () => {
+  const sectors2025 = UFLPA_HIGH_PRIORITY_SECTORS.filter((e) =>
+    ["Caustic soda", "Copper", "Lithium", "Steel"].includes(e.sector),
+  );
+  assert.equal(sectors2025.length, 4);
+  for (const entry of sectors2025) {
+    assert.ok(entry.citation.includes("2025 Updates"), `${entry.sector} must cite the 2025 Updates document`);
+    assert.ok(entry.citation.includes("Aug. 19, 2025"), `${entry.sector} must cite the Aug. 19, 2025 publish date`);
+  }
+});
+
 test("Esquel entity example cites the correct Federal Register notice (89 FR 87391, not 89 FR 80588)", () => {
   const cotton = UFLPA_HIGH_PRIORITY_SECTORS.find((e) => e.sector === "Cotton and cotton products");
   const examples = cotton?.listedEntityExamples?.join(" ") ?? "";
@@ -100,8 +149,9 @@ test("Esquel entity example cites the correct Federal Register notice (89 FR 873
   assert.ok(!examples.includes("80588"));
 });
 
-test("exposes a non-empty scope caveat distinguishing the 2022 and 2024 strategy documents and naming later unmodeled sectors", () => {
-  assert.ok(UFLPA_SCOPE_CAVEAT.includes("does not hold verified HTS mappings"));
+test("exposes a non-empty scope caveat distinguishing the 2022, 2024, and 2025 strategy documents and naming the unmapped jujube sector", () => {
+  assert.ok(UFLPA_SCOPE_CAVEAT.includes("2025 Updates"));
   assert.ok(UFLPA_SCOPE_CAVEAT.includes("2024 Updates"));
+  assert.ok(UFLPA_SCOPE_CAVEAT.toLowerCase().includes("jujube"));
   assert.ok(UFLPA_SCOPE_CAVEAT.toLowerCase().includes("steel"));
 });
