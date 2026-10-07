@@ -1,15 +1,18 @@
+import coverageSnapshot from "./section301-coverage.json";
+
 /**
- * Section 301 (China) Chapter 99 cross-reference table.
+ * Section 301 (China): live USITC references plus the comprehensive USITC
+ * China Tariffs coverage snapshot, resolved through the verified rate table.
  *
  * The USITC HTS row for a China-origin classification often carries an
  * `additionalDuties` cross-reference like "See 9903.88.03" — a pointer into
  * subchapter III of HTS Chapter 99, not a number lib/tariff/rates.ts can
- * compute with. This file is the first piece of real reference data that
+ * compute with. The verified rate table
  * resolves those pointers to an actual stacked rate, with the Federal
  * Register notice that imposed it, so a caller can say *why* a number is
  * what it is instead of just printing it.
  *
- * Scope, stated plainly: this table covers the four China Section 301
+ * Scope, stated plainly: the rate table covers the four China Section 301
  * "List" actions under USTR's technology-transfer investigation (the
  * 9903.88.xx headings). It does NOT cover Section 232 steel/aluminum/auto
  * derivatives, USMCA/FTA rules-of-origin qualification, AD/CVD orders, or
@@ -17,7 +20,10 @@
  * and are deliberately left unresolved rather than guessed at. See
  * `lib/tariff/stack.ts` for how an unresolved measure is reported.
  *
- * Every entry below is a verified historical fact (list composition,
+ * The comprehensive coverage snapshot also retains newer headings whose rates
+ * are not in this table; those remain explicitly unresolved in the stack.
+ *
+ * Every rate entry below is a verified historical fact (list composition,
  * in-force rate, effective date, Federal Register citation), checked
  * against USTR and Federal Register primary sources. Rates that were
  * modified after initial imposition reflect the *current* in-force rate,
@@ -89,20 +95,34 @@ export const SECTION_301_CHINA_MEASURES: Record<string, Section301Measure> = {
     ratePercent: 0.075,
     effectiveDate: "2020-02-14",
     federalRegisterCitations: [
-      "84 FR 43304 (August 20, 2019) — initial 15% effective 2019-09-01",
+      "84 FR 43304 (August 20, 2019) — initially announced 10%",
+      "84 FR 45821 — raised initial collection rate to 15% effective 2019-09-01",
       "85 FR 3741 (January 22, 2020) — reduced to 7.5% effective 2020-02-14 (Phase One agreement)",
     ],
     note: "Imposed at 15% on 2019-09-01, reduced to 7.5% effective 2020-02-14 under the US-China Phase One deal. Still in force at 7.5%.",
   },
   "9903.88.04": {
     chapter99Code: "9903.88.04",
+    list: "China Section 301 – List 3 (U.S. note 20(g))",
+    country: "CN",
+    status: "active",
+    ratePercent: 0.25,
+    effectiveDate: "2019-05-10",
+    federalRegisterCitations: [
+      "83 FR 47974 (September 21, 2018) — initial 10% effective 2018-09-24",
+      "84 FR 20459 (May 9, 2019) — increased to 25% effective 2019-05-10",
+    ],
+    note: "Active companion List 3 heading for the subheadings enumerated in U.S. note 20(g); increased from 10% to 25% effective 2019-05-10.",
+  },
+  "9903.88.16": {
+    chapter99Code: "9903.88.16",
     list: "China Section 301 – List 4B",
     country: "CN",
     status: "suspended",
     ratePercent: null,
-    effectiveDate: "2019-12-18",
-    federalRegisterCitations: ["84 FR 69447 (December 18, 2019) — suspended indefinitely, never took effect"],
-    note: "List 4B (the remaining ~$160B tranche) was announced and then suspended before its scheduled December 15, 2019 start; it has never been collected.",
+    effectiveDate: "2019-12-15",
+    federalRegisterCitations: ["84 FR 69447 (December 18, 2019) — suspended indefinitely as of its planned 2019-12-15 effective date"],
+    note: "List 4B (Annex C of 84 FR 43304) was suspended before collection began; heading 9903.88.16 has never been active.",
   },
 };
 
@@ -124,4 +144,25 @@ export function extractChapter99Refs(additionalDuties: string | null | undefined
 /** Look up a known Section 301 measure by its Chapter 99 heading, or null if we have no record of it. */
 export function lookupSection301Measure(chapter99Code: string): Section301Measure | null {
   return SECTION_301_CHINA_MEASURES[chapter99Code] ?? null;
+}
+
+/** Comprehensive USITC China Tariffs snapshot; periodically regenerate using
+ * scripts/generate-section301-coverage.ts. Source URL and printed Last Updated
+ * date are embedded in the generated JSON. A stale snapshot can miss revisions;
+ * absence is unresolved, and product-specific exclusions still need review.
+ * The snapshot maps coverage only; rates remain in SECTION_301_CHINA_MEASURES.
+ */
+export const SECTION_301_COVERAGE_CITATION =
+  `USITC China Tariffs (Last Updated ${coverageSnapshot.lastUpdated}) — ${coverageSnapshot.sourceUrl}`;
+
+export function lookupSection301Coverage(htsCode: string): { chapter99Code: string; matchedCode: string } | null {
+  if (!/^(?:\d{8}|\d{10}|\d{4}\.\d{2}\.\d{2}(?:\.?\d{2})?)$/.test(htsCode)) return null;
+  const digits = htsCode.replace(/\./g, "");
+  const coverage: Readonly<Record<string, string>> = coverageSnapshot.coverage;
+  // Never infer an eight-digit parent's coverage from one statistical child.
+  // Exact ten-digit coverage overrides an eight-digit heading when both exist.
+  for (const key of [digits, digits.slice(0, 8)]) {
+    if (coverage[key]) return { chapter99Code: coverage[key], matchedCode: key };
+  }
+  return null;
 }

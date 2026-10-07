@@ -84,7 +84,8 @@ export function AccountMenu({
             <Brain size={14} strokeWidth={1.75} />
             Memory & Facts
           </Link>
-          <Link href="/logout" role="menuitem" className="account-item" onClick={close}>
+          <div className="account-divider" />
+          <Link href="/logout" role="menuitem" className="account-item account-item-danger" onClick={close}>
             <LogOut size={14} strokeWidth={1.75} />
             Sign out
           </Link>

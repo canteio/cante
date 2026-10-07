@@ -4,7 +4,7 @@ import { parseBusinessImpact as parse, evaluateBusinessImpact as evaluate, summa
 import type { StackedDutyResult } from "./stack";
 const header = "sku,hts_code,country_of_origin,supplier,annual_import_value,current_duty_rate";
 const input = (rate = "7.5", value = "1000") => `${header}\nA,0101.21.00.10,CA,Acme,${value},${rate}`;
-const result = (amount: number | null = 100, rate: number | null = .1, unresolvedMeasures: string[] = []): StackedDutyResult => ({ htsCode: "0101.21.00.10", countryOfOrigin: "CA", totalAmount: amount, totalRatePercent: rate, currency: "USD", components: [], stackingExplanation: [], notEvaluated: [], unresolvedMeasures, adCvdAdvisories: [], usmcaQualification: { status: "not_provided", specialRateRequested: false, explanation: "No evidence" } });
+const result = (amount: number | null = 100, rate: number | null = .1, unresolvedMeasures: string[] = []): StackedDutyResult => ({ htsCode: "0101.21.00.10", countryOfOrigin: "CA", totalAmount: amount, totalRatePercent: rate, currency: "USD", components: [], stackingExplanation: [], notEvaluated: [], unresolvedMeasures, adCvdAdvisories: [], uflpaAdvisories: [], usmcaQualification: { status: "not_provided", specialRateRequested: false, explanation: "No evidence" } });
 test("aliases and exact percentage semantics including zero and blanks", () => {
   for (const [text, expected] of [["7.5", .075], ["7.5%", .075], ["0.075", .00075], ["0", 0], ["100%", 1]] as const) assert.equal(parse(input(text))[0].current_duty_rate, expected);
   for (const bad of ["", "-1", "101", "NaN", "1e2", "0x10", "%"]) assert.equal(parse(input(bad))[0].status, "error");

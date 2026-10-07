@@ -88,26 +88,28 @@ test("the same HTS row from Vietnam does not pick up the China-only Section 301 
   }
 });
 
-test("a China row with no Chapter 99 cross-reference reports no Section 301 applies", async () => {
-  const restore = stubFetch([{ htsno: "0101.21.00.10", general: "Free" }]);
+test("a China row with no supported Section 301 evidence returns NEEDS_REVIEW instead of a zero", async () => {
+  const restore = stubFetch([{ htsno: "8517.62.00", general: "Free" }]);
   try {
     const result = await computeStackedDuty({
-      htsCode: "0101.21.00.10",
+      htsCode: "8517.62.00",
       countryOfOrigin: "CN",
       value: 5_000,
     });
     assert.ok(result);
     assert.equal(result!.components.length, 1);
-    assert.equal(result!.totalRatePercent, 0);
-    assert.ok(result!.stackingExplanation.some((line) => line.includes("no Chapter 99 cross-reference")));
+    assert.equal(result!.totalRatePercent, null);
+    assert.equal(result!.totalAmount, null);
+    assert.ok(result!.unresolvedMeasures.some((measure) => measure.includes("Section 301 applicability")));
+    assert.ok(result!.stackingExplanation.some((line) => line.includes("remains unresolved")));
   } finally {
     restore();
   }
 });
 
-test("a suspended measure (List 4B) is explained but excluded from the total, never guessed", async () => {
+test("a suspended List 4B measure is explained but excluded from the total", async () => {
   const restore = stubFetch([
-    { htsno: "6109.10.00.00", general: "16.5%", additionalDuties: "9903.88.04" },
+    { htsno: "6109.10.00.00", general: "16.5%", additionalDuties: "9903.88.16" },
   ]);
   try {
     const result = await computeStackedDuty({
@@ -668,6 +670,254 @@ test("an impossible ISO-shaped date is rejected by the shared strict validator",
     assert.equal(result.components[1].amount, null, "invalid date must not select a historical legal regime");
     assert.equal(result.totalAmount, null);
     assert.ok(result.unresolvedMeasures.some((measure) => measure.includes("entry-date Section 232 treatment")));
+  } finally {
+    restore();
+  }
+});
+
+// --- Comprehensive USITC China Tariffs snapshot fallback ---
+
+test("China-origin athletic footwear (6404.11) with an empty additionalDuties row still picks up the verified List 4A snapshot", async () => {
+  const restore = stubFetch([{ htsno: "6404.11.90.20", general: "20%", additionalDuties: null }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "6404.11.90.20",
+      countryOfOrigin: "CN",
+      value: 150_000,
+    });
+    assert.ok(result);
+    assert.equal(result.components.length, 2);
+    assert.equal(result.components[0].ratePercent, 0.2);
+    assert.equal(result.components[1].type, "section301");
+    assert.equal(result.components[1].ratePercent, 0.075);
+    assert.equal(result.components[1].amount, 11_250);
+    assert.equal(result.totalRatePercent, 0.275);
+    assert.equal(result.totalAmount, 41_250);
+    assert.ok(result.components[1].citation.some((c) => c.includes("USITC China Tariffs")));
+    assert.ok(result.stackingExplanation.some((line) => line.includes("USITC China Tariffs")));
+  } finally {
+    restore();
+  }
+});
+
+test("China-origin speakers (8518.22) with an empty additionalDuties row still picks up the verified List 4A snapshot", async () => {
+  const restore = stubFetch([{ htsno: "8518.22.00.00", general: "Free", additionalDuties: null }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "8518.22.00.00",
+      countryOfOrigin: "CN",
+      value: 50_000,
+    });
+    assert.ok(result);
+    assert.equal(result.components.length, 2);
+    assert.equal(result.components[0].amount, 0);
+    assert.equal(result.components[1].type, "section301");
+    assert.equal(result.components[1].ratePercent, 0.075);
+    assert.equal(result.components[1].amount, 3_750);
+    assert.equal(result.totalRatePercent, 0.075);
+    assert.equal(result.totalAmount, 3_750);
+  } finally {
+    restore();
+  }
+});
+
+test("the snapshot table is never consulted when the HTS row already has its own Chapter 99 text", async () => {
+  const restore = stubFetch([
+    { htsno: "6404.11.90.20", general: "20%", additionalDuties: "See 9903.88.03" },
+  ]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "6404.11.90.20",
+      countryOfOrigin: "CN",
+      value: 150_000,
+    });
+    assert.ok(result);
+    // Should resolve via the row's own cross-reference (List 3, 25%), not the snapshot (List 4A, 7.5%).
+    assert.equal(result.components[1].ratePercent, 0.25);
+    assert.ok(!result.components[1].label.includes("snapshot"));
+  } finally {
+    restore();
+  }
+});
+
+test("the snapshot table does not apply to a non-China origin", async () => {
+  const restore = stubFetch([{ htsno: "6404.11.90.20", general: "20%", additionalDuties: null }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "6404.11.90.20",
+      countryOfOrigin: "VN",
+      value: 150_000,
+    });
+    assert.ok(result);
+    assert.equal(result.components.length, 1);
+  } finally {
+    restore();
+  }
+});
+
+// --- Section 338 Canada duties (new Aug 22, 2026) ---
+
+test("Canada-origin whisky (2208.30) gets the verified 50% Section 338 alcohol duty", async () => {
+  const restore = stubFetch([{ htsno: "2208.30.60.85", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "2208.30.60.85",
+      countryOfOrigin: "CA",
+      value: 20_000,
+      importDate: "2026-09-01",
+    });
+    assert.ok(result);
+    const s338 = result.components.find((c) => c.type === "section338");
+    assert.ok(s338);
+    assert.equal(s338!.ratePercent, 0.5);
+    assert.equal(s338!.amount, 10_000);
+    assert.ok(s338!.citation.some((c) => c.includes("2026-14991")));
+    assert.ok(result.stackingExplanation.some((line) => line.includes("19 U.S.C. 1338")));
+  } finally {
+    restore();
+  }
+});
+
+test("Canada-origin dairy (0402.10) gets the verified 50% Section 338 dairy duty", async () => {
+  const restore = stubFetch([{ htsno: "0402.10.05.00", general: "10%" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "0402.10.05.00",
+      countryOfOrigin: "CA",
+      value: 8_000,
+      importDate: "2026-09-01",
+    });
+    assert.ok(result);
+    const s338 = result.components.find((c) => c.type === "section338");
+    assert.ok(s338);
+    assert.equal(s338!.ratePercent, 0.5);
+    assert.equal(s338!.amount, 4_000);
+  } finally {
+    restore();
+  }
+});
+
+test("Section 338 is not applied before its verified first-collection date of 2026-08-22", async () => {
+  const restore = stubFetch([{ htsno: "2208.30.60.85", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "2208.30.60.85",
+      countryOfOrigin: "CA",
+      value: 20_000,
+      importDate: "2026-08-01",
+    });
+    assert.ok(result);
+    const s338 = result.components.find((c) => c.type === "section338");
+    assert.ok(s338);
+    assert.equal(s338!.amount, null);
+    assert.ok(result.unresolvedMeasures.some((m) => m.includes("before Section 338 effective date")));
+    assert.equal(result.totalAmount, null);
+  } finally {
+    restore();
+  }
+});
+
+test("Section 338 does not apply to a non-Canada origin even on a listed HTS code", async () => {
+  const restore = stubFetch([{ htsno: "2208.30.60.85", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "2208.30.60.85",
+      countryOfOrigin: "FR",
+      value: 20_000,
+      importDate: "2026-09-01",
+    });
+    assert.ok(result);
+    assert.ok(!result.components.some((c) => c.type === "section338"));
+  } finally {
+    restore();
+  }
+});
+
+test("Section 338 is skipped when a Section 232 basic-article measure already matched the same code", async () => {
+  // A hypothetical Canada-origin steel code that also happens to be covered
+  // by this calculator's own Section 232 basic-article table (7208 is on
+  // the verified steel list) — Section 232 should win; Section 338 must not
+  // double-stack on top of it, mirroring each proclamation's own carve-out.
+  const restore = stubFetch([{ htsno: "7208.10.15.00", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "7208.10.15.00",
+      countryOfOrigin: "CA",
+      value: 10_000,
+      importDate: "2026-09-01",
+    });
+    assert.ok(result);
+    assert.ok(result.components.some((c) => c.type === "section232"));
+    assert.ok(!result.components.some((c) => c.type === "section338"));
+  } finally {
+    restore();
+  }
+});
+
+// --- Section 338 import-ban conversion (Sept 29, 2026) ---
+
+test("Section 338 is withheld as unresolved, not a confident 50%, for goods imported on the Sept 29, 2026 ban-conversion date", async () => {
+  // Uses 2203.00.00 (beer/wine), a verified alcohol Annex II line
+  // unaffected by the Sept 15, 2026 amendment's removal of 2208.30.60/
+  // 2208.70.00 — see TARIFF_AUDIT.md and section338.ts for why those two
+  // specific lines are unresolved on/after Sept 15, independent of the
+  // Sept 29 ban-conversion date this test targets.
+  const restore = stubFetch([{ htsno: "2203.00.00.00", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "2203.00.00.00",
+      countryOfOrigin: "CA",
+      value: 20_000,
+      importDate: "2026-09-29",
+    });
+    assert.ok(result);
+    const s338 = result.components.find((c) => c.type === "section338");
+    assert.ok(s338);
+    assert.equal(s338!.ratePercent, null);
+    assert.equal(s338!.amount, null);
+    assert.ok(result.unresolvedMeasures.some((m) => m.includes("ban-conversion date")));
+    assert.equal(result.totalAmount, null);
+    assert.equal(result.totalRatePercent, null);
+    assert.ok(s338!.citation.some((c) => c.includes("2026-18835")));
+    assert.ok(result.stackingExplanation.some((line) => line.includes("import ban") && line.includes("9903.03.12")));
+  } finally {
+    restore();
+  }
+});
+
+test("Section 338 still resolves confidently at 50% for an import date just before the ban-conversion date", async () => {
+  const restore = stubFetch([{ htsno: "2203.00.00.00", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "2203.00.00.00",
+      countryOfOrigin: "CA",
+      value: 20_000,
+      importDate: "2026-09-28",
+    });
+    assert.ok(result);
+    const s338 = result.components.find((c) => c.type === "section338");
+    assert.ok(s338);
+    assert.equal(s338!.ratePercent, 0.5);
+    assert.equal(s338!.amount, 10_000);
+  } finally {
+    restore();
+  }
+});
+
+test("Section 338 ban-conversion unresolved state correctly cites the dairy basket's own ban proclamation (11062), not the alcohol one", async () => {
+  const restore = stubFetch([{ htsno: "0402.10.05.00", general: "10%" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "0402.10.05.00",
+      countryOfOrigin: "CA",
+      value: 8_000,
+      importDate: "2026-10-01",
+    });
+    assert.ok(result);
+    const s338 = result.components.find((c) => c.type === "section338");
+    assert.ok(s338);
+    assert.ok(s338!.citation.some((c) => c.includes("2026-18836")));
+    assert.ok(!s338!.citation.some((c) => c.includes("2026-18835")));
   } finally {
     restore();
   }

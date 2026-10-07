@@ -107,14 +107,118 @@ What it computes for real today:
   steel/aluminum, e.g. washing machines) — that list is actively expanding
   via BIS's inclusions process and a snapshot of it would misrepresent
   coverage as complete.
+- **Section 301 supplemental fallback** (`lookupSection301Supplemental`) —
+  matches only cited eight-digit subheadings (including statistical children)
+  or an exact ten-digit ruling classification, when the row's additional-duty
+  text is empty. No six-digit family matching. USTR 84 FR 43304 Annex A
+  supports 6404.11.20/.71/.79/.81/.89/.90 as active List 4A; Annex C's
+  .41/.49/.51/.59/.61/.69/.75/.85 receive no active fallback and remain
+  review-needed without a row reference. List 4B is suspended under
+  9903.88.16 (84 FR 69447); CBP CSMS #19-000238 and 84 FR 20459 establish
+  9903.88.04 as an active List 3 companion heading at the current 25% rate.
+  Missing membership evidence is explicitly unresolved. Both reference and
+  supplemental paths withhold the current rate for import dates before its
+  effective date. Future entry dates also withhold aggregate totals because
+  later legal changes are unknowable. This table does not implement a
+  historical rate schedule or establish comprehensive coverage.
+- **Section 338 Canada duties** (`lib/tariff/section338.ts`) — new Aug 22,
+  2026 additional 50% ad valorem duty on Canada-origin goods under 19 U.S.C.
+  1338, imposed by three parallel proclamations (alcohol, dairy, and a
+  motor-vehicle-basket proclamation that is mostly non-vehicle consumer/
+  industrial goods) citing FR docs 2026-14991/14992/14997, headings
+  9903.03.12/.13/.14 respectively. The matching table (`section338.ts`) is
+  now built directly from each proclamation's Annex II line list
+  (`lib/tariff/section338-annexes.json`), covering the full original
+  (pre-Sept-15) combined annex: 63 alcohol + 52 dairy + 439
+  motor-vehicle-basket = 554 eight/ten-digit lines — rather than a small
+  set of hand-picked broad HTS prefixes. A 2026-10-06 audit
+  (`TARIFF_AUDIT.md`) found the prior hand-picked table had an incorrect
+  heading-renumbering claim and gaps against the real Annex. Two alcohol
+  lines (2208.30.60.xx, 2208.70.00.xx) that a Sept 15, 2026 amendment
+  removed from broad coverage are explicitly withheld as unresolved for
+  entries on/after that date, since this module does not hold a verified
+  narrower replacement for them; the amendment's other additions
+  ("septemberAlcoholAdditions" in the JSON file) are left unwired for the
+  same reason — an unlisted or ambiguous line returns `null`, never a
+  guess. The same amendment also permits the alcohol basket's duty to
+  stack with Section 232 (dairy/motor exclusions remain unchanged) — a
+  Canada-origin code matching both measures on/after that date is reported
+  as unresolved rather than silently excluded, since this engine does not
+  hold a verified computation for that stack.
+  Automatically skipped when a Section 232 basic-article or derivative
+  measure already matched the same code, mirroring each proclamation's own
+  carve-out for Section-232-covered goods. For goods imported on or after
+  **Sept 29, 2026**, three further Sept 8, 2026 proclamations (11061/
+  2026-18835 alcohol, 11062/2026-18836 dairy, 11063/2026-18837 motor
+  vehicles) convert each basket's 50% duty into an outright import ban for
+  lines in a separate ban Annex Cante does not hold — rather than keep
+  guessing the pre-ban 50% rate past that date, the engine now reports
+  that component as explicitly unresolved (`banDateAmbiguous`), citing the
+  relevant ban proclamation, and withholds the aggregate total for that
+  row. This is the reliability principle in practice: a known legal status
+  change with no verified Annex data must fail closed, not keep returning
+  a stale number.
 
-What it deliberately does NOT compute yet, and says so in every response's
-`notEvaluated` list rather than guessing: Section 232 derivative-product
-tariffs, USMCA/FTA rules-of-origin qualification beyond a claimed
-programme symbol, AD/CVD scope, and forced-labor (UFLPA) measures. A
-Chapter 99 cross-reference this table doesn't recognize is surfaced in
-`unresolvedMeasures` and voids the total (never silently under-states it) —
-see `lib/tariff/stack.ts` for the full policy.
+What it deliberately does NOT compute: full-value AD/CVD cash-deposit
+amounts (Commerce's own orders say the HTS code is "for convenience only"
+and the written scope and exporter-specific rate control — see
+`lib/tariff/adcvd.ts` for why this is a scope decision, not a gap). The
+AD/CVD advisory table now covers 10 real, cited China/Malaysia/Serbia/
+Turkey/Vietnam orders (steel nails, steel threaded rod, aluminum
+extrusions, wooden bedroom furniture, quartz surface products, and the
+five-country mattress order) in addition to the existing solar cell and
+wood flooring entries, each carrying its case number, all-others/
+country-wide rate as of a specific cited Federal Register determination,
+and a scope note — always flagged `computed: false`, never a dollar
+amount, because the order's written scope and exporter-specific rate
+control, not the HTS code.
+
+- **Forced-labor (UFLPA) high-priority-sector advisory** (`lib/tariff/uflpa.ts`,
+  new 7 Oct 2026, expanded same day to the 2025 sectors) — for China-origin
+  HTS codes, flags whether the code falls into one of ten FLETF-designated
+  high-priority UFLPA enforcement sectors: cotton (HTS Chapter 52),
+  polysilicon/silica (HTS 2804.61), and tomatoes (HTS 0702/2002), all from
+  the original June 17, 2022 FLETF Strategy; PVC (HTS 3904), aluminum (HTS
+  Chapter 76), and seafood (HTS Chapter 03), added two years later by the
+  separate "2024 Updates to the Strategy" (July 9, 2024); and caustic soda
+  (HTS 2815), copper (HTS Chapter 74), lithium (HTS 2825.20/2836.91), and
+  steel (HTS Chapter 72), added a year after that by the "2025 Updates to
+  the Strategy" (Aug. 19, 2025) — three separate dated documents, cited
+  distinctly, never folded into one another. Jujubes/red dates, the 2025
+  Strategy's eleventh new sector, is deliberately left unmapped: it has no
+  single bounded HTS line (it shares catch-all dried-fruit subheading
+  0813.40.90 with tamarinds, papayas, and other unrelated fruit), so a
+  chapter/heading match there would be a guess, not a verified mapping —
+  same treatment as apparel. Never a computed duty and never a
+  forced-labor determination for a specific shipment
+  (`determinesForcedLaborStatus` is always `false`) — it only says the HTS
+  code sits in a sector FLETF has named high-priority, citing real UFLPA
+  Entity List examples (Hoshine Silicon Industry, listed June 21, 2022
+  after a June 2021 CBP Withhold Release Order; Esquel Group and its
+  Changji/Turpan/Guangdong subsidiaries, listed effective Nov. 1, 2024 per
+  89 FR 87391/FR Doc 2024-25423; Xinjiang Zhongtai Group/Chemical for
+  caustic soda, Xinjiang Nonferrous Metals/Zijin Mining for copper, and
+  Xinjiang Hoshine/Xinjiang Nonferrous for lithium, all named in the 2025
+  Strategy report). `lib/tariff/uflpa.ts` tests: 24 passed, 0 failed,
+  including tests that the 2025-sector citations point to the Aug. 19,
+  2025 document (not 2022 or 2024), that Chapter 73 downstream steel
+  articles don't spuriously match the Chapter-72 steel sector, and that
+  jujubes stay unmapped. Red-teamed: an initial draft wrongly attributed
+  PVC/aluminum/seafood to the 2022 Strategy and cited the wrong Federal
+  Register notice for the Esquel additions; both were corrected and
+  reverified. `npx tsc --noEmit`: clean. Full suite: 795/795 passing.
+
+IEEPA
+or "reciprocal" tariffs (struck down by the Supreme Court in 2026; the
+temporary Section 122 replacement expired July 24, 2026 — deliberately
+excluded so Cante stays accurate to current law), Section 232 derivative
+products outside the verified June 2025 appliance subset, USMCA/FTA
+rules-of-origin qualification beyond a claimed programme symbol, the full
+Section 338 annex beyond the verified lines above, and forced-labor
+(UFLPA) measures beyond the ten HTS-mappable sectors in `lib/tariff/uflpa.ts`
+(jujubes/red dates remains unmapped — see above). A Chapter 99 cross-reference this table doesn't
+recognize is surfaced in `unresolvedMeasures` and voids the total (never
+silently under-states it) — see `lib/tariff/stack.ts` for the full policy.
 
 This is the honest-failure discipline the rest of Cante already follows,
 applied to the specific narrow tool a real prospect asked for: real accuracy
@@ -190,7 +294,8 @@ lib/llm/          types.ts (the seam) · claude-code.ts (works) · api.ts (stub)
 lib/sources/      registry.ts (sources + profile activation) · fetch.ts (JSON/RSS/HTML/CSV parsers)
 lib/screening/    csl.ts · us-trade-controls.ts · us-isf.ts · us-export-controls.ts
 lib/tariff/       insw.ts (INSW / NTR) · rates.ts (live USITC HTS column 1/2) · duty-expression.ts (duty-string parser)
-                   · section301.ts (China 301 List 1-4A reference table) · stack.ts (stacking engine) · usmca.ts
+                   · section301.ts (China 301 List 1-4A + verified supplemental fallback) · section232.ts (steel/aluminum)
+                   · section338.ts (Canada Section 338, new Aug 2026) · adcvd.ts (AD/CVD advisories) · uflpa.ts (UFLPA high-priority-sector advisory) · stack.ts (stacking engine) · usmca.ts
                    · quota-ledger.ts (PI & Quota Ledger)
 lib/substances/   us-chemical-controls.ts (EPA TSCA PFAS/PBT, CA Prop 65)
 lib/documents/    discrepancy.ts (Doc Cross-Check & OCR Engine) · extract-file.ts
@@ -270,6 +375,71 @@ to the alert as code-written coverage caveats.
 
 ## Status
 
+- **UFLPA advisory expanded to the 2025 high-priority sectors (7 Oct 2026,
+  same-day follow-up).** `lib/tariff/uflpa.ts` now maps 10 of FLETF's 12
+  designated high-priority sectors, up from 6: added caustic soda (HTS
+  2815), copper (HTS Chapter 74), lithium (HTS 2825.20/2836.91), and steel
+  (HTS Chapter 72) from the "2025 Updates to the Strategy" (Aug. 19, 2025)
+  — a third distinct dated FLETF document, cited separately from the 2022
+  and 2024 Strategy documents already in the table. Jujubes/red dates, the
+  2025 Strategy's eleventh new sector, is deliberately left unmapped: no
+  bounded HTS line exists for it (it shares catch-all dried-fruit
+  subheading 0813.40.90 with unrelated fruit), so this engine's
+  "resolve to a verified citation or say NEEDS_REVIEW, never guess"
+  principle keeps it out rather than attaching it to a shared heading.
+  Added 10 new tests (24/24 passing in `lib/tariff/uflpa.test.ts`),
+  including that Chapter 73 downstream steel articles don't spuriously
+  match the new Chapter-72 steel sector and that each 2025-sector citation
+  points to the Aug. 19, 2025 document specifically. `npx tsc --noEmit`:
+  clean. Full suite: 795/795 passing. Independent red-team review
+  dispatched and passed before this push.
+- **UFLPA (forced-labor) high-priority-sector advisory added (7 Oct 2026).**
+  `lib/tariff/uflpa.ts` is new: for China-origin HTS codes, flags whether
+  the code falls in one of six FLETF-designated high-priority UFLPA
+  enforcement sectors (cotton, polysilicon/silica, tomatoes — from the
+  original June 17, 2022 Strategy; PVC, aluminum, seafood — from the
+  separate 2024 Updates to the Strategy, July 9, 2024), with real cited
+  UFLPA Entity List examples. Never a computed duty, never a forced-labor
+  determination for a given shipment — `determinesForcedLaborStatus` is
+  hardcoded `false`. Wired additively into `lib/tariff/stack.ts`'s
+  `uflpaAdvisories` field and rendered in the tariff panel UI; it never
+  affects `totalRatePercent`/`totalAmount`. Red-teamed: a first draft
+  wrongly attributed PVC/aluminum/seafood to the 2022 Strategy and cited
+  the wrong Federal Register notice for the Esquel Group UFLPA Entity List
+  addition (89 FR 80588 instead of the correct 89 FR 87391, FR Doc
+  2024-25423, Nov. 1, 2024); both were corrected and reverified by a
+  second independent review before this push. `lib/tariff/uflpa.ts` tests:
+  16/16 passing, including citation-accuracy regression tests.
+  `npx tsc --noEmit`: clean. Full suite: 787/787 passing.
+- **Tariff audit reconciled, live USITC regression test committed (7 Oct
+  2026).** `TARIFF_AUDIT.md`'s 2026-10-06 findings (Section 301 List
+  4A/4B membership corrections, Section 338 Annex II rebuild) were
+  verified integrated at current `HEAD` by direct code inspection, not
+  assumed from commit messages — the audit doc was stale, claiming
+  "integration paused" and "network unreachable" after the fixes had
+  already landed. `lib/tariff/section301-live.test.ts` (three tests that
+  call the real USITC endpoint through `lookupTariff` and assert the
+  6404.11/8518.22/8517.13 Chapter 99 facts against whatever the live
+  schedule returns today — no fixture, no mock) is now committed and
+  passing: 3/3 in this sandbox, reversing the original audit's "local
+  DNS/network restrictions prevent successful live verification" note.
+  Full suite: flaky, see Validation in TARIFF_AUDIT.md (770/771 then
+  771/771 on an unmodified re-run — an intermittent Supabase test-harness
+  clock issue, not a tariff-engine defect).
+  `npx tsc --noEmit`: clean.
+- **AD/CVD advisory table expanded, 10 new cited orders (7 Oct 2026).**
+  Added China steel nails (A-570-909), steel threaded rod (A-570-932),
+  aluminum extrusions (A-570-967), wooden bedroom furniture (A-570-890),
+  quartz surface products (A-570-084), and the five-country mattress order
+  (China A-570-092, Malaysia A-557-818, Serbia A-801-002, Turkey A-489-841,
+  Vietnam A-552-827), each with its real case number, all-others/
+  country-wide rate as of a cited Federal Register determination, and a
+  scope note. Red-teamed against primary sources: case numbers, HTS
+  chapters, and FR volume/year pairings all verified real and correctly
+  matched; no fabricated rates or citations. Two new regression tests
+  guard country-specificity and against over-broad HTS-prefix matching.
+  `lib/tariff/adcvd.ts` tests: 8 passed, 0 failed. `npx tsc --noEmit`:
+  clean.
 - **Public landing page added (21 Aug 2026).** `/` is now a single-viewport
   invite-only landing page adapted from the MotionSites AI Runtime visual
   direction: full-bleed video background, compact rounded nav, request-invite

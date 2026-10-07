@@ -2,14 +2,23 @@ import { quoteDuty, type DutyQuote } from "@/lib/tariff/rates";
 import {
   extractChapter99Refs,
   lookupSection301Measure,
+  lookupSection301Coverage,
+  SECTION_301_COVERAGE_CITATION,
   type Section301Measure,
 } from "@/lib/tariff/section301";
 import {
   lookupSection232BasicArticle,
   lookupSection232Derivative,
 } from "@/lib/tariff/section232";
+import {
+  lookupSection338,
+  SECTION_338_EFFECTIVE_DATE,
+  SECTION_338_IMPORT_BAN_DATE,
+  isAlcoholSection232StackUnresolved,
+} from "@/lib/tariff/section338";
 import { lookupAdCvdAdvisories, type AdCvdAdvisory } from "@/lib/tariff/adcvd";
-import { isStrictIsoDate } from "@/lib/tariff/date";
+import { lookupUflpaAdvisories, UFLPA_SCOPE_CAVEAT, type UflpaAdvisory } from "@/lib/tariff/uflpa";
+import { easternIsoDate, isStrictIsoDate } from "@/lib/tariff/date";
 
 /**
  * The tariff-stacking engine.
@@ -23,7 +32,8 @@ import { isStrictIsoDate } from "@/lib/tariff/date";
  * **Scope of this pass.** Three stackable components are computed for real:
  *   1. Base/Column 1 duty — from the live USITC HTS schedule (lib/tariff/rates.ts).
  *   2. China Section 301 — resolved from the HTS row's own Chapter 99
- *      cross-reference against lib/tariff/section301.ts's verified table of
+ *      cross-reference, or the comprehensive USITC China Tariffs snapshot when
+ *      that field is empty, against lib/tariff/section301.ts's verified table of
  *      List 1-4A measures (which countries and rates these are, Federal
  *      Register citations, effective dates).
  *   3. Section 232 steel/aluminum tariffs — basic articles plus the bounded
@@ -41,7 +51,7 @@ import { isStrictIsoDate } from "@/lib/tariff/date";
  */
 
 export interface StackedDutyComponent {
-  type: "base" | "section301" | "section232";
+  type: "base" | "section301" | "section232" | "section338";
   label: string;
   /** Ad valorem rate on total shipment value. Null for content-value measures. */
   ratePercent: number | null;
@@ -93,12 +103,14 @@ export interface StackedDutyResult {
   stackingExplanation: string[];
   /** Compliance areas this result does NOT evaluate — named, not silently omitted. */
   notEvaluated: string[];
-  /** Chapter 99 cross-references on the HTS row that we found but have no verified data for. */
+  /** Unresolved measures from live references, snapshot coverage, or other applicability gaps. */
   unresolvedMeasures: string[];
   /** Auditable USMCA decision and whether it was allowed to request programme S. */
   usmcaQualification: UsmcaQualificationAudit;
   /** Named AD/CVD leads to verify against the order's actual scope text — never a computed amount. */
   adCvdAdvisories: AdCvdAdvisory[];
+  /** FLETF high-priority UFLPA sector matches — never a forced-labor determination, see lib/tariff/uflpa.ts. */
+  uflpaAdvisories: UflpaAdvisory[];
 }
 
 const SECTION232_FULL_VALUE_REGIME_EFFECTIVE_DATE = "2026-04-06";
@@ -111,7 +123,10 @@ const STANDING_NOT_EVALUATED = [
   "Russian aluminum smelt/cast exposure when Russia is not the declared country of origin (the inputs do not collect smelt/cast countries)",
   "USMCA rules-of-origin analysis (a special rate is used only from an explicit caller-supplied verified decision and supporting details)",
   "Anti-dumping/countervailing duty (AD/CVD) exact scope/rate determination (named leads surfaced in adCvdAdvisories below are advisory only, never a computed amount)",
-  "Forced-labor measures (e.g. UFLPA detentions/withhold-release orders)",
+  `Forced-labor measures (UFLPA): this engine now flags whether the HTS code falls in one of FLETF's ten HTS-mappable high-priority enforcement sectors for Chinese-origin goods (see uflpaAdvisories below) — it does NOT determine actual Xinjiang production or UFLPA Entity List membership, which requires supply-chain evidence no HTS code can supply. ${UFLPA_SCOPE_CAVEAT}`,
+  "Section 338 Canada duties outside the small verified alcohol/dairy/motor-vehicle-basket HTS lines in lib/tariff/section338.ts (the actual combined annex across all three proclamations covers roughly 554 eight-digit lines; only a verified subset is resolved here)",
+  "Section 338 Canada duties for goods imported on or after Sept 29, 2026: three Sept 8, 2026 proclamations convert each basket's 50% duty into an outright import ban for lines in a separate ban Annex Cante does not hold; this is reported as unresolved per matched line rather than guessed as a 50% duty or a ban (see section338.ts banDateAmbiguous)",
+  "Section 338 Canada duties' Section 232 / civil-aircraft exclusion is applied only when this calculator's own Section 232 lookup already matched the same code — a code covered by Section 232 under data Cante does not have would be incorrectly stacked rather than excluded",
 ];
 
 export interface StackDutyInput {
@@ -211,6 +226,13 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
   if (input.importDate) {
     if (isStrictIsoDate(input.importDate)) {
       importDate = input.importDate;
+      const today = easternIsoDate();
+      if (importDate > today) {
+        unresolvedMeasures.push(`Future import date ${importDate}: rates after ${today} are not yet established`);
+        stackingExplanation.push(
+          `Import date ${importDate} is after today's date (${today}). Components below show only current published rates for context; aggregate totals are withheld because later legal changes cannot be known yet.`,
+        );
+      }
     } else {
       stackingExplanation.push(
         `Import date "${input.importDate}" is not a usable ISO date (YYYY-MM-DD), so it was ignored. Every rate below reflects today's current in-force rate, not the rate in effect on any particular historical or future date.`,
@@ -256,30 +278,38 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
         `No Chapter 99 cross-reference was published on this HTS row, and country of origin "${country}" is not China, so no Section 301 measure applies.`,
       );
     }
-  } else if (refs.length === 0) {
-    stackingExplanation.push(
-      "Country of origin is China, but the HTS row published no Chapter 99 cross-reference, so no Section 301 List measure applies to this code.",
-    );
   } else {
-    for (const ref of refs) {
+    const coverage = !base.additionalDutiesNote?.trim()
+      ? lookupSection301Coverage(input.htsCode)
+      : null;
+    const resolvedRefs = coverage ? [coverage.chapter99Code] : refs;
+    const provenance = coverage
+      ? `${SECTION_301_COVERAGE_CITATION} (matched HTS ${coverage.matchedCode})`
+      : "the live HTS row's Chapter 99 cross-reference";
+    if (coverage) stackingExplanation.push(`Section 301 coverage resolved from ${provenance}. The live row's additionalDuties field was empty. This snapshot requires periodic re-sync; product-specific exclusions are not evaluated.`);
+    if (!resolvedRefs.length) {
+      unresolvedMeasures.push("Section 301 applicability: no supported Chapter 99 reference or USITC snapshot match");
+      stackingExplanation.push("Country of origin is China, but the live row has no supported Chapter 99 reference and no eligible USITC China Tariffs snapshot fallback was found. This remains unresolved, not a zero duty or an exemption.");
+    }
+    for (const ref of resolvedRefs) {
       const measure: Section301Measure | null = lookupSection301Measure(ref);
       if (!measure) {
         unresolvedMeasures.push(ref);
         stackingExplanation.push(
-          `HTS row cross-references Chapter 99 measure ${ref}, which Cante does not yet have verified reference data for. This is NOT included in the total — treat the total below as a floor, not the full stacked rate.`,
+          `Coverage source (${provenance}) references Chapter 99 measure ${ref}, which Cante does not yet have verified reference data for. This is NOT included in the total — treat the total below as a floor, not the full stacked rate.`,
         );
         continue;
       }
       if (measure.status === "suspended" || measure.ratePercent === null) {
         stackingExplanation.push(
-          `${measure.list} (${measure.chapter99Code}) is cross-referenced on this row but was suspended and never took effect (${measure.federalRegisterCitations.join("; ")}), so it does not stack.`,
+          `${measure.list} (${measure.chapter99Code}) is referenced by ${provenance} but was suspended and never took effect (${measure.federalRegisterCitations.join("; ")}), so it does not stack.`,
         );
         continue;
       }
       if (importDate && importDate < measure.effectiveDate) {
         unresolvedMeasures.push(`${measure.chapter99Code} historical rate before ${measure.effectiveDate}`);
         stackingExplanation.push(
-          `${measure.list} (${measure.chapter99Code}) is cross-referenced on this row, but its current rate did not take effect until ${measure.effectiveDate}, after the given import date ${importDate}. An earlier rate may have applied instead — this is NOT included in the total below; verify the rate actually in force on ${importDate} against the citations (${measure.federalRegisterCitations.join("; ")}).`,
+          `${measure.list} (${measure.chapter99Code}) is referenced by ${provenance}, but its current rate did not take effect until ${measure.effectiveDate}, after the given import date ${importDate}. An earlier rate may have applied instead — this is NOT included in the total below; verify the rate actually in force on ${importDate} against the citations (${measure.federalRegisterCitations.join("; ")}).`,
         );
         continue;
       }
@@ -292,8 +322,8 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
         label: measure.list,
         ratePercent: measure.ratePercent,
         amount,
-        citation: measure.federalRegisterCitations,
-        explanation: `${measure.note} Applies because the HTS row cross-references ${measure.chapter99Code} and country of origin is China (CN). Stacks ON TOP of (adds to, does not replace) the Column 1 base duty above.`,
+        citation: [...measure.federalRegisterCitations, ...(coverage ? [SECTION_301_COVERAGE_CITATION] : [])],
+        explanation: `${measure.note} Applies because ${provenance} identifies ${measure.chapter99Code} and country of origin is China (CN). Stacks ON TOP of (adds to, does not replace) the Column 1 base duty above.`,
       });
       stackingExplanation.push(
         `${measure.list} (${measure.chapter99Code}, ${(measure.ratePercent * 100).toFixed(1)}%, effective ${measure.effectiveDate}) stacks additively on top of the Column 1 base duty — Section 301 duties are assessed "in addition to all other applicable duties," per the imposing notices (${measure.federalRegisterCitations.join("; ")}).`,
@@ -434,7 +464,93 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
     }
   }
 
-  // Finite inputs can still overflow multiplication or aggregate addition.
+  // Section 338 — Canada-specific additional duties (new Aug 2026). Only
+  // applied when no Section 232 measure already matched this code (both
+  // basic-article and derivative), mirroring each proclamation's explicit
+  // carve-out for goods already subject to Section 232 steel/aluminum/auto
+  // duties. This module cannot independently verify the civil-aircraft
+  // exclusion (HTSUS General Note 6) or the full annex, so it is scoped to
+  // the verified table in lib/tariff/section338.ts (see
+  // STANDING_NOT_EVALUATED for what that leaves out).
+  //
+  // Per the 2026-10-06 tariff audit (TARIFF_AUDIT.md), the Sept 15, 2026
+  // amendment explicitly permits the ALCOHOL basket's Section 338 duty to
+  // stack with Section 232 (dairy/motor exclusions remain unchanged). A
+  // Canada-origin code that matches BOTH a Section 232 measure AND the
+  // Section 338 alcohol basket, checked on/after that date, is therefore
+  // left unresolved below rather than silently excluded — this engine does
+  // not hold a verified computation for how the two stack together.
+  const section338AlcoholOnlyMatch =
+    (section232Match || section232Derivative) && country.trim().toUpperCase() === "CA"
+      ? lookupSection338(base.htsCode, country, importDate)
+      : null;
+  if (isAlcoholSection232StackUnresolved(section338AlcoholOnlyMatch, importDate)) {
+    unresolvedMeasures.push(
+      `${section338AlcoholOnlyMatch!.chapter99Code}: Section 338 alcohol basket may stack with Section 232 per the Sept 15, 2026 amendment — this engine does not hold a verified computation for that stack`,
+    );
+    components.push({
+      type: "section338",
+      label: section338AlcoholOnlyMatch!.note.split(":")[0] ?? "Section 338 — Canada alcoholic beverages basket",
+      ratePercent: null,
+      amount: null,
+      citation: section338AlcoholOnlyMatch!.federalRegisterCitations,
+      explanation: `The Sept 15, 2026 amendment (FR doc 2026-18838) permits this alcohol-basket Section 338 duty to stack with the already-matched Section 232 measure on this code, instead of being excluded by it. This engine does not hold a verified computation for how the two measures combine, so this component and the aggregate total are withheld rather than guessed.`,
+    });
+  } else if (!section232Match && !section232Derivative) {
+    const section338Match = lookupSection338(base.htsCode, country, importDate);
+    if (section338Match) {
+      const beforeEffectiveDate = importDate !== null && importDate < SECTION_338_EFFECTIVE_DATE;
+      if (beforeEffectiveDate) {
+        unresolvedMeasures.push(`${section338Match.chapter99Code}: import date before Section 338 effective date ${SECTION_338_EFFECTIVE_DATE}`);
+        components.push({
+          type: "section338",
+          label: section338Match.chapter99Code,
+          ratePercent: null,
+          amount: null,
+          citation: section338Match.federalRegisterCitations,
+          explanation: `Section 338 duties did not take effect until ${SECTION_338_EFFECTIVE_DATE}, after the given import date ${importDate}. This measure was not added for this entry.`,
+        });
+        stackingExplanation.push(
+          `Section 338 Canada duties did not take effect until ${SECTION_338_EFFECTIVE_DATE}, after the given import date ${importDate}, so this measure was not added.`,
+        );
+      } else if (section338Match.banDateAmbiguous) {
+        // Three Sept 8, 2026 proclamations (effective Sept 29, 2026)
+        // convert this basket's 50% duty into an outright import ban for
+        // goods in the ban Annex. Cante does not hold that Annex, so it
+        // cannot tell whether THIS specific HTS line is banned or still
+        // dutiable at 50% on or after that date — report unresolved
+        // rather than guess either a rate or a ban. See section338.ts.
+        unresolvedMeasures.push(`${section338Match.chapter99Code}: import date on/after the Sept 29, 2026 Section 338 ban-conversion date, basket-specific Annex not held`);
+        components.push({
+          type: "section338",
+          label: section338Match.note.split(":")[0] ?? "Section 338 — Canada additional duty",
+          ratePercent: null,
+          amount: null,
+          citation: [...section338Match.federalRegisterCitations, ...(section338Match.banCitation ? [section338Match.banCitation] : [])],
+          explanation: section338Match.note,
+        });
+        stackingExplanation.push(
+          `Section 338 (${section338Match.chapter99Code}) is NOT included in the total: for goods imported on or after ${SECTION_338_IMPORT_BAN_DATE}, ${section338Match.banCitation} converted this basket's 50% duty into an outright import ban for the proclamation's covered lines. Cante does not hold that ban Annex, so it cannot confirm whether this exact HTS line is banned outright or still dutiable at 50% — treat this component as unresolved, not a confident 50% or a confident ban, until verified against the Annex.`,
+        );
+      } else {
+        const amount =
+          base.computation.amount !== null && input.value !== null
+            ? Number((input.value * section338Match.ratePercent).toFixed(2))
+            : null;
+        components.push({
+          type: "section338",
+          label: section338Match.note.split(":")[0] ?? "Section 338 — Canada additional duty",
+          ratePercent: section338Match.ratePercent,
+          amount,
+          citation: section338Match.federalRegisterCitations,
+          explanation: section338Match.note,
+        });
+        stackingExplanation.push(
+          `Section 338 (${section338Match.chapter99Code}, ${(section338Match.ratePercent * 100).toFixed(0)}%) stacks additively on top of the Column 1 base duty — imposed under 19 U.S.C. 1338 to offset Canadian trade discrimination, effective ${SECTION_338_EFFECTIVE_DATE} (${section338Match.federalRegisterCitations.join("; ")}).`,
+        );
+      }
+    }
+  }
   for (const component of components) {
     if (component.amount !== null && !Number.isFinite(component.amount)) {
       component.amount = null;
@@ -463,6 +579,15 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
     }
   }
 
+  const uflpaAdvisories = lookupUflpaAdvisories(base.htsCode, country);
+  if (uflpaAdvisories.length > 0) {
+    for (const advisory of uflpaAdvisories) {
+      stackingExplanation.push(
+        `UFLPA forced-labor lead (not a duty, not included in the total above): HTS ${base.htsCode} falls in FLETF's "${advisory.sector}" high-priority enforcement sector (${advisory.citation}). This is NOT a determination that this shipment was produced in Xinjiang or by a UFLPA Entity List member — review actual supply-chain evidence before relying on this. ${advisory.note}`,
+      );
+    }
+  }
+
   return {
     htsCode: base.htsCode,
     countryOfOrigin: country,
@@ -475,5 +600,6 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
     unresolvedMeasures,
     usmcaQualification,
     adCvdAdvisories,
+    uflpaAdvisories,
   };
 }
