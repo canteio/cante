@@ -898,6 +898,44 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     activation: { profileGate: "trade" as const },
     notes: `Official no-key Federal Register query targeted to ${label}; event coverage complements, but does not replace, complete inventories.`,
   })),
+  /*
+   * Section 301, 232, and 338 actions themselves are Presidential
+   * Proclamations/Executive Orders — tagged on Federal Register under
+   * "Executive Office of the President", not under USTR/BIS/ITA. The rows
+   * above query the implementing agencies and would never surface the
+   * proclamations that actually set or change rates, because those
+   * agencies don't author them.
+   *
+   * Confirmed live: Proclamation 11021 (Apr 2, 2026, restructured Section
+   * 232 into Annexes I-A/I-B/I-C/II/III/IV and added copper) is Federal
+   * Register document 2026-06960, tagged solely to
+   * "executive-office-of-the-president" — invisible to the section-232-bis
+   * and section-232-ita rows above. The same is true of every Section 301
+   * and Section 338 rate action checked (e.g. 2026-18839/2026-18838,
+   * Sept 2026 Section 338 Canada scope changes).
+   *
+   * Section 338 had NO registry entry at all before this addition, agency-
+   * tagged or otherwise — Canada tariff changes were entirely unmonitored.
+   */
+  ...[
+    ["section-301-proclamation", "Section 301 presidential actions", "Section 301 tariff"],
+    ["section-232-proclamation", "Section 232 presidential actions", "Section 232 steel aluminum copper"],
+    ["section-338-proclamation", "Section 338 Canada presidential actions", "Section 338 Canada"],
+  ].map(([id, label, term]) => ({
+    id: `us-fr-${id}`,
+    country: "United States",
+    name: `Federal Register - ${label}`,
+    domain: "www.federalregister.gov",
+    url: targetedFederalRegister(["executive-office-of-the-president"], term as string),
+    regulationType: "trade" as const,
+    reliabilityStatus: "working" as const,
+    parser: "federal-register-json" as const,
+    view: `us-trade-${id}`,
+    rawFilename: `us-federal-register-${id}.json`,
+    timeoutMs: 30_000,
+    activation: { profileGate: "trade" as const },
+    notes: `Official no-key Federal Register query for Presidential Documents (proclamations/EOs) matching "${term}", tagged to the Executive Office of the President — the actual rate-setting authority for this measure, distinct from the implementing agency's own notices.`,
+  })),
   {
     id: "us-usitc-ids-import-injury",
     country: "United States",
