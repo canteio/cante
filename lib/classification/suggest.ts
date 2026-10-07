@@ -14,6 +14,8 @@ import {
 
 import { type Product } from "@/lib/db/schema";
 
+import { searchSemanticHeadings, unionCandidates } from "./semantic";
+
 import { SUGGESTION_CONFIDENCE_LEVELS } from "./suggest-contract";
 
 /**
@@ -288,6 +290,7 @@ export class SuggestionError extends Error {
 export async function suggestClassification(
   provider: LlmProvider,
   input: { customerId: string; sku: string; signal?: AbortSignal; },
+  retrieveSemantic: typeof searchSemanticHeadings = searchSemanticHeadings,
 ): Promise<SuggestionResult> {
   const product = await getProductBySku(input.customerId, input.sku);
   if (!product) throw new SuggestionError(`No product with SKU "${input.sku}".`);
@@ -299,10 +302,20 @@ export async function suggestClassification(
     );
   }
 
-  const [candidates, rulings] = await Promise.all([
+  const [keywordCandidates, semanticResult, rulings] = await Promise.all([
     searchCandidateHeadings(terms, { signal: input.signal }),
+    // Semantic retrieval fails explicitly (e.g. the HTS schedule table isn't
+    // ingested yet, or a Supabase/network error) rather than silently
+    // returning nothing — but a semantic outage must degrade to the
+    // keyword-only candidate set, not take down suggestion entirely. The
+    // failure is still visible: it's surfaced as a caveat below.
+    retrieveSemantic(await createClient(), product, { signal: input.signal })
+      .then((candidates) => ({ candidates, error: null as string | null }))
+      .catch((error) => ({ candidates: [] as CandidateHeading[], error: error instanceof Error ? error.message : String(error) })),
     searchSupportingRulings(terms, { signal: input.signal }),
   ]);
+
+  const candidates = unionCandidates(keywordCandidates, semanticResult.candidates);
 
   if (candidates.length === 0) {
     throw new SuggestionError(
@@ -375,6 +388,9 @@ export async function suggestClassification(
   }
   if (rulings.length === 0) {
     caveats.push("No CBP rulings were found for these terms, so no ruling supports this suggestion.");
+  }
+  if (semanticResult.error) {
+    caveats.push(`Semantic HTS retrieval failed and was skipped (keyword-only candidates used): ${semanticResult.error}`);
   }
 
   return { suggestion: value, candidates, rulings, chosenRow, caveats };

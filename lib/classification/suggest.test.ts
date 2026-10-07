@@ -31,6 +31,16 @@ const CANDIDATES = [
   { code: "3921.90.11.00", description: "Plates, sheets of plastics", generalRate: "4.2%", units: ["kg"] },
 ];
 
+// Only retrieval is stubbed; tenant writes and adoption still use real Supabase.
+async function suggestionWithSemanticFixture() {
+  const mod = await import("@/lib/classification/suggest");
+  return {
+    ...mod,
+    suggestClassification: (provider: LlmProvider, input: Parameters<typeof mod.suggestClassification>[1]) =>
+      mod.suggestClassification(provider, input, async () => input.sku === "SUG-EMPTY" ? [] : CANDIDATES),
+  };
+}
+
 /** Replace network lookups so the guardrail is tested, not the HTS service. */
 async function withStubbedSearch<T>(fn: () => Promise<T>): Promise<T> {
   const mod = await import("@/lib/classification/suggest");
@@ -91,7 +101,7 @@ test("search terms prefer specific phrases and drop noise words", async () => {
 test("a suggestion is recorded as a lead and cannot be approved", async () => {
   const { customerId } = await operatingDb();
   const product = await seed(customerId);
-  const suggest = await import("@/lib/classification/suggest");
+  const suggest = await suggestionWithSemanticFixture();
   const { approveClassification, ClassificationApprovalError, resolveProductCodes } = await import(
     "@/lib/catalogue/classifications"
   );
@@ -122,7 +132,7 @@ test("a suggestion is recorded as a lead and cannot be approved", async () => {
 test("a code outside the candidate set is rejected, not recorded", async () => {
   const { customerId } = await operatingDb();
   await seed(customerId);
-  const suggest = await import("@/lib/classification/suggest");
+  const suggest = await suggestionWithSemanticFixture();
 
   await assert.rejects(
     withStubbedSearch(async () =>
@@ -140,7 +150,7 @@ test("a code outside the candidate set is rejected, not recorded", async () => {
 test("adopting is a named, reasoned act that unlocks approval", async () => {
   const { customerId } = await operatingDb();
   const product = await seed(customerId);
-  const suggest = await import("@/lib/classification/suggest");
+  const suggest = await suggestionWithSemanticFixture();
   const { approveClassification, resolveProductCodes } = await import(
     "@/lib/catalogue/classifications"
   );
@@ -177,7 +187,7 @@ test("adopting is a named, reasoned act that unlocks approval", async () => {
 test("the model may decline, and nothing is recorded when it does", async () => {
   const { customerId } = await operatingDb();
   await seed(customerId);
-  const suggest = await import("@/lib/classification/suggest");
+  const suggest = await suggestionWithSemanticFixture();
 
   // The first live run hit exactly this: the retrieved candidates missed the
   // right heading, and forcing a pick wrote a wrong code to the database.
@@ -203,7 +213,7 @@ test("an empty candidate set produces no suggestion at all", async () => {
   const { customerId } = await operatingDb();
   const { upsertProduct } = await import("@/lib/catalogue/products");
   (await upsertProduct(customerId, { sku: "SUG-EMPTY", name: "Widget", description: "A widget" }));
-  const suggest = await import("@/lib/classification/suggest");
+  const suggest = await suggestionWithSemanticFixture();
 
   const realFetch = globalThis.fetch;
   globalThis.fetch = mockExternalFetch((async () =>
@@ -221,7 +231,7 @@ test("an empty candidate set produces no suggestion at all", async () => {
 test("pending suggestions list only unadopted model leads", async () => {
   const { customerId } = await operatingDb();
   const product = await seed(customerId);
-  const suggest = await import("@/lib/classification/suggest");
+  const suggest = await suggestionWithSemanticFixture();
   const { recordClassification } = await import("@/lib/catalogue/classifications");
 
   // A human-entered lead is not a model suggestion and must not appear.
