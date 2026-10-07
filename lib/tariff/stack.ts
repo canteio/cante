@@ -9,7 +9,12 @@ import {
   lookupSection232BasicArticle,
   lookupSection232Derivative,
 } from "@/lib/tariff/section232";
-import { lookupSection338, SECTION_338_EFFECTIVE_DATE, SECTION_338_IMPORT_BAN_DATE } from "@/lib/tariff/section338";
+import {
+  lookupSection338,
+  SECTION_338_EFFECTIVE_DATE,
+  SECTION_338_IMPORT_BAN_DATE,
+  isAlcoholSection232StackUnresolved,
+} from "@/lib/tariff/section338";
 import { lookupAdCvdAdvisories, type AdCvdAdvisory } from "@/lib/tariff/adcvd";
 import { easternIsoDate, isStrictIsoDate } from "@/lib/tariff/date";
 
@@ -485,9 +490,33 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
   // carve-out for goods already subject to Section 232 steel/aluminum/auto
   // duties. This module cannot independently verify the civil-aircraft
   // exclusion (HTSUS General Note 6) or the full annex, so it is scoped to
-  // the small verified table in lib/tariff/section338.ts (see
+  // the verified table in lib/tariff/section338.ts (see
   // STANDING_NOT_EVALUATED for what that leaves out).
-  if (!section232Match && !section232Derivative) {
+  //
+  // Per the 2026-10-06 tariff audit (TARIFF_AUDIT.md), the Sept 15, 2026
+  // amendment explicitly permits the ALCOHOL basket's Section 338 duty to
+  // stack with Section 232 (dairy/motor exclusions remain unchanged). A
+  // Canada-origin code that matches BOTH a Section 232 measure AND the
+  // Section 338 alcohol basket, checked on/after that date, is therefore
+  // left unresolved below rather than silently excluded — this engine does
+  // not hold a verified computation for how the two stack together.
+  const section338AlcoholOnlyMatch =
+    (section232Match || section232Derivative) && country.trim().toUpperCase() === "CA"
+      ? lookupSection338(base.htsCode, country, importDate)
+      : null;
+  if (isAlcoholSection232StackUnresolved(section338AlcoholOnlyMatch, importDate)) {
+    unresolvedMeasures.push(
+      `${section338AlcoholOnlyMatch!.chapter99Code}: Section 338 alcohol basket may stack with Section 232 per the Sept 15, 2026 amendment — this engine does not hold a verified computation for that stack`,
+    );
+    components.push({
+      type: "section338",
+      label: section338AlcoholOnlyMatch!.note.split(":")[0] ?? "Section 338 — Canada alcoholic beverages basket",
+      ratePercent: null,
+      amount: null,
+      citation: section338AlcoholOnlyMatch!.federalRegisterCitations,
+      explanation: `The Sept 15, 2026 amendment (FR doc 2026-18838) permits this alcohol-basket Section 338 duty to stack with the already-matched Section 232 measure on this code, instead of being excluded by it. This engine does not hold a verified computation for how the two measures combine, so this component and the aggregate total are withheld rather than guessed.`,
+    });
+  } else if (!section232Match && !section232Derivative) {
     const section338Match = lookupSection338(base.htsCode, country, importDate);
     if (section338Match) {
       const beforeEffectiveDate = importDate !== null && importDate < SECTION_338_EFFECTIVE_DATE;

@@ -858,10 +858,15 @@ test("Section 338 is skipped when a Section 232 basic-article measure already ma
 // --- Section 338 import-ban conversion (Sept 29, 2026) ---
 
 test("Section 338 is withheld as unresolved, not a confident 50%, for goods imported on the Sept 29, 2026 ban-conversion date", async () => {
-  const restore = stubFetch([{ htsno: "2208.30.60.85", general: "Free" }]);
+  // Uses 2203.00.00 (beer/wine), a verified alcohol Annex II line
+  // unaffected by the Sept 15, 2026 amendment's removal of 2208.30.60/
+  // 2208.70.00 — see TARIFF_AUDIT.md and section338.ts for why those two
+  // specific lines are unresolved on/after Sept 15, independent of the
+  // Sept 29 ban-conversion date this test targets.
+  const restore = stubFetch([{ htsno: "2203.00.00.00", general: "Free" }]);
   try {
     const result = await computeStackedDuty({
-      htsCode: "2208.30.60.85",
+      htsCode: "2203.00.00.00",
       countryOfOrigin: "CA",
       value: 20_000,
       importDate: "2026-09-29",
@@ -875,17 +880,17 @@ test("Section 338 is withheld as unresolved, not a confident 50%, for goods impo
     assert.equal(result.totalAmount, null);
     assert.equal(result.totalRatePercent, null);
     assert.ok(s338!.citation.some((c) => c.includes("2026-18835")));
-    assert.ok(result.stackingExplanation.some((line) => line.includes("import ban") && line.includes("9903.03.13")));
+    assert.ok(result.stackingExplanation.some((line) => line.includes("import ban") && line.includes("9903.03.12")));
   } finally {
     restore();
   }
 });
 
 test("Section 338 still resolves confidently at 50% for an import date just before the ban-conversion date", async () => {
-  const restore = stubFetch([{ htsno: "2208.30.60.85", general: "Free" }]);
+  const restore = stubFetch([{ htsno: "2203.00.00.00", general: "Free" }]);
   try {
     const result = await computeStackedDuty({
-      htsCode: "2208.30.60.85",
+      htsCode: "2203.00.00.00",
       countryOfOrigin: "CA",
       value: 20_000,
       importDate: "2026-09-28",

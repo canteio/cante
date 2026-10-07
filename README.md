@@ -125,9 +125,26 @@ What it computes for real today:
   2026 additional 50% ad valorem duty on Canada-origin goods under 19 U.S.C.
   1338, imposed by three parallel proclamations (alcohol, dairy, and a
   motor-vehicle-basket proclamation that is mostly non-vehicle consumer/
-  industrial goods) citing FR docs 2026-14991/14992/14997. Covers a small
-  verified subset of HTS lines (whisky/liqueurs/wine, several dairy/cheese
-  lines, lamps and motorboats) — not the full ~554-line combined annex.
+  industrial goods) citing FR docs 2026-14991/14992/14997, headings
+  9903.03.12/.13/.14 respectively. The matching table (`section338.ts`) is
+  now built directly from each proclamation's Annex II line list
+  (`lib/tariff/section338-annexes.json`), covering the full original
+  (pre-Sept-15) combined annex: 63 alcohol + 52 dairy + 439
+  motor-vehicle-basket = 554 eight/ten-digit lines — rather than a small
+  set of hand-picked broad HTS prefixes. A 2026-10-06 audit
+  (`TARIFF_AUDIT.md`) found the prior hand-picked table had an incorrect
+  heading-renumbering claim and gaps against the real Annex. Two alcohol
+  lines (2208.30.60.xx, 2208.70.00.xx) that a Sept 15, 2026 amendment
+  removed from broad coverage are explicitly withheld as unresolved for
+  entries on/after that date, since this module does not hold a verified
+  narrower replacement for them; the amendment's other additions
+  ("septemberAlcoholAdditions" in the JSON file) are left unwired for the
+  same reason — an unlisted or ambiguous line returns `null`, never a
+  guess. The same amendment also permits the alcohol basket's duty to
+  stack with Section 232 (dairy/motor exclusions remain unchanged) — a
+  Canada-origin code matching both measures on/after that date is reported
+  as unresolved rather than silently excluded, since this engine does not
+  hold a verified computation for that stack.
   Automatically skipped when a Section 232 basic-article or derivative
   measure already matched the same code, mirroring each proclamation's own
   carve-out for Section-232-covered goods. For goods imported on or after

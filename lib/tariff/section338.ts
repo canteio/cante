@@ -4,35 +4,39 @@
  *
  * Three parallel presidential proclamations (alcoholic beverages, dairy,
  * motor vehicles/consumer goods basket) each impose a 50% ad valorem duty
- * on an enumerated list of Canadian-origin HTS lines, under new Chapter 99
- * headings 9903.03.12 (alcohol, later renumbered 9903.03.13 on 2026-09-15),
- * 9903.03.13 (dairy, originally; folded into the alcohol/other-goods
- * heading by the September modification — see note below), and 9903.03.14
- * (motor vehicle basket). This is the first new stacking component added
- * since Section 301/232, and it is deliberately scoped small and verified
- * rather than attempting the full multi-hundred-line annex.
+ * on an enumerated list of Canadian-origin HTS lines, under Chapter 99
+ * headings 9903.03.12 (alcohol), 9903.03.13 (dairy), and 9903.03.14 (motor
+ * vehicle basket). This is deliberately scoped to a verified subset of
+ * each basket's enumerated lines, extracted directly from the proclamation
+ * Annex II PDFs (see section338-annexes.json), rather than the hand-picked
+ * broad prefixes a prior version of this module used.
  *
  * Primary sources:
  * - Proclamation 11046 of July 20, 2026 ("...With Respect to Alcoholic
- *   Beverages"), 91 FR 46640 (July 23, 2026, doc 2026-14991) — original
- *   heading 9903.03.12, Annex II listing dairy/alcohol/other goods.
+ *   Beverages"), 91 FR 46640 (July 23, 2026, doc 2026-14991) — heading
+ *   9903.03.12, Annex II.
  * - Proclamation 11047 of July 20, 2026 ("...With Respect to Dairy") —
- *   original heading 9903.03.13, FR doc 2026-14992.
+ *   heading 9903.03.13, FR doc 2026-14992, Annex II.
  * - Proclamation 11048 of July 20, 2026 ("...With Respect to Motor
- *   Vehicles") — heading 9903.03.14, FR doc 2026-14997, Annex II (439
- *   eight-digit lines, chiefly non-vehicle consumer/industrial goods per
- *   Global Trade Alert's independent line count; standard passenger-vehicle
- *   and auto-parts HTS codes are NOT in this basket — they already sit
- *   under the pre-existing Section 232 automotive regime and are expressly
- *   excluded from Section 338 by clause (2) of each proclamation).
+ *   Vehicles") — heading 9903.03.14, FR doc 2026-14997, Annex II.
  * - Effective date: 12:01 a.m. ET Aug 19, 2026 per the proclamations;
  *   actually first collected Aug 22, 2026 after a 3-day suspension under
  *   Proclamation 11056 (Aug 18, 2026) lapsed without a deal — per CBP CSMS
  *   #69606660 (Aug 21, 2026) and CRS Report R49349 (Sept 14, 2026).
  * - Modification effective Sept 15, 2026 (Proclamation of Sept 8, 2026,
- *   91 FR 58312-ish, doc 2026-18838): renumbers the dairy/alcohol heading
- *   from 9903.03.12 to 9903.03.13, adds cheese/fat/hide/fur/motorboat
- *   lines, and removes two bulk-whisky/liqueur lines.
+ *   FR doc 2026-18838): per the 2026-10-06 tariff audit (TARIFF_AUDIT.md),
+ *   this modification does NOT renumber any of the three headings — a
+ *   prior version of this file incorrectly claimed 9903.03.12 renumbered
+ *   to 9903.03.13 on Sept 15, which this module no longer asserts. The
+ *   same amendment removes the broad 8-digit 2208.30.60 and 2208.70.00
+ *   alcohol lines (replacing them with narrower 10-digit sublines this
+ *   module does not hold with primary-source confidence) and adds further
+ *   classifications whose basket/line-level assignment the 2026-10-06
+ *   audit could not fully verify. Rather than guess, this module returns
+ *   null (unresolved, never a confident match) for:
+ *     (a) 2208.30.60.xx / 2208.70.00.xx on or after Sept 15, 2026, and
+ *     (b) any HTS line only found in the audit's unverified
+ *         "septemberAlcoholAdditions" bucket, regardless of date.
  * - Import ban effective Sept 29, 2026: three further Sept 8, 2026
  *   proclamations convert each basket from a 50% duty to an outright
  *   import exclusion, effective 12:01 a.m. ET Sept 29, 2026 — Proclamation
@@ -47,31 +51,48 @@
  *   not the same enumerated set as the original duty annex), so this
  *   module cannot tell whether a specific matched line is banned outright
  *   or still only dutiable on or after that date — see
- *   isSection338BanDateUnresolved below, which the caller (stack.ts) uses
- *   to withhold a confident rate rather than guess 50% on a line that may
- *   actually be prohibited.
+ *   isSection338ImportBanDateAmbiguous below, which the caller (stack.ts)
+ *   uses to withhold a confident rate rather than guess 50% on a line that
+ *   may actually be prohibited.
  *
- * Scope, stated plainly: this table covers a small, verified subset of
- * each basket's enumerated HTS lines (the ones the primary-source Annex
- * text and secondary legal/trade-press summaries explicitly confirm),
- * NOT the full ~554-line combined annex. Any Canada-origin HTS code not
- * in this table is left unresolved (see stack.ts's notEvaluated list) —
- * never silently treated as untaxed.
+ * Scope, stated plainly: this table covers the lines explicitly enumerated
+ * in the Annex II PDFs for each basket's ORIGINAL (pre-Sept-15) scope —
+ * 63 alcohol + 52 dairy + 439 motor-vehicle-basket = 554 eight/ten-digit
+ * lines total, i.e. the full original combined annex as extracted from
+ * the three Annex II PDFs (not a hand-picked subset of it, unlike the
+ * prior version of this file). It is NOT the Sept 15, 2026 amended annex:
+ * the two lines the amendment explicitly removed from broad alcohol
+ * coverage (2208.30.60.xx, 2208.70.00.xx) are withheld as unresolved
+ * on/after that date (see ALCOHOL_BROAD_LINES_REMOVED_DATE below), and the
+ * amendment's additions (the JSON file's "septemberAlcoholAdditions"
+ * bucket) are deliberately not wired in, pending primary-source
+ * confirmation of exact basket/line assignment. Any Canada-origin HTS
+ * code not in this table is left unresolved (see stack.ts's
+ * notEvaluated list) — never silently treated as untaxed.
  *
- * Every Section 338 duty excludes goods already subject to Section 232
- * (steel/aluminum/autos) and civil-aircraft articles under HTSUS General
- * Note 6 — this module checks the Section 232 exclusion by deferring to
- * the caller (stack.ts only applies Section 338 when no Section 232 basic
- * or derivative measure already matched the same code).
+ * Each basic proclamation's own carve-out excludes goods already subject
+ * to Section 232 (steel/aluminum/autos) and civil-aircraft articles under
+ * HTSUS General Note 6 — stack.ts only applies Section 338 when no
+ * Section 232 basic or derivative measure already matched the same code.
+ * IMPORTANT per the 2026-10-06 audit (TARIFF_AUDIT.md): the Sept 15, 2026
+ * amendment (FR doc 2026-18838) explicitly permits the ALCOHOL basket's
+ * duty to stack with Section 232 — the dairy/motor exclusions remain, but
+ * a blanket 232/338 exclusion is stale for alcohol on/after that date.
+ * This module exposes isAlcoholSection232StackUnresolved(measure,
+ * importDate) so stack.ts's combination logic can route an alcohol-basket
+ * code that also matched Section 232, on/after that date, to an explicit
+ * unresolved state instead of silently keeping the old exclusion. This
+ * module itself does not decide that routing — it has no visibility into
+ * whether Section 232 matched the same code.
  */
 
 import { easternIsoDate } from "@/lib/tariff/date";
+import section338Annexes from "@/lib/tariff/section338-annexes.json";
 
 export type Section338Basket = "alcohol" | "dairy" | "motor_vehicle_basket";
 
 export interface Section338Measure {
   basket: Section338Basket;
-  /** Chapter 99 heading in force as of the given check date — see effectiveHeadings. */
   chapter99Code: string;
   ratePercent: number;
   effectiveDate: string;
@@ -90,38 +111,11 @@ export interface Section338Measure {
   banCitation: string | null;
 }
 
-interface Section338TableEntry {
-  htsPrefix: string;
-  basket: Section338Basket;
-  /** True once the Sept 15, 2026 renumbering (9903.03.12 -> 9903.03.13) applies to this line. */
-  renumberedSept2026: boolean;
-}
-
-/**
- * Verified Canada-origin HTS lines, by basket. Dots stripped for prefix
- * matching. Deliberately small: these are the specific lines independently
- * confirmed across the White House Annex PDFs, EY/Dentons legal summaries,
- * and trade-press annex breakdowns (gingercontrol.com, gildispatch.com) —
- * not the full several-hundred-line schedule.
- */
-const SECTION_338_LINES: Section338TableEntry[] = [
-  // Alcoholic beverages (Annex II to Proclamation 11046).
-  { htsPrefix: "220830", basket: "alcohol", renumberedSept2026: true }, // whisky
-  { htsPrefix: "220870", basket: "alcohol", renumberedSept2026: true }, // liqueurs/cordials
-  { htsPrefix: "220421", basket: "alcohol", renumberedSept2026: true }, // wine, containers <=2L
-  // Dairy (Annex to Proclamation 11047 / folded into 9903.03.13).
-  { htsPrefix: "040210", basket: "dairy", renumberedSept2026: true }, // milk/cream powder
-  { htsPrefix: "040221", basket: "dairy", renumberedSept2026: true },
-  { htsPrefix: "040410", basket: "dairy", renumberedSept2026: true }, // whey
-  { htsPrefix: "040610", basket: "dairy", renumberedSept2026: true }, // fresh cheese (Sept 2026 addition)
-  { htsPrefix: "040620", basket: "dairy", renumberedSept2026: true }, // grated/powdered cheese (Sept 2026 addition)
-  { htsPrefix: "040630", basket: "dairy", renumberedSept2026: true }, // processed cheese (Sept 2026 addition)
-  // Motor-vehicle-basket consumer/industrial goods (Annex II to Proclamation
-  // 11048 — the 439-line basket that is NOT actually vehicles/auto parts).
-  { htsPrefix: "940529", basket: "motor_vehicle_basket", renumberedSept2026: false }, // electric lamps (Sept 2026 ADD per Annex I Part A)
-  { htsPrefix: "890331", basket: "motor_vehicle_basket", renumberedSept2026: false }, // motorboats (Sept 2026 addition)
-  { htsPrefix: "890332", basket: "motor_vehicle_basket", renumberedSept2026: false },
-];
+const CHAPTER_99_BY_BASKET: Record<Section338Basket, string> = {
+  alcohol: "9903.03.12",
+  dairy: "9903.03.13",
+  motor_vehicle_basket: "9903.03.14",
+};
 
 const BASKET_LABELS: Record<Section338Basket, string> = {
   alcohol: "Section 338 — Canada alcoholic beverages basket",
@@ -131,7 +125,15 @@ const BASKET_LABELS: Record<Section338Basket, string> = {
 
 const RATE = 0.5;
 const INITIAL_EFFECTIVE_DATE = "2026-08-22"; // actual first-collection date after the Aug 18 suspension lapsed
-const RENUMBER_DATE = "2026-09-15";
+/**
+ * Sept 15, 2026 — effective date of the amendment that (per the 2026-10-06
+ * audit) removes broad 8-digit coverage of 2208.30.60 and 2208.70.00 from
+ * the alcohol basket without introducing a verified narrower replacement
+ * in this module. Used only to gate those two lines to unresolved
+ * (null) on/after this date — it does not renumber any heading.
+ */
+const ALCOHOL_BROAD_LINES_REMOVED_DATE = "2026-09-15";
+const ALCOHOL_LINES_REMOVED_ON_AMENDMENT = ["22083060", "22087000"];
 /**
  * 12:01 a.m. ET Sept 29, 2026 — the date on which Proclamations 11061
  * (alcohol), 11062 (dairy), and 11063 (motor vehicles) convert each
@@ -145,17 +147,14 @@ const IMPORT_BAN_DATE = "2026-09-29";
 
 const CITATIONS_BY_BASKET: Record<Section338Basket, string[]> = {
   alcohol: [
-    "Proclamation 11046 of July 20, 2026 (91 FR 46640, FR doc 2026-14991) — imposing additional duties to offset Canadian discrimination re: alcoholic beverages, heading 9903.03.12, effective 12:01 a.m. ET Aug 19, 2026",
+    "Proclamation 11046 of July 20, 2026 (91 FR 46640, FR doc 2026-14991) — imposing additional duties to offset Canadian discrimination re: alcoholic beverages, heading 9903.03.12, effective 12:01 a.m. ET Aug 19, 2026, Annex II",
     "CBP CSMS #69606660 (Aug 21, 2026) — guidance confirming actual first-collection date of Aug 22, 2026 after the 3-day Aug 18 suspension (Proclamation 11056) lapsed without a deal",
-    "Proclamation of Sept 8, 2026 (FR doc 2026-18838), effective Sept 15, 2026 — renumbers heading 9903.03.12 to 9903.03.13 and modifies covered lines",
   ],
   dairy: [
-    "Proclamation 11047 of July 20, 2026 (FR doc 2026-14992) — imposing additional duties to offset Canadian discrimination re: dairy, effective 12:01 a.m. ET Aug 19, 2026 (actual collection Aug 22, 2026 per CBP CSMS #69606660)",
-    "Proclamation of Sept 8, 2026 (FR doc 2026-18838), effective Sept 15, 2026 — folds dairy into heading 9903.03.13 and adds cheese lines (0406.10/.20/.30)",
+    "Proclamation 11047 of July 20, 2026 (FR doc 2026-14992) — imposing additional duties to offset Canadian discrimination re: dairy, heading 9903.03.13, effective 12:01 a.m. ET Aug 19, 2026 (actual collection Aug 22, 2026 per CBP CSMS #69606660), Annex II",
   ],
   motor_vehicle_basket: [
-    "Proclamation 11048 of July 20, 2026 (FR doc 2026-14997) — imposing additional duties to offset Canadian discrimination re: motor vehicles, heading 9903.03.14, effective 12:01 a.m. ET Aug 19, 2026 (actual collection Aug 22, 2026 per CBP CSMS #69606660)",
-    "Proclamation of Sept 8, 2026 (FR doc 2026-18838), Annex I Part A — adds further lines effective Sept 15, 2026",
+    "Proclamation 11048 of July 20, 2026 (FR doc 2026-14997) — imposing additional duties to offset Canadian discrimination re: motor vehicles, heading 9903.03.14, effective 12:01 a.m. ET Aug 19, 2026 (actual collection Aug 22, 2026 per CBP CSMS #69606660), Annex II",
   ],
 };
 
@@ -178,6 +177,21 @@ function digits(code: string): string {
 }
 
 /**
+ * Lines extracted verbatim from each proclamation's Annex II (see
+ * section338-annexes.json for sources/line counts), normalized to
+ * digits-only for prefix matching. Deliberately excludes the JSON file's
+ * "septemberAlcoholAdditions" bucket: the 2026-10-06 audit could not
+ * confirm with primary-source confidence which basket/date those lines
+ * actually belong to, so they are not wired in here — an unlisted code
+ * stays unresolved (null) rather than guessed.
+ */
+const BASKET_LINES: Record<Section338Basket, string[]> = {
+  alcohol: (section338Annexes.alcohol as string[]).map(digits),
+  dairy: (section338Annexes.dairy as string[]).map(digits),
+  motor_vehicle_basket: (section338Annexes.motor_vehicle_basket as string[]).map(digits),
+};
+
+/**
  * True when the given import/arrival date is on or after the Sept 29,
  * 2026 ban-conversion date for Section 338 Canada baskets. A null date is
  * treated as "imported today" using the US/Eastern calendar date, matching
@@ -190,9 +204,9 @@ export function isSection338ImportBanDateAmbiguous(importDate: string | null): b
 
 /**
  * Look up whether a Canada-origin HTS code is one of the verified Section
- * 338 lines. Returns null for anything outside the small verified table —
- * this module never guesses whether an unlisted Canadian HTS code is
- * covered by the actual ~554-line combined annex.
+ * 338 lines extracted from the Annex II PDFs. Returns null for anything
+ * outside that verified table — this module never guesses whether an
+ * unlisted Canadian HTS code is covered by the actual combined annex.
  *
  * Section 338 duties exclude articles already subject to Section 232
  * (steel/aluminum/autos) per each proclamation's clause (2) — the caller
@@ -201,9 +215,11 @@ export function isSection338ImportBanDateAmbiguous(importDate: string | null): b
  * cross-module state this function does not have.
  *
  * @param importDate ISO date (YYYY-MM-DD) the goods are/were imported, or
- *   null to use today's US/Eastern date. Used only to flag banDateAmbiguous
- *   — it never changes which basket/rate table row is selected, since the
- *   50%-duty rate itself has not changed since Aug 22, 2026.
+ *   null to use today's US/Eastern date. Used to flag banDateAmbiguous and
+ *   to withhold the two alcohol lines removed from broad coverage by the
+ *   Sept 15, 2026 amendment — it never otherwise changes which basket/rate
+ *   table row is selected, since the 50%-duty rate itself has not changed
+ *   since Aug 22, 2026.
  */
 export function lookupSection338(
   htsCode: string,
@@ -214,21 +230,62 @@ export function lookupSection338(
   const code = digits(htsCode);
   if (!code) return null;
 
-  const entry = SECTION_338_LINES.find((line) => code.startsWith(line.htsPrefix));
-  if (!entry) return null;
+  let basket: Section338Basket | null = null;
+  for (const b of Object.keys(BASKET_LINES) as Section338Basket[]) {
+    if (BASKET_LINES[b].some((line) => code.startsWith(line))) {
+      basket = b;
+      break;
+    }
+  }
+  if (!basket) return null;
+
+  const checkDate = importDate ?? easternIsoDate();
+  if (
+    basket === "alcohol" &&
+    checkDate >= ALCOHOL_BROAD_LINES_REMOVED_DATE &&
+    ALCOHOL_LINES_REMOVED_ON_AMENDMENT.some((line) => code.startsWith(line))
+  ) {
+    // The Sept 15, 2026 amendment removed broad coverage of this line;
+    // this module does not hold a verified narrower replacement, so the
+    // only honest answer for entries on/after that date is unresolved.
+    return null;
+  }
 
   const banDateAmbiguous = isSection338ImportBanDateAmbiguous(importDate);
+  const chapter99Code = CHAPTER_99_BY_BASKET[basket];
 
   return {
-    basket: entry.basket,
-    chapter99Code: entry.renumberedSept2026 ? "9903.03.13" : "9903.03.14",
+    basket,
+    chapter99Code,
     ratePercent: RATE,
     effectiveDate: INITIAL_EFFECTIVE_DATE,
-    federalRegisterCitations: CITATIONS_BY_BASKET[entry.basket],
-    note: `${BASKET_LABELS[entry.basket]}: 50% ad valorem additional duty on top of Column 1 base duty, imposed under 19 U.S.C. 1338 to offset Canadian trade discrimination. First collected ${INITIAL_EFFECTIVE_DATE} (not the nominal Aug 19 effective date — a 3-day suspension lapsed without a deal). ${entry.renumberedSept2026 ? `Reported under heading 9903.03.13 as of the ${RENUMBER_DATE} renumbering (originally 9903.03.12).` : "Reported under heading 9903.03.14 (motor-vehicle-basket proclamation)."} This duty does not apply if the code is also subject to Section 232 steel/aluminum/auto duties, or is civil aircraft under HTSUS General Note 6 — those exclusions are not independently re-verified by this lookup.${banDateAmbiguous ? ` For goods imported on or after ${IMPORT_BAN_DATE}, this 50% rate may have been replaced by an outright import ban under ${IMPORT_BAN_CITATIONS_BY_BASKET[entry.basket]} — Cante does not hold that proclamation's ban Annex, so whether this specific HTS line is banned or still dutiable cannot be confirmed here; treat ratePercent as unresolved, not a confident 50%.` : ""}`,
+    federalRegisterCitations: CITATIONS_BY_BASKET[basket],
+    note: `${BASKET_LABELS[basket]}: 50% ad valorem additional duty on top of Column 1 base duty, imposed under 19 U.S.C. 1338 to offset Canadian trade discrimination. First collected ${INITIAL_EFFECTIVE_DATE} (not the nominal Aug 19 effective date — a 3-day suspension lapsed without a deal). Reported under heading ${chapter99Code}. This duty does not apply if the code is also subject to Section 232 steel/aluminum/auto duties, or is civil aircraft under HTSUS General Note 6 — those exclusions are not independently re-verified by this lookup.${banDateAmbiguous ? ` For goods imported on or after ${IMPORT_BAN_DATE}, this 50% rate may have been replaced by an outright import ban under ${IMPORT_BAN_CITATIONS_BY_BASKET[basket]} — Cante does not hold that proclamation's ban Annex, so whether this specific HTS line is banned or still dutiable cannot be confirmed here; treat ratePercent as unresolved, not a confident 50%.` : ""}`,
     banDateAmbiguous,
-    banCitation: banDateAmbiguous ? IMPORT_BAN_CITATIONS_BY_BASKET[entry.basket] : null,
+    banCitation: banDateAmbiguous ? IMPORT_BAN_CITATIONS_BY_BASKET[basket] : null,
   };
+}
+
+/**
+ * True when a matched Section 338 alcohol-basket measure, combined with an
+ * already-matched Section 232 measure on the same code, falls on/after the
+ * Sept 15, 2026 amendment date — meaning the two measures may now stack
+ * (per TARIFF_AUDIT.md) rather than the Section 232 match excluding
+ * Section 338 outright. Only the alcohol basket is affected; dairy and
+ * motor-vehicle-basket exclusions are unchanged by the amendment. Exported
+ * so stack.ts's combination logic is directly unit-testable without
+ * depending on a real HTS code that happens to sit in both an alcohol
+ * Annex II line and a Section 232 steel/aluminum heading (no such code
+ * exists in the currently verified tables, but the amendment's rule is
+ * written in terms of the basket and date, not any specific overlap).
+ */
+export function isAlcoholSection232StackUnresolved(
+  measure: Section338Measure | null,
+  importDate: string | null,
+): boolean {
+  if (!measure || measure.basket !== "alcohol") return false;
+  const checkDate = importDate ?? easternIsoDate();
+  return checkDate >= ALCOHOL_BROAD_LINES_REMOVED_DATE;
 }
 
 export function isSection338ImportDateResolved(importDate: string | null): boolean {
