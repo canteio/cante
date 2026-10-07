@@ -2,12 +2,14 @@ import { quoteDuty, type DutyQuote } from "@/lib/tariff/rates";
 import {
   extractChapter99Refs,
   lookupSection301Measure,
+  lookupSection301SupplementalList4A,
   type Section301Measure,
 } from "@/lib/tariff/section301";
 import {
   lookupSection232BasicArticle,
   lookupSection232Derivative,
 } from "@/lib/tariff/section232";
+import { lookupSection338, SECTION_338_EFFECTIVE_DATE } from "@/lib/tariff/section338";
 import { lookupAdCvdAdvisories, type AdCvdAdvisory } from "@/lib/tariff/adcvd";
 import { isStrictIsoDate } from "@/lib/tariff/date";
 
@@ -41,7 +43,7 @@ import { isStrictIsoDate } from "@/lib/tariff/date";
  */
 
 export interface StackedDutyComponent {
-  type: "base" | "section301" | "section232";
+  type: "base" | "section301" | "section232" | "section338";
   label: string;
   /** Ad valorem rate on total shipment value. Null for content-value measures. */
   ratePercent: number | null;
@@ -112,6 +114,8 @@ const STANDING_NOT_EVALUATED = [
   "USMCA rules-of-origin analysis (a special rate is used only from an explicit caller-supplied verified decision and supporting details)",
   "Anti-dumping/countervailing duty (AD/CVD) exact scope/rate determination (named leads surfaced in adCvdAdvisories below are advisory only, never a computed amount)",
   "Forced-labor measures (e.g. UFLPA detentions/withhold-release orders)",
+  "Section 338 Canada duties outside the small verified alcohol/dairy/motor-vehicle-basket HTS lines in lib/tariff/section338.ts (the actual combined annex across all three proclamations covers roughly 554 eight-digit lines; only a verified subset is resolved here)",
+  "Section 338 Canada duties' Section 232 / civil-aircraft exclusion is applied only when this calculator's own Section 232 lookup already matched the same code — a code covered by Section 232 under data Cante does not have would be incorrectly stacked rather than excluded",
 ];
 
 export interface StackDutyInput {
@@ -257,9 +261,36 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
       );
     }
   } else if (refs.length === 0) {
-    stackingExplanation.push(
-      "Country of origin is China, but the HTS row published no Chapter 99 cross-reference, so no Section 301 List measure applies to this code.",
-    );
+    const supplemental = lookupSection301SupplementalList4A(base.htsCode);
+    if (!supplemental) {
+      stackingExplanation.push(
+        "Country of origin is China, but the HTS row published no Chapter 99 cross-reference, and this code is not in Cante's small verified List 4A supplemental table either, so no Section 301 List measure is applied. If this HTS code is in fact covered by an active List, that would mean Cante's reference data has a gap for it — verify against USTR's published List 1-4A annexes before relying on this result.",
+      );
+    } else {
+      const measure = lookupSection301Measure(supplemental.chapter99Code);
+      if (measure && measure.ratePercent !== null && measure.status === "active") {
+        const amount =
+          base.computation.amount !== null && input.value !== null
+            ? Number((input.value * measure.ratePercent).toFixed(2))
+            : null;
+        components.push({
+          type: "section301",
+          label: `${measure.list} (verified supplemental — row carried no Chapter 99 cross-reference)`,
+          ratePercent: measure.ratePercent,
+          amount,
+          citation: [...measure.federalRegisterCitations, supplemental.rulingCitation],
+          explanation: `The live USITC HTS row for ${base.htsCode} published no Chapter 99 cross-reference text, but ${supplemental.rulingCitation} This is Cante's small verified supplemental table, used only as a fallback when the HTS row's own additionalDuties field is empty — not a claim of comprehensive List 4A coverage.`,
+        });
+        stackingExplanation.push(
+          `${measure.list} (${measure.chapter99Code}, ${(measure.ratePercent * 100).toFixed(1)}%) stacks additively on top of the Column 1 base duty. This was resolved from Cante's verified CBP-ruling supplemental table, not from the HTS row's own Chapter 99 text (which was empty for this code) — see the citation for the primary-source ruling.`,
+        );
+      } else {
+        unresolvedMeasures.push(supplemental.chapter99Code);
+        stackingExplanation.push(
+          `${supplemental.rulingCitation} but Cante does not have a verified rate table entry for ${supplemental.chapter99Code} to apply it with, so it is NOT included in the total — treat the total below as a floor, not the full stacked rate.`,
+        );
+      }
+    }
   } else {
     for (const ref of refs) {
       const measure: Section301Measure | null = lookupSection301Measure(ref);
@@ -434,7 +465,50 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
     }
   }
 
-  // Finite inputs can still overflow multiplication or aggregate addition.
+  // Section 338 — Canada-specific additional duties (new Aug 2026). Only
+  // applied when no Section 232 measure already matched this code (both
+  // basic-article and derivative), mirroring each proclamation's explicit
+  // carve-out for goods already subject to Section 232 steel/aluminum/auto
+  // duties. This module cannot independently verify the civil-aircraft
+  // exclusion (HTSUS General Note 6) or the full annex, so it is scoped to
+  // the small verified table in lib/tariff/section338.ts (see
+  // STANDING_NOT_EVALUATED for what that leaves out).
+  if (!section232Match && !section232Derivative) {
+    const section338Match = lookupSection338(base.htsCode, country);
+    if (section338Match) {
+      const beforeEffectiveDate = importDate !== null && importDate < SECTION_338_EFFECTIVE_DATE;
+      if (beforeEffectiveDate) {
+        unresolvedMeasures.push(`${section338Match.chapter99Code}: import date before Section 338 effective date ${SECTION_338_EFFECTIVE_DATE}`);
+        components.push({
+          type: "section338",
+          label: section338Match.chapter99Code,
+          ratePercent: null,
+          amount: null,
+          citation: section338Match.federalRegisterCitations,
+          explanation: `Section 338 duties did not take effect until ${SECTION_338_EFFECTIVE_DATE}, after the given import date ${importDate}. This measure was not added for this entry.`,
+        });
+        stackingExplanation.push(
+          `Section 338 Canada duties did not take effect until ${SECTION_338_EFFECTIVE_DATE}, after the given import date ${importDate}, so this measure was not added.`,
+        );
+      } else {
+        const amount =
+          base.computation.amount !== null && input.value !== null
+            ? Number((input.value * section338Match.ratePercent).toFixed(2))
+            : null;
+        components.push({
+          type: "section338",
+          label: section338Match.note.split(":")[0] ?? "Section 338 — Canada additional duty",
+          ratePercent: section338Match.ratePercent,
+          amount,
+          citation: section338Match.federalRegisterCitations,
+          explanation: section338Match.note,
+        });
+        stackingExplanation.push(
+          `Section 338 (${section338Match.chapter99Code}, ${(section338Match.ratePercent * 100).toFixed(0)}%) stacks additively on top of the Column 1 base duty — imposed under 19 U.S.C. 1338 to offset Canadian trade discrimination, effective ${SECTION_338_EFFECTIVE_DATE} (${section338Match.federalRegisterCitations.join("; ")}).`,
+        );
+      }
+    }
+  }
   for (const component of components) {
     if (component.amount !== null && !Number.isFinite(component.amount)) {
       component.amount = null;

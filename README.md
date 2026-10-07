@@ -107,14 +107,41 @@ What it computes for real today:
   steel/aluminum, e.g. washing machines) — that list is actively expanding
   via BIS's inclusions process and a snapshot of it would misrepresent
   coverage as complete.
+- **Section 301 List 4A supplemental fallback** (`lib/tariff/section301.ts`,
+  `lookupSection301SupplementalList4A`) — verified 2026-10-06 against live
+  USITC HTS rows: footwear (6404.11/.19/.20) and consumer-electronics
+  speakers/telephony (8517.62, 8518.21, 8518.22) ARE on active Section 301
+  List 4A (9903.88.15, 7.5%), confirmed by CBP Ruling NY N346450 (2025) and
+  a CBP HQ ruling on Google Home/Nest devices (released Oct. 27-29, 2025) —
+  even though the USITC HTS REST API's own `additionalDuties` field comes
+  back empty for these specific rows. This table is consulted ONLY as a
+  fallback when the live row has no Chapter 99 text, is scoped to the
+  handful of codes verified against a primary CBP ruling, and never
+  overrides an authoritative cross-reference the row does carry.
+- **Section 338 Canada duties** (`lib/tariff/section338.ts`) — new Aug 22,
+  2026 additional 50% ad valorem duty on Canada-origin goods under 19 U.S.C.
+  1338, imposed by three parallel proclamations (alcohol, dairy, and a
+  motor-vehicle-basket proclamation that is mostly non-vehicle consumer/
+  industrial goods) citing FR docs 2026-14991/14992/14997. Covers a small
+  verified subset of HTS lines (whisky/liqueurs/wine, several dairy/cheese
+  lines, lamps and motorboats) — not the full ~554-line combined annex.
+  Automatically skipped when a Section 232 basic-article or derivative
+  measure already matched the same code, mirroring each proclamation's own
+  carve-out for Section-232-covered goods.
 
-What it deliberately does NOT compute yet, and says so in every response's
-`notEvaluated` list rather than guessing: Section 232 derivative-product
-tariffs, USMCA/FTA rules-of-origin qualification beyond a claimed
-programme symbol, AD/CVD scope, and forced-labor (UFLPA) measures. A
-Chapter 99 cross-reference this table doesn't recognize is surfaced in
-`unresolvedMeasures` and voids the total (never silently under-states it) —
-see `lib/tariff/stack.ts` for the full policy.
+What it deliberately does NOT compute: full-value AD/CVD cash-deposit
+amounts (Commerce's own orders say the HTS code is "for convenience only"
+and the written scope and exporter-specific rate control — see
+`lib/tariff/adcvd.ts` for why this is a scope decision, not a gap), IEEPA
+or "reciprocal" tariffs (struck down by the Supreme Court in 2026; the
+temporary Section 122 replacement expired July 24, 2026 — deliberately
+excluded so Cante stays accurate to current law), Section 232 derivative
+products outside the verified June 2025 appliance subset, USMCA/FTA
+rules-of-origin qualification beyond a claimed programme symbol, the full
+Section 338 annex beyond the verified lines above, and forced-labor
+(UFLPA) measures. A Chapter 99 cross-reference this table doesn't
+recognize is surfaced in `unresolvedMeasures` and voids the total (never
+silently under-states it) — see `lib/tariff/stack.ts` for the full policy.
 
 This is the honest-failure discipline the rest of Cante already follows,
 applied to the specific narrow tool a real prospect asked for: real accuracy
@@ -190,7 +217,8 @@ lib/llm/          types.ts (the seam) · claude-code.ts (works) · api.ts (stub)
 lib/sources/      registry.ts (sources + profile activation) · fetch.ts (JSON/RSS/HTML/CSV parsers)
 lib/screening/    csl.ts · us-trade-controls.ts · us-isf.ts · us-export-controls.ts
 lib/tariff/       insw.ts (INSW / NTR) · rates.ts (live USITC HTS column 1/2) · duty-expression.ts (duty-string parser)
-                   · section301.ts (China 301 List 1-4A reference table) · stack.ts (stacking engine) · usmca.ts
+                   · section301.ts (China 301 List 1-4A + verified supplemental fallback) · section232.ts (steel/aluminum)
+                   · section338.ts (Canada Section 338, new Aug 2026) · adcvd.ts (AD/CVD advisories) · stack.ts (stacking engine) · usmca.ts
                    · quota-ledger.ts (PI & Quota Ledger)
 lib/substances/   us-chemical-controls.ts (EPA TSCA PFAS/PBT, CA Prop 65)
 lib/documents/    discrepancy.ts (Doc Cross-Check & OCR Engine) · extract-file.ts

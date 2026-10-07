@@ -672,3 +672,179 @@ test("an impossible ISO-shaped date is rejected by the shared strict validator",
     restore();
   }
 });
+
+// --- Section 301 supplemental fallback table (verified 2026-10-06 against
+// live HTS rows + CBP rulings for 6404/8518 codes with empty additionalDuties) ---
+
+test("China-origin athletic footwear (6404.11) with an empty additionalDuties row still picks up the verified List 4A supplemental", async () => {
+  const restore = stubFetch([{ htsno: "6404.11.90.20", general: "20%", additionalDuties: null }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "6404.11.90.20",
+      countryOfOrigin: "CN",
+      value: 150_000,
+    });
+    assert.ok(result);
+    assert.equal(result.components.length, 2);
+    assert.equal(result.components[0].ratePercent, 0.2);
+    assert.equal(result.components[1].type, "section301");
+    assert.equal(result.components[1].ratePercent, 0.075);
+    assert.equal(result.components[1].amount, 11_250);
+    assert.equal(result.totalRatePercent, 0.275);
+    assert.equal(result.totalAmount, 41_250);
+    assert.ok(result.components[1].citation.some((c) => c.includes("NY N346450")));
+    assert.ok(result.stackingExplanation.some((line) => line.includes("verified CBP-ruling supplemental table")));
+  } finally {
+    restore();
+  }
+});
+
+test("China-origin speakers (8518.22) with an empty additionalDuties row still picks up the verified List 4A supplemental", async () => {
+  const restore = stubFetch([{ htsno: "8518.22.00.00", general: "Free", additionalDuties: null }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "8518.22.00.00",
+      countryOfOrigin: "CN",
+      value: 50_000,
+    });
+    assert.ok(result);
+    assert.equal(result.components.length, 2);
+    assert.equal(result.components[0].amount, 0);
+    assert.equal(result.components[1].type, "section301");
+    assert.equal(result.components[1].ratePercent, 0.075);
+    assert.equal(result.components[1].amount, 3_750);
+    assert.equal(result.totalRatePercent, 0.075);
+    assert.equal(result.totalAmount, 3_750);
+  } finally {
+    restore();
+  }
+});
+
+test("the supplemental table is never consulted when the HTS row already has its own Chapter 99 text", async () => {
+  const restore = stubFetch([
+    { htsno: "6404.11.90.20", general: "20%", additionalDuties: "See 9903.88.03" },
+  ]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "6404.11.90.20",
+      countryOfOrigin: "CN",
+      value: 150_000,
+    });
+    assert.ok(result);
+    // Should resolve via the row's own cross-reference (List 3, 25%), not the supplemental (List 4A, 7.5%).
+    assert.equal(result.components[1].ratePercent, 0.25);
+    assert.ok(!result.components[1].label.includes("supplemental"));
+  } finally {
+    restore();
+  }
+});
+
+test("the supplemental table does not apply to a non-China origin", async () => {
+  const restore = stubFetch([{ htsno: "6404.11.90.20", general: "20%", additionalDuties: null }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "6404.11.90.20",
+      countryOfOrigin: "VN",
+      value: 150_000,
+    });
+    assert.ok(result);
+    assert.equal(result.components.length, 1);
+  } finally {
+    restore();
+  }
+});
+
+// --- Section 338 Canada duties (new Aug 22, 2026) ---
+
+test("Canada-origin whisky (2208.30) gets the verified 50% Section 338 alcohol duty", async () => {
+  const restore = stubFetch([{ htsno: "2208.30.60.85", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "2208.30.60.85",
+      countryOfOrigin: "CA",
+      value: 20_000,
+    });
+    assert.ok(result);
+    const s338 = result.components.find((c) => c.type === "section338");
+    assert.ok(s338);
+    assert.equal(s338!.ratePercent, 0.5);
+    assert.equal(s338!.amount, 10_000);
+    assert.ok(s338!.citation.some((c) => c.includes("2026-14991")));
+    assert.ok(result.stackingExplanation.some((line) => line.includes("19 U.S.C. 1338")));
+  } finally {
+    restore();
+  }
+});
+
+test("Canada-origin dairy (0402.10) gets the verified 50% Section 338 dairy duty", async () => {
+  const restore = stubFetch([{ htsno: "0402.10.05.00", general: "10%" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "0402.10.05.00",
+      countryOfOrigin: "CA",
+      value: 8_000,
+    });
+    assert.ok(result);
+    const s338 = result.components.find((c) => c.type === "section338");
+    assert.ok(s338);
+    assert.equal(s338!.ratePercent, 0.5);
+    assert.equal(s338!.amount, 4_000);
+  } finally {
+    restore();
+  }
+});
+
+test("Section 338 is not applied before its verified first-collection date of 2026-08-22", async () => {
+  const restore = stubFetch([{ htsno: "2208.30.60.85", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "2208.30.60.85",
+      countryOfOrigin: "CA",
+      value: 20_000,
+      importDate: "2026-08-01",
+    });
+    assert.ok(result);
+    const s338 = result.components.find((c) => c.type === "section338");
+    assert.ok(s338);
+    assert.equal(s338!.amount, null);
+    assert.ok(result.unresolvedMeasures.some((m) => m.includes("before Section 338 effective date")));
+    assert.equal(result.totalAmount, null);
+  } finally {
+    restore();
+  }
+});
+
+test("Section 338 does not apply to a non-Canada origin even on a listed HTS code", async () => {
+  const restore = stubFetch([{ htsno: "2208.30.60.85", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "2208.30.60.85",
+      countryOfOrigin: "FR",
+      value: 20_000,
+    });
+    assert.ok(result);
+    assert.ok(!result.components.some((c) => c.type === "section338"));
+  } finally {
+    restore();
+  }
+});
+
+test("Section 338 is skipped when a Section 232 basic-article measure already matched the same code", async () => {
+  // A hypothetical Canada-origin steel code that also happens to be covered
+  // by this calculator's own Section 232 basic-article table (7208 is on
+  // the verified steel list) — Section 232 should win; Section 338 must not
+  // double-stack on top of it, mirroring each proclamation's own carve-out.
+  const restore = stubFetch([{ htsno: "7208.10.15.00", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({
+      htsCode: "7208.10.15.00",
+      countryOfOrigin: "CA",
+      value: 10_000,
+    });
+    assert.ok(result);
+    assert.ok(result.components.some((c) => c.type === "section232"));
+    assert.ok(!result.components.some((c) => c.type === "section338"));
+  } finally {
+    restore();
+  }
+});

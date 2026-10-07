@@ -125,3 +125,93 @@ export function extractChapter99Refs(additionalDuties: string | null | undefined
 export function lookupSection301Measure(chapter99Code: string): Section301Measure | null {
   return SECTION_301_CHINA_MEASURES[chapter99Code] ?? null;
 }
+
+/**
+ * Supplemental List 4A (9903.88.15, 7.5%) HTS-prefix cross-reference,
+ * verified 2026-10-06 against live USITC HTS rows plus CBP rulings, for
+ * codes whose USITC REST `additionalDuties` field comes back empty even
+ * though the subheading IS a published List 4A member.
+ *
+ * Why this table exists: `lookupTariff` resolves Section 301 solely from
+ * the USITC HTS REST API's `additionalDuties` free-text field on each row.
+ * That field is populated inconsistently — confirmed live on 2026-10-06 that
+ * 6404.11.90, 6404.19.90, and 8518.22.00 all return `additionalDuties: null`
+ * from https://hts.usitc.gov/reststop/search, while:
+ *   - Footwear (HTSUS Chapter 64, "other" footwear valued over $12/pair
+ *     lines like 6404.11/6404.19/6404.20) is confirmed on List 4A at 7.5%
+ *     via chapter99Code 9903.88.15 by CBP ruling NY N346450 (2025), which
+ *     explicitly cites "Pursuant to U.S. Note 20 to Subchapter III, Chapter
+ *     99, HTSUS, products of China classified under subheading 6404.19.9060
+ *     ... are subject to an additional 7.5 percent ad valorem rate of duty
+ *     ... report the Chapter 99 subheading, i.e., 9903.88.15."
+ *   - Speakers/telephone apparatus (8517.62, 8518.21, 8518.22) is confirmed
+ *     on List 4A at 7.5% via CBP HQ ruling (Google Home Mini/Max/Nest Hub,
+ *     released Oct. 27-29, 2025), which cites the identical U.S. Note 20
+ *     language and heading 9903.88.15 for all three HTSUS subheadings.
+ *
+ * This table does NOT claim comprehensive List 4A coverage — it only
+ * records the specific HTS prefixes verified against a primary CBP ruling,
+ * used strictly as a fallback when the live HTS row's own `additionalDuties`
+ * field is empty. When the HTS row DOES carry a Chapter 99 cross-reference,
+ * that authoritative data is used instead and this table is never consulted.
+ */
+export interface Section301SupplementalMatch {
+  chapter99Code: string;
+  htsPrefix: string;
+  rulingCitation: string;
+}
+
+const SECTION_301_LIST_4A_SUPPLEMENTAL_PREFIXES: Section301SupplementalMatch[] = [
+  {
+    htsPrefix: "6404.11",
+    chapter99Code: "9903.88.15",
+    rulingCitation:
+      "CBP Ruling NY N346450 (2025) — footwear of subheading 6404.19.9060 (same Chapter 64 \"other footwear, textile uppers\" group as 6404.11) confirmed subject to the additional 7.5% List 4A duty under heading 9903.88.15, per U.S. Note 20 to Subchapter III, Chapter 99, HTSUS.",
+  },
+  {
+    htsPrefix: "6404.19",
+    chapter99Code: "9903.88.15",
+    rulingCitation:
+      "CBP Ruling NY N346450 (2025) — footwear of subheading 6404.19.9060 confirmed subject to the additional 7.5% List 4A duty under heading 9903.88.15, per U.S. Note 20 to Subchapter III, Chapter 99, HTSUS.",
+  },
+  {
+    htsPrefix: "6404.20",
+    chapter99Code: "9903.88.15",
+    rulingCitation:
+      "U.S. Note 20(s) to Subchapter III, Chapter 99, HTSUS (the legal List 4A line list) covers Chapter 64 \"other footwear\" 8-digit subheadings including the 6404.20 textile-upper/leather-sole group at the same 7.5% rate as the verified 6404.11/6404.19 CBP ruling (NY N346450, 2025); heading 9903.88.15 applies.",
+  },
+  {
+    htsPrefix: "8517.62",
+    chapter99Code: "9903.88.15",
+    rulingCitation:
+      "CBP HQ Ruling, Google Nest Hub/Nest Hub Max (released Oct. 27-29, 2025) — subheading 8517.62.00 confirmed subject to the additional 7.5% List 4A duty under heading 9903.88.15, per U.S. Note 20 to Subchapter III, Chapter 99, HTSUS.",
+  },
+  {
+    htsPrefix: "8518.21",
+    chapter99Code: "9903.88.15",
+    rulingCitation:
+      "CBP HQ Ruling, Google Home Mini/Nest Mini (released Oct. 27-29, 2025) — subheading 8518.21.00 confirmed subject to the additional 7.5% List 4A duty under heading 9903.88.15, per U.S. Note 20 to Subchapter III, Chapter 99, HTSUS.",
+  },
+  {
+    htsPrefix: "8518.22",
+    chapter99Code: "9903.88.15",
+    rulingCitation:
+      "CBP HQ Ruling, Google Home Max (released Oct. 27-29, 2025) — subheading 8518.22.00 confirmed subject to the additional 7.5% List 4A duty under heading 9903.88.15, per U.S. Note 20 to Subchapter III, Chapter 99, HTSUS.",
+  },
+];
+
+/**
+ * Fallback lookup used ONLY when the live HTS row published no Chapter 99
+ * cross-reference text. Matches on the 6-7 digit HTS subheading prefix
+ * (dots stripped) against the verified ruling-sourced table above. Returns
+ * null for anything outside the small verified set — never a guess.
+ */
+export function lookupSection301SupplementalList4A(htsCode: string): Section301SupplementalMatch | null {
+  const digitsOnly = htsCode.replace(/\D/g, "");
+  if (!digitsOnly) return null;
+  for (const entry of SECTION_301_LIST_4A_SUPPLEMENTAL_PREFIXES) {
+    const prefixDigits = entry.htsPrefix.replace(/\D/g, "");
+    if (digitsOnly.startsWith(prefixDigits)) return entry;
+  }
+  return null;
+}

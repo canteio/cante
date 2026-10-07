@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { extractChapter99Refs, lookupSection301Measure, SECTION_301_CHINA_MEASURES } from "@/lib/tariff/section301";
+import { extractChapter99Refs, lookupSection301Measure, lookupSection301SupplementalList4A, SECTION_301_CHINA_MEASURES } from "@/lib/tariff/section301";
 
 test("extracts a single Chapter 99 cross-reference", () => {
   assert.deepEqual(extractChapter99Refs("See 9903.88.03"), ["9903.88.03"]);
@@ -64,4 +64,26 @@ test("every table entry's key matches its own chapter99Code field", () => {
   for (const [key, measure] of Object.entries(SECTION_301_CHINA_MEASURES)) {
     assert.equal(key, measure.chapter99Code);
   }
+});
+
+// --- Supplemental List 4A table (verified via CBP rulings) ---
+
+test("lookupSection301SupplementalList4A matches verified footwear and speaker codes", () => {
+  assert.ok(lookupSection301SupplementalList4A("6404.11.90.20"));
+  assert.ok(lookupSection301SupplementalList4A("6404.19.90.30"));
+  assert.ok(lookupSection301SupplementalList4A("8518.22.00.00"));
+  assert.ok(lookupSection301SupplementalList4A("8518.21.00.00"));
+  assert.ok(lookupSection301SupplementalList4A("8517.62.00.00"));
+});
+
+test("lookupSection301SupplementalList4A returns the 9903.88.15 heading with a CBP ruling citation", () => {
+  const match = lookupSection301SupplementalList4A("6404.11.90.20");
+  assert.ok(match);
+  assert.equal(match?.chapter99Code, "9903.88.15");
+  assert.match(match!.rulingCitation, /NY N346450/);
+});
+
+test("lookupSection301SupplementalList4A returns null for a code outside the verified table", () => {
+  assert.equal(lookupSection301SupplementalList4A("0101.21.00.10"), null);
+  assert.equal(lookupSection301SupplementalList4A(""), null);
 });
