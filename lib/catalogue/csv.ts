@@ -18,12 +18,13 @@ export interface CsvTable {
 
 export interface CsvLimits { columns: number; rawRows: number; cellCharacters: number }
 
-export function parseCsv(input: string, limits?: CsvLimits): CsvTable {
+export function parseCsv(input: string, limits?: CsvLimits, strict = false, preserveHeaders = false): CsvTable {
   const text = input.replace(/^﻿/, "");
   const records: string[][] = [];
   let field = "";
   let record: string[] = [];
   let inQuotes = false;
+  let closedQuote = false;
 
   for (let i = 0; i < text.length; i += 1) {
     // Enforce structural limits while scanning, before constructing row objects.
@@ -39,6 +40,7 @@ export function parseCsv(input: string, limits?: CsvLimits): CsvTable {
           i += 1;
         } else {
           inQuotes = false;
+          closedQuote = true;
         }
       } else {
         field += char;
@@ -46,11 +48,14 @@ export function parseCsv(input: string, limits?: CsvLimits): CsvTable {
       continue;
     }
 
+    if (strict && closedQuote && char !== "," && char !== "\r" && char !== "\n") throw new Error("Invalid CSV quoting.");
     if (char === '"') {
+      if (strict && field.length) throw new Error("Invalid CSV quoting.");
       inQuotes = true;
     } else if (char === ",") {
       record.push(field);
       field = "";
+      closedQuote = false;
     } else if (char === "\r") {
       // Swallow; the \n that follows ends the record.
     } else if (char === "\n") {
@@ -58,11 +63,13 @@ export function parseCsv(input: string, limits?: CsvLimits): CsvTable {
       records.push(record);
       record = [];
       field = "";
+      closedQuote = false;
     } else {
       field += char;
     }
   }
 
+  if (strict && inQuotes) throw new Error("Unclosed CSV quote.");
   if (field.length > 0 || record.length > 0) {
     record.push(field);
     records.push(record);
@@ -74,11 +81,13 @@ export function parseCsv(input: string, limits?: CsvLimits): CsvTable {
   const nonEmpty = records.filter((r) => r.some((cell) => cell.trim() !== ""));
   if (nonEmpty.length === 0) return { headers: [], rows: [] };
 
-  const headers = nonEmpty[0].map((h) => h.trim().toLowerCase().replace(/\s+/g, "_"));
+  // Mapping needs the original labels; existing callers retain normalized headers.
+  const headers = preserveHeaders ? nonEmpty[0] : nonEmpty[0].map((h) => h.trim().toLowerCase().replace(/\s+/g, "_"));
   const rows = nonEmpty.slice(1).map((cells) => {
+    if (strict && cells.length !== headers.length) throw new Error("Invalid CSV row width.");
     const row: Record<string, string> = {};
     headers.forEach((header, index) => {
-      row[header] = (cells[index] ?? "").trim();
+      Object.defineProperty(row, header, { value: (cells[index] ?? "").trim(), enumerable: true, writable: true, configurable: true });
     });
     return row;
   });

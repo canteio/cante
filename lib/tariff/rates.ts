@@ -179,14 +179,25 @@ export async function lookupTariff(
 
   // Prefer the most specific matching row — a 10-digit statistical line over
   // the heading it sits under, since that is what an entry actually declares.
-  const candidates = (payload as RawHtsRow[])
+  // But USITC's statistical breakdown rows (e.g. splitting one rated heading
+  // into AC/DC/brushless subtypes) carry *empty-string* general/special/other
+  // by design — the real rate lives on the parent heading, not on the leaf.
+  // Blindly taking the most specific match let a perfectly real HTS code
+  // (confirmed live: 8501.10.40.20 under 8501.10.40, which actually quotes
+  // 4.4%) silently resolve to "no duty rate was published for this row" and
+  // break every downstream duty figure for it. Prefer the most specific row
+  // that actually carries a rate; only fall back to the bare most-specific
+  // match when nothing in the matched set has one, which is the genuine
+  // "no rate published" case (e.g. a heading-only row).
+  const sorted = (payload as RawHtsRow[])
     .filter((row) => {
       const htsno = str(row.htsno);
       return Boolean(htsno && codesOverlap(htsno, code));
     })
     .sort((a, b) => digits(str(b.htsno) ?? "").length - digits(str(a.htsno) ?? "").length);
 
-  const match = candidates[0];
+  const hasRate = (row: RawHtsRow) => Boolean(str(row.general) || str(row.special) || str(row.other));
+  const match = sorted.find(hasRate) ?? sorted[0];
   if (!match) {
     cacheRow(key, null, now);
     return null;

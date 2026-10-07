@@ -2,10 +2,24 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { requireSupabaseEnv } from "@/lib/auth/config";
 
-export async function createClient() {
-  const cookieStore = await cookies();
+/**
+ * CLI/cron scripts (scripts/run-check.ts, scripts/scheduled-check.ts) import
+ * this same lib/db/queries.ts used by every web route, but have no HTTP
+ * request to read cookies from — Next's `cookies()` throws
+ * "called outside a request scope" the instant it's touched outside a real
+ * request. Falling back to the trusted service-role client (no cookies,
+ * bypasses RLS) keeps every queries.ts function usable from both contexts
+ * without duplicating each one. This is safe here specifically because
+ * nothing in queries.ts trusts a caller-supplied customerId as an identity
+ * claim — CLI callers already pass an explicit customerId resolved from
+ * CANTE_CUSTOMER_ID or db:seed, never from untrusted request input, and the
+ * one place that *does* derive identity from auth (getAuthenticatedWorkspace
+ * below) correctly reads an empty claims set from the fallback client and
+ * returns null, exactly as it should with no signed-in user.
+ */
+export async function createRequestClient() {
   const { publishableKey, url } = requireSupabaseEnv();
-
+  const cookieStore = await cookies();
   return createServerClient(url, publishableKey, {
     cookies: {
       getAll() {
@@ -22,6 +36,17 @@ export async function createClient() {
       },
     },
   });
+}
+
+export async function createClient() {
+  try {
+    return await createRequestClient();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (!message.includes("outside a request scope")) throw error;
+    const { createServiceClient } = await import("@/lib/supabase/service");
+    return createServiceClient();
+  }
 }
 
 export type AuthenticatedWorkspace = {

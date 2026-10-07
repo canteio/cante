@@ -14,9 +14,30 @@ export interface SourceChangeSelection {
   baselinedCount: number;
 }
 
+/**
+ * Only the dedup layer's OWN revision marker is stripped — never a
+ * source-generated fragment.
+ *
+ * `revisionUrl()` below appends `#cante-revision-<hash>` to a *changed*
+ * row's URL so the alert links straight to a distinguishable revision. That
+ * marker must be stripped here so re-checking the same base URL still finds
+ * its prior inventory row.
+ *
+ * But several source parsers (CBP WRO, DHS UFLPA — see
+ * lib/sources/fetch.ts's withCanteFragment()) synthesize a
+ * `#cante-wro-<hash>` / `#cante-uflpa-<hash>` fragment on EVERY row because
+ * the underlying page has no per-row URL at all; the fragment IS the row's
+ * identity, not a revision marker. Unconditionally stripping all fragments
+ * collapsed every WRO/UFLPA row from one fetch into a single identity key,
+ * so the second and all later rows in a run looked like concurrent
+ * modifications of the first — `record_source_inventory`'s optimistic-lock
+ * check correctly rejected that as "changed concurrently", failing the
+ * entire check. Confirmed live: a real US run returned 60 distinct WRO
+ * findings that all stripped to one identical key.
+ */
 function identity(url: string): string {
   const parsed = new URL(url);
-  parsed.hash = "";
+  if (parsed.hash.startsWith("#cante-revision-")) parsed.hash = "";
   return parsed.toString().replace(/\/+$/, "").toLowerCase();
 }
 
@@ -77,14 +98,31 @@ export async function selectSourceChanges(
   const indonesia = jurisdiction === "Indonesia";
 
   for (const [sourceId, sourceEntries] of grouped) {
-    const existingRows = cloudResult<Array<typeof Schema.sourceDocuments.$inferSelect>>(
-      await supabase
-        .from("source_documents")
-        .select("*")
-        .eq("customer_id", customerId)
-        .eq("jurisdiction", jurisdiction)
-        .eq("source_id", sourceId),
-    );
+    // PostgREST caps a single select at 1000 rows by default. A source with
+    // more existing inventory than that (confirmed live: USITC import-injury
+    // alone holds 1940 rows for one customer) silently returned only the
+    // first 1000, so every row beyond it looked "new" here even though it
+    // already existed — the resulting INSERT with expected_hash: null then
+    // collided with record_source_inventory()'s optimistic-lock check against
+    // the real stored row and failed the ENTIRE check with "changed
+    // concurrently", for every customer whose cumulative inventory on any one
+    // source ever crossed this page boundary. Page through explicitly rather
+    // than trusting one unbounded select.
+    const existingRows: Array<typeof Schema.sourceDocuments.$inferSelect> = [];
+    const PAGE_SIZE = 1000;
+    for (let offset = 0; ; offset += PAGE_SIZE) {
+      const page = cloudResult<Array<typeof Schema.sourceDocuments.$inferSelect>>(
+        await supabase
+          .from("source_documents")
+          .select("*")
+          .eq("customer_id", customerId)
+          .eq("jurisdiction", jurisdiction)
+          .eq("source_id", sourceId)
+          .range(offset, offset + PAGE_SIZE - 1),
+      );
+      existingRows.push(...page);
+      if (page.length < PAGE_SIZE) break;
+    }
     const existing = new Map(existingRows.map((row) => [row.identity, row]));
     const isBootstrap = existingRows.length === 0;
     const bootstrapCandidates: RegulationEntry[] = [];

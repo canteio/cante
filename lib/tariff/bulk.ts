@@ -37,8 +37,8 @@ export interface ParsedStackRequest {
   errors: StackRequestRowError[];
 }
 
-const HTS_HEADER_ALIASES = ["hts_code", "htscode", "hts", "code", "classification", "tariff_code"];
-const COUNTRY_HEADER_ALIASES = ["country_of_origin", "countryoforigin", "country", "origin", "coo"];
+export const HTS_HEADER_ALIASES = ["hts_code", "htscode", "hts", "code", "classification", "tariff_code"];
+export const COUNTRY_HEADER_ALIASES = ["country_of_origin", "countryoforigin", "country", "origin", "coo"];
 const VALUE_HEADER_ALIASES = ["value", "customs_value", "shipment_value", "declared_value"];
 const QUANTITY_HEADER_ALIASES = ["quantity", "qty"];
 const UNIT_HEADER_ALIASES = ["unit", "uom", "unit_of_measure"];
@@ -57,7 +57,7 @@ const USMCA_VERIFIED_ALIASES = ["usmca_verified", "usmcaverified", "usmca_qualif
 const USMCA_DECISION_ALIASES = ["usmca_decision", "usmcadecision", "usmca_qualification_decision"];
 const USMCA_DETAILS_ALIASES = ["usmca_details", "usmcadetails", "usmca_qualification_details"];
 
-function firstPresent(row: Record<string, string>, aliases: string[]): string | null {
+export function firstPresent(row: Record<string, string>, aliases: string[]): string | null {
   for (const alias of aliases) {
     const value = row[alias];
     if (value !== undefined && value.trim() !== "") return value.trim();
@@ -74,7 +74,7 @@ function firstPresent(row: Record<string, string>, aliases: string[]): string | 
  * accumulate duplicate/legacy columns. Agreeing duplicates are harmless and
  * not flagged.
  */
-function conflictingAlias(row: Record<string, string>, aliases: string[]): string | null {
+export function conflictingAlias(row: Record<string, string>, aliases: string[]): string | null {
   const present = aliases
     .map((alias) => ({ alias, value: row[alias]?.trim() ?? "" }))
     .filter((entry) => entry.value !== "");
@@ -91,7 +91,7 @@ function conflictingAlias(row: Record<string, string>, aliases: string[]): strin
  * the right behaviour for existing catalogue imports but would otherwise
  * let a bulk tariff upload lose a column with no error at all here.
  */
-function duplicateHeaders(headers: string[]): string[] {
+export function duplicateHeaders(headers: string[]): string[] {
   const seen = new Set<string>();
   const duplicates = new Set<string>();
   for (const header of headers) {

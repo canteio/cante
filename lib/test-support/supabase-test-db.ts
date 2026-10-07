@@ -4,10 +4,8 @@ import { after, afterEach } from "node:test";
 import type { Finding } from "@/lib/db/schema";
 import { createServiceClient } from "@/lib/supabase/service";
 
-// Match Next's local override precedence without overwriting shell secrets.
-for (const file of [".env.local", ".env"]) {
-  if (existsSync(file)) process.loadEnvFile(file);
-}
+// Load the single local development environment without overwriting shell secrets.
+if (existsSync(".env")) process.loadEnvFile(".env");
 
 // One shared project per file, a fresh tenant per case. Only IDs allocated by
 // this process may be deleted; never clean by name, prefix, or an unfiltered query.
