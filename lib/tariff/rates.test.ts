@@ -224,3 +224,76 @@ test("compareDuty reports null difference and says why when a code has no publis
     restore();
   }
 });
+
+const housingLeaf = { htsno: "8538.90.81.80", indent: "5", general: "", special: "", other: "" };
+const housingSubtree = [
+  { htsno: "8538.90.81", indent: "3", description: "Other", general: "3.5%", special: "Free (A,AU)", other: "35%" },
+  ...["20", "40", "60", "80"].map(suffix => ({ ...housingLeaf, htsno: `8538.90.81.${suffix}`, indent: suffix === "20" ? "4" : "5" })),
+  { htsno: "8538.90.82", general: "99%" }, // Never inherit a sibling's rate.
+];
+
+for (const ratedPrefix of ["8538.90.81", "8538.90", "8538", null]) {
+  test(`housing ancestor retry is bounded and auditable (rated prefix ${ratedPrefix})`, async () => {
+    const original = global.fetch;
+    const queries: string[] = [];
+    global.fetch = (async (url, init) => {
+      const keyword = new URL(String(url)).searchParams.get("keyword")!;
+      queries.push(keyword);
+      assert.ok(init?.signal);
+      return new Response(JSON.stringify(keyword === ratedPrefix ? housingSubtree : [housingLeaf]));
+    }) as typeof fetch;
+    try {
+      const row = await lookupTariff("8538.90.8180");
+      const quote = await quoteDuty({ htsCode: "8538.90.8180", value: 8000 });
+      const prefixes = ["8538.90.8180", "8538.90.81", "8538.90", "8538"];
+      assert.deepEqual(queries, ratedPrefix ? prefixes.slice(0, prefixes.indexOf(ratedPrefix) + 1) : prefixes);
+      if (ratedPrefix) {
+        assert.equal(row?.htsCode, "8538.90.8180");
+        assert.equal(row?.inheritedFromHtsCode, "8538.90.81");
+        assert.equal(row?.general.adValorem, 0.035);
+        assert.equal(quote?.computation.amount, 280);
+        assert.ok(quote?.caveats.some(note => /inherited.*8538\.90\.81/.test(note)));
+      } else {
+        assert.equal(row?.general.parsed, false);
+        assert.equal(quote?.computation.amount, null);
+        assert.equal(row?.inheritedFromHtsCode, undefined);
+      }
+    } finally { global.fetch = original; }
+  });
+}
+
+test("ancestor retry fails closed on network failure and respects cancellation", async () => {
+  const original = global.fetch;
+  const controller = new AbortController();
+  let calls = 0;
+  global.fetch = (async () => {
+    calls++;
+    controller.abort();
+    return new Response(JSON.stringify([housingLeaf]));
+  }) as typeof fetch;
+  try {
+    await assert.rejects(lookupTariff("8538.90.8180", { signal: controller.signal }), TariffLookupError);
+    assert.equal(calls, 1);
+    global.fetch = (async () => { throw new Error("private network detail"); }) as typeof fetch;
+    await assert.rejects(lookupTariff("8538.90.8180"), { message: "Could not reach the USITC HTS service." });
+  } finally { global.fetch = original; }
+});
+
+test("housing inherited rate flows through business impact with published List 1 coverage", async () => {
+  const { evaluateBusinessImpact, parseBusinessImpact } = await import("./business-impact");
+  const original = global.fetch;
+  global.fetch = (async (url) => new Response(JSON.stringify(
+    new URL(String(url)).searchParams.get("keyword") === "8538.90.8180" ? [housingLeaf] : housingSubtree,
+  ))) as typeof fetch;
+  try {
+    const [row] = await evaluateBusinessImpact(parseBusinessImpact(
+      "sku,hts,origin,supplier,annual_import_value_usd,current_duty_rate,evaluation_date\nHOUSING,8538.90.8180,CN,Connector supplier,8000,3.5,2026-10-01",
+    ));
+    assert.equal(row.status, "computed");
+    assert.equal(row.computed_annual_duty_usd, 2280);
+    assert.equal(row.annual_delta_usd, 2000);
+    assert.deepEqual(row.stack_result?.unresolvedMeasures, []);
+    assert.equal(row.stack_result?.components.find(c => c.type === "section301")?.ratePercent, 0.25);
+    assert.ok(row.stack_result?.components.some(c => /inherited.*8538\.90\.81/.test(c.explanation)));
+  } finally { global.fetch = original; }
+});

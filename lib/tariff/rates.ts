@@ -27,6 +27,8 @@ const TIMEOUT_MS = 20_000;
 
 export interface TariffRow {
   htsCode: string;
+  /** Published ancestor supplying the rate when a broader search was needed. */
+  inheritedFromHtsCode?: string;
   description: string;
   units: string[];
   /** Column 1 general — the normal-trade-relations rate most imports pay. */
@@ -144,38 +146,43 @@ export async function lookupTariff(
   const cached = cache.get(key);
   if (cached && cached.expiresAt > now) return cached.row;
 
-  const url = `${HTS_SEARCH}?${new URLSearchParams({ keyword: code }).toString()}`;
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  const search = async (keyword: string): Promise<RawHtsRow[]> => {
+    const url = `${HTS_SEARCH}?${new URLSearchParams({ keyword }).toString()}`;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
-  const signal = options.signal ? AbortSignal.any([options.signal, controller.signal]) : controller.signal;
-  let release: (() => void) | undefined;
-  let payload: unknown;
-  try {
-    release = await acquireLookup(signal);
-    signal.throwIfAborted();
-    const res = await fetch(url, {
-      signal,
-      headers: { Accept: "application/json" },
-    });
-    if (!res.ok) throw new TariffLookupError(`USITC HTS returned HTTP ${res.status}.`);
-    payload = await res.json();
-  } catch (error) {
-    if (error instanceof TariffLookupError) throw error;
-    // Never surface the raw underlying error message here — a synthetic or
-    // attacker-influenced fetch failure (DNS, TLS, proxy, or a crafted
-    // AggregateError) could otherwise leak internal network details through
-    // a public API response. Only structured, pre-vetted messages thrown
-    // above (HTTP status, payload shape) are safe to disclose as-is.
-    throw new TariffLookupError("Could not reach the USITC HTS service.");
-  } finally {
-    clearTimeout(timer);
-    release?.();
-  }
+    const signal = options.signal ? AbortSignal.any([options.signal, controller.signal]) : controller.signal;
+    let release: (() => void) | undefined;
+    let payload: unknown;
+    try {
+      release = await acquireLookup(signal);
+      signal.throwIfAborted();
+      const res = await fetch(url, {
+        signal,
+        headers: { Accept: "application/json" },
+      });
+      if (!res.ok) throw new TariffLookupError(`USITC HTS returned HTTP ${res.status}.`);
+      payload = await res.json();
+    } catch (error) {
+      if (error instanceof TariffLookupError) throw error;
+      // Never surface the raw underlying error message here — a synthetic or
+      // attacker-influenced fetch failure (DNS, TLS, proxy, or a crafted
+      // AggregateError) could otherwise leak internal network details through
+      // a public API response. Only structured, pre-vetted messages thrown
+      // above (HTTP status, payload shape) are safe to disclose as-is.
+      throw new TariffLookupError("Could not reach the USITC HTS service.");
+    } finally {
+      clearTimeout(timer);
+      release?.();
+    }
 
-  if (!Array.isArray(payload)) {
-    throw new TariffLookupError("USITC HTS returned an unexpected payload shape.");
-  }
+    if (!Array.isArray(payload)) {
+      throw new TariffLookupError("USITC HTS returned an unexpected payload shape.");
+    }
+
+    return payload as RawHtsRow[];
+  };
+  const payload = await search(code);
 
   // Prefer the most specific matching row — a 10-digit statistical line over
   // the heading it sits under, since that is what an entry actually declares.
@@ -187,9 +194,9 @@ export async function lookupTariff(
   // 4.4%) silently resolve to "no duty rate was published for this row" and
   // break every downstream duty figure for it. Prefer the most specific row
   // that actually carries a rate; only fall back to the bare most-specific
-  // match when nothing in the matched set has one, which is the genuine
-  // "no rate published" case (e.g. a heading-only row).
-  const sorted = (payload as RawHtsRow[])
+  // match after bounded broader searches also find no published rate. Exact
+  // leaf searches can omit the rated parent entirely (8538.90.81.80).
+  const matchingRows = (rows: RawHtsRow[]) => rows
     .filter((row) => {
       const htsno = str(row.htsno);
       return Boolean(htsno && codesOverlap(htsno, code));
@@ -197,7 +204,21 @@ export async function lookupTariff(
     .sort((a, b) => digits(str(b.htsno) ?? "").length - digits(str(a.htsno) ?? "").length);
 
   const hasRate = (row: RawHtsRow) => Boolean(str(row.general) || str(row.special) || str(row.other));
-  const match = sorted.find(hasRate) ?? sorted[0];
+  const sorted = matchingRows(payload);
+  let rated = sorted.find(hasRate);
+  let inheritedFromHtsCode: string | undefined;
+  // At most three retries, ending at the four-digit heading. Always match
+  // against the ORIGINAL code, never the broader keyword (siblings differ).
+  for (const length of [8, 6, 4]) {
+    if (rated || length >= key.length) continue;
+    const prefix = key.slice(0, length);
+    const keyword = [prefix.slice(0, 4), prefix.slice(4, 6), prefix.slice(6, 8)].filter(Boolean).join(".");
+    rated = matchingRows(await search(keyword)).find(hasRate);
+    if (rated && key.startsWith(digits(str(rated.htsno) ?? "")) && digits(str(rated.htsno) ?? "").length < key.length) {
+      inheritedFromHtsCode = str(rated.htsno) ?? undefined;
+    }
+  }
+  const match = rated ?? sorted[0];
   if (!match) {
     cacheRow(key, null, now);
     return null;
@@ -205,7 +226,8 @@ export async function lookupTariff(
 
   const special = str(match.special);
   const row: TariffRow = {
-    htsCode: str(match.htsno) ?? code,
+    htsCode: inheritedFromHtsCode ? code : str(match.htsno) ?? code,
+    ...(inheritedFromHtsCode ? { inheritedFromHtsCode } : {}),
     description: str(match.description) ?? "",
     units: Array.isArray(match.units) ? match.units.filter((u): u is string => typeof u === "string") : [],
     general: parseDutyRate(str(match.general)),
@@ -273,6 +295,10 @@ export async function quoteDuty(input: {
     caveats.push(
       "Quoted at the Column 1 general (NTR) rate. FTA preference was not claimed and is not assumed.",
     );
+  }
+
+  if (row.inheritedFromHtsCode) {
+    caveats.push(`Rate inherited from published USITC ancestor ${row.inheritedFromHtsCode} after a broader-prefix lookup for ${input.htsCode}.`);
   }
 
   if (row.additionalDuties) {
