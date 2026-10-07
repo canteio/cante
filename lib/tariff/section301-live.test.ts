@@ -31,3 +31,22 @@ for (const code of ["6404.11", "8518.22", "8517.13"]) {
     }
   });
 }
+
+
+import { computeStackedDuty } from "./stack";
+import { resetTariffCacheForTests } from "./rates";
+
+test("live USITC filament stack includes List 2 duty", { timeout: 35_000 }, async () => {
+  resetTariffCacheForTests();
+  const result = await computeStackedDuty({
+    htsCode: "3916.90.30.00", countryOfOrigin: "CN", value: 1000,
+    signal: AbortSignal.timeout(30_000),
+  });
+  assert.ok(result);
+  const measure = result.components.find(c => c.type === "section301");
+  assert.ok(measure);
+  assert.match(measure.label, /List 2/);
+  assert.equal(measure.ratePercent, 0.25);
+  assert.equal(measure.amount, 250);
+  assert.ok(!result.unresolvedMeasures.some(m => /Section 301|9903\.88\.02/.test(m)));
+});

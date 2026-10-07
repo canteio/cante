@@ -1,15 +1,18 @@
+import coverageSnapshot from "./section301-coverage.json";
+
 /**
- * Section 301 (China) Chapter 99 cross-reference table.
+ * Section 301 (China): live USITC references plus the comprehensive USITC
+ * China Tariffs coverage snapshot, resolved through the verified rate table.
  *
  * The USITC HTS row for a China-origin classification often carries an
  * `additionalDuties` cross-reference like "See 9903.88.03" — a pointer into
  * subchapter III of HTS Chapter 99, not a number lib/tariff/rates.ts can
- * compute with. This file is the first piece of real reference data that
+ * compute with. The verified rate table
  * resolves those pointers to an actual stacked rate, with the Federal
  * Register notice that imposed it, so a caller can say *why* a number is
  * what it is instead of just printing it.
  *
- * Scope, stated plainly: this table covers the four China Section 301
+ * Scope, stated plainly: the rate table covers the four China Section 301
  * "List" actions under USTR's technology-transfer investigation (the
  * 9903.88.xx headings). It does NOT cover Section 232 steel/aluminum/auto
  * derivatives, USMCA/FTA rules-of-origin qualification, AD/CVD orders, or
@@ -17,7 +20,10 @@
  * and are deliberately left unresolved rather than guessed at. See
  * `lib/tariff/stack.ts` for how an unresolved measure is reported.
  *
- * Every entry below is a verified historical fact (list composition,
+ * The comprehensive coverage snapshot also retains newer headings whose rates
+ * are not in this table; those remain explicitly unresolved in the stack.
+ *
+ * Every rate entry below is a verified historical fact (list composition,
  * in-force rate, effective date, Federal Register citation), checked
  * against USTR and Federal Register primary sources. Rates that were
  * modified after initial imposition reflect the *current* in-force rate,
@@ -140,71 +146,23 @@ export function lookupSection301Measure(chapter99Code: string): Section301Measur
   return SECTION_301_CHINA_MEASURES[chapter99Code] ?? null;
 }
 
-/**
- * Bounded fallback for rows with no additionalDuties text. Membership is
- * supported only at the exact 8- or 10-digit scope cited below; a ruling
- * about one classification is not evidence for its whole six-digit family.
- * This is not a comprehensive list or a historical rate schedule.
+/** Comprehensive USITC China Tariffs snapshot; periodically regenerate using
+ * scripts/generate-section301-coverage.ts. Source URL and printed Last Updated
+ * date are embedded in the generated JSON. A stale snapshot can miss revisions;
+ * absence is unresolved, and product-specific exclusions still need review.
+ * The snapshot maps coverage only; rates remain in SECTION_301_CHINA_MEASURES.
  */
-export interface Section301SupplementalMatch {
-  chapter99Code: string;
-  htsPrefix: string;
-  rulingCitation: string;
-}
+export const SECTION_301_COVERAGE_CITATION =
+  `USITC China Tariffs (Last Updated ${coverageSnapshot.lastUpdated}) — ${coverageSnapshot.sourceUrl}`;
 
-const SECTION_301_SUPPLEMENTAL_CODES: Section301SupplementalMatch[] = [
-  // 6404.11 is split between active List 4A and suspended List 4B at the
-  // 8-digit level. Never use a broad 6-digit 6404.11 fallback: it would
-  // incorrectly assess suspended 6404.11.41/.49/.51/.59/.61/.69/.75/.85.
-  ...["20", "71", "79", "81", "89", "90"].map((suffix) => ({
-    htsPrefix: `6404.11.${suffix}`,
-    chapter99Code: "9903.88.15",
-    rulingCitation:
-      "84 FR 43304, Annex A (August 20, 2019), as modified by 84 FR 45821 and 85 FR 3741 — this exact 8-digit 6404.11 subheading is in active List 4A under 9903.88.15 at 7.5%; CBP Ruling NY N346450 (2025) confirms the Chapter 64 List 4A mechanism.",
-  })),
-  {
-    htsPrefix: "6404.19.9060",
-    chapter99Code: "9903.88.15",
-    rulingCitation:
-      "CBP Ruling NY N346450 (2025) — footwear of subheading 6404.19.9060 confirmed subject to the additional 7.5% List 4A duty under heading 9903.88.15, per U.S. Note 20 to Subchapter III, Chapter 99, HTSUS.",
-  },
-  {
-    htsPrefix: "8517.62.00",
-    chapter99Code: "9903.88.15",
-    rulingCitation:
-      "CBP HQ Ruling, Google Nest Hub/Nest Hub Max (released Oct. 27-29, 2025) — subheading 8517.62.00 confirmed subject to the additional 7.5% List 4A duty under heading 9903.88.15, per U.S. Note 20 to Subchapter III, Chapter 99, HTSUS.",
-  },
-  {
-    htsPrefix: "8518.21.00",
-    chapter99Code: "9903.88.15",
-    rulingCitation:
-      "CBP HQ Ruling, Google Home Mini/Nest Mini (released Oct. 27-29, 2025) — subheading 8518.21.00 confirmed subject to the additional 7.5% List 4A duty under heading 9903.88.15, per U.S. Note 20 to Subchapter III, Chapter 99, HTSUS.",
-  },
-  {
-    htsPrefix: "8518.22.00",
-    chapter99Code: "9903.88.15",
-    rulingCitation:
-      "CBP HQ Ruling, Google Home Max (released Oct. 27-29, 2025) — subheading 8518.22.00 confirmed subject to the additional 7.5% List 4A duty under heading 9903.88.15, per U.S. Note 20 to Subchapter III, Chapter 99, HTSUS.",
-  },
-  {
-    htsPrefix: "3916.90.30",
-    chapter99Code: "9903.88.02",
-    rulingCitation:
-      "CBP Ruling N296007 classifies PLA/ABS 3D-printer filament under 3916.90.30.00. USITC's official China Tariffs reference list (Last Updated January 1, 2026) maps 3916.90.30 to 9903.88.02; 83 FR 40823 (August 16, 2018) imposed List 2 at 25% effective 2018-08-23.",
-  },
-];
-
-/**
- * Exact cited classification lookup. Eight-digit entries include their
- * ten-digit statistical children; ten-digit rulings match only that line.
- * Incomplete, malformed, and unsupported classifications remain unresolved.
- */
-export function lookupSection301Supplemental(htsCode: string): Section301SupplementalMatch | null {
+export function lookupSection301Coverage(htsCode: string): { chapter99Code: string; matchedCode: string } | null {
   if (!/^(?:\d{8}|\d{10}|\d{4}\.\d{2}\.\d{2}(?:\.?\d{2})?)$/.test(htsCode)) return null;
-  const digitsOnly = htsCode.replace(/\./g, "");
-  for (const entry of SECTION_301_SUPPLEMENTAL_CODES) {
-    const prefixDigits = entry.htsPrefix.replace(/\./g, "");
-    if (digitsOnly === prefixDigits || (prefixDigits.length === 8 && digitsOnly.length === 10 && digitsOnly.startsWith(prefixDigits))) return entry;
+  const digits = htsCode.replace(/\./g, "");
+  const coverage: Readonly<Record<string, string>> = coverageSnapshot.coverage;
+  // Never infer an eight-digit parent's coverage from one statistical child.
+  // Exact ten-digit coverage overrides an eight-digit heading when both exist.
+  for (const key of [digits, digits.slice(0, 8)]) {
+    if (coverage[key]) return { chapter99Code: coverage[key], matchedCode: key };
   }
   return null;
 }

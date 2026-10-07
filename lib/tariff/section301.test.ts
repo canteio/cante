@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { extractChapter99Refs, lookupSection301Measure, lookupSection301Supplemental, SECTION_301_CHINA_MEASURES } from "@/lib/tariff/section301";
+import { extractChapter99Refs, lookupSection301Measure, lookupSection301Coverage, SECTION_301_CHINA_MEASURES } from "@/lib/tariff/section301";
 
 test("extracts a single Chapter 99 cross-reference", () => {
   assert.deepEqual(extractChapter99Refs("See 9903.88.03"), ["9903.88.03"]);
@@ -72,40 +72,39 @@ test("every table entry's key matches its own chapter99Code field", () => {
   }
 });
 
-// --- Supplemental List 4A table (verified via CBP rulings) ---
-
-test("lookupSection301Supplemental matches verified footwear and speaker codes", () => {
-  assert.ok(lookupSection301Supplemental("6404.11.90.20"));
-  assert.ok(lookupSection301Supplemental("6404.19.90.60"));
-  assert.ok(lookupSection301Supplemental("8518.22.00.00"));
-  assert.ok(lookupSection301Supplemental("8518.21.00.00"));
-  assert.ok(lookupSection301Supplemental("8517.62.00.00"));
+test("snapshot preserves old valid footwear/speaker coverage and fixes split electronics", () => {
+  for (const code of ["6404.11.20", "6404.11.71", "6404.11.79", "6404.11.81", "6404.11.89", "6404.11.90", "6404.19.9060", "8518.21.00", "8518.22.00"]) {
+    assert.equal(lookupSection301Coverage(code)?.chapter99Code, "9903.88.15", code);
+  }
+  for (const [code, heading, rate] of [
+    ["3916.90.30", "9903.88.02", 0.25],
+    ["8517.62.0010", "9903.88.04", 0.25],
+    ["8517.62.0020", "9903.88.04", 0.25],
+    ["8517.62.0090", "9903.88.15", 0.075],
+  ] as const) {
+    const match = lookupSection301Coverage(code);
+    assert.equal(match?.chapter99Code, heading);
+    assert.equal(lookupSection301Measure(match!.chapter99Code)?.ratePercent, rate);
+  }
+  for (const code of ["8517.62", "8517.62.00", "8517.62.0000"]) {
+    assert.equal(lookupSection301Coverage(code), null, code);
+  }
+  assert.equal(lookupSection301Coverage("6404.19.9030")?.chapter99Code, "9903.88.15");
+  assert.equal(lookupSection301Coverage("6404.20.20")?.chapter99Code, "9903.88.15");
 });
 
-test("lookupSection301Supplemental returns the 9903.88.15 heading with a CBP ruling citation", () => {
-  const match = lookupSection301Supplemental("6404.11.90.20");
-  assert.ok(match);
-  assert.equal(match?.chapter99Code, "9903.88.15");
-  assert.match(match!.rulingCitation, /NY N346450/);
-});
+import snapshot from "./section301-coverage.json";
+import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 
-test("supplemental lookup resolves 3916.90.30 filament to List 2 at 25%, not List 4A", () => {
-  const match = lookupSection301Supplemental("3916.90.30.00");
-  assert.ok(match);
-  assert.equal(match.chapter99Code, "9903.88.02");
-  assert.match(match.rulingCitation, /N296007/);
-  assert.match(match.rulingCitation, /USITC's official China Tariffs/);
-  assert.equal(lookupSection301Measure(match.chapter99Code)?.ratePercent, 0.25);
-});
-
-test("mixed 6404.11 coverage never applies the active fallback to a suspended List 4B subheading", () => {
-  assert.equal(lookupSection301Supplemental("6404.11.41.00"), null);
-  assert.equal(lookupSection301Supplemental("6404.11.90.20")?.chapter99Code, "9903.88.15");
-});
-
-test("lookupSection301Supplemental returns null for a code outside the verified table", () => {
-  assert.equal(lookupSection301Supplemental("0101.21.00.10"), null);
-  assert.equal(lookupSection301Supplemental(""), null);
+test("generated snapshot preserves every extracted source row exactly", () => {
+  const text = readFileSync("scripts/test-fixtures/usitc-china-tariffs-2026-07-28.txt", "utf8");
+  const rows = [...text.matchAll(/^(\d{4}\.\d{2}\.\d{2}(?:\d{2})?)\s+(9903\.\d{2}\.\d{2})\s*$/gm)];
+  assert.equal(rows.length, 10460);
+  assert.equal(Object.keys(snapshot.coverage).length, rows.length);
+  assert.equal(snapshot.sourceTextSha256, createHash("sha256").update(text).digest("hex"));
+  for (const [, code, heading] of rows) assert.equal(lookupSection301Coverage(code)?.chapter99Code, heading, code);
+  assert.equal(Object.keys(snapshot.coverage).filter(k => k.length === 10).length, 69);
 });
 
 // Exercise the real stack with deterministic USITC rows, not live network data.
@@ -115,12 +114,12 @@ import { resetTariffCacheForTests } from "./rates";
 const active640411 = ["20", "71", "79", "81", "89", "90"];
 const suspended640411 = ["41", "49", "51", "59", "61", "69", "75", "85"];
 
-test("exact supplemental matching rejects unsupported siblings and malformed inputs", () => {
-  for (const code of ["6404.11", "6404.19.9030", "6404.20.0000", "8517.62.9900", "8518.21.9900", "8518.22.9900", "85182200000", "junk85182200", "8518-22-00"]) {
-    assert.equal(lookupSection301Supplemental(code), null, code);
+test("exact snapshot matching rejects unsupported siblings and malformed inputs", () => {
+  for (const code of ["6404.11", "6404.20.0000", "8517.62.9900", "8518.21.9900", "8518.22.9900", "85182200000", "junk85182200", "8518-22-00"]) {
+    assert.equal(lookupSection301Coverage(code), null, code);
   }
   for (const code of ["85182200", "8518220000", "8518.22.00", "8518.22.0000", "8518.22.00.00"]) {
-    assert.equal(lookupSection301Supplemental(code)?.chapter99Code, "9903.88.15", code);
+    assert.equal(lookupSection301Coverage(code)?.chapter99Code, "9903.88.15", code);
   }
 });
 
@@ -177,7 +176,7 @@ test("List 3 companion .04 stacks at 25% only from its current-rate effective da
   assert.ok(historical.unresolvedMeasures.includes("9903.88.04 historical rate before 2019-05-10"));
 });
 
-test("supplemental and row-reference paths both withhold rates before their effective date", async () => {
+test("snapshot and row-reference paths both withhold rates before their effective date", async () => {
   for (const [code, heading, before, effective, rate] of [
     ["6404.11.90.20", "9903.88.15", "2020-02-13", "2020-02-14", 0.075],
     ["3916.90.30.00", "9903.88.02", "2018-08-22", "2018-08-23", 0.25],
@@ -192,12 +191,12 @@ test("supplemental and row-reference paths both withhold rates before their effe
   }
 });
 
-test("coarse caller inputs cannot inherit a more-specific row's supplemental membership", async () => {
+test("coarse caller inputs cannot inherit a more-specific row's snapshot membership", async () => {
   const sixDigit = await stackRow("6404.11", null, "2026-10-06", "CN", "6404.11.90");
   assert.equal(sixDigit.components.some((component) => component.type === "section301"), false);
   assert.ok(sixDigit.unresolvedMeasures.some((measure) => measure.includes("Section 301 applicability")));
 
-  const eightDigit = await stackRow("6404.19.90", null, "2026-10-06", "CN", "6404.19.90.60");
+  const eightDigit = await stackRow("8517.62.00", null, "2026-10-06", "CN", "8517.62.0090");
   assert.equal(eightDigit.components.some((component) => component.type === "section301"), false);
   assert.ok(eightDigit.unresolvedMeasures.some((measure) => measure.includes("Section 301 applicability")));
 });
@@ -223,4 +222,20 @@ test("published references take priority; unsupported text stays unresolved; non
   const otherOrigin = await stackRow("6404.11.90.20", null, "2026-10-06", "VN");
   assert.equal(otherOrigin.components.some((c) => c.type === "section301"), false);
   assert.deepEqual(otherOrigin.unresolvedMeasures, []);
+});
+
+
+test("split statistical suffixes resolve through the stack even with a rated parent row", async () => {
+  for (const [code, rate] of [["8517.62.0010", 0.25], ["8517.62.0020", 0.25], ["8517.62.0090", 0.075]] as const) {
+    const result = await stackRow(code, null, "2026-10-06", "CN", "8517.62.00");
+    assert.equal(result.components.find(c => c.type === "section301")?.ratePercent, rate);
+  }
+});
+
+test("snapshot headings without verified rates remain explicitly unresolved", async () => {
+  const entry = Object.entries(snapshot.coverage).find(([, heading]) => !lookupSection301Measure(heading));
+  assert.ok(entry);
+  const result = await stackRow(entry[0], null, "2026-10-06");
+  assert.ok(result.unresolvedMeasures.includes(entry[1]));
+  assert.equal(result.totalRatePercent, null);
 });

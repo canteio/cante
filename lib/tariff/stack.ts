@@ -2,7 +2,8 @@ import { quoteDuty, type DutyQuote } from "@/lib/tariff/rates";
 import {
   extractChapter99Refs,
   lookupSection301Measure,
-  lookupSection301Supplemental,
+  lookupSection301Coverage,
+  SECTION_301_COVERAGE_CITATION,
   type Section301Measure,
 } from "@/lib/tariff/section301";
 import {
@@ -31,7 +32,8 @@ import { easternIsoDate, isStrictIsoDate } from "@/lib/tariff/date";
  * **Scope of this pass.** Three stackable components are computed for real:
  *   1. Base/Column 1 duty — from the live USITC HTS schedule (lib/tariff/rates.ts).
  *   2. China Section 301 — resolved from the HTS row's own Chapter 99
- *      cross-reference against lib/tariff/section301.ts's verified table of
+ *      cross-reference, or the comprehensive USITC China Tariffs snapshot when
+ *      that field is empty, against lib/tariff/section301.ts's verified table of
  *      List 1-4A measures (which countries and rates these are, Federal
  *      Register citations, effective dates).
  *   3. Section 232 steel/aluminum tariffs — basic articles plus the bounded
@@ -101,7 +103,7 @@ export interface StackedDutyResult {
   stackingExplanation: string[];
   /** Compliance areas this result does NOT evaluate — named, not silently omitted. */
   notEvaluated: string[];
-  /** Chapter 99 cross-references on the HTS row that we found but have no verified data for. */
+  /** Unresolved measures from live references, snapshot coverage, or other applicability gaps. */
   unresolvedMeasures: string[];
   /** Auditable USMCA decision and whether it was allowed to request programme S. */
   usmcaQualification: UsmcaQualificationAudit;
@@ -276,63 +278,38 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
         `No Chapter 99 cross-reference was published on this HTS row, and country of origin "${country}" is not China, so no Section 301 measure applies.`,
       );
     }
-  } else if (refs.length === 0) {
-    const supplemental = base.additionalDutiesNote?.trim() ? null : lookupSection301Supplemental(input.htsCode);
-    if (!supplemental) {
-      unresolvedMeasures.push("Section 301 applicability: no supported Chapter 99 reference or exact supplemental match");
-      stackingExplanation.push(
-        "Country of origin is China, but no supported Chapter 99 reference or eligible exact supplemental match establishes Section 301 applicability. This remains unresolved, not a zero duty or an exemption; review the row text and USTR's published List annexes before relying on this result.",
-      );
-    } else {
-      const measure = lookupSection301Measure(supplemental.chapter99Code);
-      if (measure && importDate && importDate < measure.effectiveDate) {
-        unresolvedMeasures.push(`${measure.chapter99Code} historical rate before ${measure.effectiveDate}`);
-        stackingExplanation.push(
-          `${measure.list} (${measure.chapter99Code}) has an exact supplemental match, but the current rate took effect on ${measure.effectiveDate}, after import date ${importDate}. No Section 301 amount is included; verify the historical rate against ${measure.federalRegisterCitations.join("; ")}.`,
-        );
-      } else if (measure && measure.ratePercent !== null && measure.status === "active") {
-        const amount =
-          base.computation.amount !== null && input.value !== null
-            ? Number((input.value * measure.ratePercent).toFixed(2))
-            : null;
-        components.push({
-          type: "section301",
-          label: `${measure.list} (verified supplemental — row carried no Chapter 99 cross-reference)`,
-          ratePercent: measure.ratePercent,
-          amount,
-          citation: [...measure.federalRegisterCitations, supplemental.rulingCitation],
-          explanation: `The live USITC HTS row for ${base.htsCode} published no Chapter 99 cross-reference text, but ${supplemental.rulingCitation} This is Cante's small verified supplemental table, used only as a fallback when the HTS row's own additionalDuties field is empty — not a claim of comprehensive List 4A coverage.`,
-        });
-        stackingExplanation.push(
-          `${measure.list} (${measure.chapter99Code}, ${(measure.ratePercent * 100).toFixed(1)}%) stacks additively on top of the Column 1 base duty. This was resolved from Cante's verified CBP-ruling supplemental table, not from the HTS row's own Chapter 99 text (which was empty for this code) — see the citation for the primary-source ruling.`,
-        );
-      } else {
-        unresolvedMeasures.push(supplemental.chapter99Code);
-        stackingExplanation.push(
-          `${supplemental.rulingCitation} but Cante does not have a verified rate table entry for ${supplemental.chapter99Code} to apply it with, so it is NOT included in the total — treat the total below as a floor, not the full stacked rate.`,
-        );
-      }
-    }
   } else {
-    for (const ref of refs) {
+    const coverage = !base.additionalDutiesNote?.trim()
+      ? lookupSection301Coverage(input.htsCode)
+      : null;
+    const resolvedRefs = coverage ? [coverage.chapter99Code] : refs;
+    const provenance = coverage
+      ? `${SECTION_301_COVERAGE_CITATION} (matched HTS ${coverage.matchedCode})`
+      : "the live HTS row's Chapter 99 cross-reference";
+    if (coverage) stackingExplanation.push(`Section 301 coverage resolved from ${provenance}. The live row's additionalDuties field was empty. This snapshot requires periodic re-sync; product-specific exclusions are not evaluated.`);
+    if (!resolvedRefs.length) {
+      unresolvedMeasures.push("Section 301 applicability: no supported Chapter 99 reference or USITC snapshot match");
+      stackingExplanation.push("Country of origin is China, but the live row has no supported Chapter 99 reference and no eligible USITC China Tariffs snapshot fallback was found. This remains unresolved, not a zero duty or an exemption.");
+    }
+    for (const ref of resolvedRefs) {
       const measure: Section301Measure | null = lookupSection301Measure(ref);
       if (!measure) {
         unresolvedMeasures.push(ref);
         stackingExplanation.push(
-          `HTS row cross-references Chapter 99 measure ${ref}, which Cante does not yet have verified reference data for. This is NOT included in the total — treat the total below as a floor, not the full stacked rate.`,
+          `Coverage source (${provenance}) references Chapter 99 measure ${ref}, which Cante does not yet have verified reference data for. This is NOT included in the total — treat the total below as a floor, not the full stacked rate.`,
         );
         continue;
       }
       if (measure.status === "suspended" || measure.ratePercent === null) {
         stackingExplanation.push(
-          `${measure.list} (${measure.chapter99Code}) is cross-referenced on this row but was suspended and never took effect (${measure.federalRegisterCitations.join("; ")}), so it does not stack.`,
+          `${measure.list} (${measure.chapter99Code}) is referenced by ${provenance} but was suspended and never took effect (${measure.federalRegisterCitations.join("; ")}), so it does not stack.`,
         );
         continue;
       }
       if (importDate && importDate < measure.effectiveDate) {
         unresolvedMeasures.push(`${measure.chapter99Code} historical rate before ${measure.effectiveDate}`);
         stackingExplanation.push(
-          `${measure.list} (${measure.chapter99Code}) is cross-referenced on this row, but its current rate did not take effect until ${measure.effectiveDate}, after the given import date ${importDate}. An earlier rate may have applied instead — this is NOT included in the total below; verify the rate actually in force on ${importDate} against the citations (${measure.federalRegisterCitations.join("; ")}).`,
+          `${measure.list} (${measure.chapter99Code}) is referenced by ${provenance}, but its current rate did not take effect until ${measure.effectiveDate}, after the given import date ${importDate}. An earlier rate may have applied instead — this is NOT included in the total below; verify the rate actually in force on ${importDate} against the citations (${measure.federalRegisterCitations.join("; ")}).`,
         );
         continue;
       }
@@ -345,8 +322,8 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
         label: measure.list,
         ratePercent: measure.ratePercent,
         amount,
-        citation: measure.federalRegisterCitations,
-        explanation: `${measure.note} Applies because the HTS row cross-references ${measure.chapter99Code} and country of origin is China (CN). Stacks ON TOP of (adds to, does not replace) the Column 1 base duty above.`,
+        citation: [...measure.federalRegisterCitations, ...(coverage ? [SECTION_301_COVERAGE_CITATION] : [])],
+        explanation: `${measure.note} Applies because ${provenance} identifies ${measure.chapter99Code} and country of origin is China (CN). Stacks ON TOP of (adds to, does not replace) the Column 1 base duty above.`,
       });
       stackingExplanation.push(
         `${measure.list} (${measure.chapter99Code}, ${(measure.ratePercent * 100).toFixed(1)}%, effective ${measure.effectiveDate}) stacks additively on top of the Column 1 base duty — Section 301 duties are assessed "in addition to all other applicable duties," per the imposing notices (${measure.federalRegisterCitations.join("; ")}).`,

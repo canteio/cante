@@ -89,10 +89,10 @@ test("the same HTS row from Vietnam does not pick up the China-only Section 301 
 });
 
 test("a China row with no supported Section 301 evidence returns NEEDS_REVIEW instead of a zero", async () => {
-  const restore = stubFetch([{ htsno: "0101.21.00.10", general: "Free" }]);
+  const restore = stubFetch([{ htsno: "8517.62.00", general: "Free" }]);
   try {
     const result = await computeStackedDuty({
-      htsCode: "0101.21.00.10",
+      htsCode: "8517.62.00",
       countryOfOrigin: "CN",
       value: 5_000,
     });
@@ -675,10 +675,9 @@ test("an impossible ISO-shaped date is rejected by the shared strict validator",
   }
 });
 
-// --- Section 301 supplemental fallback table (verified 2026-10-06 against
-// live HTS rows + CBP rulings for 6404/8518 codes with empty additionalDuties) ---
+// --- Comprehensive USITC China Tariffs snapshot fallback ---
 
-test("China-origin athletic footwear (6404.11) with an empty additionalDuties row still picks up the verified List 4A supplemental", async () => {
+test("China-origin athletic footwear (6404.11) with an empty additionalDuties row still picks up the verified List 4A snapshot", async () => {
   const restore = stubFetch([{ htsno: "6404.11.90.20", general: "20%", additionalDuties: null }]);
   try {
     const result = await computeStackedDuty({
@@ -694,14 +693,14 @@ test("China-origin athletic footwear (6404.11) with an empty additionalDuties ro
     assert.equal(result.components[1].amount, 11_250);
     assert.equal(result.totalRatePercent, 0.275);
     assert.equal(result.totalAmount, 41_250);
-    assert.ok(result.components[1].citation.some((c) => c.includes("NY N346450")));
-    assert.ok(result.stackingExplanation.some((line) => line.includes("verified CBP-ruling supplemental table")));
+    assert.ok(result.components[1].citation.some((c) => c.includes("USITC China Tariffs")));
+    assert.ok(result.stackingExplanation.some((line) => line.includes("USITC China Tariffs")));
   } finally {
     restore();
   }
 });
 
-test("China-origin speakers (8518.22) with an empty additionalDuties row still picks up the verified List 4A supplemental", async () => {
+test("China-origin speakers (8518.22) with an empty additionalDuties row still picks up the verified List 4A snapshot", async () => {
   const restore = stubFetch([{ htsno: "8518.22.00.00", general: "Free", additionalDuties: null }]);
   try {
     const result = await computeStackedDuty({
@@ -722,7 +721,7 @@ test("China-origin speakers (8518.22) with an empty additionalDuties row still p
   }
 });
 
-test("the supplemental table is never consulted when the HTS row already has its own Chapter 99 text", async () => {
+test("the snapshot table is never consulted when the HTS row already has its own Chapter 99 text", async () => {
   const restore = stubFetch([
     { htsno: "6404.11.90.20", general: "20%", additionalDuties: "See 9903.88.03" },
   ]);
@@ -733,15 +732,15 @@ test("the supplemental table is never consulted when the HTS row already has its
       value: 150_000,
     });
     assert.ok(result);
-    // Should resolve via the row's own cross-reference (List 3, 25%), not the supplemental (List 4A, 7.5%).
+    // Should resolve via the row's own cross-reference (List 3, 25%), not the snapshot (List 4A, 7.5%).
     assert.equal(result.components[1].ratePercent, 0.25);
-    assert.ok(!result.components[1].label.includes("supplemental"));
+    assert.ok(!result.components[1].label.includes("snapshot"));
   } finally {
     restore();
   }
 });
 
-test("the supplemental table does not apply to a non-China origin", async () => {
+test("the snapshot table does not apply to a non-China origin", async () => {
   const restore = stubFetch([{ htsno: "6404.11.90.20", general: "20%", additionalDuties: null }]);
   try {
     const result = await computeStackedDuty({
