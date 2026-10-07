@@ -990,3 +990,52 @@ export const importMonitorState = sqliteTable("import_monitor_state", {
   revision: integer("revision").notNull(),
   payload: text("payload", { mode: "json" }).$type<import("../../pipelines/import-manifest/monitor/model").MonitorState>().notNull(),
 });
+
+// Immutable tariff impact snapshots; Supabase migration owns RLS and atomic writes.
+export const tariffImpactRuns = sqliteTable("tariff_impact_runs", {
+  id: text("id").primaryKey(),
+  customerId: text("customer_id").notNull().references(() => customers.id, { onDelete: "cascade" }),
+  filename: text("filename").notNull(),
+  inputSha256: text("input_sha256").notNull(),
+  sourceCount: integer("source_count").notNull(),
+  acceptedCount: integer("accepted_count").notNull(),
+  computedCount: integer("computed_count").notNull(),
+  unresolvedCount: integer("unresolved_count").notNull(),
+  errorCount: integer("error_count").notNull(),
+  affectedSkuCount: integer("affected_sku_count").notNull(),
+  uniqueSupplierCount: integer("unique_supplier_count").notNull(),
+  resolvedAnnualDeltaSubtotalUsd: real("resolved_annual_delta_subtotal_usd").notNull(),
+  estimatedAnnualDutyDeltaUsd: real("estimated_annual_duty_delta_usd"),
+  effectiveDate: text("effective_date"),
+  effectiveDateStatus: text("effective_date_status").notNull(),
+  currency: text("currency").notNull(),
+  createdAt: text("created_at").notNull().default(now),
+});
+export const tariffImpactRows = sqliteTable("tariff_impact_rows", {
+  id: text("id").primaryKey(),
+  customerId: text("customer_id").notNull().references(() => customers.id, { onDelete: "cascade" }),
+  runId: text("run_id").notNull().references(() => tariffImpactRuns.id, { onDelete: "cascade" }),
+  rowNumber: integer("row_number").notNull(),
+  productId: text("product_id").references(() => products.id, { onDelete: "no action" }),
+  supplierId: text("supplier_id").references(() => suppliers.id, { onDelete: "no action" }),
+  inputValid: integer("input_valid", { mode: "boolean" }).notNull(),
+  sku: text("sku"),
+  hts: text("hts"),
+  origin: text("origin"),
+  supplier: text("supplier"),
+  annualImportValueUsd: real("annual_import_value_usd"),
+  currentDutyRate: real("current_duty_rate"),
+  evaluationDate: text("evaluation_date"),
+  status: text("status").notNull(),
+  direction: text("direction").notNull(),
+  currentAnnualDutyUsd: real("current_annual_duty_usd"),
+  computedAnnualDutyUsd: real("computed_annual_duty_usd"),
+  computedTotalRate: real("computed_total_rate"),
+  annualDeltaUsd: real("annual_delta_usd"),
+  stackResult: text("stack_result", { mode: "json" }).$type<import("@/lib/tariff/stack").StackedDutyResult>(),
+  rawInput: text("raw_input", { mode: "json" }).$type<Record<string, string>>().notNull(),
+  error: text("error"),
+  createdAt: text("created_at").notNull().default(now),
+}, (t) => [uniqueIndex("tariff_impact_rows_run_row").on(t.runId, t.rowNumber)]);
+export type TariffImpactRun = typeof tariffImpactRuns.$inferSelect;
+export type TariffImpactRow = typeof tariffImpactRows.$inferSelect;

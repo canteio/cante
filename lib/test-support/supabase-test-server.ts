@@ -30,3 +30,5 @@ export async function retrieveCustomerContext(input: {
     content: String(row.content ?? ""), rank: Number(row.rank ?? 0),
   }));
 }
+
+export const createRequestClient = createClient;

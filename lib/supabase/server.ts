@@ -17,7 +17,7 @@ import { requireSupabaseEnv } from "@/lib/auth/config";
  * below) correctly reads an empty claims set from the fallback client and
  * returns null, exactly as it should with no signed-in user.
  */
-async function createRequestClient() {
+export async function createRequestClient() {
   const { publishableKey, url } = requireSupabaseEnv();
   const cookieStore = await cookies();
   return createServerClient(url, publishableKey, {

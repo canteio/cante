@@ -155,7 +155,7 @@ function ResultCard({ result }: { result: StackedDutyResult }) {
   );
 }
 
-export function TariffStackPanel() {
+export function TariffStackPanel({ embedded = false }: { embedded?: boolean }) {
   const [htsCode, setHtsCode] = useState("");
   const [country, setCountry] = useState("");
   const [value, setValue] = useState("");
@@ -233,8 +233,8 @@ export function TariffStackPanel() {
   }, []);
 
   return (
-    <div className="main-scroll">
-      <div className="page-head">
+    <div className={embedded ? undefined : "main-scroll"}>
+      {!embedded && <div className="page-head">
         <div>
           <h1>Tariff Stack Calculator</h1>
           <p className="page-sub">
@@ -242,7 +242,7 @@ export function TariffStackPanel() {
             component by component, with an audit trail for every figure.
           </p>
         </div>
-      </div>
+      </div>}
 
       <div className="card">
         <div className="card-head">

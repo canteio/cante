@@ -1,3 +1,4 @@
+import { queueTariffMonitorCandidates } from "@/lib/tariff/monitor-bridge";
 import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { createServiceClient } from "@/lib/supabase/service";
@@ -332,6 +333,14 @@ export async function runCheck(
       // no matter what ran. Only worth doing for findings a person will read;
       // a `clear` verdict is not a rule anyone is tracking.
       if (finding.relevance === "flagged" || finding.relevance === "noted") {
+        try {
+          await queueTariffMonitorCandidates(customerId, { ...finding, id: findingId });
+        } catch (error) {
+          console.warn("[tariff-monitor] Candidate matching failed", error);
+          allCaveats.push(lang === "en"
+            ? "Possible tariff-change signals could not be matched to the catalogue for one finding. Review the normal workqueue."
+            : "Sinyal kemungkinan perubahan tarif untuk satu temuan gagal dicocokkan dengan katalog. Periksa antrean kerja.");
+        }
         try {
           linksStored += (await linkRegulation(customerId, {
             id: findingId,
