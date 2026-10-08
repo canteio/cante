@@ -144,7 +144,7 @@ test("a brand-new resolvable candidate produces exactly one computed event with 
   const restore = stubUsitc();
   try {
     const { customerId, client, runId, findingId } = await seedMonitoredCustomer();
-    const result = await recalculateForCustomer(client, customerId, { computer: realVersionedComputer });
+    const result = await recalculateForCustomer(client, customerId, { computer: realVersionedComputer, env: {} });
     assert.equal(result.eventsCreated, 1);
     assert.equal(result.skippedReason, undefined);
 
@@ -173,7 +173,7 @@ test("an unresolvable candidate produces a NEEDS REVIEW event with null dollars 
     const { customerId, client } = await seedMonitoredCustomer();
     await client.from("findings").update({ regulation_ref: "FR Doc. 2026-99999" }).eq("customer_id", customerId);
 
-    const result = await recalculateForCustomer(client, customerId, { computer: realVersionedComputer });
+    const result = await recalculateForCustomer(client, customerId, { computer: realVersionedComputer, env: {} });
     assert.equal(result.eventsCreated, 1);
 
     const { data: events } = await client.from("tariff_impact_events").select("*").eq("customer_id", customerId);
@@ -194,10 +194,10 @@ test("an unchanged candidate on a second pass does not create a duplicate event"
   const restore = stubUsitc();
   try {
     const { customerId, client } = await seedMonitoredCustomer();
-    const first = await recalculateForCustomer(client, customerId, { computer: realVersionedComputer });
+    const first = await recalculateForCustomer(client, customerId, { computer: realVersionedComputer, env: {} });
     assert.equal(first.eventsCreated, 1);
 
-    const second = await recalculateForCustomer(client, customerId, { computer: realVersionedComputer });
+    const second = await recalculateForCustomer(client, customerId, { computer: realVersionedComputer, env: {} });
     assert.equal(second.eventsCreated, 0);
     assert.equal(second.notified, false);
     assert.match(second.notifyDetail, /No materially new or changed/);
@@ -214,13 +214,13 @@ test("a changed candidate on a later pass DOES create a new event (not permanent
   const restore = stubUsitc();
   try {
     const { customerId, client } = await seedMonitoredCustomer();
-    const first = await recalculateForCustomer(client, customerId, { computer: realVersionedComputer });
+    const first = await recalculateForCustomer(client, customerId, { computer: realVersionedComputer, env: {} });
     assert.equal(first.eventsCreated, 1);
 
     // Simulate the rule's citation changing (a materially different result)
     // between passes by flipping to an unmatched document.
     await client.from("findings").update({ regulation_ref: "FR Doc. 2026-99999" }).eq("customer_id", customerId);
-    const second = await recalculateForCustomer(client, customerId, { computer: realVersionedComputer });
+    const second = await recalculateForCustomer(client, customerId, { computer: realVersionedComputer, env: {} });
     assert.equal(second.eventsCreated, 1);
 
     const { data: events } = await client.from("tariff_impact_events").select("status").eq("customer_id", customerId);
@@ -237,8 +237,8 @@ test("cross-tenant isolation: one customer's recalculation never reads or writes
   try {
     const a = await seedMonitoredCustomer();
     const b = await seedMonitoredCustomer();
-    await recalculateForCustomer(a.client, a.customerId, { computer: realVersionedComputer });
-    await recalculateForCustomer(a.client, b.customerId, { computer: realVersionedComputer });
+    await recalculateForCustomer(a.client, a.customerId, { computer: realVersionedComputer, env: {} });
+    await recalculateForCustomer(a.client, b.customerId, { computer: realVersionedComputer, env: {} });
 
     const { data: aEvents } = await a.client.from("tariff_impact_events").select("customer_id,finding_id").eq("customer_id", a.customerId);
     const { data: bEvents } = await a.client.from("tariff_impact_events").select("customer_id,finding_id").eq("customer_id", b.customerId);
@@ -253,6 +253,7 @@ test("cross-tenant isolation: one customer's recalculation never reads or writes
       computer: realVersionedComputer,
       client: a.client,
       customerIds: [a.customerId, b.customerId],
+      env: {},
     });
     assert.equal(summary.customersEvaluated, 2);
     for (const result of summary.customerResults) assert.equal(result.eventsCreated, 0); // already recorded above
@@ -302,6 +303,7 @@ test("many customers/candidates at once stay bounded by the shared customer conc
       client,
       customerIds: seeded.map((s) => s.customerId),
       customerConcurrency: RECALC_CUSTOMER_CONCURRENCY,
+      env: {},
     });
     assert.equal(summary.customersEvaluated, 12);
     assert.ok(summary.customerResults.every((r) => r.eventsCreated === 1));
@@ -359,6 +361,7 @@ test("uses the real cookie-fallback Supabase client path, not just an explicitly
     const summary = await recalculateTariffImpacts({
       computer: realVersionedComputer,
       customerIds: [seeded.customerId],
+      env: {},
     });
     assert.equal(summary.customersEvaluated, 1);
     const [result] = summary.customerResults;
