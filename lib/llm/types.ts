@@ -79,6 +79,15 @@ export interface CompletionRequest {
   /** The actual task for this call. */
   prompt: string;
   /**
+   * Optional images attached to the prompt (e.g. a scanned legal document
+   * page with no text layer). Only ApiProvider (OpenAI/Anthropic) actually
+   * sends these to the model; a provider without vision support throws
+   * LlmError rather than silently dropping the image and answering blind —
+   * see lib/llm/api.ts's vision wiring and the CLI providers' explicit
+   * rejection.
+   */
+  images?: Array<{ base64: string; mimeType: string }>;
+  /**
    * When set, the caller wants JSON matching this schema. Providers surface
    * the shape to the model however their transport allows; the caller still
    * validates the result itself.

@@ -74,6 +74,10 @@ function openAiText(payload: Record<string, any>): string {
 }
 
 async function completeOpenAi(req: CompletionRequest, signal: AbortSignal): Promise<string> {
+  const inputContent: Array<Record<string, unknown>> = [{ type: "input_text", text: promptWithSchema(req) }];
+  for (const image of req.images ?? []) {
+    inputContent.push({ type: "input_image", image_url: `data:${image.mimeType};base64,${image.base64}` });
+  }
   const response = await fetch("https://api.openai.com/v1/responses", {
     method: "POST",
     signal,
@@ -84,7 +88,7 @@ async function completeOpenAi(req: CompletionRequest, signal: AbortSignal): Prom
     body: JSON.stringify({
       model: process.env.OPENAI_MODEL || "gpt-5",
       instructions: req.system,
-      input: promptWithSchema(req),
+      input: req.images?.length ? [{ role: "user", content: inputContent }] : promptWithSchema(req),
       // Onboarding extracts supplied text in one call, without web research.
       tools: req.tools?.length === 0 ? [] : [{ type: "web_search" }],
       max_output_tokens: Number(process.env.CANTE_LLM_MAX_OUTPUT_TOKENS || 16_000),
@@ -101,8 +105,16 @@ async function completeAnthropic(req: CompletionRequest, signal: AbortSignal): P
   const tools = req.tools?.length === 0 ? [] : [
     { type: "web_search_20250305", name: "web_search", max_uses: 6 },
   ];
+  const userContent: Array<Record<string, unknown>> = [];
+  for (const image of req.images ?? []) {
+    userContent.push({
+      type: "image",
+      source: { type: "base64", media_type: image.mimeType, data: image.base64 },
+    });
+  }
+  userContent.push({ type: "text", text: promptWithSchema(req) });
   const messages: Array<Record<string, unknown>> = [
-    { role: "user", content: promptWithSchema(req) },
+    { role: "user", content: req.images?.length ? userContent : promptWithSchema(req) },
   ];
 
   for (let continuation = 0; continuation < 3; continuation += 1) {

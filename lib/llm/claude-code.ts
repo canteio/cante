@@ -199,6 +199,12 @@ export class ClaudeCodeProvider implements LlmProvider {
   }
 
   async complete(req: CompletionRequest): Promise<CompletionResult> {
+    if (req.images?.length) {
+      throw new LlmError(
+        "Claude Code CLI provider does not support image input here; this call requires a vision-capable provider (CANTE_LLM=api).",
+        this.name,
+      );
+    }
     const started = Date.now();
 
     // The CLI has no structured-output parameter, so the schema goes into the
