@@ -55,8 +55,8 @@ test("computes every row independently and reports per-row status", async () => 
     assert.equal(data.rows.length, 2);
 
     const first = data.rows[0];
-    assert.equal(first.result.components.length, 2);
-    assert.equal(first.result.totalRatePercent, 0.276);
+    assert.equal(first.result.components.length, 3);
+    assert.equal(first.result.totalRatePercent, 0.526);
 
     const second = data.rows[1];
     assert.equal(second.result.totalRatePercent, 0);

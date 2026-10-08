@@ -15,7 +15,12 @@ function patch(body: string) {
 
 async function seedItem(customerId: string) {
   const client = createServiceClient();
-  const id = "test-item";
+  // A literal shared id raced across this file's concurrently-scheduled
+  // sibling tests (Node's test runner does not serialize top-level test()
+  // calls by default) and collided on checklist_items' primary key. Scope
+  // the id to the test's own customer, matching every other fixture in
+  // this codebase, so concurrent tests never share a row.
+  const id = `test-item-${customerId}`;
   const { error } = await client.from("checklist_items").insert({
     id, customer_id: customerId, title: "Test checklist item", status: "required",
   });

@@ -63,6 +63,12 @@ export class AntigravityCliProvider implements LlmProvider {
   }
 
   async complete(req: CompletionRequest): Promise<CompletionResult> {
+    if (req.images?.length) {
+      throw new LlmError(
+        "Antigravity CLI provider does not support image input here; this call requires a vision-capable provider (CANTE_LLM=api).",
+        this.name,
+      );
+    }
     const started = Date.now();
 
     // Check if CLI is runnable

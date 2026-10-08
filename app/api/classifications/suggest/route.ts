@@ -16,6 +16,22 @@ const isJsonObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
 /**
+ * Off by default. AI-suggested HTS classification carries real legal risk —
+ * CBP ruling HQ H290535 treats classification beyond 6 digits as "customs
+ * business" under 19 U.S.C., and this session's own test against real
+ * product descriptions found the keyword-search retrieval step frequently
+ * surfaces no correct candidate at all (confirmed: an Esun PLA filament
+ * search never retrieved the real, CBP-ruling-backed 3916.90.30 heading).
+ * The suggestion still can't become an approved classification without a
+ * named human adopting it (see suggest.ts), but the feature is disabled in
+ * production until that retrieval gap is addressed. Set
+ * CANTE_CLASSIFICATION_SUGGEST_ENABLED=true to turn it on for testing.
+ */
+function classificationSuggestEnabled(): boolean {
+  return process.env.CANTE_CLASSIFICATION_SUGGEST_ENABLED === "true";
+}
+
+/**
  * Model-suggested classifications.
  *
  * `POST { sku }` proposes a code and records it as an unconfirmed lead.
@@ -33,6 +49,12 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (!classificationSuggestEnabled()) {
+    return Response.json(
+      { error: "Classification suggestion is disabled. Set CANTE_CLASSIFICATION_SUGGEST_ENABLED=true to enable for testing." },
+      { status: 404 },
+    );
+  }
   let body: unknown;
   try {
     body = await request.json();

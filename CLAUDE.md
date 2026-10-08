@@ -2205,6 +2205,81 @@ Explicitly not yet: auth, cron, deploy, WhatsApp API, billing, signup.
 
 ## Keeping these docs current
 
+### HTS semantic retrieval (7 Oct 2026; implemented, live validation blocked)
+
+The prior finding was independently verified: there was no embedding-generation
+call anywhere in the repository. The existing `document_chunks` and `memories`
+columns are nullable `vector(384)`; chat still uses text retrieval. Their embedding
+pipeline remains separately unfinished. No chat attachment/retrieval code changed.
+
+The owner selected OpenAI `text-embedding-3-small`, requesting `dimensions: 384`
+through a dedicated REST helper, `lib/classification/embed.ts`, using the existing
+`OPENAI_API_KEY`. The model supports shortened embeddings via its dimensions
+parameter, matching the existing 384-dimensional convention without altering any
+existing column. This does not use the chat/completion provider abstraction.
+See [OpenAI API reference](https://developers.openai.com/api/reference/resources/embeddings/methods/create)
+and [model pricing](https://developers.openai.com/api/docs/models/text-embedding-3-small).
+Standard synchronous embedding price is $0.02 per million input tokens. Batches
+contain at most 75 descriptions and 8000 UTF-8 bytes (a conservative token upper
+bound); oversized descriptions fail explicitly rather than being truncated.
+Returned vectors, indexes and usage are validated. Logs calculate cost from actual
+reported tokens and distinguish requests whose billed usage is unknown.
+
+`supabase/migrations/202610070001_hts_schedule_embeddings.sql` adds the global
+public-reference table, 384-dimensional HNSW cosine index, read grants for app
+roles, and service-role-only writes. Both RPCs use `search_path = ''`; cosine
+expressions use `OPERATOR(extensions.<=>)`. `publish_hts_chapter` upserts and removes
+obsolete codes atomically per chapter. A failed chapter preserves its old snapshot;
+retrieval filters on the live `currentRelease` so old-revision rows are excluded.
+A partial run therefore supplies only successfully published current chapters,
+not complete schedule coverage. Re-run failed chapters before claiming full coverage.
+
+Commands:
+
+```bash
+npx supabase db push
+node --import tsx scripts/ingest-hts-schedule.ts                  # all 01–99
+node --import tsx scripts/ingest-hts-schedule.ts --chapters=39,85 # minimum regression coverage
+node --import tsx scripts/verify-hts-semantic.ts
+```
+
+Re-ingest monthly or whenever USITC `currentRelease` changes. The unchanged
+`flattenHtsChapter()` preserves full description ancestry and inherited rates.
+The ingestion script waits one second between chapters, logs individual failures
+and continues, paginates existing rows, and reuses vectors by code plus description
+hash while refreshing rates/revision. It checks the release again before each
+chapter publication. Failed fetches/publications produce nonzero exit status and
+explicit counts, including chapters never attempted when preflight fails.
+
+`semantic.ts` embeds name + exact description + materials and retrieves 30 rows.
+`suggest.ts` unions those with the unchanged keyword retrieval, deduplicating by
+code and keeping full semantic descriptions. Semantic errors stop the suggestion
+explicitly. The candidate-membership check, noSuitableCandidate escape, lead tier,
+and human adoption requirements remain unchanged. The feature flag remains
+**disabled by default**. The optional retrieval argument isolates upstream fixtures
+in existing guardrail tests; their tenant persistence still uses real Supabase.
+
+Observed in this sandbox: the attempted 39/85 run failed at currentRelease
+(`ENOTFOUND`) before either chapter was attempted. **0 chapters fetched, 0 leaf
+rows, 0 unchanged/newly embedded/published rows, 0 embedding calls, 0 tokens, $0
+embedding cost.** No scale estimate is presented as measured ingestion. The exact
+three requested product descriptions are in `scripts/verify-hts-semantic.ts`;
+all three attempts failed on network access, so **no actual candidate codes were
+returned and none of the three recall assertions has been proved**. Both the
+minimum 39/85 ingestion and the full 01–99 ingestion still need to run.
+
+Validation: `npx tsc --noEmit` passed; the seven focused embedding/parser tests
+passed. The first `npm run build` passed (existing middleware deprecation warning),
+but the final rerun failed fetching Inter and EB Garamond from Google Fonts;
+the final build is therefore network-blocked, not clean.
+The final `npm test` run reported 650 passed / 193 failed out of 843, with real
+Supabase/network fetch failures; this is not the single transient JWT issue.
+`npx supabase db push` was attempted but blocked by the CLI's telemetry write to
+`/Users/a/.supabase` outside sandbox permissions. The migration is unapplied.
+Staging was also attempted but `.git/index.lock` creation is denied, so the
+migration remains **unstaged**. No commit or push was made. Live validation and
+migration execution remain required before this task can be called complete.
+
 When you change the code, update the docs in the same turn — a stale CLAUDE.md is
 worse than none, because the next agent trusts it.
 

@@ -47,6 +47,12 @@ export class CodexCliProvider implements LlmProvider {
   }
 
   async complete(req: CompletionRequest): Promise<CompletionResult> {
+    if (req.images?.length) {
+      throw new LlmError(
+        "Codex CLI provider does not support image input here; this call requires a vision-capable provider (CANTE_LLM=api).",
+        this.name,
+      );
+    }
     const started = Date.now();
     const prompt = req.schema
       ? `${req.prompt}\n\n` +

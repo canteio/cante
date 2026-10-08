@@ -40,6 +40,12 @@ export class GeminiProvider implements LlmProvider {
   }
 
   async complete(req: CompletionRequest): Promise<CompletionResult> {
+    if (req.images?.length) {
+      throw new LlmError(
+        "This Gemini provider wiring does not forward image input; this call requires a vision-capable provider (CANTE_LLM=api).",
+        this.name,
+      );
+    }
     const started = Date.now();
     if (!this.apiKey) {
       throw new LlmError(

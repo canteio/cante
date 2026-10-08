@@ -7,6 +7,9 @@ import { buildClassificationSuggestOpenApiSpec } from "./suggest-openapi";
 import { operatingDb } from "@/lib/test-support/supabase-test-db";
 
 process.env.CANTE_AUTH_MODE = "none";
+// Disabled by default in production (see route.ts) pending a retrieval-quality
+// fix; enabled here so this suite can still exercise the real suggest/adopt flow.
+process.env.CANTE_CLASSIFICATION_SUGGEST_ENABLED = "true";
 let route: typeof import("../../app/api/classifications/suggest/route");
 let customerId: string;
 
@@ -97,5 +100,19 @@ test("the real route lists, adopts, and rejects primitive JSON bodies cleanly", 
     const primitive = await handler(jsonRequest(method, null));
     assert.equal(primitive.status, 400);
     assert.deepEqual(await primitive.json(), { error: "Request body must be a JSON object." });
+  }
+});
+
+test("POST is disabled by default, independent of module-load-time env capture", async () => {
+  const previous = process.env.CANTE_CLASSIFICATION_SUGGEST_ENABLED;
+  process.env.CANTE_CLASSIFICATION_SUGGEST_ENABLED = "false";
+  try {
+    const response = await route.POST(jsonRequest("POST", { customerId, sku: "ANY" }));
+    assert.equal(response.status, 404);
+    assert.deepEqual(await response.json(), {
+      error: "Classification suggestion is disabled. Set CANTE_CLASSIFICATION_SUGGEST_ENABLED=true to enable for testing.",
+    });
+  } finally {
+    process.env.CANTE_CLASSIFICATION_SUGGEST_ENABLED = previous;
   }
 });
