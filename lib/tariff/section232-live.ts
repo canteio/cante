@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { easternIsoDate } from "@/lib/tariff/date";
 
 /**
  * Live-data bridge: reads Section 232 rates from the Supabase-backed,
@@ -21,6 +22,7 @@ export interface Section232LiveMatch {
   ratePercent: number;
   ukRatePercent: number | null;
   usContentRatePercent: number | null;
+  effectiveDate: string;
   sourceDocumentNumber: string;
   sourceTitle: string;
   sourcePdfUrl: string;
@@ -31,12 +33,17 @@ interface RawRpcRow {
   rate_percent: number | string;
   uk_rate_percent: number | string | null;
   us_content_rate_percent: number | string | null;
+  effective_date: string;
   source_document_number: string;
   source_title: string;
   source_pdf_url: string;
 }
 
 export class Section232LiveLookupError extends Error {}
+
+export function section232TargetDate(effectiveDate: string | undefined, now: Date = new Date()): string {
+  return effectiveDate ?? easternIsoDate(now);
+}
 
 /**
  * Resolve the current live Section 232 rate for an HTS code, if any
@@ -49,6 +56,7 @@ export class Section232LiveLookupError extends Error {}
 export async function lookupSection232Live(
   htsCode: string,
   signal?: AbortSignal,
+  effectiveDate?: string,
 ): Promise<Section232LiveMatch | null> {
   const digitsOnly = htsCode.replace(/\D/g, "");
   if (!digitsOnly) return null;
@@ -62,7 +70,11 @@ export async function lookupSection232Live(
     );
   }
 
-  const query = client.rpc("current_section232_rate", { target_hts_prefix: digitsOnly });
+  const targetDate = section232TargetDate(effectiveDate);
+  const query = client.rpc("current_section232_rate", {
+    target_hts_prefix: digitsOnly,
+    target_effective_date: targetDate,
+  });
   if (signal) query.abortSignal(signal);
   const { data, error } = await query;
   if (error) {
@@ -70,12 +82,16 @@ export async function lookupSection232Live(
   }
   const row = (data as RawRpcRow[] | null)?.[0];
   if (!row) return null;
+  if (typeof row.effective_date !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(row.effective_date)) {
+    throw new Section232LiveLookupError("Live Section 232 rule is missing a structured effective date.");
+  }
 
   return {
     annex: row.annex,
     ratePercent: Number(row.rate_percent) / 100,
     ukRatePercent: row.uk_rate_percent === null ? null : Number(row.uk_rate_percent) / 100,
     usContentRatePercent: row.us_content_rate_percent === null ? null : Number(row.us_content_rate_percent) / 100,
+    effectiveDate: row.effective_date,
     sourceDocumentNumber: row.source_document_number,
     sourceTitle: row.source_title,
     sourcePdfUrl: row.source_pdf_url,

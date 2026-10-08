@@ -54,6 +54,9 @@ import { easternIsoDate, isStrictIsoDate } from "@/lib/tariff/date";
 export interface StackedDutyComponent {
   type: "base" | "section301" | "section232" | "section338";
   label: string;
+  /** Structured version metadata is present only when the rule source verified it. */
+  effectiveDate?: string;
+  sourceDocumentNumber?: string;
   /** Ad valorem rate on total shipment value. Null for content-value measures. */
   ratePercent: number | null;
   /** Assessment rate when the legal basis is a metal content value. */
@@ -353,7 +356,7 @@ export async function computeStackedDuty(
   let liveSection232Failed: string | null = null;
   if (wantsLiveSection232) {
     try {
-      liveSection232Match = await section232LiveLookupFn(base.htsCode, input.signal);
+      liveSection232Match = await section232LiveLookupFn(base.htsCode, input.signal, input.importDate ?? undefined);
     } catch (error) {
       liveSection232Failed = error instanceof Error ? error.message : "Live Section 232 lookup failed.";
     }
@@ -378,13 +381,15 @@ export async function computeStackedDuty(
     components.push({
       type: "section232",
       label: `Section 232 — ${liveSection232Match.annex} (current regime)`,
+      effectiveDate: liveSection232Match.effectiveDate,
+      sourceDocumentNumber: liveSection232Match.sourceDocumentNumber,
       ratePercent: rate,
       amount: input.value !== null ? Number((input.value * rate).toFixed(2)) : null,
       citation: [`${liveSection232Match.sourceTitle}, ${liveSection232Match.sourceDocumentNumber} (${liveSection232Match.sourcePdfUrl})`],
-      explanation: `${liveSection232Match.annex} under the current Section 232 regime (effective ${LIVE_SECTION232_REGIME_START}): ${(rate * 100).toFixed(1)}% on full customs value${isUk ? " (United Kingdom rate)" : ""}. US-content-only derivatives may qualify for a reduced rate (${liveSection232Match.usContentRatePercent !== null ? `${(liveSection232Match.usContentRatePercent * 100).toFixed(0)}%` : "not published for this annex"}) -- not applied here because melt/pour/smelt-and-cast content origin was not supplied.`,
+      explanation: `${liveSection232Match.annex} under the current Section 232 regime (effective ${liveSection232Match.effectiveDate}): ${(rate * 100).toFixed(1)}% on full customs value${isUk ? " (United Kingdom rate)" : ""}. US-content-only derivatives may qualify for a reduced rate (${liveSection232Match.usContentRatePercent !== null ? `${(liveSection232Match.usContentRatePercent * 100).toFixed(0)}%` : "not published for this annex"}) -- not applied here because melt/pour/smelt-and-cast content origin was not supplied.`,
     });
     stackingExplanation.push(
-      `${liveSection232Match.annex} (current regime, effective ${LIVE_SECTION232_REGIME_START}) stacks additively on top of the Column 1 base duty at ${(rate * 100).toFixed(1)}%, sourced from ${liveSection232Match.sourceDocumentNumber} via Cante's auto-verified Section 232 data pipeline.`,
+      `${liveSection232Match.annex} (current regime, effective ${liveSection232Match.effectiveDate}) stacks additively on top of the Column 1 base duty at ${(rate * 100).toFixed(1)}%, sourced from ${liveSection232Match.sourceDocumentNumber} via Cante's auto-verified Section 232 data pipeline.`,
     );
   }
 

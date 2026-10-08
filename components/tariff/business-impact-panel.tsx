@@ -181,14 +181,14 @@ export function BusinessImpactPanel() {
   }
 
   return (
-    <section aria-labelledby="impact-heading">
+    <section aria-label="Tariff impact analysis">
+      <MonitorCandidates runId={run?.id ?? null} />
       <div className="page-head">
         <div>
-          <h1 id="impact-heading">New tariff impact analysis</h1>
-          <p className="page-sub">Upload annual imports to compare current duty with computed duty, by SKU and supplier.</p>
+          <h2 id="impact-heading">Portfolio duty analysis</h2>
+          <p className="page-sub">Upload annual imports to create the tenant-linked portfolio rows used by the company-impact view above.</p>
         </div>
       </div>
-      <MonitorCandidates />
       <form className="card" onSubmit={(event) => { event.preventDefault(); void upload(); }}>
         <label htmlFor="impact-csv" className="card-title">Import portfolio CSV</label>
         <p id="impact-csv-help" className="muted">

@@ -18,6 +18,8 @@ const aliases = {
 };
 export interface ImpactRow {
   input_valid: boolean; row_number: number; sku: string | null; hts: string | null; origin: string | null; supplier: string | null;
+  /** Populated on persisted snapshots when an exact tenant-scoped catalogue link exists. */
+  product_id?: string | null; supplier_id?: string | null;
   annual_import_value_usd: number | null; current_duty_rate: number | null; evaluation_date: string | null;
   quantity: number | null; chapter99_codes: string | null; exclusion_id: string | null; special_program_claim: string | null;
   status: "computed" | "unresolved" | "error"; direction: "increase" | "decrease" | "no_change" | "unknown";
