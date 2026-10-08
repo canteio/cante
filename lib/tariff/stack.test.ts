@@ -23,6 +23,17 @@ test.beforeEach(() => {
   resetTariffCacheForTests();
 });
 
+/**
+ * Stubs the live Section 232 data lookup to "nothing resolved" so these
+ * unit tests exercise the legacy static table (lib/tariff/section232.ts)
+ * deterministically, without making a real Supabase call. The live path
+ * has its own coverage in lib/tariff/section232-live.test.ts (or a real-
+ * RPC-backed test following the business-impact-rpc.test.ts pattern) --
+ * mixing a real network dependency into this file's fast, offline unit
+ * tests would make them flaky and slow for no benefit.
+ */
+const noLiveSection232 = async () => null;
+
 test("China-origin row with a List 3 cross-reference stacks base + Section 301 additively", async () => {
   const restore = stubFetch([
     {
@@ -38,7 +49,7 @@ test("China-origin row with a List 3 cross-reference stacks base + Section 301 a
       htsCode: "8544.42.90.00",
       countryOfOrigin: "CN",
       value: 10_000,
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result!.components.length, 2);
     assert.equal(result!.components[0].type, "base");
@@ -75,7 +86,7 @@ test("the same HTS row from Vietnam does not pick up the China-only Section 301 
       htsCode: "8544.42.90.00",
       countryOfOrigin: "VN",
       value: 10_000,
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result!.components.length, 1);
     assert.equal(result!.totalRatePercent, 0.026);
@@ -95,7 +106,7 @@ test("a China row with no supported Section 301 evidence returns NEEDS_REVIEW in
       htsCode: "8517.62.00",
       countryOfOrigin: "CN",
       value: 5_000,
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result!.components.length, 1);
     assert.equal(result!.totalRatePercent, null);
@@ -116,7 +127,7 @@ test("a suspended List 4B measure is explained but excluded from the total", asy
       htsCode: "6109.10.00.00",
       countryOfOrigin: "CN",
       value: 1_000,
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result!.components.length, 1, "suspended measure must not add a component");
     assert.equal(result!.totalRatePercent, 0.165);
@@ -135,7 +146,7 @@ test("an unrecognised Chapter 99 cross-reference is named as unresolved and void
       htsCode: "7606.12.30.30",
       countryOfOrigin: "CN",
       value: 1_000,
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.deepEqual(result!.unresolvedMeasures, ["9903.81.91"]);
     assert.equal(result!.totalRatePercent, null, "an unresolved measure must not be silently excluded from the total");
@@ -153,7 +164,7 @@ test("returns null (not a throw) when the HTS code has no published row at all",
       htsCode: "0000.00.00.00",
       countryOfOrigin: "CN",
       value: 1_000,
-    });
+    }, noLiveSection232);
     assert.equal(result, null);
   } finally {
     restore();
@@ -167,7 +178,7 @@ test("always names what Cante does not evaluate, regardless of what it does comp
       htsCode: "0101.21.00.10",
       countryOfOrigin: "MX",
       value: 1_000,
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.ok(result!.notEvaluated.length >= 4);
     assert.ok(result!.notEvaluated.some((l) => l.includes("USMCA")));
@@ -185,7 +196,7 @@ test("a basic steel article from a non-UK, non-China origin picks up Section 232
       htsCode: "7210.70.60.60",
       countryOfOrigin: "VN",
       value: 10_000,
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result!.components.length, 2);
     assert.equal(result!.components[0].type, "base");
@@ -208,7 +219,7 @@ test("a basic steel article from the United Kingdom stacks Section 232 at 25%, n
       htsCode: "7208.10.15.00",
       countryOfOrigin: "GB",
       value: 10_000,
-    });
+    }, noLiveSection232);
     assert.ok(result);
     const section232 = result!.components.find((c) => c.type === "section232");
     assert.ok(section232);
@@ -229,7 +240,7 @@ test("a China-origin basic steel article stacks BOTH Section 301 and Section 232
       htsCode: "7208.10.15.00",
       countryOfOrigin: "CN",
       value: 10_000,
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result!.components.length, 3, "base + section301 + section232");
     const types = result!.components.map((c) => c.type).sort();
@@ -249,7 +260,7 @@ test("a non-steel/aluminum HTS code never picks up a Section 232 component", asy
       htsCode: "6109.10.00.04",
       countryOfOrigin: "VN",
       value: 1_000,
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result!.components.length, 1);
     assert.equal(result!.components[0].type, "base");
@@ -265,7 +276,7 @@ test("a China-origin solar cell HTS code surfaces an AD/CVD advisory, never a co
       htsCode: "8541.42.00.10",
       countryOfOrigin: "CN",
       value: 10_000,
-    });
+    }, noLiveSection232);
     assert.ok(result);
     // AD/CVD never becomes a stacked component — only an advisory, and the total is unaffected by it.
     assert.ok(result!.components.every((c) => c.type !== ("ad_cvd" as never)));
@@ -284,7 +295,7 @@ test("the same solar cell HTS code from a non-China origin surfaces no AD/CVD ad
       htsCode: "8541.42.00.10",
       countryOfOrigin: "VN",
       value: 10_000,
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.deepEqual(result!.adCvdAdvisories, []);
   } finally {
@@ -299,7 +310,7 @@ test("no import date given produces an explicit caveat that today's rate was use
       htsCode: "0101.21.00.10",
       countryOfOrigin: "VN",
       value: 1_000,
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.ok(result!.stackingExplanation.some((line) => line.includes("No import date was given")));
   } finally {
@@ -315,7 +326,7 @@ test("a malformed import date is ignored with an explicit caveat, not silently a
       countryOfOrigin: "VN",
       value: 1_000,
       importDate: "not-a-date",
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.ok(result!.stackingExplanation.some((line) => line.includes("not a usable ISO date")));
   } finally {
@@ -333,7 +344,7 @@ test("an import date before a Section 301 measure's effective date withholds tha
       countryOfOrigin: "CN",
       value: 10_000,
       importDate: "2019-01-01", // before 9903.88.03's 2019-05-10 effective date
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result!.components.length, 1, "the pre-effective-date measure must not stack");
     assert.equal(result!.components[0].type, "base");
@@ -355,7 +366,7 @@ test("an import date on or after a Section 301 measure's effective date still st
       countryOfOrigin: "CN",
       value: 10_000,
       importDate: "2020-01-01",
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result!.components.length, 2);
     assert.equal(result!.totalRatePercent, 0.276);
@@ -371,7 +382,7 @@ test("Mexico or Canada origin without a verified decision uses general and recor
       htsCode: "0101.21.00.10",
       countryOfOrigin: "MX",
       value: 1_000,
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result.components[0].ratePercent, 0.02);
     assert.equal(result.usmcaQualification.status, "not_provided");
@@ -390,7 +401,7 @@ test("programme S alone is ignored without an explicit verified USMCA decision",
       countryOfOrigin: "MX",
       value: 1_000,
       claimedProgramme: "S",
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result.components[0].ratePercent, 0.02);
     assert.equal(result.components[0].amount, 20);
@@ -408,7 +419,7 @@ test("programme S+ alone is also ignored without an explicit verified USMCA deci
       countryOfOrigin: "MX",
       value: 1_000,
       claimedProgramme: "S+",
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result.components[0].amount, 20);
     assert.equal(result.usmcaQualification.specialRateRequested, false);
@@ -430,7 +441,7 @@ test("verified qualifying USMCA decision with details requests the published S r
         decision: "qualifies",
         details: "Signed certification dated 2026-09-30; product-specific rule reviewed.",
       },
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result.components[0].ratePercent, 0);
     assert.equal(result.components[0].amount, 0);
@@ -455,7 +466,7 @@ test("verified qualifying decision can request the USMCA S+ symbol when the call
         decision: "qualifies",
         details: "Verified automotive appendix qualification.",
       },
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result.components[0].amount, 0);
     assert.equal(result.usmcaQualification.specialRateRequested, true);
@@ -472,7 +483,7 @@ test("verified USMCA decision without supporting details stays on general", asyn
       countryOfOrigin: "CA",
       value: 1_000,
       usmcaQualification: { verified: true, decision: "qualifies", details: "  " },
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result.components[0].ratePercent, 0.02);
     assert.equal(result.usmcaQualification.status, "incomplete");
@@ -494,7 +505,7 @@ test("verified USMCA non-qualifying decision keeps general and preserves the aud
         decision: "does_not_qualify",
         details: "Product-specific tariff shift failed.",
       },
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result.components[0].amount, 20);
     assert.equal(result.usmcaQualification.status, "verified");
@@ -513,7 +524,7 @@ test("a listed derivative without steel content value is unresolved and withhold
       countryOfOrigin: "VN",
       value: 10_000,
       importDate: "2025-06-23",
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result.components.length, 2);
     assert.equal(result.components[1].contentRatePercent, 0.5);
@@ -536,7 +547,7 @@ test("a listed derivative computes dollars from steel content without inventing 
       value: 10_000,
       steelContentValue: 3_000,
       importDate: "2025-06-23",
-    });
+    }, noLiveSection232);
     assert.ok(result);
     const derivative = result.components[1];
     assert.equal(derivative.ratePercent, null);
@@ -561,7 +572,7 @@ test("welded wire rack computes separate steel and aluminum content duties", asy
       steelContentValue: 2_000,
       aluminumContentValue: 1_000,
       importDate: "2025-06-23",
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result.components.length, 3);
     assert.deepEqual(result.components.slice(1).map((component) => component.amount), [1_000, 500]);
@@ -581,7 +592,7 @@ test("wire-rack aluminum content uses the 25% rate before the June 4 increase", 
       value: 10_000,
       aluminumContentValue: 1_000,
       importDate: "2025-04-01",
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result.components.length, 2, "steel tranche was not effective; base plus aluminum remain");
     assert.equal(result.components[1].contentRatePercent, 0.25);
@@ -603,7 +614,7 @@ test("derivative totals are withheld without an import date or after the 2026 re
         value: 10_000,
         steelContentValue: 3_000,
         importDate,
-      });
+      }, noLiveSection232);
       assert.ok(result);
       assert.equal(result.totalRatePercent, null);
       assert.equal(result.totalAmount, null);
@@ -625,7 +636,7 @@ test("Russian-origin aluminum derivatives are withheld instead of receiving the 
       steelContentValue: 2_000,
       aluminumContentValue: 1_000,
       importDate: "2025-07-01",
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result.totalAmount, null);
     assert.ok(result.unresolvedMeasures.some((measure) => measure.includes("Russian aluminum")));
@@ -644,7 +655,7 @@ test("the June derivative measure is not applied before its effective date", asy
       value: 10_000,
       steelContentValue: 3_000,
       importDate: "2025-06-22",
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result.components.length, 1);
     assert.equal(result.totalRatePercent, 0.05);
@@ -664,7 +675,7 @@ test("an impossible ISO-shaped date is rejected by the shared strict validator",
       value: 10_000,
       steelContentValue: 3_000,
       importDate: "2025-02-29",
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.ok(result.stackingExplanation.some((line) => line.includes("not a usable ISO date")));
     assert.equal(result.components[1].amount, null, "invalid date must not select a historical legal regime");
@@ -684,7 +695,7 @@ test("China-origin athletic footwear (6404.11) with an empty additionalDuties ro
       htsCode: "6404.11.90.20",
       countryOfOrigin: "CN",
       value: 150_000,
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result.components.length, 2);
     assert.equal(result.components[0].ratePercent, 0.2);
@@ -707,7 +718,7 @@ test("China-origin speakers (8518.22) with an empty additionalDuties row still p
       htsCode: "8518.22.00.00",
       countryOfOrigin: "CN",
       value: 50_000,
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result.components.length, 2);
     assert.equal(result.components[0].amount, 0);
@@ -730,7 +741,7 @@ test("the snapshot table is never consulted when the HTS row already has its own
       htsCode: "6404.11.90.20",
       countryOfOrigin: "CN",
       value: 150_000,
-    });
+    }, noLiveSection232);
     assert.ok(result);
     // Should resolve via the row's own cross-reference (List 3, 25%), not the snapshot (List 4A, 7.5%).
     assert.equal(result.components[1].ratePercent, 0.25);
@@ -747,7 +758,7 @@ test("the snapshot table does not apply to a non-China origin", async () => {
       htsCode: "6404.11.90.20",
       countryOfOrigin: "VN",
       value: 150_000,
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.equal(result.components.length, 1);
   } finally {
@@ -765,7 +776,7 @@ test("Canada-origin whisky (2208.30) gets the verified 50% Section 338 alcohol d
       countryOfOrigin: "CA",
       value: 20_000,
       importDate: "2026-09-01",
-    });
+    }, noLiveSection232);
     assert.ok(result);
     const s338 = result.components.find((c) => c.type === "section338");
     assert.ok(s338);
@@ -786,7 +797,7 @@ test("Canada-origin dairy (0402.10) gets the verified 50% Section 338 dairy duty
       countryOfOrigin: "CA",
       value: 8_000,
       importDate: "2026-09-01",
-    });
+    }, noLiveSection232);
     assert.ok(result);
     const s338 = result.components.find((c) => c.type === "section338");
     assert.ok(s338);
@@ -805,7 +816,7 @@ test("Section 338 is not applied before its verified first-collection date of 20
       countryOfOrigin: "CA",
       value: 20_000,
       importDate: "2026-08-01",
-    });
+    }, noLiveSection232);
     assert.ok(result);
     const s338 = result.components.find((c) => c.type === "section338");
     assert.ok(s338);
@@ -825,7 +836,7 @@ test("Section 338 does not apply to a non-Canada origin even on a listed HTS cod
       countryOfOrigin: "FR",
       value: 20_000,
       importDate: "2026-09-01",
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.ok(!result.components.some((c) => c.type === "section338"));
   } finally {
@@ -845,7 +856,7 @@ test("Section 338 is skipped when a Section 232 basic-article measure already ma
       countryOfOrigin: "CA",
       value: 10_000,
       importDate: "2026-09-01",
-    });
+    }, noLiveSection232);
     assert.ok(result);
     assert.ok(result.components.some((c) => c.type === "section232"));
     assert.ok(!result.components.some((c) => c.type === "section338"));
@@ -869,7 +880,7 @@ test("Section 338 is withheld as unresolved, not a confident 50%, for goods impo
       countryOfOrigin: "CA",
       value: 20_000,
       importDate: "2026-09-29",
-    });
+    }, noLiveSection232);
     assert.ok(result);
     const s338 = result.components.find((c) => c.type === "section338");
     assert.ok(s338);
@@ -893,7 +904,7 @@ test("Section 338 still resolves confidently at 50% for an import date just befo
       countryOfOrigin: "CA",
       value: 20_000,
       importDate: "2026-09-28",
-    });
+    }, noLiveSection232);
     assert.ok(result);
     const s338 = result.components.find((c) => c.type === "section338");
     assert.ok(s338);
@@ -912,7 +923,7 @@ test("Section 338 ban-conversion unresolved state correctly cites the dairy bask
       countryOfOrigin: "CA",
       value: 8_000,
       importDate: "2026-10-01",
-    });
+    }, noLiveSection232);
     assert.ok(result);
     const s338 = result.components.find((c) => c.type === "section338");
     assert.ok(s338);

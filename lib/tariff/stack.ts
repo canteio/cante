@@ -10,6 +10,7 @@ import {
   lookupSection232BasicArticle,
   lookupSection232Derivative,
 } from "@/lib/tariff/section232";
+import { lookupSection232Live } from "@/lib/tariff/section232-live";
 import {
   lookupSection338,
   SECTION_338_EFFECTIVE_DATE,
@@ -118,8 +119,8 @@ const SECTION232_FULL_VALUE_REGIME_CITATION =
   "Presidential Proclamation, Strengthening Actions Taken to Adjust Imports of Aluminum, Steel, and Copper Into the United States (Apr. 2, 2026), clauses 1-4";
 
 const STANDING_NOT_EVALUATED = [
-  "Section 232 derivative products outside the verified June 23, 2025 appliance/welded-wire-rack subset (the BIS inclusions list is broader and actively expanding)",
-  "Section 232 treatment on or after April 6, 2026, when a later proclamation changed derivative assessment to full customs value and revised covered-product annexes/rates",
+  "Section 232 derivative products outside the verified June 23, 2025 appliance/welded-wire-rack subset (the BIS inclusions list is broader and actively expanding) for imports dated BEFORE 2026-04-06 -- on or after that date, the live Section 232 data pipeline covers the full current Annex I-A/I-B/II/III/IV regime for any HTS code it has ingested, superseding this bounded historical subset",
+  "US-content-only (melt/pour/smelt-and-cast) reduced Section 232 rates: the live regime publishes a reduced rate for derivatives made entirely from US-origin metal, but Cante does not collect or verify metal-content-origin facts, so the base (non-US-content) rate is always quoted even when a lower rate might legally apply",
   "Russian aluminum smelt/cast exposure when Russia is not the declared country of origin (the inputs do not collect smelt/cast countries)",
   "USMCA rules-of-origin analysis (a special rate is used only from an explicit caller-supplied verified decision and supporting details)",
   "Anti-dumping/countervailing duty (AD/CVD) exact scope/rate determination (named leads surfaced in adCvdAdvisories below are advisory only, never a computed amount)",
@@ -195,7 +196,10 @@ function resolveUsmcaQualification(
   };
 }
 
-export async function computeStackedDuty(input: StackDutyInput): Promise<StackedDutyResult | null> {
+export async function computeStackedDuty(
+  input: StackDutyInput,
+  section232LiveLookupFn: typeof lookupSection232Live = lookupSection232Live,
+): Promise<StackedDutyResult | null> {
   const country = input.countryOfOrigin.trim().toUpperCase();
   const usmcaQualification = resolveUsmcaQualification(country, input.usmcaQualification);
   const legacyProgramme = input.claimedProgramme?.trim().toUpperCase() || null;
@@ -331,7 +335,64 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
     }
   }
 
-  const section232Match = lookupSection232BasicArticle(base.htsCode, country);
+  // Section 232 basic articles: the live-data pipeline
+  // (scripts/ingest-section232-proclamation.ts + verify-section232-
+  // proposal.ts) now holds the REAL current regime (Proclamation 11021,
+  // effective 2026-04-06 -- Annexes I-A/I-B/II/III/IV, which added copper
+  // and restructured rates away from the flat 50%/25% steel-or-aluminum
+  // scheme this static table was built on). For any CURRENT or FUTURE-
+  // dated import (no importDate, or importDate on/after the live regime's
+  // effective date), the live Supabase data is checked FIRST and takes
+  // priority; the static table below is used only for genuinely
+  // historical imports before the live regime existed. A live-lookup
+  // failure is treated as unresolved, never silently as "no Section 232
+  // applies" -- see Section232LiveLookupError handling.
+  const LIVE_SECTION232_REGIME_START = "2026-04-06";
+  const wantsLiveSection232 = !importDate || importDate >= LIVE_SECTION232_REGIME_START;
+  let liveSection232Match: Awaited<ReturnType<typeof lookupSection232Live>> = null;
+  let liveSection232Failed: string | null = null;
+  if (wantsLiveSection232) {
+    try {
+      liveSection232Match = await section232LiveLookupFn(base.htsCode, input.signal);
+    } catch (error) {
+      liveSection232Failed = error instanceof Error ? error.message : "Live Section 232 lookup failed.";
+    }
+  }
+
+  if (liveSection232Failed) {
+    // Degrade, don't refuse: matches this codebase's established pattern
+    // (lib/impact/assess.ts: "a tariff outage costs one field, not the
+    // assessment"). Universally nulling totalAmount/totalRatePercent for
+    // EVERY duty calculation whenever the live Section 232 store is
+    // briefly unreachable -- even for an unrelated product like wire
+    // cable -- is a real availability regression the static table never
+    // had. Fall back to the 2025-vintage static table instead, with an
+    // explicit staleness caveat, so a transient outage degrades data
+    // freshness, not correctness-of-availability.
+    stackingExplanation.push(
+      `Section 232 live data was unreachable (${liveSection232Failed}); falling back to a known-outdated static reference table rather than withholding every duty figure on this shipment. Re-run after live data is restored to confirm Section 232 treatment under the current regime.`,
+    );
+  } else if (liveSection232Match) {
+    const isUk = country === "GB";
+    const rate = isUk && liveSection232Match.ukRatePercent !== null ? liveSection232Match.ukRatePercent : liveSection232Match.ratePercent;
+    components.push({
+      type: "section232",
+      label: `Section 232 — ${liveSection232Match.annex} (current regime)`,
+      ratePercent: rate,
+      amount: input.value !== null ? Number((input.value * rate).toFixed(2)) : null,
+      citation: [`${liveSection232Match.sourceTitle}, ${liveSection232Match.sourceDocumentNumber} (${liveSection232Match.sourcePdfUrl})`],
+      explanation: `${liveSection232Match.annex} under the current Section 232 regime (effective ${LIVE_SECTION232_REGIME_START}): ${(rate * 100).toFixed(1)}% on full customs value${isUk ? " (United Kingdom rate)" : ""}. US-content-only derivatives may qualify for a reduced rate (${liveSection232Match.usContentRatePercent !== null ? `${(liveSection232Match.usContentRatePercent * 100).toFixed(0)}%` : "not published for this annex"}) -- not applied here because melt/pour/smelt-and-cast content origin was not supplied.`,
+    });
+    stackingExplanation.push(
+      `${liveSection232Match.annex} (current regime, effective ${LIVE_SECTION232_REGIME_START}) stacks additively on top of the Column 1 base duty at ${(rate * 100).toFixed(1)}%, sourced from ${liveSection232Match.sourceDocumentNumber} via Cante's auto-verified Section 232 data pipeline.`,
+    );
+  }
+
+  // Skip the legacy static basic-article table only when live data
+  // actually resolved this code (avoid double-counting). On a live-
+  // lookup FAILURE, fall through to the static table as a degraded-but-
+  // available fallback -- see the liveSection232Failed branch above.
+  const section232Match = liveSection232Match ? null : lookupSection232BasicArticle(base.htsCode, country);
   if (section232Match) {
     // Basic (non-derivative) articles were never touched by the April 2026
     // proclamation — that change is documented (see STANDING_NOT_EVALUATED)
@@ -363,7 +424,11 @@ export async function computeStackedDuty(input: StackDutyInput): Promise<Stacked
     stackingExplanation.push(reason ?? `${section232Match.label} (${section232Match.chapter99Code}) stacks additively on top of the Column 1 base duty at ${rate! * 100}%, per the imposing proclamations (${section232Match.federalRegisterCitations.join("; ")}).`);
   }
 
-  const section232Derivative = lookupSection232Derivative(base.htsCode, country);
+  // Skip the legacy static derivative table only when live data actually
+  // resolved this code (avoid double-counting). On a live-lookup
+  // FAILURE, fall through to the static table as a degraded-but-
+  // available fallback, consistent with the basic-article gate above.
+  const section232Derivative = liveSection232Match ? null : lookupSection232Derivative(base.htsCode, country);
   if (section232Derivative) {
     const steelContentValue = input.steelContentValue ?? null;
     const aluminumContentValue = input.aluminumContentValue ?? null;
