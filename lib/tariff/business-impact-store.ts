@@ -46,8 +46,8 @@ export async function listImpactRuns(customerId: string) {
   if (error) throw new Error("Snapshot read failed.");
   return data;
 }
-export async function getImpactRun(customerId: string, runId: string) {
-  const client = await createClient();
+export async function getImpactRun(customerId: string, runId: string, suppliedClient?: Awaited<ReturnType<typeof createClient>>) {
+  const client = suppliedClient ?? await createClient();
   const { data: run, error } = await client.from("tariff_impact_runs").select("*").eq("customer_id", customerId).eq("id", runId).maybeSingle();
   if (error) throw new Error("Snapshot read failed.");
   if (!run) return null;

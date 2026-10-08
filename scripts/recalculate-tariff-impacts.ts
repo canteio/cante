@@ -1,6 +1,6 @@
 // Must be first: loads .env before any module reads process.env.
 import "./load-env";
-import { recalculateTariffImpacts } from "../lib/tariff/recalculate-customer-impacts";
+import { recalculateTariffImpacts, recalculationFailed } from "../lib/tariff/recalculate-customer-impacts";
 
 /**
  * Scheduled entrypoint, invoked on a schedule (cron) — not a permanently
@@ -33,7 +33,7 @@ async function main(): Promise<number> {
 
   let failures = 0;
   for (const result of summary.customerResults) {
-    if (result.skippedReason === "error") failures += 1;
+    if (recalculationFailed(result)) failures += 1;
     log(
       `  ${result.customerId}: ${result.findingsEvaluated} finding(s) evaluated, ` +
         `${result.eventsCreated} new event(s), notified=${result.notified} — ${result.notifyDetail}`,

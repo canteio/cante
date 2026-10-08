@@ -171,7 +171,8 @@ test("an unresolvable candidate produces a NEEDS REVIEW event with null dollars 
     // Citation mismatch forces NEEDS REVIEW deterministically, same as the
     // already-reviewed monitor-company-impact.ts test for this exact path.
     const { customerId, client } = await seedMonitoredCustomer();
-    await client.from("findings").update({ regulation_ref: "FR Doc. 2026-99999" }).eq("customer_id", customerId);
+    const { error: updateError } = await client.from("findings").update({ regulation_ref: "FR Doc. 2026-99999" }).eq("customer_id", customerId);
+    assert.ifError(updateError);
 
     const result = await recalculateForCustomer(client, customerId, { computer: realVersionedComputer, env: {} });
     assert.equal(result.eventsCreated, 1);
@@ -200,7 +201,8 @@ test("an unchanged candidate on a second pass does not create a duplicate event"
     const second = await recalculateForCustomer(client, customerId, { computer: realVersionedComputer, env: {} });
     assert.equal(second.eventsCreated, 0);
     assert.equal(second.notified, false);
-    assert.match(second.notifyDetail, /No materially new or changed/);
+    assert.equal(second.deliveryStatus, "pending");
+    assert.equal(second.pendingDeliveryCount, 1);
 
     const { data: events } = await client.from("tariff_impact_events").select("id").eq("customer_id", customerId);
     assert.equal(events!.length, 1);
@@ -371,4 +373,39 @@ test("uses the real cookie-fallback Supabase client path, not just an explicitly
   } finally {
     restore();
   }
+});
+
+test("failed delivery is retried without a new event and successful deliveries are not repeated", async () => {
+  const restore = stubUsitc();
+  const network = global.fetch;
+  let attempts = 0;
+  let fail = true;
+  global.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+    const url = input instanceof Request ? input.url : String(input);
+    if (new URL(url).hostname !== "api.telegram.org") return network(input, init);
+    attempts++;
+    return Response.json(fail ? { ok: false, description: "controlled delivery failure" }
+      : { ok: true, result: { message_id: attempts } }, { status: fail ? 503 : 200 });
+  }) as typeof fetch;
+  try {
+    const { customerId, client } = await seedMonitoredCustomer();
+    const options = { computer: realVersionedComputer, env: { TELEGRAM_BOT_TOKEN: "fixture-token", TELEGRAM_CHAT_ID: "fixture-chat" } };
+    const first = await recalculateForCustomer(client, customerId, options);
+    assert.equal(first.eventsCreated, 1);
+    assert.equal(first.deliveryStatus, "failed");
+    assert.equal(first.pendingDeliveryCount, 1);
+    fail = false;
+    const retry = await recalculateForCustomer(client, customerId, options);
+    assert.equal(retry.eventsCreated, 0);
+    assert.equal(retry.deliveryStatus, "sent");
+    assert.equal(retry.pendingDeliveryCount, 0);
+    assert.equal(attempts, 2);
+    const quiet = await recalculateForCustomer(client, customerId, options);
+    assert.equal(quiet.deliveryStatus, "none");
+    assert.equal(attempts, 2);
+    const persisted = await client.from("tariff_impact_events").select("notified,notified_at").eq("customer_id", customerId);
+    assert.equal(persisted.data?.length, 1);
+    assert.equal(persisted.data?.[0].notified, true);
+    assert.ok(persisted.data?.[0].notified_at);
+  } finally { restore(); }
 });

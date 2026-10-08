@@ -54,3 +54,6 @@ CANTE_IMPORT_CUSTOMER_ID=
 CANTE_IMPORT_SHIPMENTS_FILE=
 # Optional local CAMIR header inspection, separate from normalized ingestion.
 CANTE_CAMIR_FILE=
+
+# Optional HTTP scheduler bridge on the trusted worker only; never set on Vercel.
+TARIFF_RECALC_SHARED_SECRET=

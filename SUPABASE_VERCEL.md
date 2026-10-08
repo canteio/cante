@@ -195,3 +195,27 @@ alerts, sources, and uploaded chat documents are cloud-backed. The mature
 customs document audit, tariff enrichment, screening, BOM assessment, and
 check execution remain worker-side workflows. Their tables are migrated and
 visible after sync, but those heavy mutations are not moved into Vercel.
+
+## Scheduled tariff impact recalculation
+
+Run `npm run tariff:recalculate` on the trusted worker. A failed calculation,
+coverage limit, or queued/failed delivery exits nonzero. Undelivered immutable
+impact events are retried on subsequent passes even when the calculation did
+not change. Delivery is at least once: if Telegram accepts a message but the
+bookkeeping write fails, a later retry can send it again.
+
+The optional Supabase Edge trigger targets the worker's Next.js endpoint
+`/api/internal/tariff-recalculate`, not the Vercel app. The hosted endpoint
+returns 409; keep `SUPABASE_SECRET_KEY` and Telegram credentials on the worker.
+Set `TARIFF_RECALC_SHARED_SECRET` on the worker, and configure the Edge secrets
+`TARIFF_RECALC_TARGET_URL` (the reachable HTTPS worker endpoint),
+`TARIFF_RECALC_SHARED_SECRET` (the same outbound secret), and
+`TARIFF_RECALC_CRON_SHARED_SECRET` (a separate inbound cron secret).
+
+Apply the cron migration and replace its Vault placeholders only when the
+worker endpoint and deployed Edge Function are ready. The Edge Function uses
+shared-secret authentication, so deploy its gateway with JWT verification
+disabled. Confirm wrong secrets yield 401, a completed quiet pass yields 200,
+and incomplete/failed work yields 503 through both HTTP layers. Check cron
+history and HTTP response records; checked-in SQL alone does not prove the
+schedule is active. No schedule or secrets are configured by this code change.

@@ -1,36 +1,14 @@
 import { createServiceClient } from "@/lib/supabase/service";
-import { recalculateTariffImpacts } from "@/lib/tariff/recalculate-customer-impacts";
+import { recalculateTariffImpacts, recalculationFailed } from "@/lib/tariff/recalculate-customer-impacts";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-/**
- * Internal, non-interactive entrypoint for the proactive tariff-impact
- * recalculation pass (lib/tariff/recalculate-customer-impacts.ts), invoked
- * by the tariff-impact-recalculate Edge Function on a recurring schedule
- * (see supabase/functions/tariff-impact-recalculate/index.ts and
- * supabase/migrations/*_tariff_impact_recalculate_cron.sql).
- *
- * This route exists, rather than porting the recalculation logic itself to
- * Deno, because that logic chains through computeStackedDuty's full
- * already-reviewed duty-calculation stack (live Section 232 lookups,
- * static-table fallback, Section 301/338 stacking) — reimplementing that in
- * Deno would risk the exact kind of drift the HTS Edge Function's own
- * comments warn against for ingestion logic, except here the stakes are a
- * silently wrong dollar figure, not a stale schedule. Running the real,
- * already-tested Node code through an authenticated HTTP bridge keeps
- * exactly one implementation of the calculation path, in both the
- * dashboard and the scheduled notification job.
- *
- * Auth: a constant-time shared-secret header, matching the pattern already
- * established and reviewed for hts-revision-check's Edge Function — NOT
- * cookie/session auth, since this is called by Supabase's pg_cron/pg_net,
- * not a logged-in browser. The secret is read from
- * TARIFF_RECALC_SHARED_SECRET and must be set as both a Vercel environment
- * variable and a Supabase Vault secret (see the migration's comments); a
- * missing or mismatched secret fails closed with 401, never silently skips
- * auth.
- */
+/** Shared-secret entrypoint on the trusted Next.js worker. Supabase's Edge
+ * trigger targets this worker, never Vercel: the service key remains local.
+ * Uses the same calculation path as the dashboard and reports incomplete work
+ * as a failed scheduled pass. Set TARIFF_RECALC_SHARED_SECRET on the worker
+ * and the Edge Function's outbound configuration. */
 function timingSafeEqual(a: string, b: string): boolean {
   const enc = new TextEncoder();
   const bufA = enc.encode(a);
@@ -48,6 +26,11 @@ export async function POST(request: Request) {
     return Response.json({ error: "unauthorized" }, { status: 401 });
   }
 
+  // The service secret belongs to the trusted worker, never the hosted app.
+  if (process.env.VERCEL) {
+    return Response.json({ error: "Recalculation runs on the trusted worker. Configure the scheduler's target URL for that worker." }, { status: 409 });
+  }
+
   try {
     const client = createServiceClient();
     const summary = await recalculateTariffImpacts({ client, signal: request.signal });
@@ -59,11 +42,13 @@ export async function POST(request: Request) {
     // per-customer detail is still logged server-side by the calling
     // script/Edge Function via console.log, for operational visibility.
     console.log("tariff-recalculate results:", JSON.stringify(summary.customerResults));
+    if (request.signal.aborted) return Response.json({ error: "Recalculation request was cancelled." }, { status: 499 });
+    const failures = summary.customerResults.filter(recalculationFailed).length;
     return Response.json({
       customersEvaluated: summary.customersEvaluated,
       eventsCreated: summary.customerResults.reduce((sum, r) => sum + r.eventsCreated, 0),
-      failures: summary.customerResults.filter((r) => r.skippedReason === "error").length,
-    });
+      failures,
+    }, { status: failures ? 503 : 200 });
   } catch (error) {
     if (request.signal.aborted) {
       return Response.json({ error: "Recalculation request was cancelled." }, { status: 499 });

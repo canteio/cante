@@ -26,9 +26,9 @@ import { sendTelegram, telegramConfig, TelegramError, type EnvLike } from "@/lib
  * Three invariants carried over unmodified from the dashboard path:
  *   - never invent a dollar figure: a NEEDS REVIEW result always has a null
  *     delta and a specific reason (same check constraint as the migration).
- *   - never re-notify for an unchanged result: a content hash gates the
- *     insert, backed by a unique constraint in the database, not just an
- *     in-process check.
+ *   - never create duplicate events for an unchanged result: a content hash
+ *     gates the insert, backed by a unique database constraint. Delivery
+ *     retries unsent events and is at least once if bookkeeping fails.
  *   - never unbounded: customer-level work shares the SAME bounded queue
  *     primitive already reviewed in monitor-company-impact.ts, and the duty
  *     calculations inside buildMonitoredCompanyImpacts share its existing
@@ -76,6 +76,14 @@ export interface CustomerRecalculationResult {
   notified: boolean;
   notifyDetail: string;
   skippedReason?: CustomerRecalculationSkipReason;
+  deliveryStatus?: "none" | "sent" | "pending" | "failed";
+  pendingDeliveryCount?: number;
+}
+
+/** Shared by HTTP and CLI schedulers: incomplete work must not look successful. */
+export function recalculationFailed(result: CustomerRecalculationResult): boolean {
+  return ["error", "run_not_found", "candidate_limit"].includes(result.skippedReason ?? "")
+    || result.deliveryStatus === "failed" || result.deliveryStatus === "pending";
 }
 
 export interface RecalculationSummary {
@@ -199,6 +207,10 @@ export async function recalculateForCustomer(
   customerId: string,
   options: RecalculationOptions,
 ): Promise<CustomerRecalculationResult> {
+  const finish = async (result: CustomerRecalculationResult): Promise<CustomerRecalculationResult> => ({
+    ...result,
+    ...await deliverPendingImpacts(client, customerId, options),
+  });
   const { data: runRow, error: runError } = await client.from("tariff_impact_runs")
     .select("id")
     .eq("customer_id", customerId)
@@ -207,31 +219,31 @@ export async function recalculateForCustomer(
     .maybeSingle();
   if (runError) throw new Error(runError.message);
   if (!runRow) {
-    return {
+    return finish({
       customerId, findingsEvaluated: 0, eventsCreated: 0, notified: false,
       notifyDetail: "No completed impact run exists for this customer; recalculation needs a prior snapshot to compute a delta.",
       skippedReason: "no_impact_run",
-    };
+    });
   }
   const runId = runRow.id as string;
-  const run = await getImpactRun(customerId, runId);
+  const run = await getImpactRun(customerId, runId, client);
   if (!run) {
-    return {
+    return finish({
       customerId, findingsEvaluated: 0, eventsCreated: 0, notified: false,
       notifyDetail: "The most recent impact run could not be read.",
       skippedReason: "run_not_found",
-    };
+    });
   }
 
   const { candidates, skippedReason } = await loadCandidatesForRun(client, customerId, run);
   if (skippedReason) {
-    return {
+    return finish({
       customerId, findingsEvaluated: 0, eventsCreated: 0, notified: false,
       notifyDetail: skippedReason === "candidate_limit"
         ? "Too many monitored candidates to calculate safely; this pass was skipped for manual review."
         : "No monitored candidate currently links to this customer's most recent impact run.",
       skippedReason,
-    };
+    });
   }
 
   let impacts: MonitoredCompanyImpact[];
@@ -239,17 +251,16 @@ export async function recalculateForCustomer(
     impacts = await buildMonitoredCompanyImpacts(candidates, run.rows, options.computer, { signal: options.signal });
   } catch (error) {
     if (error instanceof MonitorImpactLimitError) {
-      return {
+      return finish({
         customerId, findingsEvaluated: 0, eventsCreated: 0, notified: false,
         notifyDetail: `Monitored company impact coverage exceeds the safe calculation limit (${error.code}).`,
         skippedReason: "candidate_limit",
-      };
+      });
     }
     throw error;
   }
 
   const createdIds: string[] = [];
-  const newEventFindingIds: string[] = [];
   for (const impact of impacts) {
     const resultHash = impactResultHash(impact);
     const payload = {
@@ -273,48 +284,69 @@ export async function recalculateForCustomer(
     // real backstop: even a retried or racing pass cannot double-insert an
     // unchanged result. `.select("id")` returns nothing for a row that
     // ON CONFLICT DO NOTHING suppressed, so an empty result reliably means
-    // "already notified for this exact content", not an error.
+    // "already recorded for this exact content", not an error. Delivery is retried separately.
     const { data: insertedRows, error: insertError } = await client.from("tariff_impact_events")
       .upsert(payload, { onConflict: "customer_id,finding_id,result_hash", ignoreDuplicates: true })
       .select("id");
     if (insertError) throw new Error(insertError.message);
     if (insertedRows && insertedRows.length > 0) {
       createdIds.push(insertedRows[0].id as string);
-      newEventFindingIds.push(impact.findingId);
     }
   }
 
   if (createdIds.length === 0) {
-    return {
+    return finish({
       customerId, findingsEvaluated: impacts.length, eventsCreated: 0, notified: false,
       notifyDetail: "No materially new or changed monitored impact since the last pass; nothing to notify.",
-    };
+    });
   }
 
-  const changedImpacts = impacts.filter((impact) => newEventFindingIds.includes(impact.findingId));
-  const body = formatCustomerImpactDigest(changedImpacts);
+  return finish({ customerId, findingsEvaluated: impacts.length, eventsCreated: createdIds.length,
+    notified: false, notifyDetail: "New impact events recorded." });
+}
+
+/** Delivery retries use the immutable event ledger, independent of recalculation deduplication. */
+async function deliverPendingImpacts(
+  client: ReturnType<typeof createServiceClient>, customerId: string, options: RecalculationOptions,
+): Promise<Partial<CustomerRecalculationResult>> {
+  const query = client.from("tariff_impact_events").select("*", { count: "exact" })
+    .eq("customer_id", customerId).eq("notified", false).order("created_at").order("id").limit(100);
+  if (options.signal) query.abortSignal(options.signal);
+  const { data, error, count } = await query;
+  if (error) throw new Error("Pending impact deliveries could not be read.");
+  const events = data ?? [];
+  const pending = count ?? events.length;
+  if (!events.length) return { deliveryStatus: "none", pendingDeliveryCount: 0 };
   const config = telegramConfig(options.env);
   if (!config) {
     return {
-      customerId, findingsEvaluated: impacts.length, eventsCreated: createdIds.length, notified: false,
-      notifyDetail: "Telegram is not configured; new events are recorded but undelivered.",
+      notified: false, deliveryStatus: "pending", pendingDeliveryCount: pending,
+      notifyDetail: "Telegram is not configured; impact events remain queued for delivery.",
     };
   }
 
   try {
+    const body = formatCustomerImpactDigest(events.map(event => ({
+      findingId: event.finding_id,
+      action: { name: event.action_name, effectiveDate: event.effective_date, citations: event.citations },
+      affectedProductCount: event.affected_product_count, estimatedDutyDeltaUsd: event.estimated_duty_delta_usd,
+      status: event.status, reviewReason: event.review_reason, suppliers: event.suppliers,
+      products: event.products, rows: event.rows,
+    })));
     await sendTelegram(config, body, { signal: options.signal });
     const { error: markError } = await client.from("tariff_impact_events")
       .update({ notified: true, notified_at: new Date().toISOString() })
-      .in("id", createdIds);
+      .eq("customer_id", customerId).in("id", events.map(event => event.id));
     if (markError) throw new Error(markError.message);
     return {
-      customerId, findingsEvaluated: impacts.length, eventsCreated: createdIds.length, notified: true,
-      notifyDetail: `Sent ${createdIds.length} new/changed event(s).`,
+      notified: true, deliveryStatus: pending > events.length ? "pending" : "sent",
+      pendingDeliveryCount: Math.max(0, pending - events.length),
+      notifyDetail: `Sent ${events.length} queued event(s).`,
     };
   } catch (error) {
     const detail = error instanceof TelegramError ? error.message : error instanceof Error ? error.message : "Unknown delivery error.";
     return {
-      customerId, findingsEvaluated: impacts.length, eventsCreated: createdIds.length, notified: false,
+      notified: false, deliveryStatus: "failed", pendingDeliveryCount: pending,
       notifyDetail: `Delivery failed: ${detail}`,
     };
   }
@@ -325,7 +357,12 @@ async function discoverCustomersWithCandidates(client: ReturnType<typeof createS
     .select("customer_id")
     .range(0, RECALC_MAX_CUSTOMERS * 10);
   if (error) throw new Error(error.message);
-  return [...new Set((data ?? []).map((row) => row.customer_id as string))];
+  const { data: pending, error: pendingError } = await client.from("tariff_impact_events")
+    .select("customer_id")
+    .eq("notified", false)
+    .range(0, RECALC_MAX_CUSTOMERS * 10);
+  if (pendingError) throw new Error(pendingError.message);
+  return [...new Set([...(data ?? []), ...(pending ?? [])].map((row) => row.customer_id as string))];
 }
 
 /**

@@ -1,6 +1,6 @@
 // Supabase Edge Function: scheduled proactive tariff-impact recalculation.
 //
-// Thin trigger only: calls the authenticated Next.js API route
+// Thin trigger only: calls the authenticated trusted-worker Next.js API route
 // app/api/internal/tariff-recalculate/route.ts, which runs the real,
 // already-reviewed lib/tariff/recalculate-customer-impacts.ts logic. Unlike
 // hts-revision-check, this function does NOT reimplement the business
@@ -18,8 +18,8 @@
 // Auth to the Next.js route: a shared secret (TARIFF_RECALC_SHARED_SECRET)
 // sent as `Authorization: Bearer ...`, matching the exact pattern the
 // Next.js route itself documents and hts-revision-check already
-// established for its own upstream call. The pg_cron job reads that same
-// secret out of Supabase Vault, never hardcoding it in migration SQL.
+// established for its own upstream call. The pg_cron job reads the separate
+// inbound TARIFF_RECALC_CRON_SHARED_SECRET from Vault, never hardcoding it.
 
 function timingSafeEqual(a: string, b: string): boolean {
   const enc = new TextEncoder();
@@ -55,9 +55,13 @@ Deno.serve(async (req: Request) => {
       signal: AbortSignal.timeout(110_000),
     });
     const body = await response.text();
-    if (!response.ok) throw new Error(`Recalculation route HTTP ${response.status}: ${body.slice(0, 500)}`);
-
-    return new Response(body, { status: 200, headers: { "content-type": "application/json" } });
+    if (!response.ok) return new Response(body, { status: response.status, headers: { "content-type": "application/json" } });
+    const summary = JSON.parse(body);
+    if (![summary.customersEvaluated, summary.eventsCreated, summary.failures]
+      .every(value => Number.isSafeInteger(value) && value >= 0)) {
+      throw new Error("Recalculation route returned an invalid outcome.");
+    }
+    return new Response(body, { status: summary.failures ? 503 : 200, headers: { "content-type": "application/json" } });
   } catch (error) {
     console.error("tariff-impact-recalculate failed:", error instanceof Error ? error.message : error);
     return new Response(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }), {
