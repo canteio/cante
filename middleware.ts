@@ -29,7 +29,15 @@ export async function middleware(request: NextRequest) {
   const isProtectedPage = PROTECTED_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
-  const isProtectedApi = pathname.startsWith("/api/") && !PUBLIC_API_PATHS.has(pathname);
+  // /api/internal/* routes (e.g. the tariff-recalculate cron bridge) are
+  // called by Supabase Edge Functions on a schedule, never by a logged-in
+  // browser -- they carry their own constant-time shared-secret auth
+  // inside the route handler itself (see app/api/internal/tariff-recalculate
+  // /route.ts) and must never go through this cookie-session gate, which
+  // would reject every legitimate scheduled call with 401 before the
+  // route's real auth check ever runs.
+  const isInternalApi = pathname.startsWith("/api/internal/");
+  const isProtectedApi = pathname.startsWith("/api/") && !isInternalApi && !PUBLIC_API_PATHS.has(pathname);
   const isProtected = isProtectedPage || isProtectedApi;
 
   if (!isProtected) {
