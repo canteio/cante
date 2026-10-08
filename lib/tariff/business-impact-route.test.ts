@@ -11,7 +11,8 @@ type State = { workspace: { customerId: string; role: string } | null; failure: 
 const state: State = { workspace: { customerId: "authenticated-tenant", role: "owner" }, failure: false, calls: [], run: null };
 Object.assign(globalThis, { impactRouteTestState: state });
 const server = `export async function getAuthenticatedWorkspace(...args) { const s=globalThis.impactRouteTestState; s.calls.push(['auth',...args]); if(s.failure) throw Error('secret credentials'); return s.workspace; }
-export async function createRequestClient() { return globalThis.impactRouteTestState.client; }`;
+export async function createRequestClient() { return globalThis.impactRouteTestState.client; }
+export async function createClient() { return globalThis.impactRouteTestState.client; }`;
 const store = `
 export async function createImpactRun(...args) { const s=globalThis.impactRouteTestState; s.calls.push(['create',...args]); return {id:'saved',rows:args[3]}; }
 export async function listImpactRuns(...args) { globalThis.impactRouteTestState.calls.push(['list',...args]); return []; }

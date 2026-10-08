@@ -1,5 +1,5 @@
 import { randomUUID, createHash } from "node:crypto";
-import { createRequestClient as createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 import { summarizeBusinessImpact, type ImpactRow } from "./business-impact";
 
 export function sanitizeImpactFilename(name: string | null) {

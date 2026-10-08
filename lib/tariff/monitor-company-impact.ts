@@ -288,7 +288,7 @@ export const MONITOR_IMPACT_GLOBAL_PAIR_LIMIT = 500;
  * themselves are already throttled -- the derivation closures, portfolio row
  * references, and awaited chains were still being created immediately for
  * every pair before this limiter existed). */
-function createBoundedQueue(concurrency: number, admissionLimit: number) {
+export function createBoundedQueue(concurrency: number, admissionLimit: number) {
   const queue: Array<() => void> = [];
   let active = 0;
   let admitted = 0;

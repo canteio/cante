@@ -14,6 +14,7 @@
     "check": "tsx scripts/run-check.ts",
     "test": "node --import tsx --import ./lib/test-support/supabase-test-loader.mjs --test lib/**/*.test.ts pipelines/import-manifest/**/*.test.ts",
     "check:scheduled": "tsx scripts/scheduled-check.ts",
+    "tariff:recalculate": "tsx scripts/recalculate-tariff-impacts.ts",
     "imports:validate": "node --import tsx scripts/validate-import-shipments.ts",
     "imports:refresh": "node --import tsx scripts/refresh-import-monitor.ts",
     "hts:check-revision": "node --import tsx scripts/check-hts-revision.ts"
