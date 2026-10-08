@@ -3,9 +3,31 @@ import { createServiceClient } from "../lib/supabase/service";
 import { currentHtsRevision } from "../lib/classification/semantic";
 
 /**
- * Daily check: is the live USITC HTS revision newer than what Supabase has
- * ingested? If so, run the full ingestion automatically — no human approval
- * gate, by deliberate design (see commit message / cante/company-plan).
+ * Manual/local debugging copy of the HTS revision check.
+ *
+ * The AUTHORITATIVE, always-on schedule now lives server-side, not here:
+ * a pg_cron job ("hts-revision-check-every-6h", see
+ * supabase/migrations/202610080002_hts_revision_cron.sql) calls the
+ * deployed supabase/functions/hts-revision-check Edge Function every 6
+ * hours via pg_net, with no human or coding agent needing to remember to
+ * run anything. That Edge Function is a Deno port of this script's exact
+ * logic (plus ingest-hts-schedule.ts's logic inline, time-boxed per
+ * invocation) and is the one that actually keeps hts_schedule_embeddings
+ * current in production.
+ *
+ * This script still exists, and `npm run hts:check-revision` still works,
+ * purely for local/manual debugging (e.g. verifying the live USITC
+ * revision, or forcing a local re-ingestion run outside the cron cadence).
+ * It is not relied on for production correctness, so a developer or coding
+ * agent forgetting to run it has no production consequence.
+ *
+ * If the ingestion logic changes, mirror the change in BOTH
+ * scripts/ingest-hts-schedule.ts AND supabase/functions/hts-revision-check
+ * (the two cannot share code: one runs on Node, the other on Deno).
+ *
+ * This script's logic (if revision differs, run the full ingestion
+ * automatically, no human approval gate) is deliberate, by the same
+ * design the Edge Function now also follows.
  *
  * This is safe to auto-apply where rebuilding tariff RATE logic/data is
  * not, because of what this data actually feeds: embeddings only ever
