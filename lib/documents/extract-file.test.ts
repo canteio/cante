@@ -129,3 +129,9 @@ test("a corrupt archive is refused with a recoverable suggestion", async () => {
     (error: Error) => /could not be opened/.test(error.message),
   );
 });
+
+test("Office archives reject excessive expanded data before XML parsing", async () => {
+  const { zipSync } = await import("fflate");
+  const compressed = zipSync({ "word/document.xml": new Uint8Array(33 * 1024 * 1024) });
+  await assert.rejects(extractTextFromFile("large.docx", compressed), /expanded-size/);
+});

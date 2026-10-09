@@ -134,10 +134,10 @@ async function stackRow(
   const original = global.fetch;
   global.fetch = (async () => ({
     ok: true,
-    json: async () => [{ htsno: publishedRowCode, general: "5%", additionalDuties: ref }],
+    json: async () => [{ htsno: code, general: publishedRowCode === code ? "5%" : "", additionalDuties: ref }, { htsno: publishedRowCode, general: "5%", additionalDuties: ref }],
   })) as unknown as typeof fetch;
   try {
-    const result = await computeStackedDuty({ htsCode: code, countryOfOrigin: country, value: 1000, importDate: date });
+    const result = await computeStackedDuty({ htsCode: code, countryOfOrigin: country, value: 1000, importDate: date }, async () => null);
     assert.ok(result);
     return result;
   } finally {
@@ -148,14 +148,14 @@ async function stackRow(
 
 test("all cited 6404.11 active and suspended lines produce distinct stack behavior", async () => {
   for (const suffix of active640411) {
-    const result = await stackRow(`6404.11.${suffix}.00`, null, "2026-10-06");
+    const result = await stackRow(`6404.11.${suffix}.00`, null, "2026-07-23");
     const component = result.components.find((c) => c.type === "section301");
     assert.equal(component?.ratePercent, 0.075, suffix);
     assert.equal(component?.amount, 75, suffix);
     assert.deepEqual(result.unresolvedMeasures, []);
   }
   for (const suffix of suspended640411) {
-    const result = await stackRow(`6404.11.${suffix}.00`, null, "2026-10-06");
+    const result = await stackRow(`6404.11.${suffix}.00`, null, "2026-07-23");
     assert.equal(result.components.some((c) => c.type === "section301"), false, suffix);
     assert.ok(result.unresolvedMeasures.some((m) => m.includes("Section 301 applicability")), suffix);
     assert.equal(result.totalRatePercent, null);
@@ -164,7 +164,7 @@ test("all cited 6404.11 active and suspended lines produce distinct stack behavi
 });
 
 test("List 3 companion .04 stacks at 25% only from its current-rate effective date", async () => {
-  for (const date of ["2019-05-10", "2026-10-06"]) {
+  for (const date of ["2019-05-10", "2026-07-23"]) {
     const result = await stackRow("8544.42.90.00", "See 9903.88.04", date);
     const component = result.components.find((c) => c.type === "section301");
     assert.match(component!.label, /List 3/);
@@ -192,11 +192,11 @@ test("snapshot and row-reference paths both withhold rates before their effectiv
 });
 
 test("coarse caller inputs cannot inherit a more-specific row's snapshot membership", async () => {
-  const sixDigit = await stackRow("6404.11", null, "2026-10-06", "CN", "6404.11.90");
+  const sixDigit = await stackRow("6404.11", null, "2026-07-23", "CN", "6404.11.90");
   assert.equal(sixDigit.components.some((component) => component.type === "section301"), false);
   assert.ok(sixDigit.unresolvedMeasures.some((measure) => measure.includes("Section 301 applicability")));
 
-  const eightDigit = await stackRow("8517.62.00", null, "2026-10-06", "CN", "8517.62.0090");
+  const eightDigit = await stackRow("8517.62.00", null, "2026-07-23", "CN", "8517.62.0090");
   assert.equal(eightDigit.components.some((component) => component.type === "section301"), false);
   assert.ok(eightDigit.unresolvedMeasures.some((measure) => measure.includes("Section 301 applicability")));
 });
@@ -211,15 +211,15 @@ test("future entry dates withhold aggregate totals instead of projecting today's
 });
 
 test("published references take priority; unsupported text stays unresolved; non-China does not stack", async () => {
-  const suspended = await stackRow("6404.11.90.20", "See 9903.88.16", "2026-10-06");
+  const suspended = await stackRow("6404.11.90.20", "See 9903.88.16", "2026-07-23");
   assert.equal(suspended.components.some((c) => c.type === "section301"), false);
   assert.ok(suspended.stackingExplanation.some((m) => m.includes("suspended and never took effect")));
   for (const text of ["See 9903.99.99", "See U.S. note 20"]) {
-    const unknown = await stackRow("6404.11.90.20", text, "2026-10-06");
+    const unknown = await stackRow("6404.11.90.20", text, "2026-07-23");
     assert.equal(unknown.components.some((c) => c.type === "section301"), false);
     assert.ok(unknown.unresolvedMeasures.length > 0);
   }
-  const otherOrigin = await stackRow("6404.11.90.20", null, "2026-10-06", "VN");
+  const otherOrigin = await stackRow("6404.11.90.20", null, "2026-07-23", "VN");
   assert.equal(otherOrigin.components.some((c) => c.type === "section301"), false);
   assert.deepEqual(otherOrigin.unresolvedMeasures, []);
 });
@@ -227,7 +227,7 @@ test("published references take priority; unsupported text stays unresolved; non
 
 test("split statistical suffixes resolve through the stack even with a rated parent row", async () => {
   for (const [code, rate] of [["8517.62.0010", 0.25], ["8517.62.0020", 0.25], ["8517.62.0090", 0.075]] as const) {
-    const result = await stackRow(code, null, "2026-10-06", "CN", "8517.62.00");
+    const result = await stackRow(code, null, "2026-07-23", "CN", "8517.62.00");
     assert.equal(result.components.find(c => c.type === "section301")?.ratePercent, rate);
   }
 });
@@ -235,7 +235,7 @@ test("split statistical suffixes resolve through the stack even with a rated par
 test("snapshot headings without verified rates remain explicitly unresolved", async () => {
   const entry = Object.entries(snapshot.coverage).find(([, heading]) => !lookupSection301Measure(heading));
   assert.ok(entry);
-  const result = await stackRow(entry[0], null, "2026-10-06");
+  const result = await stackRow(entry[0], null, "2026-07-23");
   assert.ok(result.unresolvedMeasures.includes(entry[1]));
   assert.equal(result.totalRatePercent, null);
 });

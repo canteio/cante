@@ -41,7 +41,7 @@ test("deltas, fail-closed results, bounded concurrency, value/date forwarding an
     assert.equal(args.importDate, "2026-10-06"); return result(0, 0);
   });
   let active = 0, max = 0;
-  await evaluate(parse(header + "\n" + "A,0101,CA,S,0,0\n".repeat(20)), async () => {
+  await evaluate(parse(header + "\n" + Array.from({length: 20}, (_, i) => `A${i},0101,CA,S,0,0`).join("\n")), async () => {
     max = Math.max(max, ++active); await new Promise(resolve => setTimeout(resolve, 1)); active--; return result(0, 0);
   });
   assert.equal(max, 5);
@@ -74,19 +74,21 @@ test("streaming body limit cannot be bypassed by missing or false content length
   assert.equal((await readImpactBody(new Request("https://cante.test", { method: "POST", body: "x".repeat(2097152) }))).length, 2097152);
 });
 
-test("optional context accepts aliases, bounds values, exports safely and never changes stack inputs", async () => {
+test("optional context accepts aliases, bounds values, exports safely and withholds unsupported claim deltas", async () => {
   const rows = parse(`${header},qty,ch99,exclusion_number,fta\nA,0101,CA,S,1000,5,0,"9903.01.01, custom",EX-1,USMCA`);
   assert.equal(rows[0].input_valid, true);
   assert.equal(rows[0].quantity, 0);
   assert.equal(rows[0].chapter99_codes, "9903.01.01, custom");
   assert.equal(rows[0].exclusion_id, "EX-1");
   assert.equal(rows[0].special_program_claim, "USMCA");
-  await evaluate(rows, async args => {
-    assert.deepEqual(Object.keys(args).sort(), ["countryOfOrigin", "htsCode", "importDate", "signal", "value"]);
+  const evaluated = await evaluate(rows, async args => {
+    assert.deepEqual(Object.keys(args).sort(), ["countryOfOrigin", "htsCode", "importDate", "quantity", "signal", "unit", "value"]);
     return result();
   });
-  assert.ok(csv(rows).includes('"quantity","chapter99_codes","exclusion_id","special_program_claim"'));
-  assert.ok(csv(rows).includes('"0","9903.01.01, custom","EX-1","USMCA"'));
+  assert.equal(evaluated[0].status, "unresolved");
+  assert.match(evaluated[0].review_reason!, /claims require/);
+  assert.ok(csv(rows).includes('"quantity","unit","chapter99_codes","exclusion_id","special_program_claim"'));
+  assert.ok(csv(rows).includes('"0","","9903.01.01, custom","EX-1","USMCA"'));
   for (const qty of ["-1", "NaN", "Infinity", "1e3"]) assert.equal(parse(`${header},quantity\nA,0101,CA,S,1,0,${qty}`)[0].input_valid, false);
   for (const column of ["chapter99_codes", "exclusion_id", "special_program_claim"]) {
     assert.equal(parse(`${header},${column}\nA,0101,CA,S,1,0,${"x".repeat(501)}`)[0].input_valid, false);
@@ -94,4 +96,62 @@ test("optional context accepts aliases, bounds values, exports safely and never 
   }
   assert.equal(parse(input())[0].quantity, null);
   assert.equal(parse(`${header},qty,quantity\nA,0101,CA,S,1,0,1,2`)[0].input_valid, false);
+});
+
+test("historical entries retain paid duty and refuse today's rate for an older entry", async () => {
+  const text = "entry_id,line_number,sku,hts,country_of_origin,customs_value,paid_duty,entry_date\nE1,1,A,0101.21.00.10,VN,1000,80,2020-01-02";
+  const parsed = parse(text);
+  assert.equal(parsed[0].input_valid, true);
+  assert.equal(parsed[0].analysis_kind, "historical_entries");
+  assert.equal(parsed[0].paid_duty_usd, 80);
+  assert.equal(parsed[0].current_annual_duty_usd, 80);
+  let calls = 0;
+  const evaluated = await evaluate(parsed, async () => { calls++; return result(100); });
+  assert.equal(calls, 0);
+  assert.equal(evaluated[0].status, "unresolved");
+  assert.match(evaluated[0].review_reason!, /Historical reconciliation/);
+  assert.equal(summarize(evaluated).estimated_annual_duty_delta_usd, null);
+  assert.ok(csv(evaluated).includes('"E1","1","1000","80"'));
+  assert.ok(csv(evaluated).includes("assessed_minus_paid_duty_usd"));
+  assert.ok(!csv(evaluated).includes("annual_delta_usd"));
+});
+
+test("entry identity preserves repeated products on distinct lines and rejects duplicate lines", () => {
+  const h = "entry_id,line_number,sku,hts,origin,customs_value,paid_duty,entry_date";
+  const a = "E1,1,A,0101.21.00.10,VN,1000,80,2020-01-02";
+  assert.deepEqual(parse(`${h}\n${a}\n${a}`).map(row => row.status), ["error", "error"]);
+  assert.deepEqual(parse(`${h}\n${a}\n${a.replace('E1,1,', 'E1,2,')}`).map(row => row.input_valid), [true, true]);
+  assert.equal(parse(`${h}\n${a.replace('0101.21.00.10', '0101')}`)[0].input_valid, false);
+  assert.equal(parse(`${h}\n${a.replace(',80,', ',-80,')}`)[0].input_valid, false);
+  assert.equal(parse(`${h}\n${a.replace('2020-01-02', '')}`)[0].input_valid, false);
+});
+
+test("identical portfolio rows cannot inflate a subtotal", async () => {
+  const parsed = parse(input() + "\nA,0101.21.00.10,CA,Acme,1000,7.5");
+  let calls = 0;
+  const evaluated = await evaluate(parsed, async () => { calls++; return result(); });
+  assert.equal(calls, 0);
+  assert.equal(summarize(evaluated).estimated_annual_duty_delta_usd, null);
+  assert.equal(summarize(evaluated).error_count, 2);
+});
+
+const pilotHeader = "entry_id,line_number,sku,hts,origin,customs_value,paid_duty,entry_date,qualification_verified,qualification_basis";
+test("qualified pilot reconciles archived Chinese and Vietnamese entries without live quotes", async () => {
+  for (const [origin, rate, paid, delta] of [["CN", .44, 315, 125], ["VN", .19, 65, 125]] as const) {
+    const [row] = await evaluate(parse(`${pilotHeader}\nE1,1,A,3916.90.30.00,${origin},1000,${paid},2026-09-15,true,Reviewed classification origin and all pilot exceptions`), async () => { throw new Error("Must not use current rates"); });
+    assert.equal(row.status, "computed");
+    assert.equal(row.computed_total_rate, rate);
+    assert.equal(row.annual_delta_usd, delta);
+    assert.ok(row.stack_result?.components.every(c => c.citation.length));
+    assert.equal(summarize([row]).analysis_kind, "historical_entries");
+  }
+});
+test("pilot requires explicit basis and exact scope including date boundaries", async () => {
+  const valid = "E1,1,A,3916.90.30.00,VN,1000,65,2026-09-27,true,Reviewed exceptions";
+  for (const line of [valid.replace("true", "false"), valid.replace("Reviewed exceptions", ""), valid.replace("09-27", "09-28"), valid.replace("09-27", "09-14"), valid.replace(",VN,", ",ID,"), valid.replace("3916.90.30.00", "3916.90.60.00")]) {
+    const [row] = await evaluate(parse(`${pilotHeader}\n${line}`));
+    assert.equal(row.status, "unresolved"); assert.equal(row.annual_delta_usd, null);
+  }
+  const [validRow] = await evaluate(parse(`${pilotHeader}\n${valid}`));
+  assert.equal(validRow.status, "computed");
 });

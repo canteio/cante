@@ -55,11 +55,13 @@ test("computes every row independently and reports per-row status", async () => 
     assert.equal(data.rows.length, 2);
 
     const first = data.rows[0];
-    assert.equal(first.result.components.length, 3);
-    assert.equal(first.result.totalRatePercent, 0.526);
+    assert.equal(first.result.components.find((c: {type: string}) => c.type === "section301").ratePercent, .25);
+    assert.equal(first.result.totalRatePercent, null);
+    assert.ok(first.result.unresolvedMeasures.length > 0);
 
     const second = data.rows[1];
-    assert.equal(second.result.totalRatePercent, 0);
+    assert.equal(second.result.totalRatePercent, null);
+    assert.ok(second.result.unresolvedMeasures.length > 0);
   } finally {
     restore();
   }

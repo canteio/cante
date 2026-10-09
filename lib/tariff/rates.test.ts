@@ -89,7 +89,8 @@ test("lookupTariff prefers a more-specific row that carries a rate over an empti
     // breakdown row's own code is a non-dutiable statistical split, not a
     // separate legal rate, so promoting its htsCode too would misrepresent
     // which published line the figure actually comes from.
-    assert.equal(row!.htsCode, "8501.10.40");
+    assert.equal(row!.htsCode, "8501.10.40.20");
+    assert.equal(row!.inheritedFromHtsCode, "8501.10.40");
     assert.equal(row!.general.adValorem, 0.044);
     assert.equal(row!.general.parsed, true);
   } finally {
@@ -289,11 +290,17 @@ test("housing inherited rate flows through business impact with published List 1
     const [row] = await evaluateBusinessImpact(parseBusinessImpact(
       "sku,hts,origin,supplier,annual_import_value_usd,current_duty_rate,evaluation_date\nHOUSING,8538.90.8180,CN,Connector supplier,8000,3.5,2026-10-01",
     ));
-    assert.equal(row.status, "computed");
-    assert.equal(row.computed_annual_duty_usd, 2280);
-    assert.equal(row.annual_delta_usd, 2000);
-    assert.deepEqual(row.stack_result?.unresolvedMeasures, []);
+    assert.equal(row.status, "unresolved");
+    assert.equal(row.computed_annual_duty_usd, null);
+    assert.equal(row.annual_delta_usd, null);
+    assert.ok(row.stack_result!.unresolvedMeasures.length > 0);
     assert.equal(row.stack_result?.components.find(c => c.type === "section301")?.ratePercent, 0.25);
     assert.ok(row.stack_result?.components.some(c => /inherited.*8538\.90\.81/.test(c.explanation)));
   } finally { global.fetch = original; }
+});
+
+test("an unpublished full statistical code cannot borrow a real ancestor's rate", async () => {
+  const restore = stubFetch([{ htsno: "8501.10.40", general: "4.4%" }]);
+  try { assert.equal(await lookupTariff("8501.10.40.99"), null); }
+  finally { restore(); }
 });

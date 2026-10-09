@@ -20,21 +20,10 @@ import { z } from "zod";
  * that independent answer exists does this script diff it against what
  * is actually stored in section232_tariff_rows for the same document.
  *
- * If the two independent reads agree on every annex's rate, UK rate, and
- * US-content rate, and an effective date was identified, this document's
- * rows become eligible for auto_approve_section232_proposal(). If they
- * disagree on anything, or the independent pass could not find an
- * effective date, the rows stay 'pending' for a human, with the specific
- * disagreement recorded in verification_notes -- never silently resolved
- * in either direction.
- *
- * This script does NOT re-verify the HTS-code-level annex tables (the
- * scanned image pages) -- only the annex-level rate/date facts, which is
- * where a genuinely proclamation-breaking misread (wrong %, wrong date,
- * wrong country) would occur. Re-running the full 59-page vision
- * extraction a second time for every document would be expensive and
- * mostly re-verifies OCR legibility, not legal interpretation -- the
- * actual risk this gate exists for.
+ * Agreement records annex-level verification only. Rows remain pending until
+ * a reviewer checks the individual HTS coverage, qualification conditions,
+ * and interaction with later amendments. This script never activates rates.
+ * Scanned HTS annex tables are outside this verification's scope.
  */
 
 const DOCUMENT_NUMBER = process.argv[2];
@@ -202,12 +191,7 @@ async function main() {
   if (updateError) throw new Error(`Failed to write verification result: ${updateError.message}`);
 
   if (verificationPass) {
-    const { data: approvedCount, error: approveError } = await supabase.rpc("auto_approve_section232_proposal", {
-      target_document_number: DOCUMENT_NUMBER,
-      note: notes,
-    });
-    if (approveError) throw new Error(`Auto-approve failed: ${approveError.message}`);
-    console.log(`AUTO-APPROVED: ${approvedCount} rows for document ${DOCUMENT_NUMBER} are now live.`);
+    console.log("Annex-level rate checks passed. Rows remain pending: HTS assignments, qualifiers and amendment coverage require row-level review before activation.");
   } else {
     console.log(`Document ${DOCUMENT_NUMBER} remains 'pending' for human review. See pending_section232_proposals().`);
   }

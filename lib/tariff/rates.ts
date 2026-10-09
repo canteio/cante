@@ -205,7 +205,9 @@ export async function lookupTariff(
 
   const hasRate = (row: RawHtsRow) => Boolean(str(row.general) || str(row.special) || str(row.other));
   const sorted = matchingRows(payload);
-  let rated = sorted.find(hasRate);
+  const exact = sorted.find(row => digits(str(row.htsno) ?? "") === key);
+  if (!exact) { cacheRow(key, null, now); return null; }
+  let rated = sorted.find(row => hasRate(row) && key.startsWith(digits(str(row.htsno) ?? "")));
   let inheritedFromHtsCode: string | undefined;
   // At most three retries, ending at the four-digit heading. Always match
   // against the ORIGINAL code, never the broader keyword (siblings differ).
@@ -218,7 +220,8 @@ export async function lookupTariff(
       inheritedFromHtsCode = str(rated.htsno) ?? undefined;
     }
   }
-  const match = rated ?? sorted[0];
+  const match = rated ?? exact;
+  if (rated && digits(str(rated.htsno) ?? "") !== key) inheritedFromHtsCode = str(rated.htsno) ?? undefined;
   if (!match) {
     cacheRow(key, null, now);
     return null;
@@ -269,6 +272,7 @@ export async function quoteDuty(input: {
   unit?: string | null;
   /** An HTS special-programme symbol the importer claims, e.g. "S" for USMCA. */
   claimedProgramme?: string | null;
+  countryOfOrigin?: string | null;
   signal?: AbortSignal;
 }): Promise<DutyQuote | null> {
   const row = await lookupTariff(input.htsCode, { signal: input.signal });
@@ -278,7 +282,11 @@ export async function quoteDuty(input: {
   let column: DutyQuote["column"] = "general";
   let rate = row.general;
 
-  if (input.claimedProgramme) {
+  if (["CU", "KP", "RU", "BY"].includes(input.countryOfOrigin?.trim().toUpperCase() ?? "")) {
+    column = "column2";
+    rate = row.column2;
+    caveats.push("Origin is subject to HTS Column 2; preferential rates are not assumed.");
+  } else if (input.claimedProgramme) {
     const claimed = input.claimedProgramme.trim().toUpperCase();
     if (row.specialProgrammes.map((p) => p.toUpperCase()).includes(claimed)) {
       column = "special";

@@ -28,7 +28,8 @@ test("checks discovery serves the exact cacheable GET and POST contract", async 
 test("checks discovery imports without opening customer storage or invoking a provider", () => {
   const script = [
     "globalThis.fetch = () => { throw new Error('discovery called the network'); };",
-    "const { GET } = await import('./app/api/checks/openapi/route.ts');",
+    "const imported = await import(\'./app/api/checks/openapi/route.ts\');",
+    "const GET = imported.GET ?? imported.default?.GET;",
     "const response = await GET();",
     "if (response.status !== 200) process.exit(2);",
     "const spec = await response.json();",

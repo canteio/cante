@@ -6,14 +6,14 @@
 Browser -> Vercel Next.js -> Supabase (session + RLS + production data)
                        \-> OpenAI or Anthropic API (deployed chat only)
 
-Always-on Mac -> official sources -> local SQLite ledger -> Supabase sync + verification
+Trusted worker -> official sources -> Supabase (tenant data and evidence)
               \-> local Claude/Codex/Antigravity CLI
 ```
 
-Supabase is what the deployed app reads and writes. SQLite remains the trusted
-worker ledger because a source run takes minutes, uses local CLI logins, and
-keeps a raw evidence trail. A completed run is not reported healthy until its
-optional production sync also succeeds.
+Supabase is the only runtime store for the app and worker. The worker uses
+local CLI logins for long checks; raw evidence can remain on local disk.
+`db:cloud:*` commands now verify reads and do not copy a local ledger.
+The operator requested no Telegram or launchd for this rollout.
 
 The model does not receive a Supabase credential. The Next.js server resolves
 the authenticated workspace, retrieves only rows allowed by that user's
@@ -54,61 +54,25 @@ join auth.users u on u.id = cu.user_id;
 
 No tenant or user is supplied by the repository. The values above are fictional.
 
-## 2. Initialize the local worker and optionally import data
+## 2. Configure the trusted worker
 
-For a new local ledger, run `npm run db:push` and `npm run db:seed`.
-Seeding creates official source definitions and a fictional Example Company;
-replace its profile with your own verified inputs before monitoring operations.
-For an existing ledger, review its intended tenant mapping before importing.
-
-Put the Supabase secret key in the local Mac's `.env` temporarily. This is the
-only process that needs it:
+Set the intended Supabase URL and a local-only trusted secret in `.env`.
+`npm run db:seed` optionally creates official source definitions and fictional
+example data in Supabase; review the destination before running it. There is
+no `db:push` command and no current SQLite import requirement.
 
 ```txt
 NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
 SUPABASE_SECRET_KEY=sb_secret_...
 CANTE_SUPABASE_CUSTOMER_SLUG=YOUR_TENANT_SLUG
-```
-
-Never prefix the secret with `NEXT_PUBLIC_`, commit it, or add it to Vercel.
-
-Run:
-
-```bash
-npm run db:cloud:dry-run
-npm run db:cloud:sync
-npm run db:cloud:verify
-```
-
-The importer preserves record IDs and maps the first local customer to the
-explicit `CANTE_SUPABASE_CUSTOMER_SLUG`. This variable is required for dry-run,
-sync, pull, and verification. Use the slug created above for your deployment.
-Additional local customers use slugs derived from their names. Review these
-mappings before syncing. Upserts make the process resumable.
-Verification proves that every local record ID exists in Supabase; it
-deliberately allows additional cloud-created chats, memories, products, and
-uploads.
-
-## 3. Configure The Local Worker
-
-Keep the existing local variables and add:
-
-```txt
-CANTE_AUTH_MODE=demo
-CANTE_DATA_BACKEND=sqlite
 CANTE_LLM=claude-code
-CANTE_SYNC_SUPABASE=true
-NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
-SUPABASE_SECRET_KEY=sb_secret_...
-CANTE_SUPABASE_CUSTOMER_SLUG=YOUR_TENANT_SLUG
 ```
 
-`npm run check:scheduled` will run locally, verify the result, sync all rows to
-Supabase, verify local IDs, then send delivery/heartbeat success. Before the
-check starts, it pulls live profiles, memory, KBLI, checklist, catalogue,
-supplier, lane, and document inputs back into SQLite so judgment never runs
-against a stale company profile. A failed pull or push produces a failure
-notification instead of letting stale data look current.
+Never expose the secret to the browser or commit it. The legacy
+`npm run db:cloud:verify` command checks access/counts and performs no writes.
+Customer inputs already reside in Supabase; no pull/sync is required.
+Long source checks still execute on the trusted worker. Do not activate
+Telegram delivery or launchd as part of the website release.
 
 ## 4. Configure Vercel
 
@@ -219,3 +183,56 @@ disabled. Confirm wrong secrets yield 401, a completed quiet pass yields 200,
 and incomplete/failed work yields 503 through both HTTP layers. Check cron
 history and HTTP response records; checked-in SQL alone does not prove the
 schedule is active. No schedule or secrets are configured by this code change.
+
+### October 9 audit fixes on dev
+
+Applied to **Cante** on October 9:
+`supabase/migrations/20261009132549_audit_tariff_coverage_and_hts_progress.sql`.
+The follow-up `20261009142954_tariff_reference_rls.sql` is also applied: both
+public tariff reference tables now use RLS with existing global SELECT access
+preserved and service-role ingestion unchanged.
+The migration adds historical entry evidence, idempotent snapshot creation, and
+atomic per-chapter publication markers. `hts-revision-check` is deployed as active version 4.
+Existing embedding rows are not completion proof: the first refresh republishes
+chapters to establish markers, reusing unchanged vectors. Chapter 99 must use
+`from=99&to=9999`; `to=99` and `to=100` return empty exports.
+
+Live Section 232 requires a `section232_coverage_reviews` record for the exact
+latest accepted document/effective date and a reviewed-through date covering the
+entry date. A reviewer must establish that those accepted rows are a complete,
+consolidated schedule; a narrow amendment is insufficient. Never populate the
+review ledger merely because an annex-level model verification passed. Missing
+reviews, stale coverage, or a failed lookup withhold aggregate quotes. General
+quotes also withhold totals for origins covered by the July 24 forced-labor
+Section 301 action until its exemptions and combined-rate rules are implemented.
+
+Historical pilot scope is in `config/tariff-pilot.json`: full HTS 3916.90.30.00,
+CN/VN origin, September 15–27, 2026 (Revision 19). CSV fields are `entry_id`,
+`line_number`, `sku`, `hts`, `origin`, `customs_value_usd`, `paid_duty_usd`,
+`entry_date`, `qualification_verified`, and `qualification_basis`. Qualification
+must be a caller's explicit reviewed fact, never inferred by the mapping model.
+The SKU must link to exactly one tenant catalogue product before a persisted
+row can report a discrepancy. Unsupported dates, claims, or qualifications
+stay unresolved. Historical amounts are assessed-minus-paid duty differences,
+not annual savings or a determination of refund eligibility.
+
+Validation used an isolated PostgreSQL 14 database for snapshot constraints,
+idempotency, and publication markers. Its vector cast was substituted with a
+bounded text column because that local server has no pgvector; vector operations
+were not verified by that local harness. Subsequent live Supabase checks passed
+for the schema, RLS/privileges, public reference reads, a rolled-back publication
+marker, and actual signed-in historical persistence/idempotency. All 25 migration
+versions now match remote history; no migrations are pending.
+
+For this rollout, use the authenticated CLI 2.120.0 (for example,
+`npx supabase@2.120.0 projects list`), which has access to Cante. The repository's
+older 2.118.0 binary blocked on Keychain while the logged-in 2.120.0 worked.
+Use explicit `--project-ref nvdsjqzbzsczvmvjxhro`; `db query` and `db advisors`
+also require `--linked` with that flag. Never use the unrelated PeakMV project.
+
+The dev Vercel preview is
+https://cante-444ecg7ve-jeremygautamas-projects.vercel.app.
+Its Supabase URL was verified to target Cante. Branch-specific dev preview
+settings now include `CANTE_LLM=api` and `CANTE_LLM_LOCKED=true`. The production
+website has not been promoted. No Telegram, launchd, Vault-secret change, or
+scheduler activation was used for this rollout.

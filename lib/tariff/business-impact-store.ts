@@ -1,5 +1,6 @@
 import { randomUUID, createHash } from "node:crypto";
 import { createClient } from "@/lib/supabase/server";
+import { easternIsoDate } from "./date";
 import { summarizeBusinessImpact, type ImpactRow } from "./business-impact";
 
 export function sanitizeImpactFilename(name: string | null) {
@@ -30,14 +31,23 @@ export async function createImpactRun(customerId: string, input: string, filenam
       const row = rows[index];
       const productId = await exactMatch("products", "sku", row.sku);
       const supplierId = await exactMatch("suppliers", "name", row.supplier);
-      linked[index] = { ...row, id: randomUUID(), product_id: productId, supplier_id: supplierId };
+      const reviewed = row.analysis_kind === "historical_entries" && !productId && row.status === "computed"
+        ? { ...row, status: "unresolved" as const, direction: "unknown" as const, computed_annual_duty_usd: null, computed_total_rate: null, annual_delta_usd: null, review_reason: "Historical entry SKU is unmatched; catalogue linkage requires review." } : row;
+      linked[index] = { ...reviewed, id: randomUUID(), product_id: productId, supplier_id: supplierId };
     }
   }));
-  const run = { ...summarizeBusinessImpact(rows), id: randomUUID(), filename: sanitizeImpactFilename(filename), input_sha256: createHash("sha256").update(input).digest("hex") };
-  const { error } = await client.rpc("create_tariff_impact_run", { target_customer_id: customerId, run_data: run, row_data: linked });
+  const idempotencyKey = createHash("sha256").update(input).update(JSON.stringify(linked.map(row => ({
+    product: row.product_id, supplierId: row.supplier_id, evidence: row.stack_result, status: row.status,
+    sku: row.sku, hts: row.hts, origin: row.origin, supplier: row.supplier, value: row.annual_import_value_usd,
+    rate: row.current_duty_rate, date: row.evaluation_date, quantity: row.quantity, unit: row.unit,
+    qualification: [row.qualification_verified, row.qualification_basis],
+    claims: [row.chapter99_codes, row.exclusion_id, row.special_program_claim], entry: [row.entry_id, row.line_number],
+  })))).update(rows.some(row => row.analysis_kind !== "historical_entries" && !row.evaluation_date) ? easternIsoDate() : "dated").digest("hex");
+  const run = { ...summarizeBusinessImpact(linked), idempotency_key: idempotencyKey, id: randomUUID(), filename: sanitizeImpactFilename(filename), input_sha256: createHash("sha256").update(input).digest("hex") };
+  const { data: persistedId, error } = await client.rpc("create_tariff_impact_run", { target_customer_id: customerId, run_data: run, row_data: linked });
   if (error) throw new Error("Snapshot persistence failed.");
-  const persisted = await getImpactRun(customerId, run.id);
-  if (!persisted) throw new Error("Snapshot read failed.");
+  const persisted = await getImpactRun(customerId, typeof persistedId === "string" ? persistedId : run.id);
+  if (!persisted || run.analysis_kind === "historical_entries" && persisted.analysis_kind !== "historical_entries") throw new Error("Historical snapshot schema is not installed.");
   return persisted;
 }
 export async function listImpactRuns(customerId: string) {

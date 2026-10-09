@@ -41,7 +41,8 @@ test("website onboarding discovery serves the exact cacheable OpenAPI contract",
 
 test("website onboarding discovery imports without storage, networking, or model executables", () => {
   const script = [
-    "const { GET } = await import('./app/api/onboarding/website/openapi/route.ts');",
+    "const imported = await import(\'./app/api/onboarding/website/openapi/route.ts\');",
+    "const GET = imported.GET ?? imported.default?.GET;",
     "const response = await GET();",
     "if (response.status !== 200) process.exit(2);",
     "const spec = await response.json();",

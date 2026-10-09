@@ -49,6 +49,21 @@ export interface ExtractedFile {
   warnings: string[];
 }
 
+// Bound archive metadata before fflate allocates expanded XML buffers.
+const MAX_ARCHIVE_EXPANDED_BYTES = 32 * 1024 * 1024;
+function unzipBounded(bytes: Uint8Array): Record<string, Uint8Array> {
+  let total = 0;
+  let entries = 0;
+  return unzipSync(bytes, { filter(file) {
+    total += file.originalSize;
+    entries++;
+    if (entries > 1000 || !Number.isSafeInteger(total) || total > MAX_ARCHIVE_EXPANDED_BYTES) {
+      throw new FileExtractionError("Office archive exceeds the expanded-size or entry-count limit.");
+    }
+    return true;
+  } });
+}
+
 function extensionOf(filename: string): string {
   const match = filename.toLowerCase().match(/\.([a-z0-9]+)$/);
   return match ? match[1] : "";
@@ -61,8 +76,9 @@ function extensionOf(filename: string): string {
 function extractXlsx(bytes: Uint8Array): ExtractedFile {
   let files: Record<string, Uint8Array>;
   try {
-    files = unzipSync(bytes);
-  } catch {
+    files = unzipBounded(bytes);
+  } catch (error) {
+    if (error instanceof FileExtractionError) throw error;
     throw new FileExtractionError(
       "This .xlsx could not be opened. It may be corrupt, password-protected, or actually an older .xls file — re-save it as .xlsx or export it as CSV.",
     );
@@ -128,8 +144,9 @@ function extractXlsx(bytes: Uint8Array): ExtractedFile {
 function extractDocx(bytes: Uint8Array): ExtractedFile {
   let files: Record<string, Uint8Array>;
   try {
-    files = unzipSync(bytes);
-  } catch {
+    files = unzipBounded(bytes);
+  } catch (error) {
+    if (error instanceof FileExtractionError) throw error;
     throw new FileExtractionError(
       "This .docx could not be opened. It may be corrupt, password-protected, or an older .doc file — re-save it as .docx.",
     );

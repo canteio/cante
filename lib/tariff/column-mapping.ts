@@ -3,8 +3,10 @@ import { getProvider, completeJson } from "@/lib/llm";
 import type { CsvTable } from "@/lib/catalogue/csv";
 
 export const canonicalFields = [
+  "qualification_verified", "qualification_basis",
+  "entry_id", "line_number", "customs_value_usd", "paid_duty_usd",
   "sku", "hts", "origin", "supplier", "annual_import_value_usd", "current_duty_rate",
-  "evaluation_date", "quantity", "chapter99_codes", "exclusion_id", "special_program_claim",
+  "evaluation_date", "quantity", "unit", "chapter99_codes", "exclusion_id", "special_program_claim",
 ] as const;
 export type CanonicalField = typeof canonicalFields[number];
 export interface ColumnMapping {
@@ -33,7 +35,10 @@ You must pick only from the given header names, do not calculate anything, do no
 Return every canonical field, selecting an exact given header or null if there is no good candidate, and confidence per field.
 HTS is the tariff classification; origin is country of origin; current_duty_rate is percentage points (5 means 5%).
 annual_import_value_usd is annual USD import value, not unit price. evaluation_date is the entry/import date.
-quantity, chapter99_codes, exclusion_id and special_program_claim are optional customer-supplied context.
+Historical files instead use entry_id, line_number, customs_value_usd and paid_duty_usd. Never map paid duty to a percentage or customs value to annual value.
+quantity and unit are the matching physical amount and measurement unit for specific duties.
+chapter99_codes, exclusion_id and special_program_claim are optional customer-supplied context.
+qualification_verified and qualification_basis are explicit caller review fields; never infer or supply verification.
 Do not convert units, currencies, countries, dates or rates. Only propose column names for the user to confirm.`,
     prompt: JSON.stringify({ headers, sampleRows: preview }),
   });

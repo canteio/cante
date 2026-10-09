@@ -170,6 +170,7 @@ function stackInput(row: ImpactRow, importDate?: string, signal?: AbortSignal): 
     countryOfOrigin: row.origin,
     value: row.annual_import_value_usd,
     quantity: row.quantity,
+    unit: row.unit,
     claimedProgramme: row.special_program_claim,
     importDate,
     signal,
@@ -188,6 +189,10 @@ async function deriveRowUnchecked(
     return needsReview(candidate, row, "The linked row is missing HTS, origin, or annual import value required for deterministic recalculation.");
   }
 
+  if (row.analysis_kind === "historical_entries") {
+    return needsReview(candidate, row, "Historical entry values are not annual portfolio exposure; supply an annual portfolio baseline before monitoring annual impact.");
+  }
+  if (row.chapter99_codes || row.exclusion_id || row.special_program_claim) return needsReview(candidate, row, "Uploaded claims require verified applicability review.");
   const current = await calculate(row);
   if (!current) {
     return needsReview(candidate, row, "The current deterministic duty calculation returned no tariff result.");

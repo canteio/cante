@@ -4,7 +4,7 @@
 >
 > 📖 **Read the Strategy & Positioning Doc**: [`AGENTIC-COMPLIANCE-POSITIONING.md`](./AGENTIC-COMPLIANCE-POSITIONING.md)
 >
-> 🚀 **Supabase/Vercel prep**: [`SUPABASE_VERCEL.md`](./SUPABASE_VERCEL.md)
+> 🚀 **Supabase/Vercel deployment**: [`SUPABASE_VERCEL.md`](./SUPABASE_VERCEL.md)
 
 A country-scoped monitor of official regulatory sources, matched against one
 manufacturer's actual products and operations. **Export is optional** — a purely
@@ -23,14 +23,35 @@ The daily monitor still uses the signed-in local Claude/Codex CLI, so that high-
 
 ---
 
+## October 9 audit and MVP scope
+
+All 25 migrations are applied to Cante and the HTS Edge Function is active at
+version 4. The audit fixes include exact-code duty lookup, historical entry
+identity and paid-duty persistence, duplicate-upload reuse, qualified historical
+calculation, resumable chapter publication, and bounded archive extraction.
+See [AUDIT_FIXES.md](./AUDIT_FIXES.md) for verification and
+[MVP_STATUS.md](./MVP_STATUS.md) for remaining work. Changes are developed on
+`dev`; the release sequence is a verified dev preview followed by `main`.
+
+Historical reconciliation is currently a supervised pilot: HTS 3916.90.30.00,
+China/Vietnam, September 15–27, 2026, using archived Revision 19 and explicit
+qualification evidence. It is not a general historical-duty or refund engine.
+The general calculator withholds totals where consolidated Section 232 coverage
+or the July 24 forced-labor Section 301 action is unresolved. Historical entries
+cannot be presented as annual forecast exposure.
+
+The operator requested no Telegram or launchd for this rollout. Commands below
+that deliver messages are capabilities, not instructions to activate delivery.
+
 ## Running it
 
 Needs Node 22+ and the [Claude Code](https://claude.com/claude-code) CLI installed and logged in (`claude --version` should work in your terminal).
 
 ```bash
 npm install
-npm run db:push     # create cante.db from the schema
-npm run db:seed     # seed the sources + Example Company
+# Configure Supabase URL, publishable key and authentication in .env first.
+# Apply supabase/migrations/ to your intended project; see SUPABASE_VERCEL.md.
+# Optional: npm run db:seed writes fictional example data with a trusted secret.
 npm run dev         # http://localhost:3000
 ```
 
@@ -67,7 +88,7 @@ This only sets a local demo cookie. It is not production authentication.
 Both `/login` and `/request-access` use the same minimal light-background form
 layout; the latter prepares a prefilled access-request email.
 
-For production, apply the Supabase migration and one-time SQLite import described in [`SUPABASE_VERCEL.md`](./SUPABASE_VERCEL.md), then set:
+For production, apply the Supabase migrations described in [`SUPABASE_VERCEL.md`](./SUPABASE_VERCEL.md), then set:
 
 ```txt
 CANTE_AUTH_MODE=supabase
@@ -97,16 +118,12 @@ What it computes for real today:
   current in-force rate, effective date, and Federal Register citation(s).
   Only applies when country of origin is China; the response says so
   explicitly either way.
-- **Section 232 steel/aluminum "basic article" tariffs** — resolved from a
-  fixed, enumerated list of Chapter 72/73/76 headings
-  (`lib/tariff/section232.ts`) at the current 50% ad valorem rate (25% for
-  United Kingdom origin under the US-UK Economic Prosperity Deal), citing
-  Proclamations 10895/10896/10947 and their Federal Register notices
-  (90 FR 11249, 90 FR 11251, 90 FR 24199). Deliberately does NOT cover
-  Section 232 *derivative* products (manufactured goods that merely contain
-  steel/aluminum, e.g. washing machines) — that list is actively expanding
-  via BIS's inclusions process and a snapshot of it would misrepresent
-  coverage as complete.
+- **Section 232** — uses reviewed live rows and requires a consolidated
+  coverage review through the requested date. A narrow approved amendment does
+  not establish complete coverage. Annex III calculates the additional duty
+  needed to reach its combined threshold; metal content, use and origin
+  qualifications can still require review. Store failures withhold the current
+  total rather than substituting an obsolete static rate.
 - **Section 301 supplemental fallback** (`lookupSection301Supplemental`) —
   matches only cited eight-digit subheadings (including statistical children)
   or an exact ten-digit ruling classification, when the row's additional-duty
@@ -240,16 +257,17 @@ Postgres search path.
 | `CANTE_COUNTRY="United States" npm run check` | Run the US source pack from the terminal. |
 | `npm test` | Run focused source-window, pagination, and parser regression tests. |
 | `npm run build` | Production build. |
-| `npm run db:push` | Apply `lib/db/schema.ts` to `cante.db`. |
 | `npm run db:seed` | Seed sources + customer from `config/customer.json`. |
-| `npm run db:cloud:dry-run` | Inventory and validate the SQLite rows without network writes. |
-| `npm run db:cloud:sync` | Upsert the complete SQLite history into Supabase with the local secret. |
-| `npm run db:cloud:pull` | Pull live profile, memory, catalogue, lane, and document inputs into the worker ledger. |
-| `npm run db:cloud:verify` | Compare local and cloud table counts after migration. |
+| `npm run db:cloud:dry-run` | Legacy command: verifies Supabase access/counts; copies no data. |
+| `npm run db:cloud:sync` | Legacy command: verifies Supabase access/counts; copies no data. |
+| `npm run db:cloud:pull` | Legacy command: verifies Supabase access/counts; copies no data. |
+| `npm run db:cloud:verify` | Legacy command: verifies Supabase access/counts; copies no data. |
 
 ### Where things are stored
 
-The trusted daily worker keeps `cante.db` as its fetch/judgment ledger. Supabase Postgres is the deployed app's tenant-scoped system of record. With `CANTE_SYNC_SUPABASE=true`, a scheduled check first pulls live customer inputs, then runs, upserts the result, and verifies the cloud copy before its success heartbeat. `raw/` remains the worker's local evidence trail.
+Supabase Postgres is the tenant-scoped system of record for both the app and
+trusted worker. `raw/` remains a local evidence trail. The `db:cloud:*` commands
+are read-only compatibility entry points, not a SQLite import/sync mechanism.
 
 ### If it can't find the model
 
@@ -290,7 +308,7 @@ Two properties of the source that can't be engineered away, so the judgment stag
 ### Layout
 
 ```
-lib/llm/          types.ts (the seam) · claude-code.ts (works) · api.ts (stub) · index.ts
+lib/llm/          types.ts (the seam) · claude-code.ts (works) · api.ts (OpenAI/Anthropic) · index.ts
 lib/sources/      registry.ts (sources + profile activation) · fetch.ts (JSON/RSS/HTML/CSV parsers)
 lib/screening/    csl.ts · us-trade-controls.ts · us-isf.ts · us-export-controls.ts
 lib/tariff/       insw.ts (INSW / NTR) · rates.ts (live USITC HTS column 1/2) · duty-expression.ts (duty-string parser)
@@ -308,7 +326,7 @@ scripts/          seed.ts (sources + country source packs + Example Company) · 
 config/           customer.json — read at seed time only
 ```
 
-Multi-tenant from day one: everything keys off `customer_id`, sources key off country + regulation type. Adding customer #2 or a second country is a row, not a refactor. SQLite via Drizzle, portable to Postgres if deploy ever happens.
+Multi-tenant from day one: everything keys off `customer_id`, sources key off country + regulation type. Adding customer #2 or a second country is a row, not a refactor. Supabase Postgres enforces tenant membership with RLS; schema changes live in SQL migrations.
 
 On the first source inventory in either supported country, Cante judges at most
 ten unseen records per source and records the remainder as historical baseline. Subsequent runs still

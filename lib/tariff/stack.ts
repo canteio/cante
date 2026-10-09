@@ -213,7 +213,7 @@ export async function computeStackedDuty(
       : "S"
     : isUsmcaProgramme
       ? null
-      : legacyProgramme;
+      : null;
 
   const base: DutyQuote | null = await quoteDuty({
     htsCode: input.htsCode,
@@ -221,6 +221,7 @@ export async function computeStackedDuty(
     quantity: input.quantity,
     unit: input.unit,
     claimedProgramme,
+    countryOfOrigin: country,
     signal: input.signal,
   });
   if (!base) return null;
@@ -228,6 +229,16 @@ export async function computeStackedDuty(
   const components: StackedDutyComponent[] = [];
   const stackingExplanation: string[] = [];
   const unresolvedMeasures: string[] = [];
+
+  if (legacyProgramme && !isUsmcaProgramme) unresolvedMeasures.push("Claimed preference programme has no verified qualification evidence; preferential duty and aggregate totals are withheld.");
+
+  // CBP CSMS 69326983 / 91 FR action 2026-15181. These origins include
+  // the EU member states. Exemption and combined-rate rules are not yet
+  // implemented by this general calculator; omission must withhold totals.
+  const forcedLaborOrigins = new Set("DZ AO AR AU BS BH BD BR KH CA CL CN CO CR DO EG SV GT GY HN HK IN ID IQ IL JP JO KZ KW LY MY MX MA NZ NI NG NO OM PK PE PH QA RU SA SG ZA KR LK CH TW TH TT TR AE GB UY VE VN AT BE BG HR CY CZ DK EE FI FR DE GR HU IE IT LV LT LU MT NL PL PT RO SK SI ES SE".split(" "));
+  if ((input.importDate && isStrictIsoDate(input.importDate) ? input.importDate : easternIsoDate()) >= "2026-07-24" && forcedLaborOrigins.has(country)) {
+    unresolvedMeasures.push("Section 301 forced-labor action effective July 24, 2026 requires exemption and applicable-rate review (CBP CSMS 69326983); this measure is not included, so aggregate totals are withheld.");
+  }
 
   let importDate: string | null = null;
   if (input.importDate) {
@@ -241,6 +252,7 @@ export async function computeStackedDuty(
         );
       }
     } else {
+      unresolvedMeasures.push("Import date is invalid; applicable historical rates cannot be established.");
       stackingExplanation.push(
         `Import date "${input.importDate}" is not a usable ISO date (YYYY-MM-DD), so it was ignored. Every rate below reflects today's current in-force rate, not the rate in effect on any particular historical or future date.`,
       );
@@ -363,47 +375,49 @@ export async function computeStackedDuty(
   }
 
   if (liveSection232Failed) {
-    // Degrade, don't refuse: matches this codebase's established pattern
-    // (lib/impact/assess.ts: "a tariff outage costs one field, not the
-    // assessment"). Universally nulling totalAmount/totalRatePercent for
-    // EVERY duty calculation whenever the live Section 232 store is
-    // briefly unreachable -- even for an unrelated product like wire
-    // cable -- is a real availability regression the static table never
-    // had. Fall back to the 2025-vintage static table instead, with an
-    // explicit staleness caveat, so a transient outage degrades data
-    // freshness, not correctness-of-availability.
-    stackingExplanation.push(
-      `Section 232 live data was unreachable (${liveSection232Failed}); falling back to a known-outdated static reference table rather than withholding every duty figure on this shipment. Re-run after live data is restored to confirm Section 232 treatment under the current regime.`,
-    );
+    unresolvedMeasures.push(`Current Section 232 applicability could not be checked: ${liveSection232Failed}`);
+    stackingExplanation.push("Live Section 232 lookup failed. Historical tables cannot establish current coverage; aggregate totals are withheld.");
   } else if (liveSection232Match) {
-    const isUk = country === "GB";
-    const rate = isUk && liveSection232Match.ukRatePercent !== null ? liveSection232Match.ukRatePercent : liveSection232Match.ratePercent;
+    const match = liveSection232Match;
+    const combined = match.annex === "Annex III";
+    const baseRate = components[0].ratePercent;
+    const rate = combined && base.column !== "column2"
+      ? baseRate === null ? null : Math.max(0, match.ratePercent - baseRate)
+      : combined ? 0.25 : match.ratePercent;
+    if (combined && baseRate === null) unresolvedMeasures.push("Annex III combined-rate calculation requires an established ad valorem base rate.");
+    if (country === "GB" && match.ukRatePercent !== null) {
+      unresolvedMeasures.push("UK Section 232 reduced-rate qualification requires verified metal melt/pour or smelt/cast evidence; declared origin alone is insufficient.");
+    }
+    if (country === "RU") unresolvedMeasures.push("Russian Section 232 metal-specific treatment requires verified metal and smelt/cast facts.");
+    if (!["72", "73", "74", "76"].includes(base.htsCode.slice(0, 2))) {
+      unresolvedMeasures.push("Section 232 derivative applicability requires verified applicable-metal weight and use qualifications.");
+    }
     components.push({
       type: "section232",
-      label: `Section 232 — ${liveSection232Match.annex} (current regime)`,
-      effectiveDate: liveSection232Match.effectiveDate,
-      sourceDocumentNumber: liveSection232Match.sourceDocumentNumber,
+      label: `Section 232 — ${match.annex}`,
+      effectiveDate: match.effectiveDate,
+      sourceDocumentNumber: match.sourceDocumentNumber,
       ratePercent: rate,
-      amount: input.value !== null ? Number((input.value * rate).toFixed(2)) : null,
-      citation: [`${liveSection232Match.sourceTitle}, ${liveSection232Match.sourceDocumentNumber} (${liveSection232Match.sourcePdfUrl})`],
-      explanation: `${liveSection232Match.annex} under the current Section 232 regime (effective ${liveSection232Match.effectiveDate}): ${(rate * 100).toFixed(1)}% on full customs value${isUk ? " (United Kingdom rate)" : ""}. US-content-only derivatives may qualify for a reduced rate (${liveSection232Match.usContentRatePercent !== null ? `${(liveSection232Match.usContentRatePercent * 100).toFixed(0)}%` : "not published for this annex"}) -- not applied here because melt/pour/smelt-and-cast content origin was not supplied.`,
+      amount: rate !== null && input.value !== null ? Number((input.value * rate).toFixed(2)) : null,
+      citation: [`${match.sourceTitle}, ${match.sourceDocumentNumber} (${match.sourcePdfUrl})`],
+      explanation: combined && base.column !== "column2"
+        ? `Annex III sets a combined Column 1 plus Section 232 rate of ${match.ratePercent * 100}%. The additional component is the positive difference from the base rate; no additional duty is due when the base meets that threshold.`
+        : `Published Section 232 component: ${rate === null ? "unresolved" : rate * 100 + "%"}. Qualification gaps are reported separately and withhold aggregate totals.`,
     });
-    stackingExplanation.push(
-      `${liveSection232Match.annex} (current regime, effective ${liveSection232Match.effectiveDate}) stacks additively on top of the Column 1 base duty at ${(rate * 100).toFixed(1)}%, sourced from ${liveSection232Match.sourceDocumentNumber} via Cante's auto-verified Section 232 data pipeline.`,
-    );
+    stackingExplanation.push(components[components.length - 1].explanation);
   }
 
-  // Skip the legacy static basic-article table only when live data
-  // actually resolved this code (avoid double-counting). On a live-
-  // lookup FAILURE, fall through to the static table as a degraded-but-
-  // available fallback -- see the liveSection232Failed branch above.
-  const section232Match = liveSection232Match ? null : lookupSection232BasicArticle(base.htsCode, country);
+  if (wantsLiveSection232 && !liveSection232Match && !liveSection232Failed
+      && (lookupSection232BasicArticle(base.htsCode, country) || lookupSection232Derivative(base.htsCode, country))) {
+    const explanation = "Historical coverage exists but no current accepted rule resolved this code; entry-date Section 232 treatment requires review.";
+    unresolvedMeasures.push(explanation);
+    components.push({ type: "section232", label: "Current Section 232 coverage unresolved", ratePercent: null, amount: null,
+      citation: [SECTION232_FULL_VALUE_REGIME_CITATION], explanation });
+  }
+
+  // Legacy reference data is used only for dates before the live regime.
+  const section232Match = wantsLiveSection232 ? null : lookupSection232BasicArticle(base.htsCode, country);
   if (section232Match) {
-    // Basic (non-derivative) articles were never touched by the April 2026
-    // proclamation — that change is documented (see STANDING_NOT_EVALUATED)
-    // as affecting derivative assessment only, so no post-regime gate applies
-    // here. Russian aluminum still needs separate evaluation regardless of
-    // date, and a date before the initial effective date is unresolved.
     const reason = section232Match.category === "aluminum" && country === "RU"
       ? "Russian aluminum treatment requires separate evaluation."
       : importDate && importDate < "2025-03-12"
@@ -429,11 +443,8 @@ export async function computeStackedDuty(
     stackingExplanation.push(reason ?? `${section232Match.label} (${section232Match.chapter99Code}) stacks additively on top of the Column 1 base duty at ${rate! * 100}%, per the imposing proclamations (${section232Match.federalRegisterCitations.join("; ")}).`);
   }
 
-  // Skip the legacy static derivative table only when live data actually
-  // resolved this code (avoid double-counting). On a live-lookup
-  // FAILURE, fall through to the static table as a degraded-but-
-  // available fallback, consistent with the basic-article gate above.
-  const section232Derivative = liveSection232Match ? null : lookupSection232Derivative(base.htsCode, country);
+  // Historical content-value rules cannot stand in for current coverage.
+  const section232Derivative = wantsLiveSection232 ? null : lookupSection232Derivative(base.htsCode, country);
   if (section232Derivative) {
     const steelContentValue = input.steelContentValue ?? null;
     const aluminumContentValue = input.aluminumContentValue ?? null;
@@ -551,7 +562,7 @@ export async function computeStackedDuty(
   // left unresolved below rather than silently excluded — this engine does
   // not hold a verified computation for how the two stack together.
   const section338AlcoholOnlyMatch =
-    (section232Match || section232Derivative) && country.trim().toUpperCase() === "CA"
+    (liveSection232Match || section232Match || section232Derivative) && country.trim().toUpperCase() === "CA"
       ? lookupSection338(base.htsCode, country, importDate)
       : null;
   if (isAlcoholSection232StackUnresolved(section338AlcoholOnlyMatch, importDate)) {
@@ -566,7 +577,7 @@ export async function computeStackedDuty(
       citation: section338AlcoholOnlyMatch!.federalRegisterCitations,
       explanation: `The Sept 15, 2026 amendment (FR doc 2026-18838) permits this alcohol-basket Section 338 duty to stack with the already-matched Section 232 measure on this code, instead of being excluded by it. This engine does not hold a verified computation for how the two measures combine, so this component and the aggregate total are withheld rather than guessed.`,
     });
-  } else if (!section232Match && !section232Derivative) {
+  } else if (!liveSection232Match && !section232Match && !section232Derivative) {
     const section338Match = lookupSection338(base.htsCode, country, importDate);
     if (section338Match) {
       const beforeEffectiveDate = importDate !== null && importDate < SECTION_338_EFFECTIVE_DATE;

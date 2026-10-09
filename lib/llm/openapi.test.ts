@@ -22,7 +22,8 @@ test("LLM discovery serves the exact cacheable OpenAPI 3.1 contract", async () =
 
 test("LLM discovery imports without storage or model executables", () => {
   const script = [
-    "const { GET } = await import('./app/api/llm/openapi/route.ts');",
+    "const imported = await import(\'./app/api/llm/openapi/route.ts\');",
+    "const GET = imported.GET ?? imported.default?.GET;",
     "const response = await GET();",
     "if (response.status !== 200) process.exit(2);",
     "const spec = await response.json();",

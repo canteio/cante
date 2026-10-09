@@ -7,9 +7,11 @@ import type { ImpactRow, summarizeBusinessImpact } from "@/lib/tariff/business-i
 import type { ColumnMapping, CanonicalField } from "@/lib/tariff/column-mapping";
 
 const fieldLabels: Record<CanonicalField, string> = {
+  qualification_verified: "Qualification explicitly reviewed (true/false)", qualification_basis: "Qualification review basis",
+  entry_id: "Historical entry ID", line_number: "Entry line number", customs_value_usd: "Entry customs value (USD)", paid_duty_usd: "Duty paid (USD)",
   sku: "SKU", hts: "HTS code", origin: "Country of origin", supplier: "Supplier",
   annual_import_value_usd: "Annual import value (USD)", current_duty_rate: "Current duty rate (%)",
-  evaluation_date: "Import date (optional)", quantity: "Quantity (optional)",
+  evaluation_date: "Import date (optional)", quantity: "Quantity (optional)", unit: "Quantity unit (optional)",
   chapter99_codes: "Chapter 99 codes (optional)", exclusion_id: "Exclusion ID (optional)",
   special_program_claim: "Special program claim (optional)",
 };
@@ -42,10 +44,12 @@ function RowEvidence({ row }: { row: ImpactRow }) {
   return (
     <details>
       <summary>Row {row.row_number} details — {row.sku ?? "missing SKU"}</summary>
+      {row.entry_id && <p>Entry: {row.entry_id} · Line: {row.line_number} · Paid duty: {usd(row.paid_duty_usd ?? null)} · Catalogue: {row.product_id ? "matched" : "unmatched"}</p>}
       <p>Evaluation date: {row.evaluation_date ?? "not provided"}</p>
-      <p>Quantity: {row.quantity ?? "not provided"} · Chapter 99 codes: {row.chapter99_codes ?? "not provided"}</p>
+      <p>Quantity: {row.quantity ?? "not provided"} {row.unit ?? ""} · Chapter 99 codes: {row.chapter99_codes ?? "not provided"}</p>
       <p>Exclusion ID: {row.exclusion_id ?? "not provided"} · Special program claim: {row.special_program_claim ?? "not provided"}</p>
-      <p className="muted">These optional fields are saved as context and do not change the duty calculation.</p>
+      <p className="muted">Quantity and its unit are used for specific duties. Chapter 99, exclusion and programme claims require applicability review and withhold the delta.</p>
+      {row.review_reason && <p>{row.review_reason}</p>}
       {row.error && <p role="alert">{row.error}</p>}
       {row.stack_result ? (
         <>
@@ -186,14 +190,14 @@ export function BusinessImpactPanel() {
       <div className="page-head">
         <div>
           <h2 id="impact-heading">Portfolio duty analysis</h2>
-          <p className="page-sub">Upload annual imports to create the tenant-linked portfolio rows used by the company-impact view above.</p>
+          <p className="page-sub">Upload an annual portfolio or historical entry lines. Historical pilot: 3916.90.30.00, China/Vietnam, Sep 15–27, 2026. Qualification review must confirm ordinary commercial use and no special treatment.</p>
         </div>
       </div>
       <form className="card" onSubmit={(event) => { event.preventDefault(); void upload(); }}>
         <label htmlFor="impact-csv" className="card-title">Import portfolio CSV</label>
         <p id="impact-csv-help" className="muted">
-          Use any column names. Match columns for SKU, HTS code, country of origin, supplier, annual import value and current duty rate before analyzing.
-          Optional: import date (YYYY-MM-DD), quantity, Chapter 99 codes, exclusion ID and special program claim.
+          Match your column names before analyzing. Historical entries need entry ID, line, SKU, full HTS code, origin, entry date, customs value and paid duty. Annual portfolios need supplier, annual value and current duty rate.
+          Historical files: entry ID, line number, full 10-digit HTS, SKU, origin, entry date, customs value and duty paid. Optional: import date (YYYY-MM-DD), quantity and unit, Chapter 99 codes, exclusion ID and special program claim.
           Use two-letter origins, USD values without separators,
           and percentage points (5 means 5%). Maximum 500 rows, 2 MiB.
         </p>
@@ -243,15 +247,15 @@ export function BusinessImpactPanel() {
             <span className="pill pill-warn">{run.unresolved_count} unresolved</span>
             <span className="pill pill-bad">{run.error_count} errors</span>
           </div>
-          <p>Resolved annual duty delta subtotal: <strong>{usd(run.resolved_annual_delta_subtotal_usd)}</strong></p>
+          <p>{run.analysis_kind === "historical_entries" ? "Resolved assessed-minus-paid discrepancy subtotal:" : "Resolved annual duty delta subtotal:"} <strong>{usd(run.resolved_annual_delta_subtotal_usd)}</strong></p>
           {run.estimated_annual_duty_delta_usd === null
             ? <p className="pill pill-warn" style={{ whiteSpace: "normal" }}>Portfolio total withheld — {run.unresolved_count + run.error_count} of {run.source_count} rows unresolved</p>
-            : <p>Portfolio estimated annual duty delta: <strong>{usd(run.estimated_annual_duty_delta_usd)}</strong></p>}
+            : <p>{run.analysis_kind === "historical_entries" ? "Assessed-minus-paid duty discrepancy:" : "Portfolio estimated annual duty delta:"} <strong>{usd(run.estimated_annual_duty_delta_usd)}</strong></p>}
           <p>Effective date: {run.effective_date_status === "single" ? run.effective_date : run.effective_date_status === "mixed" ? "mixed" : "not provided"}</p>
           <div role="region" aria-label="Tariff impact rows" tabIndex={0} style={{ overflowX: "auto" }}>
             <table className="table">
-              <caption className="muted" style={{ textAlign: "left", marginBottom: 8 }}>Annual amounts in USD. Expand a row for saved calculation evidence.</caption>
-              <thead><tr>{["SKU", "HTS", "Origin", "Supplier", "Annual value", "Current rate", "Computed total rate", "Current annual duty", "Computed annual duty", "Delta", "Direction", "Status"].map(label => <th scope="col" key={label}>{label}</th>)}</tr></thead>
+              <caption className="muted" style={{ textAlign: "left", marginBottom: 8 }}>{run.analysis_kind === "historical_entries" ? "Entry amounts in USD. Historical totals are withheld without verified date-specific rates." : "Annual amounts in USD. Expand a row for saved calculation evidence."}</caption>
+              <thead><tr>{["SKU", "HTS", "Origin", "Supplier", run.analysis_kind === "historical_entries" ? "Customs value" : "Annual value", "Baseline rate", "Computed total rate", run.analysis_kind === "historical_entries" ? "Duty paid" : "Current annual duty", run.analysis_kind === "historical_entries" ? "Assessed duty" : "Computed annual duty", "Difference", "Direction", "Status"].map(label => <th scope="col" key={label}>{label}</th>)}</tr></thead>
               <tbody>{run.rows.map(row => (
                 <Fragment key={row.row_number}>
                   <tr>

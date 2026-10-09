@@ -46,9 +46,17 @@ function cloudError(scope: string, error: { message: string } | null) {
 
 export async function listCustomers(): Promise<Customer[]> {
   const supabase = await createSupabaseClient();
-  const { data, error } = await supabase.from("customers").select("*").order("name");
-  cloudError("customers read", error);
-  return camelRow<Customer[]>(data ?? []);
+  const rows: unknown[] = [];
+  // PostgREST limits each response; one successful query is not the full list.
+  // A stable tie-breaker preserves ordering when customer names repeat.
+  for (let offset = 0; ; offset += 500) {
+    const { data, error } = await supabase.from("customers").select("*")
+      .order("name").order("id").range(offset, offset + 499);
+    cloudError("customers read", error);
+    rows.push(...(data ?? []));
+    if (!data || data.length < 500) break;
+  }
+  return camelRow<Customer[]>(rows);
 }
 
 export async function getCustomerWithProfile(

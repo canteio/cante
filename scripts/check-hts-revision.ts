@@ -49,26 +49,15 @@ import { currentHtsRevision } from "../lib/classification/semantic";
 async function main() {
   const live = await currentHtsRevision();
   const client = createServiceClient();
-  const { data, error } = await client
-    .from("hts_schedule_embeddings")
-    .select("hts_revision")
-    .limit(1)
-    .order("updated_at", { ascending: false });
-  if (error) throw new Error(`Failed to read ingested HTS revision: ${error.message}`);
-
-  const ingested = data?.[0]?.hts_revision ?? null;
-  console.log(JSON.stringify({ liveRevision: live, ingestedRevision: ingested }));
-
-  if (ingested === live) {
-    console.log(`Up to date: ingested revision ${ingested} matches live revision ${live}. No action.`);
+  const { data, error } = await client.from("hts_chapter_publications").select("chapter,revision");
+  if (error) throw new Error(`Failed to read HTS chapter progress: ${error.message}`);
+  const completed = new Set((data ?? []).filter(row => row.revision === live).map(row => row.chapter));
+  console.log(JSON.stringify({ liveRevision: live, completedChapters: completed.size }));
+  if (completed.size === 99) {
+    console.log(`All 99 chapters are published for ${live}. No action.`);
     return;
   }
-
-  console.log(
-    ingested
-      ? `Revision changed: ${ingested} -> ${live}. Running full ingestion.`
-      : `No revision ingested yet. Running full ingestion for ${live}.`,
-  );
+  console.log(`Resuming incomplete revision ${live}.`);
 
   // Deliberately shells out to the existing, already-reviewed ingestion
   // script rather than reimplementing its logic here, so this auto-trigger

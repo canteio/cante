@@ -41,7 +41,8 @@ test("profile discovery serves the exact cacheable OpenAPI 3.1 contract", async 
 
 test("profile discovery imports without initializing storage", () => {
   const script = [
-    "const { GET } = await import('./app/api/profiles/openapi/route.ts');",
+    "const imported = await import(\'./app/api/profiles/openapi/route.ts\');",
+    "const GET = imported.GET ?? imported.default?.GET;",
     "const response = await GET();",
     "if (response.status !== 200) process.exit(2);",
     "const spec = await response.json();",

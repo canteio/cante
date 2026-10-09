@@ -21,7 +21,8 @@ test("file extraction discovery serves the exact cacheable OpenAPI 3.1 contract"
 
 test("discovery imports without customer storage or document parsers", () => {
   const script = [
-    "const { GET } = await import('./app/api/files/extract/openapi/route.ts');",
+    "const imported = await import(\'./app/api/files/extract/openapi/route.ts\');",
+    "const GET = imported.GET ?? imported.default?.GET;",
     "const response = await GET();",
     "if (response.status !== 200) process.exit(2);",
     "const spec = await response.json();",

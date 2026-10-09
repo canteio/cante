@@ -17,7 +17,7 @@ test("live USITC housing leaf inherits a published ad valorem rate", { timeout: 
   assert.notEqual(quote.computation.amount, null);
 });
 
-test("live enriched three-row LulzBot BOM computes housing base plus List 1", { timeout: 85_000 }, async () => {
+test("live enriched BOM retains base and List 1 evidence and withholds an incomplete total", { timeout: 85_000 }, async () => {
   assert.equal(coverage.coverage["85389081"], "9903.88.01");
   const rows = await evaluateBusinessImpact(parseBusinessImpact([
     "sku,hts,origin,supplier,annual_import_value_usd,current_duty_rate,evaluation_date",
@@ -27,12 +27,18 @@ test("live enriched three-row LulzBot BOM computes housing base plus List 1", { 
   ].join("\n")), undefined, AbortSignal.timeout(80_000));
   assert.equal(rows.length, 3);
   const housing = rows[2];
-  assert.equal(housing.status, "computed", JSON.stringify(housing));
-  assert.deepEqual(housing.stack_result?.unresolvedMeasures, []);
+  if (housing.stack_result!.unresolvedMeasures.length) {
+    assert.equal(housing.status, "unresolved");
+    assert.equal(housing.computed_annual_duty_usd, null);
+    assert.equal(housing.annual_delta_usd, null);
+  } else {
+    assert.equal(housing.status, "computed");
+    assert.equal(housing.computed_annual_duty_usd, housing.stack_result!.totalAmount);
+  }
   const section301 = housing.stack_result?.components.find(component => component.type === "section301");
   assert.equal(section301?.ratePercent, 0.25);
   // Confirmed supplied snapshot; update if a future HTS revision changes base duty.
-  assert.equal(housing.computed_annual_duty_usd, 2280);
-  assert.equal(housing.annual_delta_usd, 2000);
+  assert.equal(housing.stack_result?.components.find(c => c.type === "base")?.amount, 280);
+  assert.equal(section301?.amount, 2000);
   assert.ok(housing.stack_result?.components.some(component => /inherited.*8538\.90\.81/.test(component.explanation)));
 });

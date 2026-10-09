@@ -42,7 +42,8 @@ test("discovery serves the exact cacheable OpenAPI 3.1 document", async () => {
 
 test("discovery imports and runs when the configured database path is unusable", () => {
   const script = [
-    "import { GET } from './app/api/substances/openapi/route.ts';",
+    "const imported = await import(\'./app/api/substances/openapi/route.ts\');",
+    "const GET = imported.GET ?? imported.default?.GET;",
     "const response = await GET();",
     "if (response.status !== 200) process.exit(2);",
     "const spec = await response.json();",

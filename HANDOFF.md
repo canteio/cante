@@ -9,9 +9,18 @@ Written 18 Aug 2026. If the dates below are weeks old, ask before trusting the
 
 ---
 
+## October 9 rollout note
+
+The operator explicitly requested no Telegram or launchd for this work; do not
+activate either while continuing this rollout. All 25 Supabase migrations are
+applied to Cante, and the HTS Edge Function is active version 4. The release sequence is dev preview verification followed by the user-authorized
+main production release; all code and documentation edits are made on dev.
+See `AUDIT_FIXES.md` for verified state. CLI 2.120.0 has working Cante access;
+the older repo CLI blocked on Keychain.
+
 ## The one-line state
 
-The application supports a local SQLite worker and a Supabase-backed hosted app.
+Supabase is the runtime database for the trusted worker and hosted app.
 This open-source checkout includes only a fictional example customer. No existing
 customer, production ledger, account, or delivery destination is assumed.
 

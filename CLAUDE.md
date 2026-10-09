@@ -4,6 +4,33 @@
 > covers where the business actually stands, what is in flight, and which
 > decisions are already settled.
 
+## Current status — October 9, 2026
+
+This section supersedes older runtime/deployment notes below. Read
+`AUDIT_FIXES.md`, `MVP_STATUS.md` and `SUPABASE_VERCEL.md` for current scope.
+The operator explicitly forbids Telegram and launchd for this work. Blank
+Telegram credentials during tests; do not activate delivery or schedules.
+Code/doc changes stay on `dev`; the user authorized release to dev then main.
+
+Supabase project `nvdsjqzbzsczvmvjxhro` has all 25 migrations applied and HTS
+Edge Function version 4 active. CLI 2.120.0 has working login; the older repo
+2.118.0 CLI blocked on Keychain. Do not repeat login unnecessarily.
+
+Tariff fixes require exact published statistical codes, Column 2 where applicable,
+quantity/unit propagation, reviewed consolidated Section 232 coverage, and honest
+unresolved totals for the July forced-labor Section 301 action. Historical
+entries preserve entry/line identity, customs value, paid duty, qualification,
+and raw input; duplicate uploads reuse immutable snapshots. Computed persisted
+entries require an exact tenant catalogue match. Historical rows never become
+annual forecast exposure. The bounded historical basis is HTS 3916.90.30.00,
+China/Vietnam, September 15–27, 2026, archived Revision 19; unsupported scope
+remains unresolved, and a calculated difference is not a refund entitlement.
+
+HTS completion requires atomic publication markers for every chapter; failures
+remain failures and chapter 99 uses terminal boundary 9999. DOCX/XLSX expansion
+is bounded before allocation. OpenAPI discovery supports both module export
+shapes, and customer listing pages through PostgREST response limits.
+
 Daily automated check of official government sources, matched against one
 manufacturer's actual operations, producing a plain-language alert only when
 something genuinely changed. The bundled customer profile is fictional and defaults to the United States.
@@ -23,7 +50,10 @@ small to hire someone for it.
 
 ## The two rules that govern everything
 
-**1. Flexible LLM Provider Options.** `CANTE_LLM` defaults to `claude-code` (using local Claude Code CLI), `codex-cli` (local Codex CLI), or `gemini` (Google Gemini 2.5 Flash / Pro with native Google Search grounding via `GEMINI_API_KEY` / `GOOGLE_API_KEY`). An unset variable defaults to local `claude-code`.
+**1. Flexible LLM Provider Options.** `CANTE_LLM` defaults to `claude-code`.
+The factory also supports `codex-cli`, `antigravity` and the explicitly enabled
+hosted `api` provider. Local CLI providers use the operator’s login; the deployed
+app uses `api` with `CANTE_LLM_LOCKED=true`. Never enable hosted spend implicitly.
 
 **2. Honest failure beats useful-looking output.** A fetch that failed and a
 regulation that isn't relevant are different facts, and neither may be rendered as
@@ -197,11 +227,10 @@ npm run check      # same code path as POST /api/checks, from the terminal
 CANTE_COUNTRY="United States" npm run check  # run the US pack
 npm run check:scheduled            # the cron entrypoint: run, deliver, exit with a code
 npm run check:scheduled -- --verify # confirm the Telegram bot and chat work
-npm run db:push    # apply lib/db/schema.ts to cante.db
 npm run db:seed    # seed sources + Example Company from config/customer.json
-npm run db:cloud:dry-run # inventory the SQLite -> Supabase migration, no writes
-npm run db:cloud:sync    # upsert the local ledger with a local-only Supabase secret
-npm run db:cloud:verify  # compare local and cloud counts
+npm run db:cloud:dry-run # legacy Supabase-only read verification
+npm run db:cloud:sync    # compatibility alias: no data copied
+npm run db:cloud:verify  # verify Supabase reads/counts
 npm test           # focused source-window/parser regression tests
 npm run build      # must stay clean
 npx tsc --noEmit   # must stay clean
@@ -209,17 +238,12 @@ npx tsc --noEmit   # must stay clean
 
 ## Production runtime (added 23 Aug 2026)
 
-Production is intentionally hybrid. Vercel serves the authenticated Next.js
-app and reads/writes tenant data in Supabase; the always-on Mac remains the
-trusted source-check worker and keeps SQLite as its evidence/seen ledger. With
-`CANTE_SYNC_SUPABASE=true`, `check:scheduled` first pulls cloud-owned customer
-inputs (profiles, memory, KBLI, catalogue, suppliers, lanes, documents), then
-syncs and verifies Supabase after a completed run and before reporting success.
-A pull or sync failure sends the same
-failure notice as a broken check, because stale production data must not look
-current. Verification checks that every local record ID is present rather than
-requiring equal counts, because production chat/memory/upload rows legitimately
-exist only in Supabase.
+Supabase is now the only application/worker database. Vercel serves the
+signed-in app with session-bound RLS; the trusted worker runs long source checks
+using a local CLI and writes to Supabase. `scripts/sync-supabase.ts` is a
+read-only compatibility verifier, not an importer or local/cloud parity check.
+SQLite files and Drizzle declarations are legacy artifacts, not runtime storage.
+Do not create a local ledger or run the removed `db:push` command.
 
 `supabase/migrations/202608230001_cante_production.sql` contains the complete
 Postgres schema, pgvector/FTS document retrieval, and RLS. `customer_users` is
@@ -263,7 +287,7 @@ fastest way to test without the browser.
 ## Layout
 
 ```
-lib/llm/          types.ts = the seam (+ streaming) · claude-code.ts (works) · codex-cli.ts (local fallback) · api.ts (stub) · index.ts (factory)
+lib/llm/          types.ts = the seam (+ streaming) · claude-code.ts (works) · codex-cli.ts (local fallback) · api.ts (OpenAI/Anthropic) · index.ts (factory)
 lib/sources/      registry.ts (sources + profile activation as data) · fetch.ts (no AI, fetch+JSON/RSS/Cheerio parse)
                   pasal-dates.ts (enactment dates the pasal.id API omits) · fallback.ts (labelled backup when an official source fails)
                   *.test.ts (incremental windows, pagination, source-field contracts)
@@ -284,8 +308,8 @@ lib/documents/    audit.ts (PEB/invoice text → line items → discrepancies �
                   extract-file.ts (uploaded .pdf/.xlsx/.docx/.csv → text, or an honest refusal; no OCR)
 lib/workflow/     actions.ts (finding → human response, kept separate from the evidence)
 lib/suppliers/    evidence.ts (certificate status, gaps, expiry horizon)
-lib/test-support/ operating-db.ts (throwaway SQLite + per-test tenant isolation)
-lib/db/           schema.ts · client.ts · queries.ts
+lib/test-support/ supabase-test-db.ts (Supabase test fixtures + per-test tenant isolation)
+lib/db/           schema.ts (legacy types) · queries.ts (Supabase)
 app/              page.tsx (public landing) · login/ · request-access/ · pending/ · logout/ · checklist/ · chat/ · memory/ · catalogue/ · documents/ · workqueue/ · suppliers/
                   api/{checks,checklist,chat,customers,memories,screening,products,classifications,lanes,documents,workqueue,suppliers,tariff,substances}
 components/       dashboard/ · checklist/ · memory/ · chat/ (chat-panel.tsx reads the SSE stream · markdown.tsx renders answers)
@@ -304,15 +328,12 @@ raw/              source HTML, rewritten every run (gitignored, write-only debug
 cante.db          the SQLite file (gitignored)
 ```
 
-**Where data lives.** One SQLite file, `cante.db`, at the repo root. No database
-server, no cloud, nothing to start. `lib/db/client.ts` opens it directly. Delete it
-and rebuild with `npm run db:push && npm run db:seed` — you lose run history, not
-the code. The `-shm`/`-wal` siblings are WAL-mode bookkeeping; leave them alone.
-
-`CANTE_DB_PATH` overrides the location, useful for testing against a throwaway
-database. **`drizzle.config.ts` and `lib/db/client.ts` must both read it** — they
-drifted once, and the symptom is silent: `db:push` writes the schema to one file
-while the app reads another and fails with `SQLITE_ERROR: no such table`.
+**Where data lives.** Supabase Postgres, for the hosted app and trusted worker.
+Tenant-bound reads/writes use the authenticated session and membership RLS.
+Worker/admin secrets remain outside browser/Vercel application credentials.
+`cante.db` and `CANTE_DB_PATH` belong to the superseded SQLite architecture.
+SQL migrations are authoritative; `db:seed` writes optional fictional data to
+Supabase and must not be treated as a harmless local initialization step.
 
 **The seam.** Nothing above `LlmProvider` knows which provider it got. Providers
 return raw text and never validate; one Zod schema parses it in
@@ -323,8 +344,8 @@ that way.
 **Provider switching is local-only.** The sidebar selector writes a `cante_llm`
 cookie. `claude-code` is the working default. `codex-cli` is the intended
 OpenAI/ChatGPT fallback through a signed-in local Codex CLI, not an API key; it
-is only selectable when `codex --version` works. `api` stays visible but disabled
-until the user explicitly accepts API spend.
+is only selectable when `codex --version` works. `api` requires explicit API-spend authorization. The hosted deployment is
+authorized and locks the selector to `api`.
 
 **Streaming is optional on the seam.** `LlmProvider.stream?()` yields
 `StreamEvent`s (`tool_start` / `tool_end` / `thinking` / `text` / `done` /
@@ -1950,7 +1971,7 @@ the gap:
 
 Multi-tenant from day one — everything keys off `customer_id`, sources key off
 country + regulation_type, so "add customer #2" or "add Vietnam" is a row, not a
-refactor. SQLite via Drizzle; the schema is portable to Postgres.
+refactor. Supabase Postgres is the runtime store; SQL migrations and tenant RLS are authoritative.
 
 `customers` · `customer_profiles` · `jurisdiction_profiles` · `kbli_records` · `source_packs` · `sources`
 · `check_runs` · **`source_results`** · **`source_documents`** · `findings` · `alerts` · `conversations`
@@ -2205,7 +2226,7 @@ Explicitly not yet: auth, cron, deploy, WhatsApp API, billing, signup.
 
 ## Keeping these docs current
 
-### HTS semantic retrieval (7 Oct 2026; implemented, live validation blocked)
+### HTS semantic retrieval (7 Oct 2026 historical implementation notes; see October 9 status)
 
 The prior finding was independently verified: there was no embedding-generation
 call anywhere in the repository. The existing `document_chunks` and `memories`
@@ -2259,26 +2280,13 @@ and human adoption requirements remain unchanged. The feature flag remains
 **disabled by default**. The optional retrieval argument isolates upstream fixtures
 in existing guardrail tests; their tenant persistence still uses real Supabase.
 
-Observed in this sandbox: the attempted 39/85 run failed at currentRelease
-(`ENOTFOUND`) before either chapter was attempted. **0 chapters fetched, 0 leaf
-rows, 0 unchanged/newly embedded/published rows, 0 embedding calls, 0 tokens, $0
-embedding cost.** No scale estimate is presented as measured ingestion. The exact
-three requested product descriptions are in `scripts/verify-hts-semantic.ts`;
-all three attempts failed on network access, so **no actual candidate codes were
-returned and none of the three recall assertions has been proved**. Both the
-minimum 39/85 ingestion and the full 01–99 ingestion still need to run.
-
-Validation: `npx tsc --noEmit` passed; the seven focused embedding/parser tests
-passed. The first `npm run build` passed (existing middleware deprecation warning),
-but the final rerun failed fetching Inter and EB Garamond from Google Fonts;
-the final build is therefore network-blocked, not clean.
-The final `npm test` run reported 650 passed / 193 failed out of 843, with real
-Supabase/network fetch failures; this is not the single transient JWT issue.
-`npx supabase db push` was attempted but blocked by the CLI's telemetry write to
-`/Users/a/.supabase` outside sandbox permissions. The migration is unapplied.
-Staging was also attempted but `.git/index.lock` creation is denied, so the
-migration remains **unstaged**. No commit or push was made. Live validation and
-migration execution remain required before this task can be called complete.
+The network/migration failures originally recorded here were October 7
+observations, superseded by the October 9 rollout: all 25 migrations are now
+applied, the HTS Edge Function is active version 4, signed-in historical RPC
+and RLS validation passed, and 861 tests passed with no failures. Successful
+migration/function deployment does not prove semantic recall or a complete new
+99-chapter ingestion. Those remain separate acceptance checks; do not invent
+candidate results or embedding cost measurements.
 
 When you change the code, update the docs in the same turn — a stale CLAUDE.md is
 worse than none, because the next agent trusts it.

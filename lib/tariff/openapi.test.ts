@@ -49,7 +49,8 @@ test("discovery serves the exact cacheable OpenAPI 3.1 document", async () => {
 test("discovery imports without customer storage or the live tariff service", () => {
   const script = [
     "globalThis.fetch = () => { throw new Error('discovery called the network'); };",
-    "const { GET } = await import('./app/api/tariff/openapi/route.ts');",
+    "const imported = await import(\'./app/api/tariff/openapi/route.ts\');",
+    "const GET = imported.GET ?? imported.default?.GET;",
     "const response = await GET();",
     "if (response.status !== 200) process.exit(2);",
     "const spec = await response.json();",
@@ -66,19 +67,19 @@ test("discovery imports without customer storage or the live tariff service", ()
 test("the three documented success shapes match real route responses", async () => {
   mockUsitc((code) => code.startsWith("6306") ? [usitcRow("6306.12.0000", "8.8%")] : [usitcRow("3921.90.0000", "4%")]);
 
-  const lookupResponse = await tariff(request("code=6306.12"));
+  const lookupResponse = await tariff(request("code=6306.12.0000"));
   assert.equal(lookupResponse.status, 200);
   assert.equal((await lookupResponse.json()).row.htsCode, "6306.12.0000");
 
   resetTariffCacheForTests();
-  const quoteResponse = await tariff(request("code=6306.12&value=1000"));
+  const quoteResponse = await tariff(request("code=6306.12.0000&value=1000"));
   assert.equal(quoteResponse.status, 200);
   const quotePayload = await quoteResponse.json();
   assert.equal(quotePayload.quote.computation.amount, 88);
   assert.equal(quotePayload.quote.computation.currency, "USD");
 
   resetTariffCacheForTests();
-  const comparisonResponse = await tariff(request("declared=3921.90&expected=6306.12&value=1000"));
+  const comparisonResponse = await tariff(request("declared=3921.90.0000&expected=6306.12.0000&value=1000"));
   assert.equal(comparisonResponse.status, 200);
   const comparison = await comparisonResponse.json();
   assert.equal(comparison.difference, 48);
@@ -101,7 +102,7 @@ test("documented correction and upstream failures return agent-readable JSON", a
 
   resetTariffCacheForTests();
   globalThis.fetch = (async () => new Response("down", { status: 503 })) as typeof fetch;
-  const upstreamFailure = await tariff(request("code=6306.12"));
+  const upstreamFailure = await tariff(request("code=6306.12.0000"));
   assert.equal(upstreamFailure.status, 502);
   assert.match((await upstreamFailure.json()).error, /USITC HTS returned HTTP 503/);
 });

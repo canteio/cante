@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { resetTariffCacheForTests } from "@/lib/tariff/rates";
-import { computeStackedDuty } from "@/lib/tariff/stack";
+import { computeStackedDuty as realComputeStackedDuty } from "@/lib/tariff/stack";
+
+// Existing component fixtures predate the July 24 action. Current-date behavior
+// has an explicit regression below rather than inheriting the wall clock.
+const computeStackedDuty: typeof realComputeStackedDuty = (input, lookup) =>
+  realComputeStackedDuty({ importDate: "2026-07-23", ...input }, lookup);
 
 /**
  * Stubs the USITC fetch the same way rates.test.ts does — stack.ts calls
@@ -148,7 +153,7 @@ test("an unrecognised Chapter 99 cross-reference is named as unresolved and void
       value: 1_000,
     }, noLiveSection232);
     assert.ok(result);
-    assert.deepEqual(result!.unresolvedMeasures, ["9903.81.91"]);
+    assert.ok(result!.unresolvedMeasures.includes("9903.81.91"));
     assert.equal(result!.totalRatePercent, null, "an unresolved measure must not be silently excluded from the total");
     assert.equal(result!.totalAmount, null);
     assert.ok(result!.stackingExplanation.some((line) => line.includes("does not yet have verified")));
@@ -196,6 +201,7 @@ test("a basic steel article from a non-UK, non-China origin picks up Section 232
       htsCode: "7210.70.60.60",
       countryOfOrigin: "VN",
       value: 10_000,
+      importDate: "2026-04-05",
     }, noLiveSection232);
     assert.ok(result);
     assert.equal(result!.components.length, 2);
@@ -219,6 +225,7 @@ test("a basic steel article from the United Kingdom stacks Section 232 at 25%, n
       htsCode: "7208.10.15.00",
       countryOfOrigin: "GB",
       value: 10_000,
+      importDate: "2026-04-05",
     }, noLiveSection232);
     assert.ok(result);
     const section232 = result!.components.find((c) => c.type === "section232");
@@ -240,6 +247,7 @@ test("a China-origin basic steel article stacks BOTH Section 301 and Section 232
       htsCode: "7208.10.15.00",
       countryOfOrigin: "CN",
       value: 10_000,
+      importDate: "2026-04-05",
     }, noLiveSection232);
     assert.ok(result);
     assert.equal(result!.components.length, 3, "base + section301 + section232");
@@ -306,7 +314,7 @@ test("the same solar cell HTS code from a non-China origin surfaces no AD/CVD ad
 test("no import date given produces an explicit caveat that today's rate was used", async () => {
   const restore = stubFetch([{ htsno: "0101.21.00.10", general: "Free" }]);
   try {
-    const result = await computeStackedDuty({
+    const result = await realComputeStackedDuty({
       htsCode: "0101.21.00.10",
       countryOfOrigin: "VN",
       value: 1_000,
@@ -619,7 +627,7 @@ test("derivative totals are withheld without an import date or after the 2026 re
       assert.equal(result.totalRatePercent, null);
       assert.equal(result.totalAmount, null);
       assert.ok(result.unresolvedMeasures.some((measure) => measure.includes("entry-date Section 232 treatment")));
-      assert.match(result.components[1].explanation, /2026|import date/i);
+      assert.match(result.components[1].explanation, /2026|entry-date|import date/i);
     }
   } finally {
     restore();
@@ -854,8 +862,8 @@ test("Section 338 is skipped when a Section 232 basic-article measure already ma
     const result = await computeStackedDuty({
       htsCode: "7208.10.15.00",
       countryOfOrigin: "CA",
+      importDate: "2026-04-05",
       value: 10_000,
-      importDate: "2026-09-01",
     }, noLiveSection232);
     assert.ok(result);
     assert.ok(result.components.some((c) => c.type === "section232"));
@@ -932,4 +940,53 @@ test("Section 338 ban-conversion unresolved state correctly cites the dairy bask
   } finally {
     restore();
   }
+});
+
+test("Annex III reports only the gap to the combined rate and withholds missing derivative facts", async () => {
+  const restore = stubFetch([{ htsno: "8483.60.80.00", general: "2.8%" }]);
+  try {
+    const result = await computeStackedDuty({ htsCode: "8483.60.80.00", countryOfOrigin: "VN", value: 10_000 }, async () => ({
+      annex: "Annex III", ratePercent: .15, ukRatePercent: null, usContentRatePercent: .1,
+      effectiveDate: "2026-04-06", sourceDocumentNumber: "2026-06960", sourceTitle: "Proclamation 11021",
+      sourcePdfUrl: "https://www.govinfo.gov/content/pkg/FR-2026-04-09/pdf/2026-06960.pdf",
+    }));
+    assert.ok(result);
+    const component = result.components.find(c => c.type === "section232")!;
+    assert.ok(Math.abs(component.ratePercent! - .122) < 1e-12);
+    assert.equal(component.amount, 1220);
+    assert.equal(result.totalAmount, null);
+    assert.match(result.unresolvedMeasures.join(" "), /metal weight/);
+  } finally { restore(); }
+});
+
+test("a failed live lookup withholds totals even for codes outside the historical table", async () => {
+  const restore = stubFetch([{ htsno: "0101.21.00.10", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({ htsCode: "0101.21.00.10", countryOfOrigin: "VN", value: 1000 }, async () => { throw Error("controlled outage"); });
+    assert.equal(result!.totalAmount, null);
+    assert.equal(result!.totalRatePercent, null);
+    assert.match(result!.unresolvedMeasures.join(" "), /could not be checked/);
+  } finally { restore(); }
+});
+
+test("UK origin alone never grants a reduced metal-origin rate", async () => {
+  const restore = stubFetch([{ htsno: "7208.10.15.00", general: "Free" }]);
+  try {
+    const result = await computeStackedDuty({ htsCode: "7208.10.15.00", countryOfOrigin: "GB", value: 1000 }, async () => ({
+      annex: "Annex I-A", ratePercent: .5, ukRatePercent: .25, usContentRatePercent: null,
+      effectiveDate: "2026-04-06", sourceDocumentNumber: "2026-06960", sourceTitle: "Proclamation 11021", sourcePdfUrl: "https://www.govinfo.gov/",
+    }));
+    assert.equal(result!.components.find(c => c.type === "section232")!.ratePercent, .5);
+    assert.equal(result!.totalAmount, null);
+    assert.match(result!.unresolvedMeasures.join(" "), /UK.*evidence/);
+  } finally { restore(); }
+});
+
+test("July forced-labor measure cannot be omitted from a complete total", async () => {
+  const restore = stubFetch([{ htsno: "3916.90.30.00", general: "6.5%" }]);
+  try {
+    const result = await realComputeStackedDuty({ htsCode: "3916.90.30.00", countryOfOrigin: "VN", value: 1000, importDate: "2026-07-24" }, noLiveSection232);
+    assert.equal(result!.totalAmount, null);
+    assert.ok(result!.unresolvedMeasures.some(x => x.includes("69326983")));
+  } finally { restore(); }
 });

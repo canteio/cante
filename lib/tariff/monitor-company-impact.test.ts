@@ -58,7 +58,7 @@ function stubUsitc() {
 }
 
 const realVersionedComputer = (input: StackDutyInput) =>
-  computeStackedDuty(input, async () => liveMatch);
+  computeStackedDuty({ importDate: "2026-07-23", ...input }, async () => liveMatch);
 
 async function realResult(input: StackDutyInput): Promise<StackedDutyResult> {
   const result = await realVersionedComputer(input);
@@ -386,4 +386,13 @@ test("one thrown duty computation becomes NEEDS REVIEW without rejecting other r
   assert.equal(failed?.status, "needs_review");
   assert.match(failed?.rows[0].reviewReason ?? "", /calculation failed/);
   assert.equal(siblingFinished, true);
+});
+
+test("historical entry snapshots cannot become annual monitored impact", async () => {
+  const row = portfolioRow(); row.analysis_kind = "historical_entries";
+  let calls = 0;
+  const [impact] = await buildMonitoredCompanyImpacts([candidate()], [row], async () => { calls++; return null; });
+  assert.equal(calls, 0);
+  assert.equal(impact.rows[0].status, "needs_review");
+  assert.match(impact.rows[0].reviewReason!, /not annual portfolio/);
 });

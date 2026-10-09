@@ -14,19 +14,23 @@ async function main() {
     : Array.from({ length: 99 }, (_, i) => String(i + 1).padStart(2, "0"));
   if (chapters.some((c) => !/^(0[1-9]|[1-9][0-9])$/.test(c))) throw new Error("Invalid chapter");
   const usage = embeddingUsage();
-  const summary = { revision: "", chaptersRequested: chapters.length, chaptersFetched: 0, fetchFailed: [] as string[], publicationFailed: [] as string[], chaptersPublished: 0, totalLeafRows: 0, unchanged: 0, newlyEmbedded: 0, rowsPublished: 0 };
+  const summary = { revision: "", chaptersRequested: chapters.length, chaptersAlreadyPublished: 0, chaptersFetched: 0, fetchFailed: [] as string[], publicationFailed: [] as string[], chaptersPublished: 0, totalLeafRows: 0, unchanged: 0, newlyEmbedded: 0, rowsPublished: 0 };
   try {
     summary.revision = await currentHtsRevision();
     const client = createServiceClient();
+    const { data: publications, error: progressError } = await client.from("hts_chapter_publications").select("chapter,revision");
+    if (progressError) throw new Error(`Could not read publication progress: ${progressError.message}`);
+    const completed = new Set((publications ?? []).filter(row => row.revision === summary.revision).map(row => row.chapter));
     for (const chapter of chapters) {
+      if (completed.has(chapter)) { summary.chaptersAlreadyPublished++; continue; }
       let leaves;
       try {
         // USITC's exportList "to" boundary is exclusive of the next chapter's
         // start, not inclusive of this chapter — from=39&to=39 returns zero
         // rows; from=39&to=40 returns chapter 39's full content (confirmed
-        // live). Chapter 99 has no "next" chapter to bound it; USITC accepts
-        // to=99 itself as a terminal case for the last chapter.
-        const toChapter = chapter === "99" ? "99" : String(Number(chapter) + 1).padStart(2, "0");
+        // live). Chapter 99 uses the terminal heading boundary 9999;
+        // to=99 and to=100 both return an empty result (verified live).
+        const toChapter = chapter === "99" ? "9999" : String(Number(chapter) + 1).padStart(2, "0");
         const params = new URLSearchParams({ from: chapter, to: toChapter, format: "JSON", styles: "false" });
         const response = await fetch(`https://hts.usitc.gov/reststop/exportList?${params}`, { signal: AbortSignal.timeout(60_000) });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -81,7 +85,7 @@ async function main() {
     }
     if (summary.fetchFailed.length || summary.publicationFailed.length) process.exitCode = 1;
   } finally {
-    console.log(JSON.stringify({ ...summary, chaptersNotAttempted: chapters.length - summary.chaptersFetched - summary.fetchFailed.length, embeddingApiCalls: usage.calls, inputTokens: usage.tokens,
+    console.log(JSON.stringify({ ...summary, chaptersNotAttempted: chapters.length - summary.chaptersAlreadyPublished - summary.chaptersFetched - summary.fetchFailed.length, embeddingApiCalls: usage.calls, inputTokens: usage.tokens,
       costUsdFromReportedUsage: usage.tokens * EMBEDDING_USD_PER_MILLION_TOKENS / 1_000_000,
       callsWithUnknownUsage: usage.unknownUsageCalls,
       costNote: "Standard $0.02/1M input tokens; usage-based calculation, not an invoice. Unknown-usage calls may incur additional cost.",

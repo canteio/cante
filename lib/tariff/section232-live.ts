@@ -71,6 +71,25 @@ export async function lookupSection232Live(
   }
 
   const targetDate = section232TargetDate(effectiveDate);
+  // The June 8 amendment changes the April annex assignments. An April-only
+  // store cannot establish either a match or a negative result after that date.
+  const coverageQuery = client.from("section232_tariff_rows")
+    .select("source_document_number,effective_date")
+    .in("status", ["approved", "auto_approved"])
+    .lte("effective_date", targetDate)
+    .order("effective_date", { ascending: false }).limit(1);
+  if (signal) coverageQuery.abortSignal(signal);
+  const { data: coverage, error: coverageError } = await coverageQuery;
+  if (coverageError || !coverage?.length) throw new Section232LiveLookupError("No accepted Section 232 coverage ledger could be established for the entry date.");
+  if (targetDate >= "2026-06-08" && coverage[0].effective_date < "2026-06-08") {
+    throw new Section232LiveLookupError("Section 232 coverage predates the June 8, 2026 amendment (2026-11314); current applicability is unverified.");
+  }
+  const reviewQuery = client.from("section232_coverage_reviews").select("source_document_number")
+    .eq("source_document_number", coverage[0].source_document_number)
+    .eq("effective_date", coverage[0].effective_date).gte("reviewed_through", targetDate).limit(1);
+  if (signal) reviewQuery.abortSignal(signal);
+  const { data: reviews, error: reviewError } = await reviewQuery;
+  if (reviewError || !reviews?.length) throw new Section232LiveLookupError("No reviewed consolidated Section 232 snapshot covers the entry date; an accepted amendment alone cannot establish full coverage.");
   const query = client.rpc("current_section232_rate", {
     target_hts_prefix: digitsOnly,
     target_effective_date: targetDate,
@@ -86,6 +105,10 @@ export async function lookupSection232Live(
     throw new Section232LiveLookupError("Live Section 232 rule is missing a structured effective date.");
   }
 
+  const rates = [row.rate_percent, row.uk_rate_percent, row.us_content_rate_percent].filter(value => value !== null).map(Number);
+  if (rates.some(value => !Number.isFinite(value) || value < 0 || value > 200)) {
+    throw new Section232LiveLookupError("Live Section 232 rule has an invalid rate.");
+  }
   return {
     annex: row.annex,
     ratePercent: Number(row.rate_percent) / 100,

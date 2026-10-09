@@ -184,7 +184,7 @@ function createServiceClient(): any {
 }
 
 // deno-lint-ignore no-explicit-any
-async function runIngestion(client: any, revision: string, openaiKey: string, deadline: number) {
+async function runIngestion(client: any, revision: string, openaiKey: string, deadline: number, completed: Set<string>) {
   const summary = {
     revision, chaptersAttempted: 0, chaptersFetched: 0, fetchFailed: [] as string[],
     publicationFailed: [] as string[], chaptersPublished: 0, chaptersSkippedOnTimeBudget: [] as string[],
@@ -192,11 +192,12 @@ async function runIngestion(client: any, revision: string, openaiKey: string, de
   };
   const chapters = Array.from({ length: 99 }, (_, i) => String(i + 1).padStart(2, "0"));
   for (const chapter of chapters) {
+    if (completed.has(chapter)) continue;
     if (Date.now() > deadline) { summary.chaptersSkippedOnTimeBudget.push(chapter); continue; }
     summary.chaptersAttempted++;
     let leaves: ScheduleLeaf[];
     try {
-      const toChapter = chapter === "99" ? "99" : String(Number(chapter) + 1).padStart(2, "0");
+      const toChapter = chapter === "99" ? "9999" : String(Number(chapter) + 1).padStart(2, "0");
       const params = new URLSearchParams({ from: chapter, to: toChapter, format: "JSON", styles: "false" });
       const response = await fetch(`https://hts.usitc.gov/reststop/exportList?${params}`, { signal: AbortSignal.timeout(60_000) });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -257,25 +258,24 @@ Deno.serve(async (req: Request) => {
 
     const client = createServiceClient();
     const live = await currentHtsRevision();
-    const { data, error } = await client
-      .from("hts_schedule_embeddings")
-      .select("hts_revision")
-      .limit(1)
-      .order("updated_at", { ascending: false });
-    if (error) throw new Error(`Failed to read ingested HTS revision: ${error.message}`);
-    const ingested = data?.[0]?.hts_revision ?? null;
-
-    if (ingested === live) {
-      return new Response(JSON.stringify({ liveRevision: live, ingestedRevision: ingested, action: "none", message: "Up to date; no ingestion run." }),
+    const { data, error } = await client.from("hts_chapter_publications")
+      .select("chapter,revision");
+    if (error) throw new Error(`Failed to read HTS chapter progress: ${error.message}`);
+    const completed = new Set<string>((data ?? []).filter((row: { revision: string }) => row.revision === live)
+      .map((row: { chapter: string }) => row.chapter));
+    const ingested = completed.size === 99 ? live : null;
+    if (completed.size === 99) {
+      return new Response(JSON.stringify({ liveRevision: live, ingestedRevision: ingested, action: "none", message: "All 99 chapters published for this revision." }),
         { status: 200, headers: { "content-type": "application/json" } });
     }
 
     const openaiKey = Deno.env.get("HTS_OPENAI_API_KEY");
     if (!openaiKey) throw new Error("HTS_OPENAI_API_KEY secret is required for ingestion");
 
-    const summary = await runIngestion(client, live, openaiKey, Date.now() + TIME_BUDGET_MS);
-    return new Response(JSON.stringify({ liveRevision: live, ingestedRevision: ingested, action: "ingested", summary }),
-      { status: 200, headers: { "content-type": "application/json" } });
+    const summary = await runIngestion(client, live, openaiKey, Date.now() + TIME_BUDGET_MS, completed);
+    const incomplete = summary.fetchFailed.length || summary.publicationFailed.length || summary.chaptersSkippedOnTimeBudget.length;
+    return new Response(JSON.stringify({ liveRevision: live, ingestedRevision: ingested, action: incomplete ? "incomplete" : "ingested", summary }),
+      { status: incomplete ? 503 : 200, headers: { "content-type": "application/json" } });
   } catch (error) {
     console.error("hts-revision-check failed:", error instanceof Error ? error.message : error);
     return new Response(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }),
