@@ -17,8 +17,11 @@ explicitly synthetic customs entries. See `MVP_STATUS.md` for the exact scope.
 All 28 Supabase migrations are applied, HTS Edge Function version 6 is active,
 and Revision 21 completed all 99 chapter markers at 19:00:37 UTC October 9.
 The existing six-hour HTS job is unchanged; no new schedule was activated.
-The release sequence is dev preview verification followed by the user-authorized
-main production release; all edits are made on dev. CLI 2.120.0 has working
+Dev preview and authorized main production deployment succeeded; production is
+https://www.cante.io. Local dev/main contain the implementation. GitHub pushes
+remain blocked by local credentials (gh is logged out, Keychain helper stalls);
+remote branches are still 80b4f2e. Authenticate and push dev then main.
+All edits are made on dev. CLI 2.120.0 has working
 Cante access; the older repo CLI blocked on Keychain.
 
 ## The one-line state

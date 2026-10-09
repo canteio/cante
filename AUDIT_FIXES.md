@@ -4,6 +4,12 @@ Built the public-product supervised CSV pilot described in MVP_STATUS.md.
 Verified dev preview: https://cante-mc3xgw7z8-jeremygautamas-projects.vercel.app
 (Vercel build completed successfully; authenticated workflow was tested locally
 against the live Supabase tenant boundary).
+Production subsequently built successfully and was aliased to https://www.cante.io
+(deployment `cante-g3yjl5agi-jeremygautamas-projects.vercel.app`). Production's
+source listing also excludes environment files and browser artifacts. Local dev
+and main contain implementation commit `3eed5c9`; GitHub pushes were blocked by
+a stalled Keychain helper and unauthenticated gh. Remote dev/main remain at
+`80b4f2e` until the operator authenticates and pushes both branches.
 The user confirmed no Toro data is available. Public LulzBot product descriptions
 are cited; all customs entries, proposed classifications and qualification facts
 in the demo are explicitly synthetic. No result is presented as LulzBot's real
