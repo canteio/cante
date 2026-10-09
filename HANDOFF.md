@@ -11,12 +11,15 @@ Written 18 Aug 2026. If the dates below are weeks old, ask before trusting the
 
 ## October 9 rollout note
 
-The operator explicitly requested no Telegram or launchd for this work; do not
-activate either while continuing this rollout. All 25 Supabase migrations are
-applied to Cante, and the HTS Edge Function is active version 4. The release sequence is dev preview verification followed by the user-authorized
-main production release; all code and documentation edits are made on dev.
-See `AUDIT_FIXES.md` for verified state. CLI 2.120.0 has working Cante access;
-the older repo CLI blocked on Keychain.
+The operator explicitly requested no Telegram or launchd. There is no Toro data;
+the current public-product demonstration uses cited LulzBot descriptions and
+explicitly synthetic customs entries. See `MVP_STATUS.md` for the exact scope.
+All 28 Supabase migrations are applied, HTS Edge Function version 6 is active,
+and Revision 21 completed all 99 chapter markers at 19:00:37 UTC October 9.
+The existing six-hour HTS job is unchanged; no new schedule was activated.
+The release sequence is dev preview verification followed by the user-authorized
+main production release; all edits are made on dev. CLI 2.120.0 has working
+Cante access; the older repo CLI blocked on Keychain.
 
 ## The one-line state
 

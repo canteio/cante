@@ -12,8 +12,8 @@ The operator explicitly forbids Telegram and launchd for this work. Blank
 Telegram credentials during tests; do not activate delivery or schedules.
 Code/doc changes stay on `dev`; the user authorized release to dev then main.
 
-Supabase project `nvdsjqzbzsczvmvjxhro` has all 25 migrations applied and HTS
-Edge Function version 4 active. CLI 2.120.0 has working login; the older repo
+Supabase project `nvdsjqzbzsczvmvjxhro` has all 28 migrations applied and HTS
+Edge Function version 6 active. Revision 21 has all 99 publication markers. CLI 2.120.0 has working login; the older repo
 2.118.0 CLI blocked on Keychain. Do not repeat login unnecessarily.
 
 Tariff fixes require exact published statistical codes, Column 2 where applicable,
@@ -22,8 +22,10 @@ unresolved totals for the July forced-labor Section 301 action. Historical
 entries preserve entry/line identity, customs value, paid duty, qualification,
 and raw input; duplicate uploads reuse immutable snapshots. Computed persisted
 entries require an exact tenant catalogue match. Historical rows never become
-annual forecast exposure. The bounded historical basis is HTS 3916.90.30.00,
-China/Vietnam, September 15–27, 2026, archived Revision 19; unsupported scope
+annual forecast exposure. A separately labelled before/after scenario may hold
+the same uploaded historical values and quantities constant. Public LulzBot
+product descriptions and synthetic imports are demo inputs, not Toro evidence. The bounded historical basis is HTS 3916.90.30.00,
+China/Vietnam, July 21–27 or September 15–27, 2026, archived Revisions 12/19; unsupported scope
 remains unresolved, and a calculated difference is not a refund entitlement.
 
 HTS completion requires atomic publication markers for every chapter; failures

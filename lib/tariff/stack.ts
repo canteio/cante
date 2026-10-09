@@ -52,7 +52,7 @@ import { easternIsoDate, isStrictIsoDate } from "@/lib/tariff/date";
  */
 
 export interface StackedDutyComponent {
-  type: "base" | "section301" | "section232" | "section338";
+  type: "base" | "section301" | "section232" | "section338" | "section122";
   label: string;
   /** Structured version metadata is present only when the rule source verified it. */
   effectiveDate?: string;

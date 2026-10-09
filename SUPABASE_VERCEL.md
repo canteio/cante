@@ -236,3 +236,23 @@ Its Supabase URL was verified to target Cante. Branch-specific dev preview
 settings now include `CANTE_LLM=api` and `CANTE_LLM_LOCKED=true`. The production
 website has not been promoted. No Telegram, launchd, Vault-secret change, or
 scheduler activation was used for this rollout.
+
+
+## October 9 scoped MVP follow-up
+
+Three further migrations are applied (28 total):
+`20261009184839_mvp_impact_basis_and_monitor_health.sql`,
+`20261009185719_hts_reuse_unchanged_embeddings.sql`, and
+`20261009185935_hts_publication_rpc_timeout.sql`.
+The last sets the service-only RPC's timeout in its function configuration,
+which PostgREST reads before execution; an in-body SET LOCAL alone did not
+extend the active API statement timer. No global or tenant role timeout changed.
+
+HTS Edge Function v6 processes one chapter per worker request and at most 24
+workers per coordinator invocation. The existing cron resumes missing chapters.
+Unchanged embeddings are retained in Postgres. Completion remains transactional,
+including reserved chapter 77 and the terminal 9999 boundary for chapter 99.
+Live request 12 returned HTTP 200 with Revision 21 fully ingested; source health
+recorded 99/99 chapters at 2026-10-09 19:00:37 UTC. No new schedule, Telegram
+or launchd was activated. Published-rate history starts with this migration;
+it is source evidence, not automatic legal-rule approval. See MVP_STATUS.md.

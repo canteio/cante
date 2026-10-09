@@ -394,5 +394,46 @@ test("historical entry snapshots cannot become annual monitored impact", async (
   const [impact] = await buildMonitoredCompanyImpacts([candidate()], [row], async () => { calls++; return null; });
   assert.equal(calls, 0);
   assert.equal(impact.rows[0].status, "needs_review");
-  assert.match(impact.rows[0].reviewReason!, /not annual portfolio/);
+  assert.match(impact.rows[0].reviewReason!, /missing HTS, origin, or import value/);
+});
+
+
+test("history replays actual values and quantities without annualization and retains before evidence", async () => {
+  const restore = stubUsitc();
+  try {
+    const rows = [1, 2].map(line => ({ ...portfolioRow(), analysis_kind: "historical_entries" as const,
+      row_number: line, entry_id: "E1", line_number: String(line), customs_value_usd: 1000,
+      annual_import_value_usd: 999999, evaluation_date: `2026-03-${line === 1 ? "01" : "31"}`,
+      qualification_verified: true, qualification_basis: "Test fixture qualification review", quantity: 5, unit: "kg" }));
+    const calls: StackDutyInput[] = [];
+    const [impact] = await buildMonitoredCompanyImpacts([candidate(), candidate()], rows, async input => {
+      calls.push(input); return realVersionedComputer(input);
+    });
+    assert.equal(impact.status, "computed");
+    assert.equal(impact.estimatedDutyDeltaUsd, 200);
+    assert.equal(impact.basis?.kind, "historical_basket");
+    assert.equal(impact.basis?.valueUsd, 2000);
+    assert.equal(impact.basis?.entryCount, 2);
+    assert.equal(impact.basis?.periodStart, "2026-03-01");
+    assert.equal(impact.basis?.periodEnd, "2026-03-31");
+    assert.match(impact.basis!.explanation, /not an annual forecast/);
+    assert.ok(calls.every(input => input.value === 1000 && input.quantity === 5 && input.unit === "kg"));
+    assert.equal(impact.rows[0].beforeEvidence?.totalAmount, 520);
+    assert.equal(impact.rows[0].evidence?.totalAmount, 620);
+    assert.equal(impact.rows[1].lineNumber, "2");
+    const [duplicate] = await buildMonitoredCompanyImpacts([candidate()], [rows[0], rows[0]], realVersionedComputer);
+    assert.equal(duplicate.estimatedDutyDeltaUsd, null);
+    assert.equal(duplicate.status, "needs_review");
+  } finally { restore(); }
+});
+
+test("source-matched July rule replays reviewed historical goods without any current-schedule call", async () => {
+  const [row] = parseBusinessImpact("entry_id,line_number,sku,hts,origin,customs_value,paid_duty,entry_date,qualification_verified,qualification_basis\nSYNTHETIC-1,1,PLA,3916.90.30.00,CN,2000,880,2026-09-15,true,Synthetic ordinary consumption entry; all exclusions transit relief and special claims reviewed");
+  row.product_id = "product-1";
+  const [impact] = await buildMonitoredCompanyImpacts([candidate(["https://public-inspection.federalregister.gov/2026-15181.pdf"])], [row], async () => { throw new Error("No current rates allowed"); });
+  assert.equal(impact.status, "computed");
+  assert.equal(impact.action.effectiveDate, "2026-07-24");
+  assert.equal(impact.estimatedDutyDeltaUsd, 50);
+  assert.equal(impact.rows[0].beforeEvidence?.totalAmount, 830);
+  assert.equal(impact.rows[0].evidence?.totalAmount, 880);
 });

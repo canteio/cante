@@ -1,6 +1,6 @@
 "use client";
 
-import { MonitorCandidates } from "./monitor-candidates";
+import { MonitorCandidates, ScheduleMonitor } from "./monitor-candidates";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import type { ImpactRow, summarizeBusinessImpact } from "@/lib/tariff/business-impact";
 
@@ -11,7 +11,7 @@ const fieldLabels: Record<CanonicalField, string> = {
   entry_id: "Historical entry ID", line_number: "Entry line number", customs_value_usd: "Entry customs value (USD)", paid_duty_usd: "Duty paid (USD)",
   sku: "SKU", hts: "HTS code", origin: "Country of origin", supplier: "Supplier",
   annual_import_value_usd: "Annual import value (USD)", current_duty_rate: "Current duty rate (%)",
-  evaluation_date: "Import date (optional)", quantity: "Quantity (optional)", unit: "Quantity unit (optional)",
+  evaluation_date: "Entry date (required for history)", quantity: "Quantity (optional)", unit: "Quantity unit (optional)",
   chapter99_codes: "Chapter 99 codes (optional)", exclusion_id: "Exclusion ID (optional)",
   special_program_claim: "Special program claim (optional)",
 };
@@ -186,18 +186,20 @@ export function BusinessImpactPanel() {
 
   return (
     <section aria-label="Tariff impact analysis">
+      <div className="card"><strong>Start with your two datasets</strong><p>1. <a href="/catalogue?country=United%20States">Upload products in Catalogue</a> with stable SKUs. 2. Upload import history below using those same SKUs. 3. Review duty differences and the estimated impact of monitored changes.</p><p className="muted">A calculated difference is a review lead, not a refund entitlement. Unmatched entries and unsupported tariff treatment remain unresolved.</p><details><summary>Try the public-product demonstration</summary><p>Public LulzBot product descriptions with synthetic import records. Origins, values, duties and reviewed flags are fictional test inputs, not company records.</p><p><a href="/examples/lulzbot-public-products.csv" download>1. Product CSV</a> · <a href="/examples/lulzbot-synthetic-imports.csv" download>2. Synthetic import CSV</a></p></details></div>
+      <ScheduleMonitor runId={run?.id ?? null} />
       <MonitorCandidates runId={run?.id ?? null} />
       <div className="page-head">
         <div>
-          <h2 id="impact-heading">Portfolio duty analysis</h2>
-          <p className="page-sub">Upload an annual portfolio or historical entry lines. Historical pilot: 3916.90.30.00, China/Vietnam, Sep 15–27, 2026. Qualification review must confirm ordinary commercial use and no special treatment.</p>
+          <h2 id="impact-heading">Import duty review</h2>
+          <p className="page-sub">Upload an annual portfolio or historical entry lines. Historical pilot: 3916.90.30.00, China/Vietnam, Jul 21–27 or Sep 15–27, 2026. Explicit review must cover classification, origin, transit, court relief and special treatment.</p>
         </div>
       </div>
       <form className="card" onSubmit={(event) => { event.preventDefault(); void upload(); }}>
-        <label htmlFor="impact-csv" className="card-title">Import portfolio CSV</label>
+        <label htmlFor="impact-csv" className="card-title">Upload import history or annual portfolio</label>
         <p id="impact-csv-help" className="muted">
           Match your column names before analyzing. Historical entries need entry ID, line, SKU, full HTS code, origin, entry date, customs value and paid duty. Annual portfolios need supplier, annual value and current duty rate.
-          Historical files: entry ID, line number, full 10-digit HTS, SKU, origin, entry date, customs value and duty paid. Optional: import date (YYYY-MM-DD), quantity and unit, Chapter 99 codes, exclusion ID and special program claim.
+          Entry dates use YYYY-MM-DD. Quantity and unit are required for specific duties. Include Chapter 99 codes, exclusions and special-program claims when applicable.
           Use two-letter origins, USD values without separators,
           and percentage points (5 means 5%). Maximum 500 rows, 2 MiB.
         </p>
@@ -210,7 +212,7 @@ export function BusinessImpactPanel() {
         {proposal && <div style={{ overflowX: "auto" }}>
           <p>We think these columns match. Check each selection before confirming; choose None when your file has no matching column.</p>
           <table className="table">
-            <thead><tr><th scope="col">Field</th><th scope="col">Your column</th><th scope="col">AI confidence</th></tr></thead>
+            <thead><tr><th scope="col">Field</th><th scope="col">Your column</th><th scope="col">Header match</th></tr></thead>
             <tbody>{(Object.keys(fieldLabels) as CanonicalField[]).map(field => <tr key={field}>
               <th scope="row"><label htmlFor={`mapping-${field}`}>{fieldLabels[field]}</label></th>
               <td><select id={`mapping-${field}`} className="input" disabled={busy !== null} value={proposal.mapping[field] ?? ""}

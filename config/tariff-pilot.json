@@ -10,14 +10,26 @@
   "baseRate": 0.065,
   "chinaSection301Rate": 0.25,
   "forcedLaborRate": 0.125,
-  "qualificationRequirement": "Caller must verify the full classification and origin, ordinary commercial monofilament use, and that no Chapter 98/99, Section 301 exclusion, aircraft/pharmaceutical, donation/informational, preferential, AD/CVD or other special treatment applies. No fees or refund eligibility are assessed.",
+  "qualificationRequirement": "Caller must verify the full classification and origin, ordinary commercial monofilament use, and that no Chapter 98/99, Section 301 exclusion, aircraft/pharmaceutical, donation/informational, preferential, AD/CVD or other special treatment applies. No fees or refund eligibility are assessed. For July 21\u201327, also review Section 122 exceptions, any importer-specific court relief and the July 24\u201327 in-transit exception. Entry must be an ordinary consumption entry, not an FTZ or Chapter 98 transaction.",
   "sources": {
     "schedule": "https://www.usitc.gov/sites/default/files/tata/hts/hts_2026_revision_19_json.json",
     "archiveSha256": "b83a0e40640e0fd36c434a37d0317c51e1d466ce9160613f7384609665128e28",
     "revisionDates": "https://hts.usitc.gov/reststop/releaseList",
     "chinaSection301": "https://www.federalregister.gov/documents/2018/08/16/2018-17709/notice-of-action-in-section-301-investigation-of-chinas-acts-policies-and-practices-related-to-technology",
     "forcedLabor": "https://public-inspection.federalregister.gov/2026-15181.pdf",
-    "cbp": "https://content.govdelivery.com/accounts/USDHSCBP/bulletins/421d887"
+    "cbp": "https://content.govdelivery.com/accounts/USDHSCBP/bulletins/421d887",
+    "section122": "https://content.govdelivery.com/accounts/USDHSCBP/bulletins/40b3b7b"
   },
-  "checkedOn": "2026-10-09"
+  "checkedOn": "2026-10-09",
+  "additionalWindows": [
+    {
+      "validFrom": "2026-07-21",
+      "validBefore": "2026-07-28",
+      "revision": "2026HTSRev12",
+      "schedule": "https://www.usitc.gov/sites/default/files/tata/hts/hts_2026_revision_12_json.json",
+      "archiveSha256": "c2df18de026f8ba78178a10dff5033b153c7a48fd66b5f218f529c1369fa0c72"
+    }
+  ],
+  "transitionDate": "2026-07-24",
+  "section122Rate": 0.1
 }

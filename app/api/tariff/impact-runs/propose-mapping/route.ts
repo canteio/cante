@@ -1,6 +1,6 @@
 import { getAuthenticatedWorkspace } from "@/lib/supabase/server";
 import { ImpactInputError, ImpactBodyTooLarge, readImpactBody, parseImpactTable } from "@/lib/tariff/business-impact";
-import { proposeColumnMapping } from "@/lib/tariff/column-mapping";
+import { suggestColumnMapping } from "@/lib/tariff/column-mapping";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 90;
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     if (request.headers.get("content-type")?.split(";")[0].trim().toLowerCase() !== "text/csv") return Response.json({ error: "Content-Type must be text/csv." }, { status: 415 });
     const table = parseImpactTable(await readImpactBody(request), true);
     const sampleRows = table.rows.slice(0, 5);
-    const proposal = await proposeColumnMapping(table.headers, sampleRows);
+    const proposal = suggestColumnMapping(table.headers);
     return Response.json({ ...proposal, headers: table.headers, sampleRows });
   } catch (error) {
     if (error instanceof ImpactBodyTooLarge) return Response.json({ error: "CSV exceeds the 2 MiB upload limit." }, { status: 413 });

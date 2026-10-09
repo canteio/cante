@@ -1,4 +1,5 @@
-import type { ImpactRow } from "./business-impact";
+import { historicalPilotDuty, type ImpactRow } from "./business-impact";
+import pilot from "@/config/tariff-pilot.json";
 import {
   computeStackedDuty,
   type StackDutyInput,
@@ -17,6 +18,7 @@ export interface MonitorCompanyCandidate {
   action: {
     name: string;
     citations: string[];
+    sourceKind?: "monitored" | "reviewed_reference";
   };
 }
 
@@ -32,6 +34,10 @@ export interface CompanyImpactRow {
   status: "computed" | "needs_review";
   reviewReason: string | null;
   evidence: ImpactRow["stack_result"];
+  beforeEvidence?: ImpactRow["stack_result"];
+  entryId?: string | null;
+  lineNumber?: string | null;
+  basisValueUsd?: number | null;
 }
 
 export interface MonitoredCompanyImpact {
@@ -40,6 +46,7 @@ export interface MonitoredCompanyImpact {
     name: string;
     effectiveDate: string | null;
     citations: string[];
+    sourceKind?: "monitored" | "reviewed_reference";
   };
   affectedProductCount: number;
   estimatedDutyDeltaUsd: number | null;
@@ -48,6 +55,7 @@ export interface MonitoredCompanyImpact {
   suppliers: string[];
   products: string[];
   rows: CompanyImpactRow[];
+  basis?: { kind: "historical_basket" | "annual_portfolio"; valueUsd: number | null; entryCount: number; periodStart: string | null; periodEnd: string | null; explanation: string };
 }
 
 type DutyComputer = (input: StackDutyInput) => Promise<StackedDutyResult | null>;
@@ -98,6 +106,9 @@ function needsReview(
     reviewReason: reason,
     evidence,
     effectiveDate,
+    entryId: portfolioRow?.entry_id,
+    lineNumber: portfolioRow?.line_number,
+    basisValueUsd: portfolioRow?.analysis_kind === "historical_entries" ? portfolioRow.customs_value_usd : portfolioRow?.annual_import_value_usd,
   };
 }
 
@@ -156,19 +167,20 @@ function isFullyResolved(result: StackedDutyResult | null): result is ResolvedDu
     && result.unresolvedMeasures.length === 0;
 }
 
-function versionedSection232Components(result: StackedDutyResult): VersionedComponent[] {
+function versionedComponents(result: StackedDutyResult): VersionedComponent[] {
   return result.components.filter((component): component is VersionedComponent =>
-    component.type === "section232"
+    component.type !== "base"
     && typeof component.effectiveDate === "string"
     && typeof component.sourceDocumentNumber === "string");
 }
 
 function stackInput(row: ImpactRow, importDate?: string, signal?: AbortSignal): StackDutyInput | null {
-  if (!row.hts || !row.origin || row.annual_import_value_usd === null) return null;
+  const value = row.analysis_kind === "historical_entries" ? row.customs_value_usd : row.annual_import_value_usd;
+  if (!row.hts || !row.origin || value == null || !Number.isFinite(value) || value < 0) return null;
   return {
     htsCode: row.hts,
     countryOfOrigin: row.origin,
-    value: row.annual_import_value_usd,
+    value,
     quantity: row.quantity,
     unit: row.unit,
     claimedProgramme: row.special_program_claim,
@@ -185,19 +197,25 @@ async function deriveRowUnchecked(
   if (!row) {
     return needsReview(candidate, row, "No row in the selected company impact run is linked to this catalogue product.");
   }
-  if (!stackInput(row)) {
-    return needsReview(candidate, row, "The linked row is missing HTS, origin, or annual import value required for deterministic recalculation.");
+  if (!row.input_valid || row.status === "error" || !stackInput(row)) {
+    return needsReview(candidate, row, "The linked row has invalid inputs or is missing HTS, origin, or import value required for deterministic recalculation.");
   }
 
-  if (row.analysis_kind === "historical_entries") {
-    return needsReview(candidate, row, "Historical entry values are not annual portfolio exposure; supply an annual portfolio baseline before monitoring annual impact.");
+  if (row.analysis_kind === "historical_entries" && (!row.entry_id || !row.line_number || !row.evaluation_date || !row.qualification_verified || !row.qualification_basis?.trim())) {
+    return needsReview(candidate, row, "Historical impact requires entry identity, date and reviewed qualifications. Historical values are not annual portfolio exposure.");
   }
   if (row.chapter99_codes || row.exclusion_id || row.special_program_claim) return needsReview(candidate, row, "Uploaded claims require verified applicability review.");
-  const current = await calculate(row);
+  // An archived, reviewed change can be replayed without substituting today's
+  // schedule for the legal dates. Other changes still use the versioned engine.
+  const reviewedTransition = row.analysis_kind === "historical_entries"
+    && documentMatchesFinding("2026-15181", candidate.action.citations)
+    ? historicalPilotDuty(row, pilot.transitionDate) : null;
+  const compute = reviewedTransition ? async (input: ImpactRow, date?: string) => historicalPilotDuty(input, date ?? pilot.transitionDate) : calculate;
+  const current = reviewedTransition ?? await compute(row);
   if (!current) {
     return needsReview(candidate, row, "The current deterministic duty calculation returned no tariff result.");
   }
-  const versioned = versionedSection232Components(current);
+  const versioned = versionedComponents(current);
   if (versioned.length === 0) {
     return needsReview(candidate, row, "The current rule component has no structured verified effective date and source document number.", current);
   }
@@ -214,8 +232,8 @@ async function deriveRowUnchecked(
   }
 
   const [beforeResult, afterResult] = await Promise.allSettled([
-    calculate(row, beforeDate),
-    calculate(row, effectiveDate),
+    compute(row, beforeDate),
+    compute(row, effectiveDate),
   ]);
   if (beforeResult.status === "rejected") throw beforeResult.reason;
   if (afterResult.status === "rejected") throw afterResult.reason;
@@ -224,14 +242,14 @@ async function deriveRowUnchecked(
   if (!isFullyResolved(before)) {
     return needsReview(candidate, row, `The deterministic calculation on ${beforeDate}, immediately before ${effectiveDate}, is unresolved.`, before, effectiveDate);
   }
-  if (versionedSection232Components(before).some(component =>
+  if (versionedComponents(before).some(component =>
     component.sourceDocumentNumber === currentComponent.sourceDocumentNumber)) {
     return needsReview(candidate, row, `The tariff engine did not resolve a prior rule version on ${beforeDate}.`, before, effectiveDate);
   }
   if (!isFullyResolved(after)) {
     return needsReview(candidate, row, `The deterministic calculation on ${effectiveDate} is unresolved.`, after, effectiveDate);
   }
-  const afterComponent = versionedSection232Components(after).find(component =>
+  const afterComponent = versionedComponents(after).find(component =>
     component.effectiveDate === effectiveDate
     && component.sourceDocumentNumber === currentComponent.sourceDocumentNumber);
   if (!afterComponent || !documentMatchesFinding(afterComponent.sourceDocumentNumber, candidate.action.citations)) {
@@ -250,6 +268,10 @@ async function deriveRowUnchecked(
     status: "computed",
     reviewReason: null,
     evidence: after,
+    beforeEvidence: before,
+    entryId: row.entry_id,
+    lineNumber: row.line_number,
+    basisValueUsd: row.analysis_kind === "historical_entries" ? row.customs_value_usd : row.annual_import_value_usd,
     effectiveDate,
   };
 }
@@ -433,11 +455,25 @@ export async function buildMonitoredCompanyImpacts(
     throw new RangeError(`Duty concurrency must be an integer from 1 to ${MONITOR_IMPACT_DUTY_CONCURRENCY}.`);
   }
 
+  const candidateIdentities = new Set<string>();
+  candidates = candidates.filter(candidate => {
+    const key = JSON.stringify([candidate.findingId, candidate.productId]);
+    if (candidateIdentities.has(key)) return false;
+    candidateIdentities.add(key); return true;
+  });
+  const historicalIdentities = new Set<string>();
+  const duplicateEntries = new Set<string>();
+  for (const row of portfolioRows) if (row.analysis_kind === "historical_entries") {
+    const key = JSON.stringify([row.entry_id, row.line_number]);
+    if (historicalIdentities.has(key)) duplicateEntries.add(key);
+    historicalIdentities.add(key);
+  }
   const rowsByProduct = new Map<string, ImpactRow[]>();
   for (const row of portfolioRows) {
     if (!row.product_id) continue;
     const linked = rowsByProduct.get(row.product_id) ?? [];
-    linked.push(row);
+    linked.push(duplicateEntries.has(JSON.stringify([row.entry_id, row.line_number]))
+      ? { ...row, input_valid: false, status: "error" } : row);
     rowsByProduct.set(row.product_id, linked);
   }
 
@@ -482,6 +518,13 @@ export async function buildMonitoredCompanyImpacts(
     const products = [...new Set(findingCandidates.map(candidate => candidate.product?.sku).filter((sku): sku is string => Boolean(sku)))];
     const suppliers = [...new Set(rows.map(row => row.supplier).filter((supplier): supplier is string => Boolean(supplier)))];
     const dates = [...new Set(rows.map(row => row.effectiveDate).filter((date): date is string => Boolean(date)))];
+    const productIds = new Set(findingCandidates.map(candidate => candidate.productId));
+    const basisRows = portfolioRows.filter(row => row.product_id && productIds.has(row.product_id));
+    const historical = basisRows.some(row => row.analysis_kind === "historical_entries");
+    const entryDates = basisRows.map(row => row.evaluation_date).filter((date): date is string => Boolean(date)).sort();
+    const values = basisRows.map(row => row.analysis_kind === "historical_entries" ? row.customs_value_usd : row.annual_import_value_usd);
+    const valueUsd = values.every(value => value != null && Number.isFinite(value))
+      ? Number(values.reduce<number>((sum, value) => sum + value!, 0).toFixed(2)) : null;
 
     return {
       findingId,
@@ -498,6 +541,30 @@ export async function buildMonitoredCompanyImpacts(
       suppliers,
       products,
       rows: rows.map(({ effectiveDate: _effectiveDate, ...row }) => row),
+      basis: {
+        kind: historical ? "historical_basket" : "annual_portfolio",
+        valueUsd, entryCount: historical ? basisRows.length : 0,
+        periodStart: historical ? entryDates[0] ?? null : null,
+        periodEnd: historical ? entryDates.at(-1) ?? null : null,
+        explanation: historical
+          ? "Estimated change if the same uploaded goods, customs values and quantities were imported under the verified before and after rules. This is a historical-volume scenario, not an annual forecast or a refund claim. The date span does not establish that all imports in that period were uploaded."
+          : "Estimated annual change using the uploaded annual portfolio values and quantities, held constant across the rule change.",
+      },
     };
+  }));
+}
+
+
+/** Show a verified historical transition for supported uploaded goods, clearly
+ * distinguished from a newly detected regulatory event. No synthetic findings. */
+export function reviewedHistoricalCandidates(rows: ImpactRow[]): MonitorCompanyCandidate[] {
+  const products = new Map<string, ImpactRow>();
+  for (const row of rows) if (row.product_id && row.analysis_kind === "historical_entries"
+    && row.hts?.replace(/\D/g, "") === pilot.htsCode.replace(/\D/g, "") && pilot.origins.includes(row.origin ?? "")) products.set(row.product_id, row);
+  return [...products].map(([productId, row]) => ({
+    id: `reviewed-2026-15181:${productId}`, findingId: "reviewed-2026-15181", productId,
+    matchKind: "exact_code", matchReason: "Exact code in the reviewed historical calculation scope.", createdAt: "",
+    product: { sku: row.sku ?? productId, name: row.sku ?? productId },
+    action: { name: "July 24, 2026: Section 122 expires; Section 301 forced-labor duties begin", sourceKind: "reviewed_reference", citations: [pilot.sources.forcedLabor, pilot.sources.cbp, pilot.sources.section122] },
   }));
 }

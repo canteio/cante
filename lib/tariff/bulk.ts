@@ -316,3 +316,23 @@ export function parseStackRequestRows(input: string): ParsedStackRequest {
 
   return { rows, errors };
 }
+
+export const impactFieldAliases = {
+  qualification_verified: ["qualification_verified"],
+  qualification_basis: ["qualification_basis"],
+  entry_id: ["entry_id", "entry_number"],
+  line_number: ["line_number", "entry_line", "line_id"],
+  customs_value_usd: ["customs_value_usd", "customs_value", "entered_value"],
+  paid_duty_usd: ["paid_duty_usd", "paid_duty", "duty_paid"],
+  sku: ["sku", "product_code", "item_code", "part_number"],
+  hts: HTS_HEADER_ALIASES, origin: COUNTRY_HEADER_ALIASES,
+  supplier: ["supplier", "supplier_name", "vendor"],
+  annual_import_value_usd: ["annual_import_value", "annual_import_value_usd", "annual_value", "import_value"],
+  current_duty_rate: ["current_duty_rate", "current_duty_rate_percent", "current_rate", "duty_rate"],
+  evaluation_date: ["evaluation_date", "import_date", "entry_date", "effective_date"],
+  quantity: ["quantity", "qty"],
+  unit: ["unit", "quantity_unit", "uom"],
+  chapter99_codes: ["chapter99_codes", "ch99", "chapter_99", "chapter99_code"],
+  exclusion_id: ["exclusion_id", "exclusion", "exclusion_number"],
+  special_program_claim: ["special_program_claim", "special_program", "program_claim", "fta"],
+};

@@ -12,7 +12,7 @@ function harness(completed: number) {
   const published: string[] = [];
   const client = {
     from(table: string) {
-      return { select() { return table === "hts_chapter_publications"
+      return { upsert: async () => ({ error: null }), select() { return table === "hts_chapter_publications"
         ? Promise.resolve({ data: Array.from({ length: completed }, (_, i) => ({ chapter: String(i + 1).padStart(2, "0"), revision: "fixture" })), error: null })
         : { eq() { return { order() { return { range: async () => ({ data: [], error: null }) }; } }; } }; } };
     },
@@ -22,8 +22,9 @@ function harness(completed: number) {
   vm.runInNewContext(ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.None } }).outputText, {
     z, createClient: () => client, TextEncoder, Response, AbortSignal, URLSearchParams, crypto: webcrypto,
     console: { error() {} },
-    Deno: { serve(fn: typeof handler) { handler = fn; }, env: { get() { return "fixture-secret"; } } },
-    fetch: async (url: string) => {
+    Deno: { serve(fn: typeof handler) { handler = fn; }, env: { get(key: string) { return key === "HTS_SUPABASE_URL" ? "https://fixture.invalid" : "fixture-secret"; } } },
+    fetch: async (url: string, init?: RequestInit) => {
+      if (url.includes("/functions/v1/hts-revision-check")) return handler(new Request(url, init));
       if (url.includes("currentRelease")) return Response.json({ name: "fixture" });
       if (url.includes("api.openai.com")) return Response.json({ data: [{ index: 0, embedding: Array(384).fill(0) }] });
       const chapter = new URL(url).searchParams.get("from")!; fetched.push(chapter);

@@ -26,12 +26,14 @@ const hooks = registerHooks({ resolve(specifier, context, next) {
   if (specifier === "@/lib/tariff/business-impact-store") return { url: pathToFileURL(`${fixtureDir}/store.cjs`).href, shortCircuit: true };
   return next(specifier, context);
 } });
+let monitorStatus: typeof import("@/app/api/tariff/monitor-status/route");
 let realStore: typeof import("./business-impact-store");
 let routes: typeof import("@/app/api/tariff/impact-runs/route");
 let proposalRoute: typeof import("@/app/api/tariff/impact-runs/propose-mapping/route");
 let detail: typeof import("@/app/api/tariff/impact-runs/[runId]/route");
 let download: typeof import("@/app/api/tariff/impact-runs/[runId]/export/route");
 test.before(async () => {
+monitorStatus = await import("@/app/api/tariff/monitor-status/route");
 routes = await import("@/app/api/tariff/impact-runs/route");
 proposalRoute = await import("@/app/api/tariff/impact-runs/propose-mapping/route");
 detail = await import("@/app/api/tariff/impact-runs/[runId]/route");
@@ -128,17 +130,34 @@ test("mapping proposal keeps auth, content type, upload limits and returns raw p
   assert.equal((await proposalRoute.POST(request("{}", { "content-type": "application/json" }))).status, 415);
   assert.equal((await proposalRoute.POST(request("x".repeat(2097153), { "content-length": "1" }))).status, 413);
   assert.equal((await proposalRoute.POST(request("sku,sku\nA,B"))).status, 400);
-  const mapping = Object.fromEntries(canonicalFields.map(field => [field, field === "sku" ? "Product Label" : null]));
-  const confidence = Object.fromEntries(canonicalFields.map(field => [field, .8]));
-  const complete = t.mock.method(Object.getPrototypeOf(getProvider()), "complete", async () => ({ text: JSON.stringify({ mapping, confidence }), durationMs: 1, provider: "test" }));
-  const response = await proposalRoute.POST(request("Product Label\nA\nB\nC\nD\nE\nF"));
+  t.mock.method(Object.getPrototypeOf(getProvider()), "complete", async () => { throw new Error("Model unavailable"); });
+  const response = await proposalRoute.POST(request("SKU,Entry Date,Customs Value\nA,2026-09-15,1000\nB,2026-09-16,2000"));
   assert.equal(response.status, 200);
   const result = await response.json();
-  assert.deepEqual(result.headers, ["Product Label"]);
-  assert.deepEqual(result.mapping, mapping); assert.deepEqual(result.confidence, confidence);
-  assert.equal(result.sampleRows.length, 5); assert.equal(result.sampleRows[0]["Product Label"], "A");
+  assert.equal(result.mapping.sku, "SKU");
+  assert.equal(result.mapping.evaluation_date, "Entry Date");
+  assert.equal(result.mapping.customs_value_usd, "Customs Value");
+  assert.equal(result.mapping.annual_import_value_usd, null);
+  assert.equal(result.sampleRows.length, 2);
   assert.ok(!state.calls.some(c => c[0] === "create"));
-  complete.mock.mockImplementation(async () => { throw new Error("private model data"); });
-  const failed = await proposalRoute.POST(request("sku\nA"));
-  assert.equal(failed.status, 500); assert.ok(!JSON.stringify(await failed.json()).includes("private"));
+  const unfamiliar = await proposalRoute.POST(request("Product Label\nA"));
+  assert.equal(unfamiliar.status, 200);
+  assert.equal((await unfamiliar.json()).mapping.sku, null);
+});
+
+
+test("monitor health fails closed and selected history remains tenant scoped", async () => {
+  const req = new Request("https://cante.test/api/tariff/monitor-status?runId=foreign&customerId=foreign");
+  state.workspace = null;
+  assert.equal((await monitorStatus.GET(req)).status, 401);
+  state.workspace = { customerId: "authenticated-tenant", role: "owner" };
+  state.client = { from() { return { select() { return { eq() { return { maybeSingle: async () => ({ data: { status: "incomplete", completed_chapters: 98 }, error: null }) }; } }; } }; } };
+  assert.equal((await monitorStatus.GET(req)).status, 404);
+  assert.deepEqual(state.calls.find(call => call[0] === "get"), ["get", "authenticated-tenant", "foreign"]);
+  const health = await monitorStatus.GET(new Request("https://cante.test/api/tariff/monitor-status"));
+  assert.equal((await health.json()).health.status, "incomplete");
+  state.client = { from() { throw new Error("internal credential detail"); } };
+  const failed = await monitorStatus.GET(req);
+  assert.equal(failed.status, 503);
+  assert.match((await failed.json()).error, /No all-clear/);
 });

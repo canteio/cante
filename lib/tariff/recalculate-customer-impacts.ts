@@ -103,6 +103,7 @@ function canonicalImpactPayload(impact: MonitoredCompanyImpact) {
     suppliers: impact.suppliers,
     products: impact.products,
     rows: impact.rows,
+    ...(impact.basis ? { basis: impact.basis } : {}),
   };
 }
 
@@ -129,6 +130,7 @@ export function formatCustomerImpactDigest(impacts: MonitoredCompanyImpact[]): s
       ? `Authoritative citation(s): ${impact.action.citations.join("; ")}`
       : "Authoritative citation(s): NEEDS REVIEW");
     lines.push(`ARE WE AFFECTED: ${impact.affectedProductCount} matched SKU/product(s)`);
+    if (impact.basis) lines.push(`BASIS: ${impact.basis.explanation}`);
     lines.push(`HOW MUCH: ${impact.status === "needs_review" ? "NEEDS REVIEW" : showMoney(impact.estimatedDutyDeltaUsd)}`);
     lines.push(`WHERE: Products: ${impact.products.length ? impact.products.join(", ") : "not identified"}; ` +
       `Suppliers: ${impact.suppliers.length ? impact.suppliers.join(", ") : "not present in selected run"}`);
@@ -278,6 +280,7 @@ export async function recalculateForCustomer(
       suppliers: impact.suppliers,
       products: impact.products,
       rows: impact.rows,
+    ...(impact.basis ? { basis: impact.basis } : {}),
       result_hash: resultHash,
     };
     // The unique (customer_id, finding_id, result_hash) constraint is the

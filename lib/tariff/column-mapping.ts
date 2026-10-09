@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { getProvider, completeJson } from "@/lib/llm";
+import { impactFieldAliases } from "./bulk";
 import type { CsvTable } from "@/lib/catalogue/csv";
 
 export const canonicalFields = [
@@ -52,4 +53,17 @@ export function applyColumnMapping(table: CsvTable, mapping: ColumnMapping["mapp
     const header = confirmed[field];
     return [field, header === null ? "" : Object.hasOwn(row, header) ? row[header] : ""];
   })));
+}
+
+/** Stable header matching keeps a standard CSV upload independent of model availability. */
+export function suggestColumnMapping(headers: string[]): ColumnMapping {
+  const mapping = {} as ColumnMapping["mapping"];
+  const confidence = {} as ColumnMapping["confidence"];
+  for (const field of canonicalFields) {
+    const choices: readonly string[] = impactFieldAliases[field];
+    const matches = headers.filter(header => choices.includes(header.trim().toLowerCase().replace(/[ -]+/g, "_")));
+    mapping[field] = matches.length === 1 ? matches[0] : null;
+    confidence[field] = matches.length === 1 ? 1 : 0;
+  }
+  return { mapping, confidence };
 }

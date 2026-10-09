@@ -1,29 +1,12 @@
+import { computeDuty, parseDutyRate } from "./duty-expression";
 import pilot from "@/config/tariff-pilot.json";
 import { parseCsv, type CsvTable } from "@/lib/catalogue/csv";
-import { HTS_HEADER_ALIASES, COUNTRY_HEADER_ALIASES, firstPresent, conflictingAlias, duplicateHeaders } from "./bulk";
+import { impactFieldAliases, firstPresent, conflictingAlias, duplicateHeaders } from "./bulk";
 import { isStrictIsoDate } from "./date";
 import { computeStackedDuty, type StackedDutyResult } from "./stack";
 
 export class ImpactInputError extends Error {}
-const aliases = {
-  qualification_verified: ["qualification_verified"],
-  qualification_basis: ["qualification_basis"],
-  entry_id: ["entry_id", "entry_number"],
-  line_number: ["line_number", "entry_line", "line_id"],
-  customs_value_usd: ["customs_value_usd", "customs_value", "entered_value"],
-  paid_duty_usd: ["paid_duty_usd", "paid_duty", "duty_paid"],
-  sku: ["sku", "product_code", "item_code", "part_number"],
-  hts: HTS_HEADER_ALIASES, origin: COUNTRY_HEADER_ALIASES,
-  supplier: ["supplier", "supplier_name", "vendor"],
-  annual_import_value_usd: ["annual_import_value", "annual_import_value_usd", "annual_value", "import_value"],
-  current_duty_rate: ["current_duty_rate", "current_duty_rate_percent", "current_rate", "duty_rate"],
-  evaluation_date: ["evaluation_date", "import_date", "entry_date", "effective_date"],
-  quantity: ["quantity", "qty"],
-  unit: ["unit", "quantity_unit", "uom"],
-  chapter99_codes: ["chapter99_codes", "ch99", "chapter_99", "chapter99_code"],
-  exclusion_id: ["exclusion_id", "exclusion", "exclusion_number"],
-  special_program_claim: ["special_program_claim", "special_program", "program_claim", "fta"],
-};
+
 export interface ImpactRow {
   qualification_verified?: boolean; qualification_basis?: string | null;
   review_reason?: string | null;
@@ -66,15 +49,15 @@ export function parseMappedBusinessImpact(rows: Record<string, string>[], origin
 }
 function parseImpactRows(rows: Record<string, string>[], canonical = false, originals = rows): ImpactRow[] {
   const historical = rows.some(raw => ["entry_id", "line_number", "customs_value_usd", "paid_duty_usd"].some(key =>
-    canonical ? Boolean(raw[key]?.trim()) : Boolean(firstPresent(raw, aliases[key as "entry_id"]))));
+    canonical ? Boolean(raw[key]?.trim()) : Boolean(firstPresent(raw, impactFieldAliases[key as "entry_id"]))));
   const parsed: ImpactRow[] = rows.map((raw, i) => {
-    const values = Object.fromEntries(Object.entries(aliases).map(([key, group]) => [key, canonical ? raw[key]?.trim() || null : firstPresent(raw, group)])) as Record<keyof typeof aliases, string | null>;
+    const values = Object.fromEntries(Object.entries(impactFieldAliases).map(([key, group]) => [key, canonical ? raw[key]?.trim() || null : firstPresent(raw, group)])) as Record<keyof typeof impactFieldAliases, string | null>;
     const errors: string[] = [];
-    for (const [key, group] of Object.entries(aliases)) {
+    for (const [key, group] of Object.entries(impactFieldAliases)) {
       if (!canonical && conflictingAlias(raw, group)) errors.push(`Conflicting ${key} columns.`);
       const optional = ["qualification_verified", "qualification_basis", "evaluation_date", "quantity", "unit", "chapter99_codes", "exclusion_id", "special_program_claim",
         ...(historical ? ["annual_import_value_usd", "current_duty_rate", "supplier"] : ["entry_id", "line_number", "customs_value_usd", "paid_duty_usd"])];
-      if (!optional.includes(key) && !values[key as keyof typeof aliases]) errors.push(`Missing ${key}.`);
+      if (!optional.includes(key) && !values[key as keyof typeof impactFieldAliases]) errors.push(`Missing ${key}.`);
     }
     if (values.qualification_verified && !["true", "false"].includes(values.qualification_verified.toLowerCase())) errors.push("qualification_verified must be true or false.");
     if ((values.qualification_basis?.length ?? 0) > 2000) errors.push("Qualification basis exceeds 2000 characters.");
@@ -124,16 +107,18 @@ function parseImpactRows(rows: Record<string, string>[], canonical = false, orig
   return parsed;
 }
 /** Bounded historical basis from the immutable published revision, never today's quote. */
-function historicalPilotDuty(row: ImpactRow): StackedDutyResult | null {
+export function historicalPilotDuty(row: ImpactRow, date = row.evaluation_date): StackedDutyResult | null {
+  const window = [ { validFrom: pilot.validFrom, validBefore: pilot.validBefore, revision: pilot.revision, schedule: pilot.sources.schedule }, ...pilot.additionalWindows ].find(window => date && date >= window.validFrom && date < window.validBefore);
   if (row.hts?.replace(/\D/g, "") !== pilot.htsCode.replace(/\D/g, "") || !pilot.origins.includes(row.origin ?? "")
-      || !row.evaluation_date || row.evaluation_date < pilot.validFrom || row.evaluation_date >= pilot.validBefore
+      || !window || !date
       || !row.qualification_verified || !row.qualification_basis?.trim() || row.chapter99_codes || row.exclusion_id || row.special_program_claim) return null;
   const value = row.customs_value_usd!;
-  const components: StackedDutyResult["components"] = [{ type: "base", label: `Column 1 general — ${pilot.revision}`, ratePercent: pilot.baseRate,
-    amount: Number((value * pilot.baseRate).toFixed(2)), citation: [pilot.sources.schedule], explanation: `Archived revision ${pilot.revision}; no current-schedule lookup.` }];
+  const components: StackedDutyResult["components"] = [{ type: "base", label: `Column 1 general — ${window.revision}`, ratePercent: pilot.baseRate,
+    amount: Number((value * pilot.baseRate).toFixed(2)), citation: [window.schedule], explanation: `Archived revision ${window.revision}; no current-schedule lookup.` }];
   if (row.origin === "CN") components.push({ type: "section301", label: "China Section 301 — List 2", ratePercent: pilot.chinaSection301Rate,
     amount: Number((value * pilot.chinaSection301Rate).toFixed(2)), citation: [pilot.sources.chinaSection301], explanation: "Published List 2 measure, with exemptions explicitly reviewed by the caller." });
-  components.push({ type: "section301", label: "Section 301 forced-labor action", ratePercent: pilot.forcedLaborRate,
+  if (date < pilot.transitionDate) components.push({ type: "section122", label: "Temporary Section 122 surcharge", ratePercent: pilot.section122Rate, amount: Number((value * pilot.section122Rate).toFixed(2)), citation: [pilot.sources.section122], explanation: "9903.03.01: 10% until July 24, 2026, subject to caller-reviewed exceptions and importer-specific relief." });
+  else components.push({ type: "section301", label: "Section 301 forced-labor action", effectiveDate: pilot.transitionDate, sourceDocumentNumber: "2026-15181", ratePercent: pilot.forcedLaborRate,
     amount: Number((value * pilot.forcedLaborRate).toFixed(2)), citation: [pilot.sources.forcedLabor, pilot.sources.cbp], explanation: `${row.origin === "CN" ? "9903.05.31" : "9903.05.84"}, effective July 24, 2026. Caller reviewed the listed exemption conditions.` });
   return { htsCode: row.hts!, countryOfOrigin: row.origin!, totalRatePercent: Number(components.reduce((sum,c) => sum + c.ratePercent!, 0).toFixed(6)),
     totalAmount: Number(components.reduce((sum,c) => sum + c.amount!, 0).toFixed(2)), currency: "USD", components,
@@ -170,7 +155,7 @@ export async function evaluateBusinessImpact(rows: ImpactRow[], compute = comput
           continue;
         }
         if (result.totalAmount === null || result.totalRatePercent === null || result.unresolvedMeasures.length || !Number.isFinite(result.totalAmount) || !Number.isFinite(result.totalRatePercent)) continue;
-        const delta = result.totalAmount - row.current_annual_duty_usd!;
+        const delta = Number((result.totalAmount - row.current_annual_duty_usd!).toFixed(2));
         if (!Number.isFinite(delta)) { row.status = "error"; row.error = "Duty calculation exceeds numeric limits."; continue; }
         row.status = "computed";
         row.computed_annual_duty_usd = result.totalAmount;
@@ -237,4 +222,23 @@ export async function readImpactBody(request: Request) {
     }
   } finally { reader.releaseLock(); }
   return Buffer.concat(chunks).toString("utf8");
+}
+
+
+/** A schedule component comparison is a scenario, never a total-duty assessment. */
+export function comparePublishedBaseRates(rows: ImpactRow[], before: { general?: string; column2?: string }, after: { general?: string; column2?: string }) {
+  const results = rows.map(row => {
+    const column = ["CU", "KP", "RU", "BY"].includes(row.origin ?? "") ? "column2" : "general";
+    const value = row.analysis_kind === "historical_entries" ? row.customs_value_usd : row.annual_import_value_usd;
+    const valid = row.input_valid && row.status !== "error" && value != null && Number.isFinite(value) && !row.special_program_claim && !row.exclusion_id && !row.chapter99_codes;
+    const input = { value: value ?? null, quantity: row.quantity, unit: row.unit ?? null };
+    const oldDuty = valid ? computeDuty(parseDutyRate(before[column] ?? ""), input).amount : null;
+    const newDuty = valid ? computeDuty(parseDutyRate(after[column] ?? ""), input).amount : null;
+    return { sku: row.sku, entryId: row.entry_id, lineNumber: row.line_number, valueUsd: value ?? null,
+      column, beforeRate: before[column] ?? null, afterRate: after[column] ?? null, beforeDutyUsd: oldDuty, afterDutyUsd: newDuty,
+      deltaUsd: oldDuty === null || newDuty === null ? null : Number((newDuty - oldDuty).toFixed(2)) };
+  });
+  return { rows: results, baseDutyDeltaUsd: results.length && results.every(row => row.deltaUsd !== null)
+      ? Number(results.reduce((sum, row) => sum + row.deltaUsd!, 0).toFixed(2)) : null,
+    explanation: "Base-duty component only, holding uploaded values and quantities constant. Additional tariffs, exceptions and the legal effective date have not been established by this schedule comparison. This is not a total-duty estimate, annual forecast or refund claim." };
 }

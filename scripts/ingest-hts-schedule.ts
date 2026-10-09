@@ -44,17 +44,17 @@ async function main() {
         continue;
       }
       try {
-        const existing = new Map<string, { description_hash: string; embedding: string }>();
+        const existing = new Map<string, { description_hash: string }>();
         // Supabase defaults to 1000 rows per response; page even large chapters.
         for (let offset = 0; ; offset += 500) {
           const { data, error } = await client.from("hts_schedule_embeddings")
-            .select("hts_code,description_hash,embedding").eq("chapter", chapter)
+            .select("hts_code,description_hash").eq("chapter", chapter)
             .order("hts_code").range(offset, offset + 499);
           if (error) throw new Error(error.message);
           for (const row of data ?? []) existing.set(row.hts_code, row);
           if (!data || data.length < 500) break;
         }
-        const changed = leaves.filter((row) => existing.get(row.htsCode)?.description_hash !== row.descriptionHash || !existing.get(row.htsCode)?.embedding);
+        const changed = leaves.filter((row) => existing.get(row.htsCode)?.description_hash !== row.descriptionHash);
         summary.unchanged += leaves.length - changed.length;
         const vectors = new Map<string, number[]>();
         for (const batch of embeddingBatches(changed, (row) => row.fullDescription)) {
@@ -68,7 +68,7 @@ async function main() {
           hts_code: row.htsCode, chapter, full_description: row.fullDescription,
           description_hash: row.descriptionHash, general: row.general, special: row.special,
           other: row.other, additional_duties: row.additionalDuties, units: row.units,
-          embedding: vectors.has(row.htsCode) ? JSON.stringify(vectors.get(row.htsCode)) : existing.get(row.htsCode)!.embedding,
+          embedding: vectors.has(row.htsCode) ? JSON.stringify(vectors.get(row.htsCode)) : null,
         }));
         const { error } = await client.rpc("publish_hts_chapter", {
           target_chapter: chapter, target_revision: summary.revision, leaf_rows: rows,

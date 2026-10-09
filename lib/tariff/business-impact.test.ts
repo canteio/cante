@@ -155,3 +155,23 @@ test("pilot requires explicit basis and exact scope including date boundaries", 
   const [validRow] = await evaluate(parse(`${pilotHeader}\n${valid}`));
   assert.equal(validRow.status, "computed");
 });
+
+test("reviewed July transition uses archived base and replaces Section 122 rather than stacking both surcharges", async () => {
+  const header = "entry_id,line_number,sku,hts,origin,customs_value,paid_duty,entry_date,qualification_verified,qualification_basis";
+  const rows = await evaluate(parse(`${header}\nSYNTHETIC-1,1,PLA,3916.90.30.00,CN,1000,415,2026-07-23,true,Synthetic ordinary consumption entry; no exclusions transit relief or other claims\nSYNTHETIC-2,1,PLA,3916.90.30.00,CN,1000,415,2026-07-24,true,Synthetic ordinary consumption entry; no exclusions transit relief or other claims`));
+  assert.deepEqual(rows.map(row => row.computed_annual_duty_usd), [415, 440]);
+  assert.deepEqual(rows.map(row => row.annual_delta_usd), [0, 25]);
+  assert.ok(rows[0].stack_result?.components.some(c => c.type === "section122"));
+  assert.ok(!rows[1].stack_result?.components.some(c => c.type === "section122"));
+  assert.match(rows[0].stack_result!.components[0].citation[0], /revision_12/);
+});
+
+test("published base-rate scenarios withhold invalid inputs and propagate the quantity unit", async () => {
+  const { comparePublishedBaseRates } = await import("./business-impact");
+  const [row] = parse("sku,hts,origin,supplier,annual_import_value,current_duty_rate,quantity,unit\nA,0101.21.00.10,CA,Acme,1000,5,10,kg");
+  const change = comparePublishedBaseRates([row], { general: "2 cents/kg + 5%" }, { general: "3 cents/kg + 6%" });
+  assert.equal(change.baseDutyDeltaUsd, 10.1);
+  assert.match(change.explanation, /Base-duty component only/);
+  assert.equal(comparePublishedBaseRates([{ ...row, unit: "m" }], { general: "2 cents/kg" }, { general: "3 cents/kg" }).baseDutyDeltaUsd, null);
+  assert.equal(comparePublishedBaseRates([{ ...row, special_program_claim: "USMCA" }], { general: "5%" }, { general: "6%" }).baseDutyDeltaUsd, null);
+});

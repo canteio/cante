@@ -1,0 +1,5 @@
+entry_id,line_number,sku,hts,origin,customs_value,paid_duty,entry_date,quantity,unit,qualification_verified,qualification_basis
+SYNTHETIC-001,1,DEMO-PLA-285,3916.90.30.00,CN,1000,415,2026-07-23,500,m,true,SYNTHETIC TEST ONLY: ordinary consumption monofilament; classification origin exceptions transit importer-specific relief and all special claims assumed reviewed; not customer evidence
+SYNTHETIC-002,1,DEMO-PLA-285,3916.90.30.00,CN,1000,415,2026-07-24,500,m,true,SYNTHETIC TEST ONLY: ordinary consumption monofilament; classification origin exceptions transit importer-specific relief and all special claims assumed reviewed; not customer evidence
+SYNTHETIC-003,1,DEMO-PLA-285,3916.90.30.00,VN,2000,400,2026-09-15,1000,m,true,SYNTHETIC TEST ONLY: ordinary consumption monofilament; classification origin exceptions transit importer-specific relief and all special claims assumed reviewed; not customer evidence
+SYNTHETIC-004,1,DEMO-NEMA17,8501.10.40.60,CN,1000,294,2026-09-15,20,No.,false,SYNTHETIC TEST ONLY: unsupported motor classification and legal scope remain unreviewed

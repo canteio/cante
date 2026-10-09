@@ -27,7 +27,7 @@
 // complete inside one Edge Function invocation's wall-clock limit. Each
 // chapter publish is independently idempotent (unchanged rows are skipped
 // by content hash, same as the Node script), so this function processes
-// chapters until it is close to its time budget and simply stops --
+// one chapter per worker request, with a bounded coordinator --
 // the next scheduled invocation (6h later) picks up any remaining chapters
 // cheaply, since already-published chapters cost one hash comparison each.
 
@@ -184,13 +184,13 @@ function createServiceClient(): any {
 }
 
 // deno-lint-ignore no-explicit-any
-async function runIngestion(client: any, revision: string, openaiKey: string, deadline: number, completed: Set<string>) {
+async function runIngestion(client: any, revision: string, openaiKey: string, deadline: number, completed: Set<string>, requestedChapters: string[]) {
   const summary = {
     revision, chaptersAttempted: 0, chaptersFetched: 0, fetchFailed: [] as string[],
     publicationFailed: [] as string[], chaptersPublished: 0, chaptersSkippedOnTimeBudget: [] as string[],
     unchanged: 0, newlyEmbedded: 0, rowsPublished: 0,
   };
-  const chapters = Array.from({ length: 99 }, (_, i) => String(i + 1).padStart(2, "0"));
+  const chapters = requestedChapters;
   for (const chapter of chapters) {
     if (completed.has(chapter)) continue;
     if (Date.now() > deadline) { summary.chaptersSkippedOnTimeBudget.push(chapter); continue; }
@@ -209,16 +209,16 @@ async function runIngestion(client: any, revision: string, openaiKey: string, de
       continue;
     }
     try {
-      const existing = new Map<string, { description_hash: string; embedding: string }>();
+      const existing = new Map<string, { description_hash: string }>();
       for (let offset = 0; ; offset += 500) {
         const { data, error } = await client.from("hts_schedule_embeddings")
-          .select("hts_code,description_hash,embedding").eq("chapter", chapter)
+          .select("hts_code,description_hash").eq("chapter", chapter)
           .order("hts_code").range(offset, offset + 499);
         if (error) throw new Error(error.message);
         for (const row of data ?? []) existing.set(row.hts_code, row);
         if (!data || data.length < 500) break;
       }
-      const changed = leaves.filter((row) => existing.get(row.htsCode)?.description_hash !== row.descriptionHash || !existing.get(row.htsCode)?.embedding);
+      const changed = leaves.filter((row) => existing.get(row.htsCode)?.description_hash !== row.descriptionHash);
       summary.unchanged += leaves.length - changed.length;
       const vectors = new Map<string, number[]>();
       for (const batch of embeddingBatches(changed, (row) => row.fullDescription)) {
@@ -231,7 +231,7 @@ async function runIngestion(client: any, revision: string, openaiKey: string, de
         hts_code: row.htsCode, chapter, full_description: row.fullDescription,
         description_hash: row.descriptionHash, general: row.general, special: row.special,
         other: row.other, additional_duties: row.additionalDuties, units: row.units,
-        embedding: vectors.has(row.htsCode) ? JSON.stringify(vectors.get(row.htsCode)) : existing.get(row.htsCode)!.embedding,
+        embedding: vectors.has(row.htsCode) ? JSON.stringify(vectors.get(row.htsCode)) : null,
       }));
       const { error } = await client.rpc("publish_hts_chapter", {
         target_chapter: chapter, target_revision: revision, leaf_rows: rows,
@@ -245,6 +245,18 @@ async function runIngestion(client: any, revision: string, openaiKey: string, de
     }
   }
   return summary;
+}
+
+async function recordHealth(client: any, revision: string, status: string, detail: string) {
+  const { data, error } = await client.from("hts_chapter_publications").select("chapter,revision");
+  if (error) throw new Error("Could not read publication health");
+  const count = new Set((data ?? []).filter((row: any) => row.revision === revision).map((row: any) => row.chapter)).size;
+  const now = new Date().toISOString();
+  const { error: saveError } = await client.from("tariff_sync_status").upsert({
+    source: "usitc_hts", revision, status, checked_at: now, completed_chapters: count, detail,
+    ...(status === "complete" ? { last_success_at: now } : {}),
+  }, { onConflict: "source" });
+  if (saveError) throw new Error("Could not save publication health");
 }
 
 Deno.serve(async (req: Request) => {
@@ -265,6 +277,7 @@ Deno.serve(async (req: Request) => {
       .map((row: { chapter: string }) => row.chapter));
     const ingested = completed.size === 99 ? live : null;
     if (completed.size === 99) {
+      await recordHealth(client, live, "complete", "All 99 chapter publication markers verified.");
       return new Response(JSON.stringify({ liveRevision: live, ingestedRevision: ingested, action: "none", message: "All 99 chapters published for this revision." }),
         { status: 200, headers: { "content-type": "application/json" } });
     }
@@ -272,9 +285,46 @@ Deno.serve(async (req: Request) => {
     const openaiKey = Deno.env.get("HTS_OPENAI_API_KEY");
     if (!openaiKey) throw new Error("HTS_OPENAI_API_KEY secret is required for ingestion");
 
-    const summary = await runIngestion(client, live, openaiKey, Date.now() + TIME_BUDGET_MS, completed);
+    // CPU time is limited independently of wall-clock time. A coordinator
+    // delegates ONE chapter per request; processing dozens in one isolate
+    // caused production HTTP 546 even within the wall-clock budget.
+    const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
+    if (body.chapter !== undefined) {
+      if (typeof body.chapter !== "string" || !/^(0[1-9]|[1-9][0-9])$/.test(body.chapter) || body.revision !== live) {
+        return Response.json({ error: "Invalid chapter or stale revision." }, { status: 409 });
+      }
+      const summary = await runIngestion(client, live, openaiKey, Date.now() + TIME_BUDGET_MS, completed, [body.chapter]);
+      const failed = summary.fetchFailed.length || summary.publicationFailed.length || summary.chaptersSkippedOnTimeBudget.length;
+      return Response.json({ action: failed ? "incomplete" : "chapter_published", summary }, { status: failed ? 503 : 200 });
+    }
+    await recordHealth(client, live, "running", "Checking and publishing missing chapters in bounded requests.");
+    const missing = Array.from({ length: 99 }, (_, i) => String(i + 1).padStart(2, "0")).filter(chapter => !completed.has(chapter));
+    // Stay below the platform's nested-call limit (30 per trace/minute).
+    const pending = missing.slice(0, 24);
+    const deadline = Date.now() + TIME_BUDGET_MS;
+    const summary = { chaptersPublished: 0, fetchFailed: [] as string[], publicationFailed: [] as string[], chaptersSkippedOnTimeBudget: missing.slice(24) };
+    let next = 0;
+    await Promise.all(Array.from({ length: Math.min(3, pending.length) }, async () => {
+      while (next < pending.length) {
+        const chapter = pending[next++];
+        if (Date.now() > deadline - 15_000) { summary.chaptersSkippedOnTimeBudget.push(chapter); continue; }
+        try {
+          const response = await fetch(`${Deno.env.get("HTS_SUPABASE_URL")}/functions/v1/hts-revision-check`, {
+            method: "POST", headers: { authorization: `Bearer ${expected}`, "content-type": "application/json" },
+            body: JSON.stringify({ chapter, revision: live }), signal: AbortSignal.timeout(Math.max(1, deadline - Date.now())),
+          });
+          const result = await response.json();
+          if (!response.ok || result.action !== "chapter_published") throw new Error(`Chapter worker HTTP ${response.status}`);
+          summary.chaptersPublished++;
+        } catch (error) {
+          summary.publicationFailed.push(chapter);
+          console.error(`Chapter ${chapter} worker failed:`, error instanceof Error ? error.message : error);
+        }
+      }
+    }));
     const incomplete = summary.fetchFailed.length || summary.publicationFailed.length || summary.chaptersSkippedOnTimeBudget.length;
-    return new Response(JSON.stringify({ liveRevision: live, ingestedRevision: ingested, action: incomplete ? "incomplete" : "ingested", summary }),
+    await recordHealth(client, live, incomplete ? "incomplete" : "complete", incomplete ? "Some chapters are incomplete. Totals and review coverage must be checked separately." : "All 99 chapter publication markers verified.");
+    return new Response(JSON.stringify({ liveRevision: live, ingestedRevision: incomplete ? null : live, action: incomplete ? "incomplete" : "ingested", summary }),
       { status: incomplete ? 503 : 200, headers: { "content-type": "application/json" } });
   } catch (error) {
     console.error("hts-revision-check failed:", error instanceof Error ? error.message : error);

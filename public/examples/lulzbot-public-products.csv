@@ -1,0 +1,3 @@
+sku,name,hts,description,notes
+DEMO-PLA-285,PLA filament 2.85 mm,3916.90.30.00,Public LulzBot product category; proposed classification for synthetic test,"Source: https://buy.lulzbot.com/collections/pla-filament ; DEMO SKU and HTS are test assumptions. Actual origin and imports unknown."
+DEMO-NEMA17,NEMA 17 stepper motor,8501.10.40.60,Public TAZ 6 assembly part; proposed classification remains unverified,"Source: https://ohai.lulzbot.com/project/taz-6-final-assembly/taz-6/ ; DEMO SKU and HTS are test assumptions. Actual origin and imports unknown."

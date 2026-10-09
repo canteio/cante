@@ -1,48 +1,70 @@
 # MVP status — October 9, 2026
 
-The target is catalogue import plus historical customs-entry import, auditable
-past-duty reconciliation, regulatory-change monitoring and financial exposure
-based on the customer’s actual imports. CSV is sufficient; ERP integration,
-customs filing and automatic refund claims are outside the supervised MVP.
+Cante now has a working, supervised CSV pilot for a bounded tariff scope.
+It is not yet a general-purpose customs audit product or validated for Toro.
+The operator confirmed there is no Toro data: public LulzBot descriptions are
+used for the demo, with explicitly synthetic customs entries and qualifications.
 
-## Implemented and verified
+## Verified workflow
 
-- Catalogue and historical CSV workflows exist. Historical snapshots retain
-  entry/line identity, customs value, paid duty, qualifications, raw input and
-  tenant catalogue linkage; duplicate uploads reuse immutable snapshots.
-- Exact published HTS codes, applicable Column 2 rates and quantity/unit inputs
-  are enforced. Unsupported dates, qualifications or measures withhold totals.
-- All 25 SQL migrations are applied to Cante. Live signed-in historical RPC,
-  idempotency, tampering rejection, RLS and public-reference reads passed.
-  HTS Edge Function version 4 is deployed; chapter completion is transactional.
-- 861 tests passed with Telegram credentials blank. See AUDIT_FIXES.md for
-  evidence and limits. Website deployment is distinct from tariff-data coverage.
+1. Import the two products in `public/examples/lulzbot-public-products.csv`
+   through Catalogue. Public descriptions have citations; demo SKUs, proposed
+   HTS classifications and all customs facts are test assumptions.
+2. Upload `public/examples/lulzbot-synthetic-imports.csv` through Tariff.
+   Deterministic header mapping works without an LLM. Confirm the mapping.
+3. Review immutable, tenant-linked entries. Three supported lines assess
+   $415, $440 and $380, against paid amounts $415, $415 and $400. Differences
+   are $0, +$25 and -$20. The unsupported motor remains unresolved; the full
+   total is withheld. A difference is a review lead, never refund entitlement.
+4. Review the separately labelled July 24 historical change. Holding the
+   supported $4,000 import basket constant gives $100 additional duty. The
+   dashboard shows before/after components, sources, dates and assumptions.
+   This is neither a newly detected change nor an annual forecast.
+5. Export the saved entry results. Browser verification confirmed all four
+   entries and their exact amounts. Repeating the same upload reuses one run.
 
-## Remaining before a reliable customer pilot
+## Automatic monitoring
 
-1. **Complete the tariff basis for the chosen customer.** Consolidated Section
-   232 coverage must be reviewed through the assessment date. The general
-   calculator still does not fully evaluate the July 24 forced-labor Section
-   301 action. No review record was fabricated to unlock totals.
-2. **Validate historical coverage against real entries.** The implemented
-   historical basis is only HTS 3916.90.30.00 from China/Vietnam, September
-   15–27, 2026, with archived Revision 19 and caller-reviewed qualifications.
-   Other dates/codes, historical Section 122, exclusions and special treatment
-   need their own documented basis. A difference is not a refund entitlement.
-3. **Connect history to future exposure.** Historical entry snapshots correctly
-   cannot be annualized; monitored annual exposure currently requires a separate
-   portfolio baseline. Import-history-derived forecasting remains to implement.
-4. **Prove the full customer journey.** Run authenticated browser acceptance:
-   catalogue CSV → historical CSV → review → saved findings → export. Include
-   duplicate, unmatched, invalid/date, zero-duty and changed-input cases, and
-   compare the supported cases with customer/broker records. API/RLS tests are
-   evidence for persistence, not proof of the entire browser flow.
-5. **Prove monitoring and operations.** Verify a completed HTS ingestion,
-   source-change → reviewed activation → recalculation → customer-visible alert,
-   failure visibility and a supported worker execution/delivery path. Telegram
-   and launchd are prohibited for this rollout. Semantic retrieval recall has
-   not been independently established by the deployment checks.
+The existing six-hour Supabase HTS job remains the only active schedule. No
+Telegram, launchd or new schedule was activated. HTS Edge Function version 6
+splits ingestion into bounded chapter requests. Unchanged vectors stay in
+Postgres; chapter publication remains atomic. A function-scoped PostgREST
+55-second timeout allows chapter 99 to publish without changing tenant timeouts.
 
-Larger imports need job/progress handling beyond the current bounded CSV path.
-Supabase also reports Auth leaked-password protection disabled. Neither a
-successful deployment nor a green build establishes comprehensive duty coverage.
+Live execution completed Revision 21 with all 99 chapter markers at
+2026-10-09 19:00:37 UTC. The dashboard now exposes checked time, last complete
+synchronization, revision and incomplete/failure state. Published rate changes
+are stored once and matched to uploaded catalogue-linked HTS codes. Their
+base-duty scenario is explicitly separated from legal activation and total duty.
+Source-change storage starts with this migration; earlier changes are not
+claimed to have been monitored.
+
+## Supported legal scope and limits
+
+Historical assessment: exact HTS 3916.90.30.00, China/Vietnam, July 21–27 or
+September 15–27, 2026. Archived Revisions 12/19 establish base rates; cited CBP
+and Federal Register sources establish the July 24 transition from Section 122
+to the additional Section 301 measure. Classification, origin, transit,
+importer-specific relief and special treatment require explicit caller review.
+The public LulzBot descriptions do not establish any of these customs facts.
+
+Other codes/dates, general consolidated Section 232 coverage, AD/CVD,
+exclusions, preferential claims and broader Chapter 99 applicability remain
+unresolved unless separately supported. No Section 232 review was fabricated.
+No real manufacturer or broker ledger has been validated. Regulatory notices
+beyond the scheduled HTS source still require the trusted worker; a complete
+automatic legal-rule activation and customer notification pipeline is not
+claimed. Telegram and launchd remain prohibited.
+
+The CSV path is bounded to 500 rows/2 MiB. Larger histories need a background
+job path. The minimum next customer step is reviewed classification/qualification
+and broker reconciliation of representative real entries, not ERP integration.
+
+## Verification
+
+865 existing/expanded tests passed, plus the new monitoring-status route test
+(866 total cases across the suite). TypeScript passed. Live rollback-only SQL
+verified vector preservation, missing-vector rejection, atomic markers,
+change deduplication and service-only publication. Authenticated browser
+acceptance exercised catalogue, historical upload, company scenario, export
+and duplicate reuse. See `AUDIT_FIXES.md` for release verification.

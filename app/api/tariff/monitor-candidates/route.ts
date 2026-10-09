@@ -3,6 +3,7 @@ import { getImpactRun } from "@/lib/tariff/business-impact-store";
 import type { ImpactRow } from "@/lib/tariff/business-impact";
 import {
   buildMonitoredCompanyImpacts,
+  reviewedHistoricalCandidates,
   MONITOR_IMPACT_MAX_CANDIDATES,
   MonitorImpactLimitError,
   type MonitorCompanyCandidate,
@@ -58,7 +59,8 @@ export async function GET(request: Request) {
         limit: MONITOR_IMPACT_MAX_CANDIDATES,
       }, { status: 422 });
     }
-    if (candidateRows.length === 0) return Response.json({ impacts: [] });
+    const reviewedCandidates = (run.rows as ImpactRow[]).some(row => row.analysis_kind === "historical_entries") ? reviewedHistoricalCandidates(run.rows) : [];
+    if (candidateRows.length === 0) return boundedJson({ impacts: await buildMonitoredCompanyImpacts(reviewedCandidates, run.rows, undefined, { signal: request.signal }) });
 
     const findingIds = [...new Set(candidateRows.map(row => stringValue(row, "finding_id")).filter((id): id is string => Boolean(id)))];
     const productIds = [...new Set(candidateRows.map(row => stringValue(row, "product_id")).filter((id): id is string => Boolean(id)))];
@@ -102,7 +104,7 @@ export async function GET(request: Request) {
       }];
     });
 
-    const impacts = await buildMonitoredCompanyImpacts(candidates, run.rows, undefined, { signal: request.signal });
+    const impacts = await buildMonitoredCompanyImpacts([...candidates, ...reviewedCandidates], run.rows, undefined, { signal: request.signal });
     return boundedJson({ impacts });
   } catch (error) {
     if (error instanceof MonitorImpactLimitError) {
