@@ -1,7 +1,7 @@
 /**
  * AD/CVD (Antidumping / Countervailing Duty) advisory lookup.
  *
- * Kate Chang (Toro Company) named AD/CVD scope determination as one of her
+ * Importers frequently name AD/CVD scope determination as one of their
  * three stated automation priorities. This module is deliberately NOT a
  * stacked dollar component like Section 301/232 — and that is a scope
  * decision, not an oversight. Every AD/CVD order ever published states that

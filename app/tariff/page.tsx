@@ -1,5 +1,6 @@
 import { Sidebar } from "@/components/dashboard/sidebar";
-import { TariffStackPanel } from "@/components/tariff/tariff-stack-panel";
+// MVP: quick quote and duplicate bulk upload are disabled.
+// import { TariffStackPanel } from "@/components/tariff/tariff-stack-panel";
 import { BusinessImpactPanel } from "@/components/tariff/business-impact-panel";
 
 export const dynamic = "force-dynamic";
@@ -11,7 +12,7 @@ export default function Page() {
       <main className="main">
         <div className="main-scroll">
           <BusinessImpactPanel />
-          <TariffStackPanel embedded />
+          {/* <TariffStackPanel embedded /> */}
         </div>
       </main>
     </div>

@@ -175,3 +175,22 @@ test("published base-rate scenarios withhold invalid inputs and propagate the qu
   assert.equal(comparePublishedBaseRates([{ ...row, unit: "m" }], { general: "2 cents/kg" }, { general: "3 cents/kg" }).baseDutyDeltaUsd, null);
   assert.equal(comparePublishedBaseRates([{ ...row, special_program_claim: "USMCA" }], { general: "5%" }, { general: "6%" }).baseDutyDeltaUsd, null);
 });
+
+
+test("actual public Aleph/LulzBot manifests preserve missing customs facts and never calculate duty", async () => {
+  const { readFileSync } = await import("node:fs");
+  const input = readFileSync("scripts/test-fixtures/lulzbot-public-manifests.csv", "utf8");
+  let quoteCalls = 0;
+  const rows = await evaluate(parse(input), async () => { quoteCalls++; throw new Error("Must not guess missing customs facts"); });
+  assert.equal(rows.length, 3);
+  assert.equal(quoteCalls, 0);
+  assert.ok(rows.every(row => row.analysis_kind === "historical_entries" && row.status === "error"));
+  assert.ok(rows.every(row => row.entry_id === null && row.evaluation_date === null && row.quantity === null && row.origin === null));
+  assert.ok(rows.every(row => row.customs_value_usd === null && row.paid_duty_usd === null && row.computed_annual_duty_usd === null));
+  assert.equal(rows[0].raw_input.bill_of_lading, "FTNVSHS000176033");
+  assert.equal(rows[0].raw_input.arrival_date, "2018-07-27");
+  assert.equal(rows[0].raw_input.gross_weight_kg, "1069");
+  assert.ok(csv(rows).includes("FTNVSHS000176033"));
+  assert.ok(csv(rows).includes("original_input_json"));
+  assert.equal(summarize(rows).estimated_annual_duty_delta_usd, null);
+});

@@ -5,7 +5,8 @@ import { DEFAULT_JURISDICTION } from "@/lib/countries";
 // (open-redirect guard: must be a same-origin path, not a protocol-relative "//" URL).
 export function safeNext(rawNext: string | null): string {
   if (!rawNext || !rawNext.startsWith("/") || rawNext.startsWith("//")) {
-    return `/chat?country=${encodeURIComponent(DEFAULT_JURISDICTION)}`;
+    // Previous broad app landing: `/chat?country=${encodeURIComponent(DEFAULT_JURISDICTION)}`
+    return "/tariff";
   }
   return rawNext;
 }

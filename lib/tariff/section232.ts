@@ -1,9 +1,8 @@
 /**
  * Section 232 steel & aluminum "basic article" (non-derivative) tariff table.
  *
- * Kate Chang (Toro Company, customer-discovery interview 2026-10-01, see
- * `gbrain cante/interviews/kate-chang-toro-company`) named Section 232 as
- * one of the components her spreadsheet has to track by hand. This file is
+ * Trade compliance discovery interviews (2026-10-01) named Section 232 as
+ * one of the components importers' spreadsheets have to track by hand. This file is
  * the first real Section 232 reference data in Cante — deliberately scoped
  * to the part of the measure that is a flat, enumerable list rather than a
  * sprawling per-product Chapter 99 catalogue.

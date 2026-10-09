@@ -24,7 +24,7 @@ import { easternIsoDate, isStrictIsoDate } from "@/lib/tariff/date";
 /**
  * The tariff-stacking engine.
  *
- * This is the tool Kate Chang (Toro Company, customer-discovery interview
+ * This is the tool the trade compliance manager (customer-discovery interview
  * 2026-10-01) described almost verbatim: upload an HTS code + country of
  * origin, get back the total stacked rate broken down by component, with an
  * explicit explanation of what stacked with what and why, citing the
@@ -42,7 +42,7 @@ import { easternIsoDate, isStrictIsoDate } from "@/lib/tariff/date";
  *      derivative amount is computed only from caller-supplied steel/aluminum
  *      content value and is never presented as a shipment-value percentage.
  *
- * Everything else Kate named — USMCA qualification analysis (the calculator
+ * Everything else requested — USMCA qualification analysis (the calculator
  * accepts an explicit audited decision but does not make one), full AD/CVD
  * scope/rate determination (this module surfaces AD/CVD as a named,
  * uncomputed advisory lead — see lib/tariff/adcvd.ts for why a dollar figure

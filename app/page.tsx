@@ -57,7 +57,7 @@ export default async function LandingPage() {
         <div className="landing-shade" />
       </div>
 
-      <Link className="landing-login-btn" href={signedIn ? "/chat" : "/login"}>
+      <Link className="landing-login-btn" href={signedIn ? "/tariff" : "/login"}>
         {signedIn ? "Go to dashboard" : "Sign in"}
       </Link>
 

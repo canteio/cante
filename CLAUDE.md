@@ -16,6 +16,54 @@ Supabase project `nvdsjqzbzsczvmvjxhro` has all 28 migrations applied and HTS
 Edge Function version 6 active. Revision 21 has all 99 publication markers. CLI 2.120.0 has working login; the older repo
 2.118.0 CLI blocked on Keychain. Do not repeat login unnecessarily.
 
+### Independent audit, October 9 2026 — verified vs. assumed
+
+A from-scratch audit (not by the implementing agent) of the tariff engine,
+CSV workflow, regulatory monitoring, and security found the arithmetic and
+"never fabricate" discipline genuinely sound — nulls propagate instead of
+guessed numbers everywhere checked (`lib/tariff/stack.ts`,
+`lib/tariff/duty-expression.ts`, `lib/tariff/business-impact.ts`). The real
+gap is breadth, not correctness: Section 301/232/AD-CVD coverage is narrow
+hand-maintained tables, and "automatic regulatory monitoring" in production
+means the 6-hour USITC *rate-schedule* sync, not detection of new Section
+301/232/AD-CVD legal actions — that richer system (`lib/checks/*`) exists but
+is 409'd off in the hosted app. The proactive recalculate-and-notify cron
+(`supabase/functions/tariff-impact-recalculate`) is architecturally sound but
+requires a reachable "trusted worker" that is not deployed; its Vault secrets
+are still placeholders. The internal cron bridge
+(`app/api/internal/tariff-recalculate/route.ts`) was independently re-checked
+and is solid — timing-safe shared-secret comparison, rejects on Vercel,
+never leaks per-customer detail on a compromised secret.
+
+**`scripts/verify-lulzbot-pilot.ts`** (added this session) runs the real,
+un-mocked `importProductsCsv()` → `parseBusinessImpact()` →
+`evaluateBusinessImpact()` → `createImpactRun()` pipeline against the real
+public LulzBot product list and the real public Aleph Objects import
+manifests ImportGenius publishes — not a script-only simulation, a run
+against the actual configured tenant (`CANTE_CUSTOMER_ID`). It confirmed by
+direct execution, not just by reading the existing test, that the real
+manifests (which carry no HTS/value/duty data) come back `error` on every
+row with specific missing-field messages and zero fabricated duty — matching
+`lib/tariff/business-impact.test.ts:180-196`. Running it imports
+`DEMO-PLA-285` / `DEMO-NEMA17` into the real customer's product catalogue
+(clearly SKU-labelled DEMO) — a genuine, intentional write, not a side effect
+to silently revert.
+
+⚠️ **Verified live, not assumed: `create_tariff_impact_run` (`supabase/migrations/
+20261009132549_audit_tariff_coverage_and_hts_progress.sql:160`) is granted to
+`authenticated` only, not `service_role`.** `lib/supabase/server.ts`'s
+documented CLI fallback (`createClient()` → service client outside a request
+scope) therefore cannot persist a tariff impact run — it correctly gets
+refused. This is the right security boundary (impact runs are user-uploaded
+data, not a worker-authored table) and not a bug, but it means
+`verify-lulzbot-pilot.ts` can prove the parsing/calculation stages and the
+catalogue import, and no further than that: proving the persisted
+"upload → see it in Saved reviews" path still requires a real authenticated
+browser session. That last step was not independently re-verified this
+session (no browser-extension/login access); it rests on the existing
+migration/idempotency tests and the prior agent's described browser
+walkthrough in `AUDIT_FIXES.md`, not on a fresh run.
+
 Tariff fixes require exact published statistical codes, Column 2 where applicable,
 quantity/unit propagation, reviewed consolidated Section 232 coverage, and honest
 unresolved totals for the July forced-labor Section 301 action. Historical
@@ -24,7 +72,7 @@ and raw input; duplicate uploads reuse immutable snapshots. Computed persisted
 entries require an exact tenant catalogue match. Historical rows never become
 annual forecast exposure. A separately labelled before/after scenario may hold
 the same uploaded historical values and quantities constant. Public LulzBot
-product descriptions and synthetic imports are demo inputs, not Toro evidence. The bounded historical basis is HTS 3916.90.30.00,
+product descriptions and synthetic imports are demo inputs, not proprietary customer evidence. The bounded historical basis is HTS 3916.90.30.00,
 China/Vietnam, July 21–27 or September 15–27, 2026, archived Revisions 12/19; unsupported scope
 remains unresolved, and a calculated difference is not a refund entitlement.
 
@@ -2314,3 +2362,13 @@ the way.
 Record what was *verified* versus what is *assumed*. Most of this file's value is
 that its claims were tested against the live source, and that distinction is the
 first thing to erode.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

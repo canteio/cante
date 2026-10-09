@@ -192,9 +192,12 @@ async function main(): Promise<number> {
   return 0;
 }
 
-main()
-  .then((code) => process.exit(code))
-  .catch((error) => {
-    console.error(`[${timestamp()}] FATAL: ${error instanceof Error ? error.stack : error}`);
-    process.exit(2);
-  });
+// MVP: legacy Telegram delivery entrypoint disabled, retained for reference.
+// main()
+//   .then((code) => process.exit(code))
+//   .catch((error) => {
+//     console.error(`[${timestamp()}] FATAL: ${error instanceof Error ? error.stack : error}`);
+//     process.exit(2);
+//   });
+console.error("Legacy scheduled delivery is disabled for the import MVP. HTS synchronization runs in Supabase.");
+process.exitCode = 1;

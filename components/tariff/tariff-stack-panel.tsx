@@ -4,8 +4,8 @@ import { useCallback, useRef, useState } from "react";
 import { Calculator, Upload, FileSpreadsheet, AlertTriangle } from "lucide-react";
 
 /**
- * Tariff Stack Calculator — built directly from the customer-discovery
- * interview with Kate Chang (The Toro Company, 2026-10-01). Her exact ask:
+ * Tariff Stack Calculator — built directly from customer-discovery
+ * interviews (2026-10-01). The exact ask:
  * "Maybe it's just a SaaS that we can go out and use... upload some HTS
  * codes and countries of origin and it spits out the tariff rate and how
  * you got there." This panel is that tool: a single-row quick quote plus a

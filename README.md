@@ -104,8 +104,7 @@ Vercel receives the Supabase URL/publishable key and one hosted AI key. The Supa
 ## Tariff-stacking calculator (new, additive — `/chat` is unchanged)
 
 `GET /api/tariff/stack?code=<HTS code>&country=<origin>&value=<USD>` answers the
-question Kate Chang (The Toro Company, customer-discovery interview,
-2026-10-01 — see `gbrain cante/interviews/kate-chang-toro-company`) described
+question trade-compliance discovery interviews (2026-10-01) described
 as Cante's clearest V1: upload an HTS code + country of origin and get back
 the total landed duty rate, broken down by component, with the stacking
 logic spelled out in plain English and a citation for each applicable rule.
@@ -240,8 +239,8 @@ silently under-states it) — see `lib/tariff/stack.ts` for the full policy.
 This is the honest-failure discipline the rest of Cante already follows,
 applied to the specific narrow tool a real prospect asked for: real accuracy
 on the HTS codes it does cover beats broad fake coverage. Demo bar: run
-Kate's real HTS codes through it and compare against Toro's spreadsheet,
-targeted for after Oracle GTM go-live (mid-December 2026).
+real HTS codes through it and compare against historical spreadsheets,
+targeted for after enterprise pilot validation.
 
 The migration qualifies pgvector's cosine operator through the `extensions`
 schema so its retrieval function remains compatible with the hardened empty

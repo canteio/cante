@@ -121,7 +121,7 @@ Architecture is viable for a small SaaS if narrowed: retain Next.js, Supabase, t
 
 ### F. Missing MVP Requirements
 
-**P0: Must fix before showing Kate or a pilot customer as a working duty-audit MVP**
+**P0: Must fix before showing a pilot customer as a working duty-audit MVP**
 
 - Define historical entry/line CSV fields and paid-duty reconciliation; import the second required dataset with durable identity, product linkage, duplicates, and explicit unmatched/error states.
 - Resolve combined Section 232 treatment, country/metal qualifications, rule freshness, and failed-lookup behavior. Withhold totals outside verified scope.

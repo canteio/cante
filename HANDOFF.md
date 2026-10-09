@@ -11,7 +11,7 @@ Written 18 Aug 2026. If the dates below are weeks old, ask before trusting the
 
 ## October 9 rollout note
 
-The operator explicitly requested no Telegram or launchd. There is no Toro data;
+The operator explicitly requested no Telegram or launchd. There is no proprietary customer data;
 the current public-product demonstration uses cited LulzBot descriptions and
 explicitly synthetic customs entries. See `MVP_STATUS.md` for the exact scope.
 All 28 Supabase migrations are applied, HTS Edge Function version 6 is active,
@@ -118,3 +118,13 @@ meetings than any feature.
 - **Code, sources, verified-vs-assumed claims:** `CLAUDE.md`
 - **Scope and sequencing:** `plan.md`
 - **Source reliability:** `readme.md`
+
+## Latest UI direction
+
+User explicitly rejected a guided demo: simplify for the importer, preserve unused code
+by commenting it out. Navigation now has Products and Imports & results only.
+Legacy page URLs redirect, old API entry points are archived, Indonesian worker
+execution and Telegram schedule invocation are disabled. Shared schema/type
+code is retained. Actual public Aleph/LulzBot manifests were sourced; see the
+fixture README. Their missing customs fields cannot validate duty accuracy.
+Do not present synthetic data or all-error intake as a completed real duty audit.

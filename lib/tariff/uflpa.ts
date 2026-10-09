@@ -1,8 +1,8 @@
 /**
  * UFLPA (Uyghur Forced Labor Prevention Act) high-priority-sector advisory.
  *
- * Kate Chang (Toro Company, customer-discovery interview 2026-10-01) named
- * forced-labor measures as one of the stacking inputs her team has to
+ * Trade compliance discovery interviews (2026-10-01) named
+ * forced-labor measures as one of the stacking inputs trade teams have to
  * evaluate by hand. Until now `stack.ts` only ever named "Forced-labor
  * measures (e.g. UFLPA detentions/withhold-release orders)" in
  * `notEvaluated` with no data behind it. This module adds the one piece

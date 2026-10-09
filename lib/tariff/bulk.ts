@@ -3,13 +3,13 @@ import { isStrictIsoDate } from "@/lib/tariff/date";
 import type { UsmcaQualificationInput } from "@/lib/tariff/stack";
 
 /**
- * Bulk input for the tariff-stacking calculator — exactly what Kate Chang
- * asked for: "upload some HTS codes and countries of origin and it spits
- * out the tariff rate and how you got there," as a spreadsheet, not a
- * one-row-at-a-time form.
+ * Bulk input for the tariff-stacking calculator — exactly what the trade
+ * compliance team asked for: "upload some HTS codes and countries of origin
+ * and it spits out the tariff rate and how you got there," as a spreadsheet,
+ * not a one-row-at-a-time form.
  *
  * Accepts a small set of header aliases because customs/trade teams do not
- * agree on column names (Toro's own spreadsheet uses different headers than
+ * agree on column names (an importer's own spreadsheet uses different headers than
  * a classification system export would).
  */
 export interface StackRequestRow {
@@ -37,13 +37,25 @@ export interface ParsedStackRequest {
   errors: StackRequestRowError[];
 }
 
-export const HTS_HEADER_ALIASES = ["hts_code", "htscode", "hts", "code", "classification", "tariff_code"];
-export const COUNTRY_HEADER_ALIASES = ["country_of_origin", "countryoforigin", "country", "origin", "coo"];
-const VALUE_HEADER_ALIASES = ["value", "customs_value", "shipment_value", "declared_value"];
-const QUANTITY_HEADER_ALIASES = ["quantity", "qty"];
-const UNIT_HEADER_ALIASES = ["unit", "uom", "unit_of_measure"];
-const PROGRAMME_HEADER_ALIASES = ["programme", "program", "fta", "claimed_programme", "special_programme"];
-const IMPORT_DATE_HEADER_ALIASES = ["import_date", "importdate", "date", "entry_date", "shipment_date"];
+export const HTS_HEADER_ALIASES = [
+  "hts_code", "htscode", "hts", "code", "classification", "tariff_code",
+  "hs_code", "hscode", "hs", "commodity_code", "tariff_no", "tariff_number", "harmonized_code",
+];
+export const COUNTRY_HEADER_ALIASES = [
+  "country_of_origin", "countryoforigin", "country", "origin", "coo",
+  "origin_country", "source_country", "made_in",
+];
+const VALUE_HEADER_ALIASES = [
+  "value", "customs_value", "shipment_value", "declared_value",
+  "fob_value", "entered_value", "amount", "total_value", "usd_value",
+];
+const QUANTITY_HEADER_ALIASES = ["quantity", "qty", "units", "pieces", "count"];
+const UNIT_HEADER_ALIASES = ["unit", "uom", "unit_of_measure", "qty_unit"];
+const PROGRAMME_HEADER_ALIASES = ["programme", "program", "fta", "claimed_programme", "special_programme", "special_program"];
+const IMPORT_DATE_HEADER_ALIASES = [
+  "import_date", "importdate", "date", "entry_date", "shipment_date",
+  "clearance_date", "arrival_date",
+];
 const STEEL_CONTENT_VALUE_ALIASES = ["steel_content_value", "steelcontentvalue", "steel_value"];
 const ALUMINUM_CONTENT_VALUE_ALIASES = [
   "aluminum_content_value",
@@ -318,21 +330,21 @@ export function parseStackRequestRows(input: string): ParsedStackRequest {
 }
 
 export const impactFieldAliases = {
-  qualification_verified: ["qualification_verified"],
-  qualification_basis: ["qualification_basis"],
-  entry_id: ["entry_id", "entry_number"],
-  line_number: ["line_number", "entry_line", "line_id"],
-  customs_value_usd: ["customs_value_usd", "customs_value", "entered_value"],
-  paid_duty_usd: ["paid_duty_usd", "paid_duty", "duty_paid"],
-  sku: ["sku", "product_code", "item_code", "part_number"],
+  qualification_verified: ["qualification_verified", "qualified", "verified"],
+  qualification_basis: ["qualification_basis", "basis", "qualification_notes"],
+  entry_id: ["entry_id", "entry_number", "entry_no", "entry", "customs_entry", "declaration_no"],
+  line_number: ["line_number", "entry_line", "line_id", "line", "line_no", "item_no"],
+  customs_value_usd: ["customs_value_usd", "customs_value", "entered_value", "declared_value", "fob_value", "cif_value", "value_usd", "value"],
+  paid_duty_usd: ["paid_duty_usd", "paid_duty", "duty_paid", "duty_amount", "duties_paid", "customs_duty", "tariff_paid", "import_tariff_paid", "duty", "duties"],
+  sku: ["sku", "product_code", "item_code", "part_number", "part_no", "part_num", "material_number", "model", "item"],
   hts: HTS_HEADER_ALIASES, origin: COUNTRY_HEADER_ALIASES,
-  supplier: ["supplier", "supplier_name", "vendor"],
-  annual_import_value_usd: ["annual_import_value", "annual_import_value_usd", "annual_value", "import_value"],
-  current_duty_rate: ["current_duty_rate", "current_duty_rate_percent", "current_rate", "duty_rate"],
-  evaluation_date: ["evaluation_date", "import_date", "entry_date", "effective_date"],
-  quantity: ["quantity", "qty"],
-  unit: ["unit", "quantity_unit", "uom"],
+  supplier: ["supplier", "supplier_name", "vendor", "shipper", "exporter", "manufacturer"],
+  annual_import_value_usd: ["annual_import_value", "annual_import_value_usd", "annual_value", "import_value", "total_import_value", "spend"],
+  current_duty_rate: ["current_duty_rate", "current_duty_rate_percent", "current_rate", "duty_rate", "rate", "tariff_rate"],
+  evaluation_date: ["evaluation_date", "import_date", "entry_date", "effective_date", "date", "clearance_date"],
+  quantity: ["quantity", "qty", "amount", "units", "count"],
+  unit: ["unit", "quantity_unit", "uom", "unit_of_measure"],
   chapter99_codes: ["chapter99_codes", "ch99", "chapter_99", "chapter99_code"],
   exclusion_id: ["exclusion_id", "exclusion", "exclusion_number"],
-  special_program_claim: ["special_program_claim", "special_program", "program_claim", "fta"],
+  special_program_claim: ["special_program_claim", "special_program", "program_claim", "fta", "preference_claim"],
 };

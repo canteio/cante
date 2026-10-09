@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Plus, Tag, Search, LayoutGrid, List } from "lucide-react";
 import { ChipInput } from "@/components/chip-input";
 import type { JurisdictionName } from "@/lib/countries";
-import { CountryTabs } from "@/components/dashboard/country-tabs";
+// MVP: import { CountryTabs } from "@/components/dashboard/country-tabs";
 
 type Classification = {
   id: string;
@@ -196,7 +196,7 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
           <button ref={addFormTriggerRef} aria-expanded={showAddForm} aria-controls="catalogue-add-product" className="btn btn-primary" onClick={() => setShowAddForm((v) => !v)}>
             <Plus size={14} /> {showAddForm ? "Close Form" : "Add Product"}
           </button>
-          <CountryTabs value={country} />
+          {/* MVP: country switching disabled; retained for later. <CountryTabs value={country} /> */}
         </div>
       </div>
 
@@ -272,8 +272,16 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
         </section>
 
         {/* Bulk import is a secondary path; keep it out of first-product setup. */}
-        <details className="card profile-disclosure">
-          <summary>Import from CSV</summary>
+        <details className="card profile-disclosure" open>
+          <summary>Upload product CSV</summary>
+          <p className="muted">Start with SKU and name. Add your reviewed HTS code if you have it.</p>
+          <input className="input" aria-label="Product CSV file" type="file" accept=".csv,text/csv" disabled={busy} onChange={async event => {
+            const file = event.target.files?.[0];
+            if (!file) return;
+            if (file.size > 2 * 1024 * 1024) { setError("Product CSV exceeds 2 MiB."); return; }
+            try { setCsv(await file.text()); } catch { setError("Could not read the product CSV. Please try again."); }
+          }} />
+          <p><a href="/examples/products-template.csv" download>Download blank template</a> · <a href="/tariff">Continue to imports →</a></p>
           <label htmlFor="catalogue-csv" className="muted">Paste a header row and product rows. Separate materials with semicolons.</label>
           <textarea id="catalogue-csv" className="input mono" rows={4} placeholder={'e.g. sku,name,hs_code,materials\nTARP-01,Tarpaulin,,PVC;Polyester'}
             value={csv} onChange={(e) => setCsv(e.target.value)} />

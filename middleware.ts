@@ -26,6 +26,12 @@ const PUBLIC_API_PATHS = new Set(["/api/demo-login", "/api/logout", "/api/waitli
 
 export async function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
+  // MVP: archived pages remain in the repository, but their old entry points
+  // redirect to the focused import workflow. No old page component is executed.
+  const archivedPages = ["/chat", "/checklist", "/checks", "/documents", "/memory", "/profile", "/suppliers", "/workqueue", "/import-monitor", "/onboarding"];
+  if (archivedPages.some(path => pathname === path || pathname.startsWith(`${path}/`))) {
+    return NextResponse.redirect(new URL("/tariff", request.url));
+  }
   const isProtectedPage = PROTECTED_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
@@ -47,6 +53,11 @@ export async function middleware(request: NextRequest) {
   if (getAuthMode() === "supabase") {
     const { response, userIsAuthenticated, workspace } = await updateSupabaseSession(request);
     if (userIsAuthenticated && workspace) {
+      // MVP: legacy API entry points are disabled; implementations remain intact.
+      const archivedApis = ["/api/chat", "/api/checklist", "/api/checks", "/api/memories", "/api/documents", "/api/workqueue", "/api/screening", "/api/substances", "/api/import-monitor", "/api/onboarding"];
+      if (archivedApis.some(path => pathname === path || pathname.startsWith(`${path}/`))) {
+        return NextResponse.json({ error: "This feature is archived. Use Products and Imports & results." }, { status: 410 });
+      }
       if (isProtectedApi && !["GET", "HEAD", "OPTIONS"].includes(request.method)) {
         const origin = request.headers.get("origin");
         if (origin && origin !== request.nextUrl.origin) {

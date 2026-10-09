@@ -10,11 +10,10 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
- * Tariff-stacking calculator — the tool described almost verbatim by Kate
- * Chang (Toro Company) in customer-discovery: upload an HTS code + country
- * of origin, get the total stacked duty rate broken down by component, with
- * plain-English stacking logic and a Federal Register / Chapter 99 citation
- * for each applicable measure.
+ * Tariff-stacking calculator — the tool described in customer discovery:
+ * upload an HTS code + country of origin, get the total stacked duty rate
+ * broken down by component, with plain-English stacking logic and a
+ * Federal Register / Chapter 99 citation for each applicable measure.
  *
  * This is additive to the existing /chat conversational interface, which is
  * untouched. `GET /api/tariff/stack?code=…&country=CN&value=10000` quotes a

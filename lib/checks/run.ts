@@ -39,6 +39,9 @@ export async function runCheck(
   providerChoice?: LlmProviderChoice,
   jurisdiction: JurisdictionName = DEFAULT_JURISDICTION,
 ): Promise<{ runId: string }> {
+  // MVP: Indonesian source definitions/parsers remain archived in the codebase.
+  // Their runtime activation is disabled; do not report them as checked.
+  if (["Indonesia"].includes(jurisdiction)) throw new Error("Indonesian monitoring is disabled in the US import MVP.");
   // runCheck runs both from HTTP routes and standalone CLI/cron scripts
   // (scripts/run-check.ts, scripts/scheduled-check.ts) with no cookie/user
   // session available. The `sources` table it writes to is shared

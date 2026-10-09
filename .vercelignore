@@ -35,3 +35,5 @@ supabase/.temp/
 # Local browser QA artifacts can include tenant data.
 .playwright-cli/
 output/playwright/
+# Old synthetic demo downloads are retained locally, outside the customer app.
+public/examples/lulzbot-*.csv

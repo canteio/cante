@@ -6,7 +6,9 @@ export const dynamic = "force-dynamic";
 
 export default async function Page({ searchParams }: { searchParams: Promise<{ country?: string }> }) {
   const params = await searchParams;
-  const jurisdiction = normalizeJurisdiction(params.country);
+  // MVP: Indonesian jurisdiction selection retained but disabled.
+  // const jurisdiction = normalizeJurisdiction(params.country);
+  const jurisdiction = "United States";
   return (
     <div className="shell">
       <Sidebar active="catalogue" jurisdiction={jurisdiction} />

@@ -1,8 +1,8 @@
 # MVP status — October 9, 2026
 
 Cante now has a working, supervised CSV pilot for a bounded tariff scope.
-It is not yet a general-purpose customs audit product or validated for Toro.
-The operator confirmed there is no Toro data: public LulzBot descriptions are
+It is not yet a general-purpose customs audit product or validated for arbitrary production enterprise use.
+The operator confirmed there is no proprietary customer data: public LulzBot descriptions are
 used for the demo, with explicitly synthetic customs entries and qualifications.
 
 ## Verified workflow
@@ -68,3 +68,27 @@ verified vector preservation, missing-vector rejection, atomic markers,
 change deduplication and service-only publication. Authenticated browser
 acceptance exercised catalogue, historical upload, company scenario, export
 and duplicate reuse. See `AUDIT_FIXES.md` for release verification.
+
+## Simplified customer interface — October 9 follow-up
+
+The customer app now exposes only Products and Imports & results. Legacy
+navigation, country switching, quick-quote/bulk duplication, synthetic demo
+links and raw JSON output are commented out, not deleted. Old operational-page
+URLs redirect to /tariff; archived authenticated APIs return 410. Indonesian
+monitor execution is explicitly disabled; its registry, parsers and historical
+code remain preserved. The Telegram scheduled-script invocation is commented
+out. SQLite/Drizzle declarations still needed by shared types remain intact.
+
+Product uploads accept files directly. Blank templates, plain-language result
+labels, separate possible overpayment/underpayment amounts, and visible
+correction instructions replace the prior demo-oriented presentation. All-error
+uploads display 'No duties calculated', not a misleading zero-dollar result.
+
+Real public records are now tested: scripts/test-fixtures/lulzbot-public-manifests.csv
+contains three Aleph Objects manifests published by ImportGenius (filament,
+step motors, power supplies; 2015/2018). They do not publish customs values,
+duties paid, entry dates/IDs, SKUs or exact HTS codes. Missing facts stay blank;
+arrival date, gross weight and bill of lading are not substituted for customs
+facts. This validates real-record intake, not tariff accuracy on real entries.
+A complete self-service duty audit remains blocked by the narrow legal coverage
+and lack of broker entry data, regardless of the simplified interface.

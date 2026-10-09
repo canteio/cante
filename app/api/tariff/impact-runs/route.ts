@@ -1,4 +1,4 @@
-import { applyColumnMapping, columnMappingSchema } from "@/lib/tariff/column-mapping";
+import { applyColumnMapping, columnMappingSchema, proposeColumnMapping } from "@/lib/tariff/column-mapping";
 import { getAuthenticatedWorkspace } from "@/lib/supabase/server";
 import { parseBusinessImpact, parseImpactTable, parseMappedBusinessImpact, evaluateBusinessImpact, ImpactInputError, ImpactBodyTooLarge, readImpactBody } from "@/lib/tariff/business-impact";
 import { createImpactRun, listImpactRuns } from "@/lib/tariff/business-impact-store";
@@ -23,6 +23,18 @@ export async function POST(request: Request) {
       parsed = parseMappedBusinessImpact(applyColumnMapping(table, mapping), table.rows);
     } else {
       parsed = parseBusinessImpact(input);
+      if (parsed.length > 0 && !parsed.some(r => r.input_valid)) {
+        try {
+          const table = parseImpactTable(input, true);
+          const llmProposal = await proposeColumnMapping(table.headers, table.rows.slice(0, 5));
+          const remapped = parseMappedBusinessImpact(applyColumnMapping(table, llmProposal.mapping), table.rows);
+          if (remapped.some(r => r.input_valid)) {
+            parsed = remapped;
+          }
+        } catch {
+          // Keep original parsed
+        }
+      }
     }
     const rows = await evaluateBusinessImpact(parsed, undefined, request.signal);
     if (request.signal.aborted) return Response.json({ error: "Request cancelled." }, { status: 499 });

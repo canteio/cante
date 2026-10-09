@@ -7,8 +7,8 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 
 /**
- * Bulk tariff-stacking — the spreadsheet-upload workflow Kate Chang (Toro)
- * described: a CSV/XLSX-exported-as-CSV with HTS codes and countries of
+ * Bulk tariff-stacking — the spreadsheet-upload workflow
+ * requested: a CSV/XLSX-exported-as-CSV with HTS codes and countries of
  * origin in, a per-row stacked rate and plain-English derivation out.
  *
  * `POST /api/tariff/stack/bulk` with `Content-Type: text/csv` (or

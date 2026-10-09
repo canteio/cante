@@ -1,6 +1,6 @@
 # Public-product demonstration and synthetic customs entries
 
-**No Toro or LulzBot customs ledger, paid duties, origin declarations or actual
+**No proprietary customs ledger, paid duties, origin declarations or actual
 import values have been supplied.** Public product documentation does not prove
 that a company imported a product, its origin, classification, or its duties.
 
@@ -33,3 +33,29 @@ public printer parts**. Its suppliers, countries, spending, quantities, SKU labe
 and HTS mappings have not been established as real LulzBot business records.
 Several codes have only eight digits. Do not present it as a genuine import
 ledger or a verified BOM-to-HTS mapping. It remains for parser regression work.
+
+## Actual public Aleph Objects (LulzBot) manifest records
+
+`lulzbot-public-manifests.csv` transcribes three publicly displayed shipment
+records from https://www.importgenius.com/importers/aleph-objects-inc,
+accessed October 9, 2026. It is not synthetic. The rows identify filament
+(arrival July 27, 2018), step motors (September 27, 2015), and power supplies
+(February 13, 2015), with their published bills of lading, suppliers, gross
+weights and package counts. LulzBot's own announcement identifies Aleph as its
+manufacturer: https://assets.lulzbot.com/legacy-site/aleph-objects-inc-2016.pdf.
+
+This is third-party manifest evidence, not broker-certified entry data. Customs
+entry ID/line, SKU, exact HTS, customs value, duty paid and legal entry date are
+not published in these rows and remain blank. The site's reported China field
+is retained separately from a legally reviewed country of origin. Arrival date
+is not entry date; gross weight is not dutiable quantity; a bill of lading is
+not a customs entry number. The power-supply description is shortened; no
+customs facts were added. Company-name attribution is third-party, not verified
+by a broker or the manufacturer.
+
+The acceptance test expects all three records to be retained as incomplete,
+with no tariff lookup, assessed duty, overpayment or financial total. This tests
+real-record intake and missing-data handling. It cannot validate duty accuracy:
+that requires customs-entry records containing the missing facts. Earlier
+synthetic fixtures remain regression tests and are no longer advertised in the
+customer interface.

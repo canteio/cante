@@ -22,9 +22,29 @@ export interface ImpactRow {
   computed_total_rate: number | null; annual_delta_usd: number | null;
   stack_result: StackedDutyResult | null; raw_input: Record<string, string>; error: string | null;
 }
+const COUNTRY_NAME_TO_CODE: Record<string, string> = {
+  china: "CN", prc: "CN", chn: "CN",
+  vietnam: "VN", "viet nam": "VN", vnm: "VN",
+  "united states": "US", usa: "US", us: "US",
+  canada: "CA", can: "CA",
+  mexico: "MX", mex: "MX",
+  germany: "DE", deu: "DE", ger: "DE",
+  japan: "JP", jpn: "JP",
+  taiwan: "TW", twn: "TW",
+  "united kingdom": "GB", uk: "GB", gbr: "GB",
+  "south korea": "KR", korea: "KR", kor: "KR",
+  france: "FR", fra: "FR",
+  italy: "IT", ita: "IT",
+  india: "IN", ind: "IN",
+  indonesia: "ID", idn: "ID",
+  malaysia: "MY", mys: "MY",
+  thailand: "TH", tha: "TH",
+};
+
 function decimal(value: string | null, percent = false): number | null {
   if (value === null) return null;
-  const normalized = percent ? value.replace(/%$/, "").trim() : value;
+  const clean = value.replace(/[\$,]/g, "").trim();
+  const normalized = percent ? clean.replace(/%$/, "").trim() : clean;
   if (!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(normalized)) return null;
   const n = Number(normalized);
   return Number.isFinite(n) && (!percent || n <= 100) ? n / (percent ? 100 : 1) : null;
@@ -48,11 +68,41 @@ export function parseMappedBusinessImpact(rows: Record<string, string>[], origin
   return parseImpactRows(rows, true, originals);
 }
 function parseImpactRows(rows: Record<string, string>[], canonical = false, originals = rows): ImpactRow[] {
-  const historical = rows.some(raw => ["entry_id", "line_number", "customs_value_usd", "paid_duty_usd"].some(key =>
+  // Empty customs-entry columns still identify an incomplete historical upload.
+  // Do not reinterpret a manifest with missing customs facts as an annual forecast.
+  const historicalHeaders = ["entry_id", "line_number", "customs_value_usd", "paid_duty_usd"] as const;
+  const historical = Object.keys(originals[0] ?? {}).some(header => historicalHeaders.some(key => impactFieldAliases[key].includes(header.trim().toLowerCase()))) || rows.some(raw => ["entry_id", "line_number", "customs_value_usd", "paid_duty_usd"].some(key =>
     canonical ? Boolean(raw[key]?.trim()) : Boolean(firstPresent(raw, impactFieldAliases[key as "entry_id"]))));
   const parsed: ImpactRow[] = rows.map((raw, i) => {
     const values = Object.fromEntries(Object.entries(impactFieldAliases).map(([key, group]) => [key, canonical ? raw[key]?.trim() || null : firstPresent(raw, group)])) as Record<keyof typeof impactFieldAliases, string | null>;
     const errors: string[] = [];
+    if (values.origin) {
+      const lower = values.origin.trim().toLowerCase();
+      values.origin = COUNTRY_NAME_TO_CODE[lower] ?? (values.origin.trim().length === 2 ? values.origin.trim().toUpperCase() : values.origin.trim());
+    }
+    if (values.hts) {
+      const cleaned = values.hts.trim().replace(/^hts\s*[:#]?\s*/i, "").replace(/-/g, ".");
+      const digits = cleaned.replace(/\D/g, "");
+      if (digits.length === 10 && !cleaned.includes(".")) {
+        values.hts = `${digits.slice(0, 4)}.${digits.slice(4, 6)}.${digits.slice(6, 8)}.${digits.slice(8)}`;
+      } else {
+        values.hts = cleaned;
+      }
+    }
+    if (values.evaluation_date) {
+      const trimmed = values.evaluation_date.trim();
+      const m1 = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(trimmed);
+      if (m1) {
+        const iso = `${m1[3]}-${m1[1].padStart(2, "0")}-${m1[2].padStart(2, "0")}`;
+        if (isStrictIsoDate(iso)) values.evaluation_date = iso;
+      } else {
+        const m2 = /^(\d{4})\/(\d{1,2})\/(\d{1,2})$/.exec(trimmed);
+        if (m2) {
+          const iso = `${m2[1]}-${m2[2].padStart(2, "0")}-${m2[3].padStart(2, "0")}`;
+          if (isStrictIsoDate(iso)) values.evaluation_date = iso;
+        }
+      }
+    }
     for (const [key, group] of Object.entries(impactFieldAliases)) {
       if (!canonical && conflictingAlias(raw, group)) errors.push(`Conflicting ${key} columns.`);
       const optional = ["qualification_verified", "qualification_basis", "evaluation_date", "quantity", "unit", "chapter99_codes", "exclusion_id", "special_program_claim",
@@ -77,7 +127,9 @@ function parseImpactRows(rows: Record<string, string>[], canonical = false, orig
     }
     if ((values.unit?.length ?? 0) > 32) errors.push("Quantity unit exceeds 32 characters.");
     if (value === null) errors.push(historical ? "Customs value must be a non-negative USD amount." : "Annual import value must be a non-negative decimal.");
-    if (rate === null || !Number.isFinite(rate)) errors.push(historical ? "Paid duty cannot exceed zero when customs value is zero." : "Current duty rate must be 0–100 percentage points.");
+    if (historical) {
+      if (value === 0 && paid !== null && paid > 0) errors.push("Paid duty cannot exceed zero when customs value is zero.");
+    } else if (rate === null || !Number.isFinite(rate)) errors.push("Current duty rate must be 0–100 percentage points.");
     if (values.hts && !/^\d{4}(?:\.?\d{1,4}){0,4}$/.test(values.hts)) errors.push("Invalid HTS syntax.");
     if (values.origin && !/^[a-z]{2}$/i.test(values.origin)) errors.push("Origin must be a two-letter code.");
     if (values.evaluation_date && !isStrictIsoDate(values.evaluation_date)) errors.push("Invalid import date.");
@@ -188,7 +240,7 @@ export function summarizeBusinessImpact(rows: ImpactRow[]) {
   };
 }
 export function exportBusinessImpact(rows: ImpactRow[]): string {
-  const headers = ["analysis_kind", "entry_id", "line_number", "customs_value_usd", "paid_duty_usd", "sku", "hts_code", "country_of_origin", "supplier", "annual_import_value", "current_duty_rate_percent", "import_date", "status", "computed_total_rate_percent", "current_annual_duty_usd", "computed_annual_duty_usd", "annual_delta_usd", "direction", "citations", "unresolved", "ad_cvd_advisories", "error", "quantity", "unit", "chapter99_codes", "exclusion_id", "special_program_claim"];
+  const headers = ["analysis_kind", "entry_id", "line_number", "customs_value_usd", "paid_duty_usd", "sku", "hts_code", "country_of_origin", "supplier", "annual_import_value", "current_duty_rate_percent", "import_date", "status", "computed_total_rate_percent", "current_annual_duty_usd", "computed_annual_duty_usd", "annual_delta_usd", "direction", "citations", "unresolved", "ad_cvd_advisories", "error", "quantity", "unit", "chapter99_codes", "exclusion_id", "special_program_claim", "review_reason", "original_input_json"];
   const cell = (value: unknown) => {
     let text = value == null ? "" : String(value);
     if (typeof value === "string" && /^[\s\u0000-\u001f]*[=+\-@]/.test(text)) text = "'" + text;
@@ -201,7 +253,7 @@ export function exportBusinessImpact(rows: ImpactRow[]): string {
     headers[16] = "assessed_minus_paid_duty_usd";
   }
   const includeColumn = (_value: unknown, i: number) => !historical || ![9, 10, 14].includes(i);
-  return [headers, ...rows.map(r => [r.analysis_kind ?? "annual_portfolio", r.entry_id, r.line_number, r.customs_value_usd, r.paid_duty_usd, r.sku, r.hts, r.origin, r.supplier, r.annual_import_value_usd, r.current_duty_rate === null ? null : r.current_duty_rate * 100, r.evaluation_date, r.status, r.computed_total_rate === null ? null : r.computed_total_rate * 100, r.current_annual_duty_usd, r.computed_annual_duty_usd, r.annual_delta_usd, r.direction, r.stack_result?.components.flatMap(c => c.citation).join("; "), r.stack_result?.unresolvedMeasures.join("; "), r.stack_result ? JSON.stringify(r.stack_result.adCvdAdvisories) : null, r.error, r.quantity, r.unit, r.chapter99_codes, r.exclusion_id, r.special_program_claim])].map(r => r.filter(includeColumn).map(cell).join(",")).join("\r\n") + "\r\n";
+  return [headers, ...rows.map(r => [r.analysis_kind ?? "annual_portfolio", r.entry_id, r.line_number, r.customs_value_usd, r.paid_duty_usd, r.sku, r.hts, r.origin, r.supplier, r.annual_import_value_usd, r.current_duty_rate === null ? null : r.current_duty_rate * 100, r.evaluation_date, r.status, r.computed_total_rate === null ? null : r.computed_total_rate * 100, r.current_annual_duty_usd, r.computed_annual_duty_usd, r.annual_delta_usd, r.direction, r.stack_result?.components.flatMap(c => c.citation).join("; "), r.stack_result?.unresolvedMeasures.join("; "), r.stack_result ? JSON.stringify(r.stack_result.adCvdAdvisories) : null, r.error, r.quantity, r.unit, r.chapter99_codes, r.exclusion_id, r.special_program_claim, r.review_reason, JSON.stringify(r.raw_input)])].map(r => r.filter(includeColumn).map(cell).join(",")).join("\r\n") + "\r\n";
 }
 
 const MAX_BYTES = 2 * 1024 * 1024;

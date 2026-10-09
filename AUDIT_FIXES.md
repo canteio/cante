@@ -10,7 +10,7 @@ source listing also excludes environment files and browser artifacts. Local dev
 and main contain implementation commit `3eed5c9`; GitHub pushes were blocked by
 a stalled Keychain helper and unauthenticated gh. Remote dev/main remain at
 `80b4f2e` until the operator authenticates and pushes both branches.
-The user confirmed no Toro data is available. Public LulzBot product descriptions
+The user confirmed no proprietary customer data is available. Public LulzBot product descriptions
 are cited; all customs entries, proposed classifications and qualification facts
 in the demo are explicitly synthetic. No result is presented as LulzBot's real
 imports or a refund entitlement.

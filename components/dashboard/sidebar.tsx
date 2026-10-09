@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
 import { AccountMenu } from "@/components/dashboard/account-menu";
-import { ChatNav } from "@/components/dashboard/chat-nav";
+// MVP: import { ChatNav } from "@/components/dashboard/chat-nav";
 import { getAuthMode, hasSupabaseEnv } from "@/lib/auth/config";
 import { DEFAULT_JURISDICTION, type JurisdictionName } from "@/lib/countries";
 
@@ -77,7 +77,15 @@ export async function Sidebar({
         </div>
       </div>
 
-      {/* Primary AI Assistant */}
+      <div className="side-section" style={{ paddingTop: 0 }}>
+        <div className="side-label">Import review</div>
+        <nav className="nav" aria-label="Main navigation">
+          <Link href="/tariff" data-active={active === "tariff"}><Calculator size={15} />Imports &amp; results</Link>
+          <Link href="/catalogue?country=United%20States" data-active={active === "catalogue"}><Boxes size={15} />Products</Link>
+        </nav>
+      </div>
+      {/* MVP: broad compliance navigation retained below, disabled.
+       Primary AI Assistant
       <div className="side-section fade-1" style={{ paddingTop: 0 }}>
         <div className="side-label">AI Assistant</div>
         <nav className="nav">
@@ -91,7 +99,7 @@ export async function Sidebar({
         </nav>
       </div>
 
-      {/* Regulatory Compliance & Action */}
+       Regulatory Compliance & Action
       <div className="side-section fade-2">
         <div className="side-label">Compliance & Action</div>
         <nav className="nav">
@@ -114,7 +122,7 @@ export async function Sidebar({
         </nav>
       </div>
 
-      {/* Company & Operations */}
+       Company & Operations
       <div className="side-section fade-2">
         <div className="side-label">Company & Operations</div>
         <nav className="nav">
@@ -141,6 +149,7 @@ export async function Sidebar({
         </nav>
       </div>
 
+      */}
       {/* Bottom Footer: Account */}
       <div className="sidebar-foot fade-3" style={{ marginTop: "auto" }}>
         <AccountMenu email={email} memoryHref={`/memory${countryQuery}`} />

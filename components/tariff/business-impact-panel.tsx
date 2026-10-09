@@ -42,19 +42,26 @@ async function readResponse<T>(response: Response): Promise<T> {
 
 function RowEvidence({ row }: { row: ImpactRow }) {
   return (
-    <details>
+    <details open={row.status !== "computed"}>
       <summary>Row {row.row_number} details — {row.sku ?? "missing SKU"}</summary>
       {row.entry_id && <p>Entry: {row.entry_id} · Line: {row.line_number} · Paid duty: {usd(row.paid_duty_usd ?? null)} · Catalogue: {row.product_id ? "matched" : "unmatched"}</p>}
+      {row.raw_input.bill_of_lading && <p>Bill of lading: {row.raw_input.bill_of_lading}. Arrival: {row.raw_input.arrival_date || "not supplied"}. These are shipment references, not customs entry identity or entry date.</p>}
+      {row.raw_input.description && <p>{row.raw_input.description}</p>}
+      {row.raw_input.source_url && /^https?:\/\//.test(row.raw_input.source_url) && <p><a href={row.raw_input.source_url} target="_blank" rel="noreferrer">Uploaded record’s source</a></p>}
       <p>Evaluation date: {row.evaluation_date ?? "not provided"}</p>
       <p>Quantity: {row.quantity ?? "not provided"} {row.unit ?? ""} · Chapter 99 codes: {row.chapter99_codes ?? "not provided"}</p>
       <p>Exclusion ID: {row.exclusion_id ?? "not provided"} · Special program claim: {row.special_program_claim ?? "not provided"}</p>
       <p className="muted">Quantity and its unit are used for specific duties. Chapter 99, exclusion and programme claims require applicability review and withhold the delta.</p>
       {row.review_reason && <p>{row.review_reason}</p>}
-      {row.error && <p role="alert">{row.error}</p>}
+      {row.error && <div role="alert"><strong>Correct these fields in your CSV and upload it again:</strong><p>{row.error.replace(/annual_import_value_usd/g, "import value").replace(/customs_value_usd/g, "customs value").replace(/paid_duty_usd/g, "duty paid").replace(/entry_id/g, "entry ID").replace(/line_number/g, "entry line").replace(/\bhts\b/g, "HTS code").replace(/\bsku\b/g, "SKU")}</p></div>}
       {row.stack_result ? (
         <>
+          <table className="table"><thead><tr><th>Duty</th><th>Rate</th><th>Amount</th><th>Source</th></tr></thead><tbody>{row.stack_result.components.map((part,index) => <tr key={index}><td>{part.label}</td><td>{rate(part.ratePercent)}</td><td>{usd(part.amount)}</td><td>{part.citation.map((url,i) => /^https?:\/\//.test(url) ? <a key={url} href={url} target="_blank" rel="noreferrer">Source {i+1} </a> : <span key={url}>{url}</span>)}</td></tr>)}</tbody></table>
+          <p>{row.stack_result.stackingExplanation.join(" ")}</p>
+          {row.stack_result.unresolvedMeasures.length > 0 && <p>Needs review: {row.stack_result.unresolvedMeasures.join("; ")}</p>}
+          {/* Previous raw implementation output retained but disabled.
           <p className="muted">Saved stack evidence, including components, citations, unresolvedMeasures and adCvdAdvisories. Numeric values below are shown exactly as returned.</p>
-          <pre className="mono" style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere", margin: 0 }}>{JSON.stringify(row.stack_result, null, 2)}</pre>
+          <pre className="mono" style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere", margin: 0 }}>{JSON.stringify(row.stack_result, null, 2)}</pre>          */}
         </>
       ) : <p className="muted">No stack result returned.</p>}
     </details>
@@ -186,6 +193,9 @@ export function BusinessImpactPanel() {
 
   return (
     <section aria-label="Tariff impact analysis">
+      <div className="page-head"><div><h1>Imports &amp; results</h1><p className="page-sub">Check duties paid. See what needs attention.</p></div></div>
+      <div className="card"><strong>Upload your customs-entry history</strong><p>Add your <a href="/catalogue?country=United%20States">products</a> first, then upload your broker’s entry-line CSV using the same SKUs.</p><p><a href="/examples/imports-template.csv" download>Download blank import template</a></p><details><summary>What can Cante calculate?</summary><p>Verified historical coverage currently includes HTS 3916.90.30.00 from China/Vietnam for July 21–27 and September 15–27, 2026. Other entries are saved with an explanation of what still needs review. Classification, origin and exceptions must be supported by your records.</p><p>A bill of lading alone does not show customs value or duty paid. Ask your broker for an entry-line export. Differences are review leads, not approved refunds.</p></details></div>
+      {/* Previous demo-first introduction retained, disabled for customer use.
       <div className="card"><strong>Start with your two datasets</strong><p>1. <a href="/catalogue?country=United%20States">Upload products in Catalogue</a> with stable SKUs. 2. Upload import history below using those same SKUs. 3. Review duty differences and the estimated impact of monitored changes.</p><p className="muted">A calculated difference is a review lead, not a refund entitlement. Unmatched entries and unsupported tariff treatment remain unresolved.</p><details><summary>Try the public-product demonstration</summary><p>Public LulzBot product descriptions with synthetic import records. Origins, values, duties and reviewed flags are fictional test inputs, not company records.</p><p><a href="/examples/lulzbot-public-products.csv" download>1. Product CSV</a> · <a href="/examples/lulzbot-synthetic-imports.csv" download>2. Synthetic import CSV</a></p></details></div>
       <ScheduleMonitor runId={run?.id ?? null} />
       <MonitorCandidates runId={run?.id ?? null} />
@@ -195,10 +205,11 @@ export function BusinessImpactPanel() {
           <p className="page-sub">Upload an annual portfolio or historical entry lines. Historical pilot: 3916.90.30.00, China/Vietnam, Jul 21–27 or Sep 15–27, 2026. Explicit review must cover classification, origin, transit, court relief and special treatment.</p>
         </div>
       </div>
+      */}
       <form className="card" onSubmit={(event) => { event.preventDefault(); void upload(); }}>
-        <label htmlFor="impact-csv" className="card-title">Upload import history or annual portfolio</label>
+        <label htmlFor="impact-csv" className="card-title">Upload import history</label>
         <p id="impact-csv-help" className="muted">
-          Match your column names before analyzing. Historical entries need entry ID, line, SKU, full HTS code, origin, entry date, customs value and paid duty. Annual portfolios need supplier, annual value and current duty rate.
+          Match your column names before analyzing. Include entry ID, line, SKU, full HTS code, origin, entry date, customs value and duty paid.
           Entry dates use YYYY-MM-DD. Quantity and unit are required for specific duties. Include Chapter 99 codes, exclusions and special-program claims when applicable.
           Use two-letter origins, USD values without separators,
           and percentage points (5 means 5%). Maximum 500 rows, 2 MiB.
@@ -209,11 +220,11 @@ export function BusinessImpactPanel() {
           {!proposal && file && <button className="btn" type="button" disabled={busy !== null} onClick={() => void propose(file)}>Retry column mapping</button>}
           <button className="btn btn-primary" type="submit" disabled={!file || !proposal || busy !== null}>Confirm mapping and analyze</button>
         </div>
-        {proposal && <div style={{ overflowX: "auto" }}>
+        {proposal && <details open={!run} style={{ overflowX: "auto" }}><summary>Check column matches</summary><div>
           <p>We think these columns match. Check each selection before confirming; choose None when your file has no matching column.</p>
           <table className="table">
             <thead><tr><th scope="col">Field</th><th scope="col">Your column</th><th scope="col">Header match</th></tr></thead>
-            <tbody>{(Object.keys(fieldLabels) as CanonicalField[]).map(field => <tr key={field}>
+            <tbody>{(Object.keys(fieldLabels) as CanonicalField[]).filter(field => !["annual_import_value_usd", "current_duty_rate"].includes(field)).map(field => <tr key={field}>
               <th scope="row"><label htmlFor={`mapping-${field}`}>{fieldLabels[field]}</label></th>
               <td><select id={`mapping-${field}`} className="input" disabled={busy !== null} value={proposal.mapping[field] ?? ""}
                 onChange={event => setProposal({ ...proposal, mapping: { ...proposal.mapping, [field]: event.target.value || null } })}>
@@ -223,7 +234,7 @@ export function BusinessImpactPanel() {
               <td>{Math.round(proposal.confidence[field] * 100)}%</td>
             </tr>)}</tbody>
           </table>
-        </div>}
+        </div></details>}
       </form>
       {error && <p className="pill pill-bad" role="alert" style={{ whiteSpace: "normal" }}>{error}</p>}
       {busy && (
@@ -243,20 +254,30 @@ export function BusinessImpactPanel() {
             <button className="btn" disabled={busy !== null} onClick={() => void exportRun()}>Export CSV</button>
           </div>
           <div className="meta-row" style={{ flexWrap: "wrap" }}>
-            <span className="pill pill-blue">{run.affected_sku_count} distinct affected SKUs</span>
-            <span className="pill pill-muted">{run.unique_supplier_count} distinct suppliers</span>
-            <span className="pill pill-ok">{run.computed_count} computed</span>
-            <span className="pill pill-warn">{run.unresolved_count} unresolved</span>
-            <span className="pill pill-bad">{run.error_count} errors</span>
+            <span className="pill pill-blue">{run.affected_sku_count} products with differences</span>
+            <span className="pill pill-muted">{run.unique_supplier_count} suppliers</span>
+            <span className="pill pill-ok">{run.computed_count} checked</span>
+            <span className="pill pill-warn">{run.unresolved_count} need review</span>
+            <span className="pill pill-bad">{run.error_count} need corrected data</span>
           </div>
-          <p>{run.analysis_kind === "historical_entries" ? "Resolved assessed-minus-paid discrepancy subtotal:" : "Resolved annual duty delta subtotal:"} <strong>{usd(run.resolved_annual_delta_subtotal_usd)}</strong></p>
+          {run.computed_count === 0 ? <p><strong>No duties calculated.</strong> Correct missing data or supply the evidence listed below.</p> : <div className="meta-row" style={{ flexWrap: "wrap" }}>
+            <span>Potential overpayment: <strong>{usd(run.rows.filter(row => row.status === "computed" && (row.annual_delta_usd ?? 0) < 0).reduce((sum,row) => sum - row.annual_delta_usd!,0))}</strong></span>
+            <span>Potential underpayment: <strong>{usd(run.rows.filter(row => row.status === "computed" && (row.annual_delta_usd ?? 0) > 0).reduce((sum,row) => sum + row.annual_delta_usd!,0))}</strong></span>
+            <span className="muted">Checked rows only. Confirm with your broker before acting.</span>
+          </div>}
           {run.estimated_annual_duty_delta_usd === null
-            ? <p className="pill pill-warn" style={{ whiteSpace: "normal" }}>Portfolio total withheld — {run.unresolved_count + run.error_count} of {run.source_count} rows unresolved</p>
+            ? <p className="pill pill-warn" style={{ whiteSpace: "normal" }}>Total unavailable — {run.unresolved_count + run.error_count} of {run.source_count} rows unresolved</p>
             : <p>{run.analysis_kind === "historical_entries" ? "Assessed-minus-paid duty discrepancy:" : "Portfolio estimated annual duty delta:"} <strong>{usd(run.estimated_annual_duty_delta_usd)}</strong></p>}
           <p>Effective date: {run.effective_date_status === "single" ? run.effective_date : run.effective_date_status === "mixed" ? "mixed" : "not provided"}</p>
           <div role="region" aria-label="Tariff impact rows" tabIndex={0} style={{ overflowX: "auto" }}>
             <table className="table">
               <caption className="muted" style={{ textAlign: "left", marginBottom: 8 }}>{run.analysis_kind === "historical_entries" ? "Entry amounts in USD. Historical totals are withheld without verified date-specific rates." : "Annual amounts in USD. Expand a row for saved calculation evidence."}</caption>
+              <thead><tr>{["Entry / product", "HTS", "Paid", "Assessed", "Difference", "Result"].map(label => <th key={label} scope="col">{label}</th>)}</tr></thead>
+              <tbody>{run.rows.map(row => <Fragment key={row.row_number}>
+                <tr><th scope="row">{row.entry_id ?? `Row ${row.row_number}`}<br/><span className="muted">{row.sku ?? "SKU missing"}</span></th><td>{row.hts ?? "Missing"}</td><td>{usd(row.paid_duty_usd ?? row.current_annual_duty_usd)}</td><td>{usd(row.computed_annual_duty_usd)}</td><td>{usd(row.annual_delta_usd)}</td><td>{row.status === "computed" ? row.annual_delta_usd === 0 ? "Matches" : "Review difference" : row.status === "error" ? "Correct data" : "Needs evidence"}</td></tr>
+                <tr><td colSpan={6}><RowEvidence row={row}/></td></tr>
+              </Fragment>)}</tbody>
+              {/* Previous wide portfolio table retained, disabled.
               <thead><tr>{["SKU", "HTS", "Origin", "Supplier", run.analysis_kind === "historical_entries" ? "Customs value" : "Annual value", "Baseline rate", "Computed total rate", run.analysis_kind === "historical_entries" ? "Duty paid" : "Current annual duty", run.analysis_kind === "historical_entries" ? "Assessed duty" : "Computed annual duty", "Difference", "Direction", "Status"].map(label => <th scope="col" key={label}>{label}</th>)}</tr></thead>
               <tbody>{run.rows.map(row => (
                 <Fragment key={row.row_number}>
@@ -270,14 +291,15 @@ export function BusinessImpactPanel() {
                   </tr>
                   <tr><td colSpan={12}><RowEvidence row={row} /></td></tr>
                 </Fragment>
-              ))}</tbody>
+              ))}</tbody>              */}
             </table>
           </div>
         </section>
       )}
+      <details className="card"><summary>Tariff changes &amp; source status</summary><ScheduleMonitor runId={run?.id ?? null} /><MonitorCandidates runId={run?.id ?? null} /></details>
       <section className="card" aria-labelledby="impact-history-heading">
         <div className="card-head">
-          <h2 id="impact-history-heading" className="card-title">Run history</h2>
+          <h2 id="impact-history-heading" className="card-title">Saved reviews</h2>
           <button className="btn btn-small" disabled={historyLoading || busy !== null} onClick={() => void loadHistory()}>Refresh history</button>
         </div>
         {historyLoading ? <p role="status">Loading run history…</p>
@@ -286,7 +308,7 @@ export function BusinessImpactPanel() {
           : <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>{runs.map(saved => (
             <li key={saved.id} className="row" style={{ flexWrap: "wrap", marginBottom: 8 }}>
               <button className="btn btn-small" disabled={busy !== null} aria-current={run?.id === saved.id ? "true" : undefined} onClick={() => void openRun(saved.id)}>{saved.filename}</button>
-              <span className="muted">{new Date(saved.created_at).toLocaleString()} · {saved.source_count} rows · {saved.computed_count} computed · {saved.unresolved_count} unresolved · {saved.error_count} errors</span>
+              <span className="muted">{new Date(saved.created_at).toLocaleString()} · {saved.source_count} rows · {saved.computed_count} computed · {saved.unresolved_count} unresolved · {saved.error_count} need corrected data</span>
             </li>
           ))}</ul>}
       </section>
