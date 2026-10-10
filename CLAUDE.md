@@ -57,6 +57,65 @@ row with specific missing-field messages and zero fabricated duty — matching
 (clearly SKU-labelled DEMO) — a genuine, intentional write, not a side effect
 to silently revert.
 
+### Mission One rollback (October 10 2026) — a visual redesign that fabricated numbers
+
+Three commits ("Mission One", and two "new") landed after the audit above,
+adding `components/tariff/mission-one-hub.tsx`, `lib/tariff/federal-register-monitor.ts`,
+`app/api/tariff/monitor-federal-register/route.ts`, `app/api/cron/tariff-check/route.ts`,
+and a `vercel.json` daily cron — and replaced `/tariff`'s simple upload page
+with a tabbed "Mission One" hub as the default landing view.
+
+**The visual redesign itself was good and is kept.** The rewritten
+`BusinessImpactPanel` (drag-and-drop, KPI metric cards, filterable entry
+cards) and `CataloguePanel` are genuinely simpler and still 100% backed by
+the same honest, already-audited engine — `usd()`/`rate()` still render "not
+calculable" on null, nothing in either file was found to fabricate anything.
+
+**The Federal Register monitor was not kept — it fabricated two different
+things, confirmed by reading the code directly:**
+
+1. `app/api/tariff/monitor-federal-register/route.ts` silently substituted a
+   hardcoded six-SKU fake catalogue (`ENG-ROTOR-01`, "Precision Machining
+   Corp", $1.25M annual value, etc.) whenever the real signed-in tenant had
+   no classified products — which is Kate's actual current state. The UI
+   rendered this as "Affected Company SKUs... Matched in enterprise
+   catalogue" with no disclosure it wasn't real.
+2. `lib/tariff/federal-register-monitor.ts`'s `fetchLiveFederalRegisterNotices()`
+   silently falls back to a hardcoded `ARCHIVED_USTR_NOTICES` array on any
+   fetch failure, with nothing distinguishing "live" from "cached" in the
+   returned data or the UI. `calculateNoticeExposure()` applies a flat
+   invented 25% rate (`currentRate = 0` hardcoded) and, when the real result
+   is $0, pads it to a fake `affectedList.length * 42000` with a comment
+   admitting it's "synthetic scale... for the enterprise demo." This ran
+   daily via `vercel.json`'s cron, unattended, in production.
+
+This is exactly the failure rule 2 exists to prevent — a confident number on
+screen backed by invented data — now reachable by a real customer and a real
+unattended schedule, not just a demo script.
+
+**Disabled, not deleted**, per this file's existing convention: `app/tariff/page.tsx`
+renders `BusinessImpactPanel` directly again (`MissionOneHub` import commented
+out); `vercel.json`'s `crons` array is empty; both API routes now return
+HTTP 410 with an explanation instead of running their old bodies (full
+history in git). Do not re-enable any of it until the catalogue match and
+notice fetch only ever use real tenant data and honestly distinguish a live
+government fetch from a cached one — reusing `lib/tariff/stack.ts` (already
+audited honest) rather than `calculateNoticeExposure()`'s flat-rate math.
+Both `components/tariff/mission-one-hub.tsx` and
+`lib/tariff/federal-register-monitor.ts` also carry this same disabling note
+as an in-file top-of-file comment, so the warning is visible to anyone who
+opens either file directly rather than only to someone reading this doc.
+
+**A second, unrelated regression from the same commits was also found and
+fixed**: `lib/llm/api.ts`'s `completeOpenAi()` had been changed to try the
+Chat Completions endpoint first and fall back to the Responses endpoint,
+silently **doubling every hosted OpenAI call** — a real cost regression
+rule 1 exists to prevent — and breaking `lib/llm/api.test.ts`'s "no tools,
+exactly one request" contract (872/872 tests now pass again, were 871/872).
+Chat Completions also doesn't support the `web_search` tool, so which
+endpoint happened to answer would silently change what the model could do.
+Reverted to the single audited Responses call.
+
 ⚠️ **Verified live, not assumed: `create_tariff_impact_run` (`supabase/migrations/
 20261009132549_audit_tariff_coverage_and_hts_progress.sql:160`) is granted to
 `authenticated` only, not `service_role`.** `lib/supabase/server.ts`'s

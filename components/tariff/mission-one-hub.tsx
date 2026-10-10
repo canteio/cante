@@ -1,5 +1,11 @@
 "use client";
 
+// MVP: disabled, not deleted. No longer imported by app/tariff/page.tsx.
+// This component rendered fabricated exposure numbers (a hardcoded fake
+// catalogue, a notice that silently falls back to canned data, a synthetic
+// $42,000/SKU padding) with full visual confidence. See CLAUDE.md's
+// "Mission One rollback" entry before re-enabling.
+
 import { useEffect, useState } from "react";
 import {
   AlertTriangle,

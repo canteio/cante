@@ -1,51 +1,16 @@
-import { fetchUnifiedTradePolicyNotices, calculateNoticeExposure } from "@/lib/tariff/federal-register-monitor";
-
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
- * Scheduled Cron Job for Automatic Regulatory Monitoring
- * 
- * Invoked daily by Vercel Cron.
- * Queries the Federal Register and CBP CSMS APIs, detects active USTR / trade actions,
- * evaluates exposure, and logs alerts.
+ * MVP: disabled, not deleted. vercel.json's crons array is empty, so nothing
+ * invokes this on a schedule, and the GET handler below refuses to run even
+ * if called directly. The previous implementation (kept in git history)
+ * computed exposure against a hardcoded sample catalogue (ENG-ROTOR-01 etc.,
+ * no real customer) and padded a zero result to a fake $42,000/SKU for demo
+ * purposes — see lib/tariff/federal-register-monitor.ts and CLAUDE.md's
+ * "Mission One rollback" entry. Do not re-enable until it reads the real
+ * signed-in tenant's catalogue and stops the synthetic padding.
  */
-export async function GET(request: Request) {
-  const authHeader = request.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-
-  // Protect cron in production if CRON_SECRET is configured
-  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
-    return Response.json({ error: "Unauthorized cron execution." }, { status: 401 });
-  }
-
-  try {
-    const notices = await fetchUnifiedTradePolicyNotices(request.signal);
-    const notice = notices[0];
-
-    const sampleCatalog = [
-      { sku: "ENG-ROTOR-01", name: "High-Torque Rotary Subassembly", hts: "8433.11.00.00", annualValueUsd: 1250000, supplier: "Precision Machining Corp", origin: "CN" },
-      { sku: "MOT-SERVO-02", name: "Commercial Stepper & Drive Motor", hts: "8501.10.40.60", annualValueUsd: 2400000, supplier: "Pacific Motion Systems", origin: "CN" },
-      { sku: "PLAS-EXTR-04", name: "Heavy Industrial Extruded Polymers", hts: "3916.90.30.00", annualValueUsd: 1850000, supplier: "SinoPolymer Ltd", origin: "CN" },
-    ];
-
-    const alert = calculateNoticeExposure(notice, sampleCatalog);
-
-    console.log(`[Tariff Cron] Federal Register checked at ${new Date().toISOString()}: ${alert.summary}`);
-
-    return Response.json({
-      success: true,
-      timestamp: new Date().toISOString(),
-      noticeProcessed: notice.documentNumber,
-      effectiveDate: alert.effectiveDate,
-      totalAnnualExposureUsd: alert.totalAnnualExposureUsd,
-      affectedProductCount: alert.affectedProductCount,
-    });
-  } catch (error) {
-    console.error("[Tariff Cron] Failed to execute scheduled tariff check:", error);
-    return Response.json({
-      success: false,
-      error: error instanceof Error ? error.message : "Scheduled check failed.",
-    }, { status: 500 });
-  }
+export async function GET() {
+  return Response.json({ error: "Disabled: this route computed exposure against a hardcoded sample catalogue, not real customer data. See CLAUDE.md." }, { status: 410 });
 }

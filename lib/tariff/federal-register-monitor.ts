@@ -1,6 +1,14 @@
 /**
+ * MVP: not wired into any live route (both callers return HTTP 410 — see
+ * app/api/cron/tariff-check and app/api/tariff/monitor-federal-register).
+ * calculateNoticeExposure() applies a flat invented 25% rate and pads a zero
+ * result to a fake $42,000/SKU; fetchLiveFederalRegisterNotices() silently
+ * returns hardcoded archived notices on any fetch failure with no "this is
+ * cached" signal. See CLAUDE.md's "Mission One rollback" entry before
+ * reusing any of this — the honest duty engine is lib/tariff/stack.ts.
+ *
  * Live Federal Register Trade Policy Monitor & Enterprise Exposure Engine
- * 
+ *
  * Ingests official USTR / Commerce notices directly from federalregister.gov,
  * extracts trade actions and HTS scope, matches against the tenant's catalogue,
  * and calculates the enterprise financial impact.
