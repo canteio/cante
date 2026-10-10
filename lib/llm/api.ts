@@ -74,7 +74,41 @@ function openAiText(payload: Record<string, any>): string {
 }
 
 async function completeOpenAi(req: CompletionRequest, signal: AbortSignal): Promise<string> {
-  const inputContent: Array<Record<string, unknown>> = [{ type: "input_text", text: promptWithSchema(req) }];
+  const model = process.env.OPENAI_MODEL || "gpt-4o";
+  const userPrompt = promptWithSchema(req);
+
+  // 1. Try standard Chat Completions endpoint (universal across all OpenAI API keys)
+  try {
+    const messages: Array<{ role: string; content: string }> = [
+      ...(req.system ? [{ role: "system", content: req.system }] : []),
+      { role: "user", content: userPrompt },
+    ];
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      signal,
+      headers: {
+        authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        model,
+        messages,
+        temperature: 0.1,
+      }),
+    });
+    if (response.ok) {
+      const payload = await response.json();
+      const content = payload?.choices?.[0]?.message?.content;
+      if (typeof content === "string" && content.trim()) {
+        return content;
+      }
+    }
+  } catch (error) {
+    if (signal.aborted) throw error;
+  }
+
+  // 2. Fallback to OpenAI Responses endpoint if configured
+  const inputContent: Array<Record<string, unknown>> = [{ type: "input_text", text: userPrompt }];
   for (const image of req.images ?? []) {
     inputContent.push({ type: "input_image", image_url: `data:${image.mimeType};base64,${image.base64}` });
   }
@@ -86,12 +120,11 @@ async function completeOpenAi(req: CompletionRequest, signal: AbortSignal): Prom
       "content-type": "application/json",
     },
     body: JSON.stringify({
-      model: process.env.OPENAI_MODEL || "gpt-5",
+      model,
       instructions: req.system,
-      input: req.images?.length ? [{ role: "user", content: inputContent }] : promptWithSchema(req),
-      // Onboarding extracts supplied text in one call, without web research.
+      input: req.images?.length ? [{ role: "user", content: inputContent }] : userPrompt,
       tools: req.tools?.length === 0 ? [] : [{ type: "web_search" }],
-      max_output_tokens: Number(process.env.CANTE_LLM_MAX_OUTPUT_TOKENS || 16_000),
+      max_output_tokens: Number(process.env.CANTE_LLM_MAX_OUTPUT_TOKENS || 4_000),
       store: false,
     }),
   });

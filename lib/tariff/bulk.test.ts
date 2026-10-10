@@ -221,3 +221,25 @@ test("bulk parser bounds fields that reach the upstream URL or audit response", 
   assert.equal(longDetails.rows.length, 0);
   assert.match(longDetails.errors[0].reason, /2000 characters/);
 });
+
+test("bulk parser normalizes unpunctuated HTS codes, natural country names, and decorated currency", () => {
+  const csv = [
+    "HTS-Code,Made in,Customs Value ($)",
+    "8501104060,China,\"$ 1,500.50 USD\"",
+    "85011040,Vietnam,2500 USD",
+    "8501 10 40 60,United States,3000",
+  ].join("\n");
+  const { rows, errors } = parseStackRequestRows(csv);
+  assert.equal(errors.length, 0);
+  assert.equal(rows.length, 3);
+  assert.equal(rows[0].htsCode, "8501.10.40.60");
+  assert.equal(rows[0].countryOfOrigin, "CN");
+  assert.equal(rows[0].value, 1500.5);
+  assert.equal(rows[1].htsCode, "8501.10.40");
+  assert.equal(rows[1].countryOfOrigin, "VN");
+  assert.equal(rows[1].value, 2500);
+  assert.equal(rows[2].htsCode, "8501.10.40.60");
+  assert.equal(rows[2].countryOfOrigin, "US");
+  assert.equal(rows[2].value, 3000);
+});
+

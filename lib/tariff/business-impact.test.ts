@@ -194,3 +194,31 @@ test("actual public Aleph/LulzBot manifests preserve missing customs facts and n
   assert.ok(csv(rows).includes("original_input_json"));
   assert.equal(summarize(rows).estimated_annual_duty_delta_usd, null);
 });
+
+test("parseBusinessImpact tolerates unpunctuated HTS, natural country names, and formatted currency", () => {
+  const input = [
+    "Part #,HTS,Origin,Vendor,Spend,Duty Rate",
+    "MOTOR-01,8501104060,China,Shenzhen Electric,\"$ 12,500.00 USD\",2.5%",
+    "BRACKET-02,85011040,Vietnam,Hanoi Parts,2500 USD,0%",
+    "BEARING-03,8501 10 40 60,United States,Midwest Supply,1500,0%",
+  ].join("\n");
+  const rows = parse(input);
+  assert.equal(rows.length, 3);
+  assert.equal(rows[0].sku, "MOTOR-01");
+  assert.equal(rows[0].hts, "8501.10.40.60");
+  assert.equal(rows[0].origin, "CN");
+  assert.equal(rows[0].annual_import_value_usd, 12500);
+  assert.equal(rows[0].current_duty_rate, 0.025);
+  assert.equal(rows[0].input_valid, true);
+
+  assert.equal(rows[1].sku, "BRACKET-02");
+  assert.equal(rows[1].hts, "8501.10.40");
+  assert.equal(rows[1].origin, "VN");
+  assert.equal(rows[1].annual_import_value_usd, 2500);
+
+  assert.equal(rows[2].sku, "BEARING-03");
+  assert.equal(rows[2].hts, "8501.10.40.60");
+  assert.equal(rows[2].origin, "US");
+  assert.equal(rows[2].annual_import_value_usd, 1500);
+});
+

@@ -38,16 +38,17 @@ export interface ParsedStackRequest {
 }
 
 export const HTS_HEADER_ALIASES = [
-  "hts_code", "htscode", "hts", "code", "classification", "tariff_code",
-  "hs_code", "hscode", "hs", "commodity_code", "tariff_no", "tariff_number", "harmonized_code",
+  "hts_code", "htscode", "hts", "code", "classification", "tariff_code", "tariff", "tariff_item", "tariff_line", "tariff_heading",
+  "hs_code", "hscode", "hs", "commodity_code", "tariff_no", "tariff_number", "harmonized_code", "harmonized_tariff", "hts10", "htscode10",
 ];
 export const COUNTRY_HEADER_ALIASES = [
   "country_of_origin", "countryoforigin", "country", "origin", "coo",
-  "origin_country", "source_country", "made_in",
+  "origin_country", "source_country", "made_in", "madein", "country_code", "ctry", "origin_ctry", "source",
 ];
 const VALUE_HEADER_ALIASES = [
   "value", "customs_value", "shipment_value", "declared_value",
   "fob_value", "entered_value", "amount", "total_value", "usd_value",
+  "cost", "price", "total_price", "line_total", "customs_val", "declared_val", "item_value", "extended_price", "ext_price",
 ];
 const QUANTITY_HEADER_ALIASES = ["quantity", "qty", "units", "pieces", "count"];
 const UNIT_HEADER_ALIASES = ["unit", "uom", "unit_of_measure", "qty_unit"];
@@ -69,10 +70,58 @@ const USMCA_VERIFIED_ALIASES = ["usmca_verified", "usmcaverified", "usmca_qualif
 const USMCA_DECISION_ALIASES = ["usmca_decision", "usmcadecision", "usmca_qualification_decision"];
 const USMCA_DETAILS_ALIASES = ["usmca_details", "usmcadetails", "usmca_qualification_details"];
 
+export const COUNTRY_NAME_TO_CODE: Record<string, string> = {
+  china: "CN", prc: "CN", chn: "CN",
+  vietnam: "VN", "viet nam": "VN", vnm: "VN",
+  "united states": "US", usa: "US", us: "US",
+  canada: "CA", can: "CA",
+  mexico: "MX", mex: "MX",
+  germany: "DE", deu: "DE", ger: "DE",
+  japan: "JP", jpn: "JP",
+  taiwan: "TW", twn: "TW",
+  "united kingdom": "GB", uk: "GB", gbr: "GB",
+  "south korea": "KR", korea: "KR", kor: "KR",
+  france: "FR", fra: "FR",
+  italy: "IT", ita: "IT",
+  india: "IN", ind: "IN",
+  indonesia: "ID", idn: "ID",
+  malaysia: "MY", mys: "MY",
+  thailand: "TH", tha: "TH",
+};
+
+export function normalizeHtsCode(raw: string): string {
+  const cleaned = raw.trim().replace(/^hts\s*[:#]?\s*/i, "").replace(/[\s-]+/g, ".");
+  const digits = cleaned.replace(/\D/g, "");
+  if (digits.length === 10 && !cleaned.includes(".")) {
+    return `${digits.slice(0, 4)}.${digits.slice(4, 6)}.${digits.slice(6, 8)}.${digits.slice(8)}`;
+  }
+  if (digits.length === 8 && !cleaned.includes(".")) {
+    return `${digits.slice(0, 4)}.${digits.slice(4, 6)}.${digits.slice(6, 8)}`;
+  }
+  if (digits.length === 6 && !cleaned.includes(".")) {
+    return `${digits.slice(0, 4)}.${digits.slice(4, 6)}`;
+  }
+  return cleaned;
+}
+
+export function normalizeCountryCode(raw: string): string {
+  const trimmed = raw.trim();
+  const lower = trimmed.toLowerCase();
+  return COUNTRY_NAME_TO_CODE[lower] ?? (trimmed.length === 2 ? trimmed.toUpperCase() : trimmed);
+}
+
 export function firstPresent(row: Record<string, string>, aliases: string[]): string | null {
   for (const alias of aliases) {
     const value = row[alias];
     if (value !== undefined && value.trim() !== "") return value.trim();
+  }
+  // Tolerant fallback for variations with dashes, slashes, numbers, etc. (e.g. "HTS-Code", "HTS #", "Customs Value ($)")
+  const normalizedAliases = new Set(aliases.map((a) => a.toLowerCase().replace(/[^a-z0-9]/g, "")));
+  for (const [key, val] of Object.entries(row)) {
+    if (val && val.trim() !== "") {
+      const normalizedKey = key.toLowerCase().replace(/[^a-z0-9]/g, "");
+      if (normalizedAliases.has(normalizedKey)) return val.trim();
+    }
   }
   return null;
 }
@@ -176,19 +225,22 @@ export function parseStackRequestRows(input: string): ParsedStackRequest {
       }
     }
 
-    const htsCode = firstPresent(raw, HTS_HEADER_ALIASES);
-    const countryOfOrigin = firstPresent(raw, COUNTRY_HEADER_ALIASES);
+    const rawHts = firstPresent(raw, HTS_HEADER_ALIASES);
+    const rawCountry = firstPresent(raw, COUNTRY_HEADER_ALIASES);
 
-    if (!htsCode || !countryOfOrigin) {
+    if (!rawHts || !rawCountry) {
       errors.push({
         rowNumber,
         raw,
-        reason: !htsCode
+        reason: !rawHts
           ? "No HTS code column recognised (expected one of: hts_code, hts, code, classification)."
           : "No country-of-origin column recognised (expected one of: country_of_origin, country, origin, coo).",
       });
       return;
     }
+    const htsCode = normalizeHtsCode(rawHts);
+    const countryOfOrigin = normalizeCountryCode(rawCountry);
+
     if (htsCode.length > 64) {
       errors.push({ rowNumber, raw, reason: "HTS code must be 64 characters or fewer." });
       return;
@@ -212,7 +264,7 @@ export function parseStackRequestRows(input: string): ParsedStackRequest {
     }
 
     const rawValue = firstPresent(raw, VALUE_HEADER_ALIASES);
-    const normalizedValue = rawValue?.replace(/[,$]/g, "").trim() ?? null;
+    const normalizedValue = rawValue?.replace(/[$€£¥]/g, "").replace(/\b(?:usd|eur|cad|aud|cny|rmb)\b/gi, "").replace(/,/g, "").trim() ?? null;
     const value = rawValue === null
       ? null
       : normalizedValue === ""
@@ -336,7 +388,7 @@ export const impactFieldAliases = {
   line_number: ["line_number", "entry_line", "line_id", "line", "line_no", "item_no"],
   customs_value_usd: ["customs_value_usd", "customs_value", "entered_value", "declared_value", "fob_value", "cif_value", "value_usd", "value"],
   paid_duty_usd: ["paid_duty_usd", "paid_duty", "duty_paid", "duty_amount", "duties_paid", "customs_duty", "tariff_paid", "import_tariff_paid", "duty", "duties"],
-  sku: ["sku", "product_code", "item_code", "part_number", "part_no", "part_num", "material_number", "model", "item"],
+  sku: ["sku", "product_code", "item_code", "part_number", "part_no", "part_num", "material_number", "model", "item", "part", "part_#", "part_id"],
   hts: HTS_HEADER_ALIASES, origin: COUNTRY_HEADER_ALIASES,
   supplier: ["supplier", "supplier_name", "vendor", "shipper", "exporter", "manufacturer"],
   annual_import_value_usd: ["annual_import_value", "annual_import_value_usd", "annual_value", "import_value", "total_import_value", "spend"],

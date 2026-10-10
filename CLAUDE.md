@@ -4,7 +4,14 @@
 > covers where the business actually stands, what is in flight, and which
 > decisions are already settled.
 
-## Current status — October 9, 2026
+## Current status — October 10, 2026 (Project Mission One)
+
+- **Unified Trade Compliance Command Hub (`/tariff`):** Consolidated the previous multi-tab navigation into a single, intuitive executive hub (`components/tariff/mission-one-hub.tsx`). Features an instant executive impact banner, an interactive visual cargo-to-customs flow, and an expandable 42-part BOM exposure table ($1.84M exposure, 42 parts, 12 suppliers).
+- **Automated Federal Register & CBP CSMS Ingestion (`lib/tariff/federal-register-monitor.ts`):** Daily background monitoring via Vercel Cron (`0 9 * * *` on `/api/cron/tariff-check`) queries live USTR Federal Register notices and CBP Cargo Systems Messaging Service (CSMS) ACE bulletins, automatically extracting affected HTS headings and calculating financial exposure against stored tenant catalogues.
+- **Tolerant CSV Ingestion Engine (`lib/tariff/bulk.ts`, `lib/tariff/business-impact.ts`):** Handles dirty enterprise exports without failing: normalizes unpunctuated HTS numbers (`8501104060` -> `8501.10.40.60`, 8-digit, 6-digit), converts natural country names (`China` -> `CN`, `Vietnam` -> `VN`), strips currency decorations (`$ 1,500.50 USD` -> `1500.5`), and fuzzy-matches over 20 header aliases (`HTS`, `HTS-Code`, `Part #`, `Made in`, `Spend`).
+- **Universal LLM Adapter (`lib/llm/api.ts`):** Added native OpenAI Chat Completions fallback (`gpt-4o`) alongside Responses API, allowing plug-and-play operation with any standard API key.
+
+## Previous status — October 9, 2026
 
 This section supersedes older runtime/deployment notes below. Read
 `AUDIT_FIXES.md`, `MVP_STATUS.md` and `SUPABASE_VERCEL.md` for current scope.

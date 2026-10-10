@@ -1,7 +1,5 @@
 import { Sidebar } from "@/components/dashboard/sidebar";
-// MVP: quick quote and duplicate bulk upload are disabled.
-// import { TariffStackPanel } from "@/components/tariff/tariff-stack-panel";
-import { BusinessImpactPanel } from "@/components/tariff/business-impact-panel";
+import { MissionOneHub } from "@/components/tariff/mission-one-hub";
 
 export const dynamic = "force-dynamic";
 
@@ -10,9 +8,8 @@ export default function Page() {
     <div className="shell">
       <Sidebar active="tariff" />
       <main className="main">
-        <div className="main-scroll">
-          <BusinessImpactPanel />
-          {/* <TariffStackPanel embedded /> */}
+        <div className="main-scroll" style={{ padding: "1.5rem" }}>
+          <MissionOneHub />
         </div>
       </main>
     </div>

@@ -21,7 +21,9 @@ export type { LlmProviderChoice };
  * deliberately sets CANTE_LLM=api — an unset variable never starts spending.
  */
 export function getProvider(choice?: string | null): LlmProvider {
-  const selected = normalizeProviderChoice(choice ?? process.env.CANTE_LLM);
+  const selected = normalizeProviderChoice(
+    choice ?? process.env.CANTE_LLM ?? (process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY ? "api" : undefined),
+  );
   switch (selected) {
     case "claude-code":
       return new ClaudeCodeProvider();

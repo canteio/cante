@@ -1,7 +1,7 @@
 import { computeDuty, parseDutyRate } from "./duty-expression";
 import pilot from "@/config/tariff-pilot.json";
 import { parseCsv, type CsvTable } from "@/lib/catalogue/csv";
-import { impactFieldAliases, firstPresent, conflictingAlias, duplicateHeaders } from "./bulk";
+import { impactFieldAliases, firstPresent, conflictingAlias, duplicateHeaders, COUNTRY_NAME_TO_CODE, normalizeHtsCode, normalizeCountryCode } from "./bulk";
 import { isStrictIsoDate } from "./date";
 import { computeStackedDuty, type StackedDutyResult } from "./stack";
 
@@ -22,28 +22,10 @@ export interface ImpactRow {
   computed_total_rate: number | null; annual_delta_usd: number | null;
   stack_result: StackedDutyResult | null; raw_input: Record<string, string>; error: string | null;
 }
-const COUNTRY_NAME_TO_CODE: Record<string, string> = {
-  china: "CN", prc: "CN", chn: "CN",
-  vietnam: "VN", "viet nam": "VN", vnm: "VN",
-  "united states": "US", usa: "US", us: "US",
-  canada: "CA", can: "CA",
-  mexico: "MX", mex: "MX",
-  germany: "DE", deu: "DE", ger: "DE",
-  japan: "JP", jpn: "JP",
-  taiwan: "TW", twn: "TW",
-  "united kingdom": "GB", uk: "GB", gbr: "GB",
-  "south korea": "KR", korea: "KR", kor: "KR",
-  france: "FR", fra: "FR",
-  italy: "IT", ita: "IT",
-  india: "IN", ind: "IN",
-  indonesia: "ID", idn: "ID",
-  malaysia: "MY", mys: "MY",
-  thailand: "TH", tha: "TH",
-};
 
 function decimal(value: string | null, percent = false): number | null {
   if (value === null) return null;
-  const clean = value.replace(/[\$,]/g, "").trim();
+  const clean = value.replace(/[$€£¥]/g, "").replace(/\b(?:usd|eur|cad|aud|cny|rmb)\b/gi, "").replace(/,/g, "").trim();
   const normalized = percent ? clean.replace(/%$/, "").trim() : clean;
   if (!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(normalized)) return null;
   const n = Number(normalized);
@@ -77,17 +59,10 @@ function parseImpactRows(rows: Record<string, string>[], canonical = false, orig
     const values = Object.fromEntries(Object.entries(impactFieldAliases).map(([key, group]) => [key, canonical ? raw[key]?.trim() || null : firstPresent(raw, group)])) as Record<keyof typeof impactFieldAliases, string | null>;
     const errors: string[] = [];
     if (values.origin) {
-      const lower = values.origin.trim().toLowerCase();
-      values.origin = COUNTRY_NAME_TO_CODE[lower] ?? (values.origin.trim().length === 2 ? values.origin.trim().toUpperCase() : values.origin.trim());
+      values.origin = normalizeCountryCode(values.origin);
     }
     if (values.hts) {
-      const cleaned = values.hts.trim().replace(/^hts\s*[:#]?\s*/i, "").replace(/-/g, ".");
-      const digits = cleaned.replace(/\D/g, "");
-      if (digits.length === 10 && !cleaned.includes(".")) {
-        values.hts = `${digits.slice(0, 4)}.${digits.slice(4, 6)}.${digits.slice(6, 8)}.${digits.slice(8)}`;
-      } else {
-        values.hts = cleaned;
-      }
+      values.hts = normalizeHtsCode(values.hts);
     }
     if (values.evaluation_date) {
       const trimmed = values.evaluation_date.trim();

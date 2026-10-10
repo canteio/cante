@@ -23,6 +23,15 @@ The daily monitor still uses the signed-in local Claude/Codex CLI, so that high-
 
 ---
 
+## Project Mission One — Trade Compliance Command Hub (`/tariff`)
+
+The primary executive compliance workflow is unified at `/tariff`:
+
+1. **Automated Regulatory Monitoring:** Actively queries live **USTR Federal Register Notices** and **CBP Cargo Systems Messaging Service (CSMS)** ACE bulletins. Daily automated evaluation runs via Vercel Cron (`0 9 * * *` on `/api/cron/tariff-check`).
+2. **Instant Financial Exposure Engine:** Automatically matches published HTS headings against the tenant product catalogue, computing ad valorem deltas, dollar exposure, and affected SKU counts.
+3. **Executive Visual Flow & Alerts:** A single dashboard featuring a visual cargo-to-customs pipeline card, an instant top-line impact banner (e.g. `+$1.84M` cost exposure across 42 SKUs), and an interactive 42-part BOM drilldown.
+4. **Resilient CSV Ingestion:** Ingests unformatted, non-standard enterprise spreadsheets without failing. Automatically resolves unpunctuated HTS codes (`8501104060` -> `8501.10.40.60`), maps natural country names (`China` -> `CN`), strips currency text (`$ 1,500.50 USD` -> `1500.5`), and matches over 20 column aliases (`HTS-Code`, `Part #`, `Made in`, `Spend`).
+
 ## October 9 audit and MVP scope
 
 All 25 migrations are applied to Cante and the HTS Edge Function is active at
