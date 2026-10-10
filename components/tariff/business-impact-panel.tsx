@@ -4,9 +4,9 @@ import { MonitorCandidates, ScheduleMonitor } from "./monitor-candidates";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ImpactRow, summarizeBusinessImpact } from "@/lib/tariff/business-impact";
 import type { ColumnMapping, CanonicalField } from "@/lib/tariff/column-mapping";
-import { 
-  Upload, FileSpreadsheet, Download, Sparkles, ArrowRight, CheckCircle2, 
-  AlertTriangle, DollarSign, ChevronDown, ChevronUp, RefreshCw, 
+import {
+  Upload, FileSpreadsheet, Download, ArrowRight, CheckCircle2,
+  AlertTriangle, DollarSign, ChevronDown, ChevronUp, RefreshCw,
   ExternalLink, ShieldCheck, X, FileText, Check
 } from "lucide-react";
 
@@ -232,20 +232,27 @@ export function BusinessImpactPanel() {
     }
   }
 
-  async function loadDemoImports() {
-    setError(null);
-    setBusy("mapping");
-    try {
-      const res = await fetch("/examples/lulzbot-synthetic-imports.csv");
-      if (!res.ok) throw new Error("Could not fetch demo imports dataset.");
-      const blob = await res.blob();
-      const demoFile = new File([blob], "lulzbot-synthetic-imports.csv", { type: "text/csv" });
-      await propose(demoFile);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load sample dataset.");
-      setBusy(null);
-    }
-  }
+  // MVP: disabled, not deleted. Fetched lulzbot-synthetic-imports.csv, which
+  // .vercelignore deliberately excludes from the deployed app ("synthetic
+  // demo downloads are retained locally, outside the customer app") — so in
+  // production this always 404s and shows "Could not fetch demo imports
+  // dataset." The underlying decision (customer-facing app = real data only,
+  // no built-in demo loader) predates this panel's redesign. Re-enable only
+  // alongside un-excluding the file, and only if a demo loader is wanted here.
+  // async function loadDemoImports() {
+  //   setError(null);
+  //   setBusy("mapping");
+  //   try {
+  //     const res = await fetch("/examples/lulzbot-synthetic-imports.csv");
+  //     if (!res.ok) throw new Error("Could not fetch demo imports dataset.");
+  //     const blob = await res.blob();
+  //     const demoFile = new File([blob], "lulzbot-synthetic-imports.csv", { type: "text/csv" });
+  //     await propose(demoFile);
+  //   } catch (e) {
+  //     setError(e instanceof Error ? e.message : "Failed to load sample dataset.");
+  //     setBusy(null);
+  //   }
+  // }
 
   async function openRun(id: string) {
     setBusy("open");
@@ -312,11 +319,7 @@ export function BusinessImpactPanel() {
             <a href="/examples/imports-template.csv" download className="btn btn-lg" style={{ color: "var(--text)" }}>
               <Download size={16} /> Download Blank CSV Template
             </a>
-            {!file && (
-              <button className="btn btn-lg" disabled={busy !== null} onClick={() => void loadDemoImports()}>
-                <Sparkles size={16} color="var(--blue)" /> Load Sample Dataset
-              </button>
-            )}
+            {/* MVP: "Load Sample Dataset" disabled — see loadDemoImports() above. */}
           </div>
         </div>
 
