@@ -27,7 +27,7 @@ const money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD
 const usd = (val: number) => money.format(val);
 
 export function MissionOneHub() {
-  const [activeTab, setActiveTab] = useState<"alert" | "audit" | "catalog">("alert");
+  const [activeTab, setActiveTab] = useState<"alert" | "audit">("alert");
   const [alertData, setAlertData] = useState<MonitoredExposureAlert | null>(null);
   const [loadingAlert, setLoadingAlert] = useState(true);
   const [checkingLive, setCheckingLive] = useState(false);
@@ -130,38 +130,42 @@ export function MissionOneHub() {
         </div>
       </section>
 
-      {/* ─── Unified Segmented Tabs ──────────────────────────── */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 16 }}>
-        <nav className="hub-nav-tabs" aria-label="Trade compliance views">
+      {/* ─── Top Control Bar ────────────────────────────────────────── */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
+        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
           <button
-            className={`hub-tab-btn ${activeTab === "alert" ? "active" : ""}`}
+            className={`btn ${activeTab === "alert" ? "btn-primary" : ""}`}
+            style={{ fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 6 }}
             onClick={() => setActiveTab("alert")}
           >
-            <ShieldAlert size={15} color="#dc2626" /> Active Regulatory Impact
-            {alertData && <span className="pill pill-bad" style={{ fontSize: "0.7rem", padding: "1px 6px" }}>{alertData.affectedProductCount} SKUs</span>}
+            <ShieldAlert size={15} color={activeTab === "alert" ? "#fff" : "#dc2626"} /> 
+            Active Tariff Exposure
+            {alertData && <span className="pill pill-bad" style={{ fontSize: "0.7rem", padding: "1px 6px", marginLeft: 4 }}>{alertData.affectedProductCount} SKUs</span>}
           </button>
           <button
-            className={`hub-tab-btn ${activeTab === "audit" ? "active" : ""}`}
+            className={`btn ${activeTab === "audit" ? "btn-primary" : ""}`}
+            style={{ fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 6 }}
             onClick={() => setActiveTab("audit")}
           >
-            <FileSpreadsheet size={15} /> Customs Ingestion &amp; Overpayment Audit
+            <Upload size={15} /> Upload &amp; Audit Your Files
           </button>
-          <button
-            className={`hub-tab-btn ${activeTab === "catalog" ? "active" : ""}`}
-            onClick={() => setActiveTab("catalog")}
+          <a
+            href="/catalogue?country=United%20States"
+            className="btn"
+            style={{ fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 6 }}
           >
-            <Boxes size={15} /> Enterprise Catalogue
-          </button>
-        </nav>
+            <Boxes size={15} /> Company Catalogue <ArrowRight size={13} />
+          </a>
+        </div>
 
         <button
           className="btn btn-small"
           disabled={checkingLive}
           onClick={() => void checkLiveFederalRegister()}
-          title="Queries federalregister.gov for newly published trade notices"
+          title="Queries live official trade gazettes and CSMS bulletins"
         >
           <RefreshCw size={13} className={checkingLive ? "spin" : ""} />
-          {checkingLive ? "Polling Federal Register…" : "Check Federal Register Live"}
+          {checkingLive ? "Polling Government Feeds…" : "Check Government Feeds Live"}
         </button>
       </div>
 
@@ -312,24 +316,6 @@ export function MissionOneHub() {
       {/* ─── TAB 2: UNIFIED CUSTOMS INGESTION & AUDIT ────────── */}
       {activeTab === "audit" && (
         <BusinessImpactPanel />
-      )}
-
-      {/* ─── TAB 3: ENTERPRISE CATALOGUE ─────────────────────── */}
-      {activeTab === "catalog" && (
-        <section className="card" style={{ padding: "24px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-            <div>
-              <h2 style={{ fontSize: "1.2rem", fontWeight: 700, margin: "0 0 4px" }}>Enterprise Product Catalogue</h2>
-              <p className="muted" style={{ margin: 0 }}>Active parts, HTS classifications, and declared materials used for tariff matching.</p>
-            </div>
-            <a href="/catalogue?country=United%20States" className="btn btn-primary">
-              Open Full Catalogue Editor <ArrowRight size={14} />
-            </a>
-          </div>
-          <p>
-            You can manage parts, suppliers, and classifications in the full catalogue or upload your product spreadsheet. When trade policies shift, Cante automatically matches your catalogue against the Federal Register.
-          </p>
-        </section>
       )}
     </div>
   );

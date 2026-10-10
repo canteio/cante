@@ -297,43 +297,6 @@ export function BusinessImpactPanel() {
 
   return (
     <section aria-label="Tariff impact analysis">
-      {/* Visual Workflow Journey Stepper */}
-      <nav className="workflow-stepper" aria-label="Compliance workflow steps">
-        <a href="/catalogue" className="workflow-step">
-          <span className="workflow-step-num">1</span>
-          <div className="workflow-step-info">
-            <span className="workflow-step-title">Product Catalogue</span>
-            <span className="workflow-step-desc">Company SKUs &amp; HTS</span>
-          </div>
-        </a>
-        <div className="workflow-step-divider" />
-        <div className="workflow-step active">
-          <span className="workflow-step-num">2</span>
-          <div className="workflow-step-info">
-            <span className="workflow-step-title">Upload Imports</span>
-            <span className="workflow-step-desc">Customs 7501 entry lines</span>
-          </div>
-        </div>
-        <div className="workflow-step-divider" />
-        <div className={`workflow-step ${run ? "completed" : ""}`}>
-          <span className="workflow-step-num">3</span>
-          <div className="workflow-step-info">
-            <span className="workflow-step-title">Duty Audit &amp; Savings</span>
-            <span className="workflow-step-desc">Overpayments &amp; tariff changes</span>
-          </div>
-        </div>
-      </nav>
-
-      {/* Page Header */}
-      <div className="page-head">
-        <div>
-          <h1>Imports &amp; Tariff Audit</h1>
-          <p className="page-sub">
-            Upload your broker&apos;s customs entry lines to verify duties paid, detect overpayments, and evaluate business exposure.
-          </p>
-        </div>
-      </div>
-
       {error && <div className="pill pill-bad" role="alert" style={{ marginBottom: "1rem", whiteSpace: "normal" }}>{error}</div>}
 
       {/* Hero Upload Dropzone Card */}

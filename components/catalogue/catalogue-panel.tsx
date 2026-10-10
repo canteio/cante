@@ -199,33 +199,6 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
 
   return (
     <div className="main-scroll catalogue-editor">
-      {/* Visual Workflow Journey Stepper */}
-      <nav className="workflow-stepper" aria-label="Compliance workflow steps">
-        <div className="workflow-step active">
-          <span className="workflow-step-num">1</span>
-          <div className="workflow-step-info">
-            <span className="workflow-step-title">Product Catalogue</span>
-            <span className="workflow-step-desc">SKUs, Names &amp; HTS codes</span>
-          </div>
-        </div>
-        <div className="workflow-step-divider" />
-        <a href="/tariff" className="workflow-step">
-          <span className="workflow-step-num">2</span>
-          <div className="workflow-step-info">
-            <span className="workflow-step-title">Import History</span>
-            <span className="workflow-step-desc">Upload broker entries</span>
-          </div>
-        </a>
-        <div className="workflow-step-divider" />
-        <a href="/tariff" className="workflow-step">
-          <span className="workflow-step-num">3</span>
-          <div className="workflow-step-info">
-            <span className="workflow-step-title">Duty Audit &amp; Savings</span>
-            <span className="workflow-step-desc">Overpayments &amp; tariff changes</span>
-          </div>
-        </a>
-      </nav>
-
       {/* Page Header */}
       <div className="page-head">
         <div>
