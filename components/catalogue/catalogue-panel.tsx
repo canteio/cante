@@ -1,10 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Plus, Tag, Search, LayoutGrid, List } from "lucide-react";
+import { Plus, Tag, Search, LayoutGrid, List, Upload, Download, Sparkles, ArrowRight, FileSpreadsheet, CheckCircle2, X } from "lucide-react";
 import { ChipInput } from "@/components/chip-input";
 import type { JurisdictionName } from "@/lib/countries";
-// MVP: import { CountryTabs } from "@/components/dashboard/country-tabs";
 
 type Classification = {
   id: string;
@@ -59,6 +58,9 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
   const [search, setSearch] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
   const [csv, setCsv] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
   const [summary, setSummary] = useState<ImportSummary | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -70,18 +72,6 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
   const [materials, setMaterials] = useState<string[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
 
-  // UI/UX friction fix: Escape didn't close the "Add Product" form, unlike
-  // the action-modal dialog pattern already used in workqueue-panel.tsx
-  // (role="dialog" + Escape-to-close). Users expect Escape to cancel any
-  // open inline form, not just true modal dialogs. Mirrors that pattern here.
-  //
-  // Follow-up fix (same keyboard-nav/focus-trap audit that fixed the
-  // jurisdiction picker in chat-panel.tsx): closing via Escape left keyboard
-  // focus stranded wherever it happened to be inside the now-hidden form,
-  // instead of returning it to the "Add Product" trigger button per the
-  // WAI-ARIA APG disclosure pattern (focus must return to the control that
-  // opened the region on close). Added a ref on the trigger button and call
-  // .focus() on it inside the existing Escape handler.
   const addFormTriggerRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (!showAddForm) return;
@@ -97,12 +87,6 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
 
   const load = useCallback(async () => {
     setLoading(true);
-    // Previously this had no error handling: a failed fetch (network error or
-    // non-2xx) left the user staring at "No matching items in catalogue" with
-    // no way to tell an empty catalogue apart from a broken load — same
-    // silent-failure class already fixed in workqueue/checklist/suppliers
-    // panels this cycle. Now surfaces a real error banner and keeps loading
-    // state accurate even when the request throws.
     setError(null);
     try {
       const res = await fetch("/api/products");
@@ -128,8 +112,6 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
     setBusy(true);
     setError(null);
     try {
-      // The import contract accepts one declared HS code, but a list of materials.
-      // Quote CSV cells so punctuation in real product names cannot corrupt a row.
       const cell = (value: string) => `"${value.replaceAll('"', '""')}"`;
       const csvContent = "sku,name,hs_code,materials\n" + [sku.trim(), name.trim(), hsCode.trim(), materials.join(";")].map(cell).join(",");
       const res = await fetch("/api/products", {
@@ -154,23 +136,55 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
     }
   }
 
-  async function importCsv() {
+  async function importCsv(contentToImport?: string) {
+    const toImport = contentToImport ?? csv;
+    if (!toImport.trim()) return;
     setBusy(true);
     setError(null);
     try {
       const res = await fetch("/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ csv }),
+        body: JSON.stringify({ csv: toImport }),
       });
       const data = await res.json();
       if (!res.ok) setError(data.error ?? "Import failed.");
       else {
         setSummary(data.summary);
         setCsv("");
+        setSelectedFile(null);
+        setShowUploadModal(false);
         await load();
       }
     } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleFileChosen(file: File) {
+    if (file.size > 2 * 1024 * 1024) {
+      setError("Product CSV exceeds 2 MiB.");
+      return;
+    }
+    setSelectedFile(file);
+    try {
+      const text = await file.text();
+      setCsv(text);
+    } catch {
+      setError("Could not read file. Please retry.");
+    }
+  }
+
+  async function loadDemoProducts() {
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch("/examples/lulzbot-public-products.csv");
+      if (!res.ok) throw new Error("Could not fetch demo product dataset.");
+      const demoCsv = await res.text();
+      await importCsv(demoCsv);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to load demo products.");
       setBusy(false);
     }
   }
@@ -185,119 +199,233 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
 
   return (
     <div className="main-scroll catalogue-editor">
+      {/* Visual Workflow Journey Stepper */}
+      <nav className="workflow-stepper" aria-label="Compliance workflow steps">
+        <div className="workflow-step active">
+          <span className="workflow-step-num">1</span>
+          <div className="workflow-step-info">
+            <span className="workflow-step-title">Product Catalogue</span>
+            <span className="workflow-step-desc">SKUs, Names &amp; HTS codes</span>
+          </div>
+        </div>
+        <div className="workflow-step-divider" />
+        <a href="/tariff" className="workflow-step">
+          <span className="workflow-step-num">2</span>
+          <div className="workflow-step-info">
+            <span className="workflow-step-title">Import History</span>
+            <span className="workflow-step-desc">Upload broker entries</span>
+          </div>
+        </a>
+        <div className="workflow-step-divider" />
+        <a href="/tariff" className="workflow-step">
+          <span className="workflow-step-num">3</span>
+          <div className="workflow-step-info">
+            <span className="workflow-step-title">Duty Audit &amp; Savings</span>
+            <span className="workflow-step-desc">Overpayments &amp; tariff changes</span>
+          </div>
+        </a>
+      </nav>
+
+      {/* Page Header */}
       <div className="page-head">
         <div>
           <h1>Product Catalogue</h1>
           <p className="page-sub">
-            Add the products you make or buy so Cante can match changes to your business.
+            Add your company&apos;s product catalogue so Cante can cross-reference import duties and flag regulatory tariff changes.
           </p>
-        </div>
-        <div className="page-actions">
-          <button ref={addFormTriggerRef} aria-expanded={showAddForm} aria-controls="catalogue-add-product" className="btn btn-primary" onClick={() => setShowAddForm((v) => !v)}>
-            <Plus size={14} /> {showAddForm ? "Close Form" : "Add Product"}
-          </button>
-          {/* MVP: country switching disabled; retained for later. <CountryTabs value={country} /> */}
         </div>
       </div>
 
-      {/* UI/UX friction sweep (a11y): announce load/import failures and the
-          loading state to screen readers, matching the role="alert"/
-          role="status" pattern from app/import-monitor/panel.tsx (and now
-          workqueue-panel.tsx / checklist-panel.tsx in this same sweep). */}
-      {error && <div className="pill pill-bad" role="alert" style={{ marginBottom: "1rem" }}>{error}</div>}
+      {error && <div className="pill pill-bad" role="alert" style={{ marginBottom: "1rem", whiteSpace: "normal" }}>{error}</div>}
 
-      {/* Quick Add Modal/Form */}
-      {showAddForm && (
-        <section id="catalogue-add-product" className="card" style={{ marginBottom: "1.5rem" }}>
-          <div className="card-head">
-            <Tag size={16} />
-            <h2>Add product</h2>
+      {/* Hero Action Cards / Big Buttons */}
+      <div className="card" style={{ marginBottom: "1.5rem", padding: "20px 22px" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "12px", marginBottom: "16px" }}>
+          <div>
+            <h2 style={{ fontSize: "1.1rem", fontWeight: 600, margin: "0 0 4px" }}>Manage Products</h2>
+            <p className="muted" style={{ margin: 0 }}>Add products via CSV spreadsheet or enter items one by one.</p>
           </div>
-          <p className="muted" role="status">{[sku.trim(), name.trim()].filter(Boolean).length} of 2 required fields complete. Examples are not saved data.</p>
-          <div className="catalogue-add-fields">
-            <div>
-              <label htmlFor="product-sku" className="side-label" style={{ padding: 0, marginBottom: 2 }}>SKU / Material Code *</label>
-              <input
-                className="input mono"
-                placeholder="e.g. RM-PVC-K67 or FIN-TARP-01"
-                id="product-sku" required value={sku}
-                onChange={(e) => setSku(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="product-name" className="side-label" style={{ padding: 0, marginBottom: 2 }}>Product / Material Name *</label>
-              <input
-                className="input"
-                placeholder="e.g. PVC Resin K-67 or Tarpaulin 12oz"
-                id="product-name" required value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="product-hs" className="side-label" style={{ padding: 0, marginBottom: 2 }}>Declared HS Code (optional)</label>
-              <input
-                className="input mono"
-                placeholder="e.g. 3904.10.00"
-                id="product-hs" value={hsCode}
-                onChange={(e) => setHsCode(e.target.value)}
-              />
-            </div>
-            <ChipInput label="Materials / chemical composition (optional)" values={materials}
-              onChange={setMaterials} placeholder="PVC resin" disabled={busy} />
-          </div>
-          <div style={{ marginTop: "1rem", display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
-            <button className="btn" onClick={() => { setShowAddForm(false); addFormTriggerRef.current?.focus(); }}>Cancel</button>
-            <button className="btn btn-primary" disabled={busy || !sku.trim() || !name.trim()} onClick={addSingleProduct}>
-              {busy ? "Saving…" : "Save Product"}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+            <button
+              className="btn btn-lg btn-primary-gradient"
+              onClick={() => { setShowUploadModal((v) => !v); setShowAddForm(false); }}
+            >
+              <Upload size={16} /> Upload Products CSV
             </button>
+            <button
+              ref={addFormTriggerRef}
+              className="btn btn-lg"
+              onClick={() => { setShowAddForm((v) => !v); setShowUploadModal(false); }}
+            >
+              <Plus size={16} /> Add Single Product
+            </button>
+            <a href="/examples/products-template.csv" download className="btn btn-lg" style={{ color: "var(--text)" }}>
+              <Download size={16} /> Download Template
+            </a>
+            {products.length === 0 && (
+              <button className="btn btn-lg" disabled={busy} onClick={() => void loadDemoProducts()} title="Load sample 3D printer parts to test the system instantly">
+                <Sparkles size={16} color="var(--blue)" /> Load Sample Products
+              </button>
+            )}
           </div>
-        </section>
-      )}
+        </div>
 
-      {/* Search & Bulk CSV Row */}
-      <div className="catalogue-tools">
-        <section className="card">
-          <div className="card-head">
-            <Search size={15} strokeWidth={1.75} />
-            <h2>Search Catalogue</h2>
-          </div>
-          <div style={{ marginTop: "0.5rem" }}>
-            <input
-              className="input"
-              aria-label="Search catalogue" placeholder="Search by SKU, item name, HS code, or chemical ingredient…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-        </section>
+        {/* Upload Modal / Dropzone Panel */}
+        {showUploadModal && (
+          <div style={{ background: "var(--app-background)", borderRadius: "var(--radius-lg)", padding: "18px", border: "1px solid var(--border)", marginTop: "12px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+              <strong style={{ fontSize: "0.95rem" }}>Upload Product Spreadsheet</strong>
+              <button className="btn btn-small" onClick={() => setShowUploadModal(false)}><X size={14} /></button>
+            </div>
+            
+            <div
+              className={`upload-dropzone ${dragOver ? "dragover" : ""}`}
+              onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setDragOver(false);
+                const file = e.dataTransfer.files?.[0];
+                if (file) void handleFileChosen(file);
+              }}
+              onClick={() => document.getElementById("catalogue-file-input")?.click()}
+            >
+              <input
+                id="catalogue-file-input"
+                type="file"
+                accept=".csv,text/csv"
+                style={{ display: "none" }}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) void handleFileChosen(file);
+                }}
+              />
+              <div className="upload-icon-circle">
+                <FileSpreadsheet size={26} />
+              </div>
+              {selectedFile ? (
+                <>
+                  <h3 style={{ color: "var(--blue)" }}>{selectedFile.name}</h3>
+                  <p className="muted">{(selectedFile.size / 1024).toFixed(1)} KB · Ready to import</p>
+                </>
+              ) : (
+                <>
+                  <h3>Drag &amp; drop your Product CSV here</h3>
+                  <p>Or click to browse from your computer (columns: sku, name, hts, materials)</p>
+                </>
+              )}
+            </div>
 
-        {/* Bulk import is a secondary path; keep it out of first-product setup. */}
-        <details className="card profile-disclosure" open>
-          <summary>Upload product CSV</summary>
-          <p className="muted">Start with SKU and name. Add your reviewed HTS code if you have it.</p>
-          <input className="input" aria-label="Product CSV file" type="file" accept=".csv,text/csv" disabled={busy} onChange={async event => {
-            const file = event.target.files?.[0];
-            if (!file) return;
-            if (file.size > 2 * 1024 * 1024) { setError("Product CSV exceeds 2 MiB."); return; }
-            try { setCsv(await file.text()); } catch { setError("Could not read the product CSV. Please try again."); }
-          }} />
-          <p><a href="/examples/products-template.csv" download>Download blank template</a> · <a href="/tariff">Continue to imports →</a></p>
-          <label htmlFor="catalogue-csv" className="muted">Paste a header row and product rows. Separate materials with semicolons.</label>
-          <textarea id="catalogue-csv" className="input mono" rows={4} placeholder={'e.g. sku,name,hs_code,materials\nTARP-01,Tarpaulin,,PVC;Polyester'}
-            value={csv} onChange={(e) => setCsv(e.target.value)} />
-          <button className="btn" disabled={busy || !csv.trim()} onClick={() => void importCsv()}>{busy ? "Importing…" : "Import products"}</button>
-        </details>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "14px", flexWrap: "wrap", gap: "8px" }}>
+              <span className="muted" style={{ fontSize: "0.8rem" }}>
+                Need the right format? <a href="/examples/products-template.csv" download>Download the sample blank CSV</a>
+              </span>
+              <div style={{ display: "flex", gap: "8px" }}>
+                <button className="btn" onClick={() => { setSelectedFile(null); setCsv(""); setShowUploadModal(false); }}>Cancel</button>
+                <button className="btn btn-primary-gradient" disabled={busy || !csv.trim()} onClick={() => void importCsv()}>
+                  {busy ? "Importing…" : "Confirm & Import Products"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Quick Add Single Product Form */}
+        {showAddForm && (
+          <section id="catalogue-add-product" style={{ background: "var(--app-background)", borderRadius: "var(--radius-lg)", padding: "18px", border: "1px solid var(--border)", marginTop: "12px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <Tag size={16} />
+                <h3 style={{ margin: 0, fontSize: "1rem" }}>Add Single Product</h3>
+              </div>
+              <button className="btn btn-small" onClick={() => setShowAddForm(false)}><X size={14} /></button>
+            </div>
+            <div className="catalogue-add-fields">
+              <div>
+                <label htmlFor="product-sku" className="side-label" style={{ padding: 0, marginBottom: 4, fontWeight: 600 }}>SKU / Part Number *</label>
+                <input
+                  className="input mono"
+                  placeholder="e.g. DEMO-PLA-285"
+                  id="product-sku" required value={sku}
+                  onChange={(e) => setSku(e.target.value)}
+                />
+              </div>
+              <div>
+                <label htmlFor="product-name" className="side-label" style={{ padding: 0, marginBottom: 4, fontWeight: 600 }}>Product Name / Description *</label>
+                <input
+                  className="input"
+                  placeholder="e.g. PLA 3D Printer Filament 2.85mm"
+                  id="product-name" required value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+              <div>
+                <label htmlFor="product-hs" className="side-label" style={{ padding: 0, marginBottom: 4 }}>Declared HTS Code (optional)</label>
+                <input
+                  className="input mono"
+                  placeholder="e.g. 3916.90.30.00"
+                  id="product-hs" value={hsCode}
+                  onChange={(e) => setHsCode(e.target.value)}
+                />
+              </div>
+              <ChipInput label="Materials / Chemical components (optional)" values={materials}
+                onChange={setMaterials} placeholder="PLA plastic; pigments" disabled={busy} />
+            </div>
+            <div style={{ marginTop: "1rem", display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
+              <button className="btn" onClick={() => { setShowAddForm(false); addFormTriggerRef.current?.focus(); }}>Cancel</button>
+              <button className="btn btn-primary" disabled={busy || !sku.trim() || !name.trim()} onClick={addSingleProduct}>
+                {busy ? "Saving…" : "Save Product"}
+              </button>
+            </div>
+          </section>
+        )}
       </div>
 
       {summary && (
-        <div className="import-summary" style={{ marginBottom: "1rem" }}>
+        <div className="card" style={{ marginBottom: "1rem", background: "rgba(var(--azure), 0.04)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+            <CheckCircle2 size={16} color="var(--ok)" />
+            <strong>CSV Import Complete</strong>
+          </div>
           <div className="meta-row">
-            <span className="pill pill-ok">{summary.created} created</span>
+            <span className="pill pill-ok">{summary.created} added</span>
             <span className="pill pill-blue">{summary.updated} updated</span>
             <span className="pill pill-muted">{summary.unchanged} unchanged</span>
+            {summary.rejected > 0 && <span className="pill pill-bad">{summary.rejected} rejected</span>}
+          </div>
+          <div style={{ marginTop: "8px" }}>
+            <a href="/tariff" className="btn btn-small btn-primary">
+              Continue to Imports tab to audit duties <ArrowRight size={13} />
+            </a>
           </div>
         </div>
       )}
+
+      {/* Search Bar & View Mode Toggle */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", marginBottom: "12px", flexWrap: "wrap" }}>
+        <div style={{ position: "relative", flex: "1 1 300px" }}>
+          <Search size={15} style={{ position: "absolute", left: 10, top: 10, color: "var(--text-muted)" }} />
+          <input
+            className="input"
+            style={{ paddingLeft: "32px", width: "100%" }}
+            aria-label="Search catalogue"
+            placeholder="Search by SKU, product name, HTS code, or material…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <span className="pill pill-muted">{filteredProducts.length} Products</span>
+          <div style={{ display: "flex", gap: 4 }}>
+            <button className={"btn btn-small " + (viewMode === "grid" ? "btn-primary" : "")} aria-label="Grid view" aria-pressed={viewMode === "grid"} onClick={() => setViewMode("grid")}>
+              <LayoutGrid size={13} />
+            </button>
+            <button className={"btn btn-small " + (viewMode === "table" ? "btn-primary" : "")} aria-label="Table view" aria-pressed={viewMode === "table"} onClick={() => setViewMode("table")}>
+              <List size={13} />
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Product Grid */}
       <div className="meta-row" style={{ justifyContent: "space-between", marginBottom: "0.5rem" }}>

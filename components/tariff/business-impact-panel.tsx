@@ -1,10 +1,14 @@
 "use client";
 
 import { MonitorCandidates, ScheduleMonitor } from "./monitor-candidates";
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ImpactRow, summarizeBusinessImpact } from "@/lib/tariff/business-impact";
-
 import type { ColumnMapping, CanonicalField } from "@/lib/tariff/column-mapping";
+import { 
+  Upload, FileSpreadsheet, Download, Sparkles, ArrowRight, CheckCircle2, 
+  AlertTriangle, DollarSign, ChevronDown, ChevronUp, RefreshCw, 
+  ExternalLink, ShieldCheck, X, FileText, Check
+} from "lucide-react";
 
 const fieldLabels: Record<CanonicalField, string> = {
   qualification_verified: "Qualification explicitly reviewed (true/false)", qualification_basis: "Qualification review basis",
@@ -42,29 +46,93 @@ async function readResponse<T>(response: Response): Promise<T> {
 
 function RowEvidence({ row }: { row: ImpactRow }) {
   return (
-    <details open={row.status !== "computed"}>
-      <summary>Row {row.row_number} details — {row.sku ?? "missing SKU"}</summary>
-      {row.entry_id && <p>Entry: {row.entry_id} · Line: {row.line_number} · Paid duty: {usd(row.paid_duty_usd ?? null)} · Catalogue: {row.product_id ? "matched" : "unmatched"}</p>}
-      {row.raw_input.bill_of_lading && <p>Bill of lading: {row.raw_input.bill_of_lading}. Arrival: {row.raw_input.arrival_date || "not supplied"}. These are shipment references, not customs entry identity or entry date.</p>}
-      {row.raw_input.description && <p>{row.raw_input.description}</p>}
-      {row.raw_input.source_url && /^https?:\/\//.test(row.raw_input.source_url) && <p><a href={row.raw_input.source_url} target="_blank" rel="noreferrer">Uploaded record’s source</a></p>}
-      <p>Evaluation date: {row.evaluation_date ?? "not provided"}</p>
-      <p>Quantity: {row.quantity ?? "not provided"} {row.unit ?? ""} · Chapter 99 codes: {row.chapter99_codes ?? "not provided"}</p>
-      <p>Exclusion ID: {row.exclusion_id ?? "not provided"} · Special program claim: {row.special_program_claim ?? "not provided"}</p>
-      <p className="muted">Quantity and its unit are used for specific duties. Chapter 99, exclusion and programme claims require applicability review and withhold the delta.</p>
-      {row.review_reason && <p>{row.review_reason}</p>}
-      {row.error && <div role="alert"><strong>Correct these fields in your CSV and upload it again:</strong><p>{row.error.replace(/annual_import_value_usd/g, "import value").replace(/customs_value_usd/g, "customs value").replace(/paid_duty_usd/g, "duty paid").replace(/entry_id/g, "entry ID").replace(/line_number/g, "entry line").replace(/\bhts\b/g, "HTS code").replace(/\bsku\b/g, "SKU")}</p></div>}
+    <div style={{ marginTop: "10px", paddingTop: "10px", borderTop: "1px solid var(--border)", fontSize: "0.85rem" }}>
+      {row.entry_id && (
+        <p style={{ margin: "4px 0" }}>
+          <strong>Customs Entry:</strong> {row.entry_id} · <strong>Line:</strong> {row.line_number ?? "1"} · <strong>Catalogue Link:</strong>{" "}
+          <span className={`pill ${row.product_id ? "pill-ok" : "pill-muted"}`}>{row.product_id ? "Matched in Catalogue" : "Unmatched SKU"}</span>
+        </p>
+      )}
+      {row.raw_input.bill_of_lading && (
+        <p className="muted" style={{ margin: "4px 0" }}>
+          Bill of Lading: {row.raw_input.bill_of_lading}. Arrival: {row.raw_input.arrival_date || "not supplied"}.
+        </p>
+      )}
+      {row.raw_input.description && <p style={{ margin: "4px 0" }}><strong>Goods Description:</strong> {row.raw_input.description}</p>}
+      {row.raw_input.source_url && /^https?:\/\//.test(row.raw_input.source_url) && (
+        <p style={{ margin: "4px 0" }}>
+          <a href={row.raw_input.source_url} target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+            Uploaded Source Document <ExternalLink size={12} />
+          </a>
+        </p>
+      )}
+      <p style={{ margin: "4px 0" }} className="muted">
+        Entry Date: {row.evaluation_date ?? "not provided"} · Quantity: {row.quantity ?? "not provided"} {row.unit ?? ""} · Chapter 99 Codes: {row.chapter99_codes ?? "none"}
+      </p>
+
+      {row.review_reason && (
+        <div className="card" style={{ background: "rgba(180, 83, 9, 0.05)", borderColor: "rgba(180, 83, 9, 0.2)", margin: "8px 0", padding: "8px 12px" }}>
+          <strong style={{ color: "var(--warn)", display: "flex", alignItems: "center", gap: "4px" }}>
+            <AlertTriangle size={14} /> Review Guidance
+          </strong>
+          <p style={{ margin: "4px 0 0", fontSize: "0.8rem" }}>{row.review_reason}</p>
+        </div>
+      )}
+
+      {row.error && (
+        <div role="alert" className="card" style={{ background: "rgba(220, 38, 38, 0.05)", borderColor: "rgba(220, 38, 38, 0.2)", margin: "8px 0", padding: "8px 12px" }}>
+          <strong style={{ color: "var(--danger)" }}>Missing or Invalid Data to Correct:</strong>
+          <p style={{ margin: "4px 0 0", fontSize: "0.8rem" }}>
+            {row.error.replace(/annual_import_value_usd/g, "import value").replace(/customs_value_usd/g, "customs value").replace(/paid_duty_usd/g, "duty paid").replace(/entry_id/g, "entry ID").replace(/line_number/g, "entry line").replace(/\bhts\b/g, "HTS code").replace(/\bsku\b/g, "SKU")}
+          </p>
+        </div>
+      )}
+
       {row.stack_result ? (
-        <>
-          <table className="table"><thead><tr><th>Duty</th><th>Rate</th><th>Amount</th><th>Source</th></tr></thead><tbody>{row.stack_result.components.map((part,index) => <tr key={index}><td>{part.label}</td><td>{rate(part.ratePercent)}</td><td>{usd(part.amount)}</td><td>{part.citation.map((url,i) => /^https?:\/\//.test(url) ? <a key={url} href={url} target="_blank" rel="noreferrer">Source {i+1} </a> : <span key={url}>{url}</span>)}</td></tr>)}</tbody></table>
-          <p>{row.stack_result.stackingExplanation.join(" ")}</p>
-          {row.stack_result.unresolvedMeasures.length > 0 && <p>Needs review: {row.stack_result.unresolvedMeasures.join("; ")}</p>}
-          {/* Previous raw implementation output retained but disabled.
-          <p className="muted">Saved stack evidence, including components, citations, unresolvedMeasures and adCvdAdvisories. Numeric values below are shown exactly as returned.</p>
-          <pre className="mono" style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere", margin: 0 }}>{JSON.stringify(row.stack_result, null, 2)}</pre>          */}
-        </>
-      ) : <p className="muted">No stack result returned.</p>}
-    </details>
+        <div style={{ marginTop: "8px" }}>
+          <table className="table" style={{ fontSize: "0.8rem", marginBottom: "6px" }}>
+            <thead>
+              <tr>
+                <th scope="col">Tariff Measure</th>
+                <th scope="col">Rate</th>
+                <th scope="col">Calculated Duty</th>
+                <th scope="col">Legal Citation</th>
+              </tr>
+            </thead>
+            <tbody>
+              {row.stack_result.components.map((part, index) => (
+                <tr key={index}>
+                  <td><strong>{part.label}</strong></td>
+                  <td>{rate(part.ratePercent)}</td>
+                  <td>{usd(part.amount)}</td>
+                  <td>
+                    {part.citation.map((url, i) =>
+                      /^https?:\/\//.test(url) ? (
+                        <a key={url} href={url} target="_blank" rel="noreferrer" style={{ marginRight: 6, display: "inline-flex", alignItems: "center", gap: "2px" }}>
+                          USITC Source {i + 1} <ExternalLink size={10} />
+                        </a>
+                      ) : (
+                        <span key={url} style={{ marginRight: 6 }}>{url}</span>
+                      )
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="muted" style={{ fontSize: "0.75rem", margin: "4px 0" }}>
+            {row.stack_result.stackingExplanation.join(" ")}
+          </p>
+          {row.stack_result.unresolvedMeasures.length > 0 && (
+            <p style={{ fontSize: "0.75rem", color: "var(--warn)", margin: "4px 0" }}>
+              <strong>Requires Legal Review:</strong> {row.stack_result.unresolvedMeasures.join("; ")}
+            </p>
+          )}
+        </div>
+      ) : (
+        <p className="muted" style={{ margin: "4px 0", fontStyle: "italic" }}>No tariff breakdown available for this entry.</p>
+      )}
+    </div>
   );
 }
 
@@ -79,6 +147,11 @@ export function BusinessImpactPanel() {
   const [busy, setBusy] = useState<"mapping" | "upload" | "open" | "export" | null>(null);
   const [progress, setProgress] = useState<number | null>(null);
   const [uploaded, setUploaded] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+  const [expandedRows, setExpandedRows] = useState<Record<number, boolean>>({});
+  const [activeFilter, setActiveFilter] = useState<"all" | "overpaid" | "review" | "error">("all");
+  const [showMappingDrawer, setShowMappingDrawer] = useState(false);
+
   const uploadRef = useRef<XMLHttpRequest | null>(null);
   const historyRequest = useRef(0);
 
@@ -101,17 +174,18 @@ export function BusinessImpactPanel() {
     return () => { ++historyRequest.current; uploadRef.current?.abort(); };
   }, [loadHistory]);
 
-  async function propose(file: File | null) {
-    setFile(file);
+  async function propose(fileToPropose: File | null) {
+    setFile(fileToPropose);
     setProposal(null);
     setError(null);
-    if (!file) return;
-    if (file.size > 2 * 1024 * 1024) { setError("CSV exceeds the 2 MiB upload limit."); return; }
+    if (!fileToPropose) return;
+    if (fileToPropose.size > 2 * 1024 * 1024) { setError("CSV exceeds the 2 MiB upload limit."); return; }
     setBusy("mapping");
     try {
-      setProposal(await readResponse<MappingProposal>(await fetch(`${endpoint}/propose-mapping`, {
-        method: "POST", headers: { "Content-Type": "text/csv" }, body: file,
-      })));
+      const prop = await readResponse<MappingProposal>(await fetch(`${endpoint}/propose-mapping`, {
+        method: "POST", headers: { "Content-Type": "text/csv" }, body: fileToPropose,
+      }));
+      setProposal(prop);
     } catch (e) { setError(e instanceof Error ? e.message : "Could not propose column mapping."); }
     finally { setBusy(null); }
   }
@@ -128,8 +202,6 @@ export function BusinessImpactPanel() {
     setUploaded(false);
     setRun(null);
     try {
-      // Fetch does not report upload progress. XHR reports actual transferred bytes;
-      // analysis remains indeterminate after the upload finishes.
       const snapshot = await new Promise<ImpactSnapshot>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         uploadRef.current = xhr;
@@ -156,6 +228,21 @@ export function BusinessImpactPanel() {
       setError(e instanceof Error ? e.message : "Could not upload CSV.");
     } finally {
       uploadRef.current = null;
+      setBusy(null);
+    }
+  }
+
+  async function loadDemoImports() {
+    setError(null);
+    setBusy("mapping");
+    try {
+      const res = await fetch("/examples/lulzbot-synthetic-imports.csv");
+      if (!res.ok) throw new Error("Could not fetch demo imports dataset.");
+      const blob = await res.blob();
+      const demoFile = new File([blob], "lulzbot-synthetic-imports.csv", { type: "text/csv" });
+      await propose(demoFile);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to load sample dataset.");
       setBusy(null);
     }
   }
@@ -191,126 +278,448 @@ export function BusinessImpactPanel() {
     } finally { setBusy(null); }
   }
 
+  const toggleRow = (rowNum: number) => {
+    setExpandedRows(prev => ({ ...prev, [rowNum]: !prev[rowNum] }));
+  };
+
+  // KPI Calculations
+  const overpaidRows = run ? run.rows.filter(r => r.status === "computed" && (r.annual_delta_usd ?? 0) < 0) : [];
+  const totalOverpayment = overpaidRows.reduce((sum, r) => sum + Math.abs(r.annual_delta_usd ?? 0), 0);
+  const underpaidRows = run ? run.rows.filter(r => r.status === "computed" && (r.annual_delta_usd ?? 0) > 0) : [];
+  const totalUnderpayment = underpaidRows.reduce((sum, r) => sum + (r.annual_delta_usd ?? 0), 0);
+
+  const filteredRows = run ? run.rows.filter(row => {
+    if (activeFilter === "overpaid") return row.status === "computed" && (row.annual_delta_usd ?? 0) < 0;
+    if (activeFilter === "review") return row.status === "unresolved";
+    if (activeFilter === "error") return row.status === "error";
+    return true;
+  }) : [];
+
   return (
     <section aria-label="Tariff impact analysis">
-      <div className="page-head"><div><h1>Imports &amp; results</h1><p className="page-sub">Check duties paid. See what needs attention.</p></div></div>
-      <div className="card"><strong>Upload your customs-entry history</strong><p>Add your <a href="/catalogue?country=United%20States">products</a> first, then upload your broker’s entry-line CSV using the same SKUs.</p><p><a href="/examples/imports-template.csv" download>Download blank import template</a></p><details><summary>What can Cante calculate?</summary><p>Verified historical coverage currently includes HTS 3916.90.30.00 from China/Vietnam for July 21–27 and September 15–27, 2026. Other entries are saved with an explanation of what still needs review. Classification, origin and exceptions must be supported by your records.</p><p>A bill of lading alone does not show customs value or duty paid. Ask your broker for an entry-line export. Differences are review leads, not approved refunds.</p></details></div>
-      {/* Previous demo-first introduction retained, disabled for customer use.
-      <div className="card"><strong>Start with your two datasets</strong><p>1. <a href="/catalogue?country=United%20States">Upload products in Catalogue</a> with stable SKUs. 2. Upload import history below using those same SKUs. 3. Review duty differences and the estimated impact of monitored changes.</p><p className="muted">A calculated difference is a review lead, not a refund entitlement. Unmatched entries and unsupported tariff treatment remain unresolved.</p><details><summary>Try the public-product demonstration</summary><p>Public LulzBot product descriptions with synthetic import records. Origins, values, duties and reviewed flags are fictional test inputs, not company records.</p><p><a href="/examples/lulzbot-public-products.csv" download>1. Product CSV</a> · <a href="/examples/lulzbot-synthetic-imports.csv" download>2. Synthetic import CSV</a></p></details></div>
-      <ScheduleMonitor runId={run?.id ?? null} />
-      <MonitorCandidates runId={run?.id ?? null} />
+      {/* Visual Workflow Journey Stepper */}
+      <nav className="workflow-stepper" aria-label="Compliance workflow steps">
+        <a href="/catalogue" className="workflow-step">
+          <span className="workflow-step-num">1</span>
+          <div className="workflow-step-info">
+            <span className="workflow-step-title">Product Catalogue</span>
+            <span className="workflow-step-desc">Company SKUs &amp; HTS</span>
+          </div>
+        </a>
+        <div className="workflow-step-divider" />
+        <div className="workflow-step active">
+          <span className="workflow-step-num">2</span>
+          <div className="workflow-step-info">
+            <span className="workflow-step-title">Upload Imports</span>
+            <span className="workflow-step-desc">Customs 7501 entry lines</span>
+          </div>
+        </div>
+        <div className="workflow-step-divider" />
+        <div className={`workflow-step ${run ? "completed" : ""}`}>
+          <span className="workflow-step-num">3</span>
+          <div className="workflow-step-info">
+            <span className="workflow-step-title">Duty Audit &amp; Savings</span>
+            <span className="workflow-step-desc">Overpayments &amp; tariff changes</span>
+          </div>
+        </div>
+      </nav>
+
+      {/* Page Header */}
       <div className="page-head">
         <div>
-          <h2 id="impact-heading">Import duty review</h2>
-          <p className="page-sub">Upload an annual portfolio or historical entry lines. Historical pilot: 3916.90.30.00, China/Vietnam, Jul 21–27 or Sep 15–27, 2026. Explicit review must cover classification, origin, transit, court relief and special treatment.</p>
+          <h1>Imports &amp; Tariff Audit</h1>
+          <p className="page-sub">
+            Upload your broker&apos;s customs entry lines to verify duties paid, detect overpayments, and evaluate business exposure.
+          </p>
         </div>
       </div>
-      */}
-      <form className="card" onSubmit={(event) => { event.preventDefault(); void upload(); }}>
-        <label htmlFor="impact-csv" className="card-title">Upload import history</label>
-        <p id="impact-csv-help" className="muted">
-          Match your column names before analyzing. Include entry ID, line, SKU, full HTS code, origin, entry date, customs value and duty paid.
-          Entry dates use YYYY-MM-DD. Quantity and unit are required for specific duties. Include Chapter 99 codes, exclusions and special-program claims when applicable.
-          Use two-letter origins, USD values without separators,
-          and percentage points (5 means 5%). Maximum 500 rows, 2 MiB.
-        </p>
-        <div className="row" style={{ flexWrap: "wrap" }}>
-          <input id="impact-csv" className="input" type="file" accept=".csv,text/csv" aria-describedby="impact-csv-help"
-            disabled={busy !== null} onChange={(event) => void propose(event.target.files?.[0] ?? null)} />
-          {!proposal && file && <button className="btn" type="button" disabled={busy !== null} onClick={() => void propose(file)}>Retry column mapping</button>}
-          <button className="btn btn-primary" type="submit" disabled={!file || !proposal || busy !== null}>Confirm mapping and analyze</button>
+
+      {error && <div className="pill pill-bad" role="alert" style={{ marginBottom: "1rem", whiteSpace: "normal" }}>{error}</div>}
+
+      {/* Hero Upload Dropzone Card */}
+      <div className="card" style={{ marginBottom: "1.5rem", padding: "20px 22px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
+          <div>
+            <h2 style={{ fontSize: "1.1rem", fontWeight: 600, margin: "0 0 4px" }}>Customs Entry Ingestion</h2>
+            <p className="muted" style={{ margin: 0 }}>
+              Drop your broker CSV or entry summary spreadsheet below. Column headers are automatically recognized.
+            </p>
+          </div>
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+            <a href="/examples/imports-template.csv" download className="btn btn-lg" style={{ color: "var(--text)" }}>
+              <Download size={16} /> Download Blank CSV Template
+            </a>
+            {!file && (
+              <button className="btn btn-lg" disabled={busy !== null} onClick={() => void loadDemoImports()}>
+                <Sparkles size={16} color="var(--blue)" /> Load Sample Dataset
+              </button>
+            )}
+          </div>
         </div>
-        {proposal && <details open={!run} style={{ overflowX: "auto" }}><summary>Check column matches</summary><div>
-          <p>We think these columns match. Check each selection before confirming; choose None when your file has no matching column.</p>
-          <table className="table">
-            <thead><tr><th scope="col">Field</th><th scope="col">Your column</th><th scope="col">Header match</th></tr></thead>
-            <tbody>{(Object.keys(fieldLabels) as CanonicalField[]).filter(field => !["annual_import_value_usd", "current_duty_rate"].includes(field)).map(field => <tr key={field}>
-              <th scope="row"><label htmlFor={`mapping-${field}`}>{fieldLabels[field]}</label></th>
-              <td><select id={`mapping-${field}`} className="input" disabled={busy !== null} value={proposal.mapping[field] ?? ""}
-                onChange={event => setProposal({ ...proposal, mapping: { ...proposal.mapping, [field]: event.target.value || null } })}>
-                <option value="">None</option>
-                {proposal.headers.map(header => <option key={header} value={header}>{header}</option>)}
-              </select></td>
-              <td>{Math.round(proposal.confidence[field] * 100)}%</td>
-            </tr>)}</tbody>
-          </table>
-        </div></details>}
-      </form>
-      {error && <p className="pill pill-bad" role="alert" style={{ whiteSpace: "normal" }}>{error}</p>}
-      {busy && (
-        <div role="status" className="card">
-          {busy === "upload" ? uploaded ? "Upload complete. Analyzing and saving results…" : `Uploading CSV${progress === null ? "…" : ` — ${progress}%`}`
-            : busy === "mapping" ? "Suggesting column matches…" : busy === "open" ? "Loading saved analysis…" : "Downloading CSV…"}
-          {busy === "upload" && !uploaded && <progress aria-label="CSV upload progress" max={100} value={progress ?? undefined} style={{ display: "block", marginTop: 8 }} />}
+
+        {/* Drag & Drop Area */}
+        <div
+          className={`upload-dropzone ${dragOver ? "dragover" : ""}`}
+          onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setDragOver(false);
+            const dropped = e.dataTransfer.files?.[0];
+            if (dropped) void propose(dropped);
+          }}
+          onClick={() => document.getElementById("impact-csv-input")?.click()}
+        >
+          <input
+            id="impact-csv-input"
+            type="file"
+            accept=".csv,text/csv"
+            style={{ display: "none" }}
+            onChange={(e) => void propose(e.target.files?.[0] ?? null)}
+          />
+          <div className="upload-icon-circle">
+            <Upload size={26} />
+          </div>
+          {file ? (
+            <>
+              <h3 style={{ color: "var(--blue)" }}>{file.name}</h3>
+              <p className="muted">{(file.size / 1024).toFixed(1)} KB · Columns matched with AI assistant</p>
+            </>
+          ) : (
+            <>
+              <h3>Drag &amp; drop your Customs Import CSV here</h3>
+              <p>Or click to browse files (accepts entry numbers, dates, HTS codes, values, duty paid)</p>
+            </>
+          )}
         </div>
-      )}
-      {run && (
-        <section className="card" aria-labelledby="impact-result-heading">
-          <div className="card-head">
-            <div>
-              <h2 id="impact-result-heading" className="card-title">Results — {run.filename}</h2>
-              <p className="muted">Saved {new Date(run.created_at).toLocaleString()}</p>
+
+        {/* File Actions & Column Mapping Trigger */}
+        {file && proposal && (
+          <div style={{ marginTop: "16px", background: "var(--app-background)", borderRadius: "var(--radius-lg)", padding: "16px", border: "1px solid var(--border)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
+              <div>
+                <strong style={{ fontSize: "0.95rem", display: "flex", alignItems: "center", gap: "6px" }}>
+                  <CheckCircle2 size={16} color="var(--ok)" /> Ready to Audit: {file.name}
+                </strong>
+                <p className="muted" style={{ margin: "2px 0 0", fontSize: "0.8rem" }}>
+                  Columns recognized. Review mappings if you have custom header names.
+                </p>
+              </div>
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => setShowMappingDrawer(v => !v)}
+                >
+                  {showMappingDrawer ? "Hide Column Matches" : "Review Column Matches"}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-lg btn-primary-gradient"
+                  disabled={busy !== null}
+                  onClick={() => void upload()}
+                >
+                  {busy === "upload" ? "Analyzing Duties…" : "Run Tariff Audit & Calculate Discrepancies →"}
+                </button>
+              </div>
             </div>
-            <button className="btn" disabled={busy !== null} onClick={() => void exportRun()}>Export CSV</button>
+
+            {/* Column Mapping Details */}
+            {showMappingDrawer && (
+              <div style={{ marginTop: "16px", paddingTop: "12px", borderTop: "1px solid var(--border)" }}>
+                <table className="table" style={{ fontSize: "0.85rem" }}>
+                  <thead>
+                    <tr>
+                      <th scope="col">Standard Field</th>
+                      <th scope="col">Matched in Your File</th>
+                      <th scope="col">Confidence</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(Object.keys(fieldLabels) as CanonicalField[])
+                      .filter(field => !["annual_import_value_usd", "current_duty_rate"].includes(field))
+                      .map(field => (
+                        <tr key={field}>
+                          <td><strong>{fieldLabels[field]}</strong></td>
+                          <td>
+                            <select
+                              className="input"
+                              style={{ width: "100%", maxWidth: "260px" }}
+                              disabled={busy !== null}
+                              value={proposal.mapping[field] ?? ""}
+                              onChange={event => setProposal({ ...proposal, mapping: { ...proposal.mapping, [field]: event.target.value || null } })}
+                            >
+                              <option value="">None (skip field)</option>
+                              {proposal.headers.map(header => <option key={header} value={header}>{header}</option>)}
+                            </select>
+                          </td>
+                          <td>
+                            <span className={`pill ${proposal.confidence[field] > 0.8 ? "pill-ok" : proposal.confidence[field] > 0.4 ? "pill-blue" : "pill-muted"}`}>
+                              {Math.round(proposal.confidence[field] * 100)}% Match
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
-          <div className="meta-row" style={{ flexWrap: "wrap" }}>
-            <span className="pill pill-blue">{run.affected_sku_count} products with differences</span>
-            <span className="pill pill-muted">{run.unique_supplier_count} suppliers</span>
-            <span className="pill pill-ok">{run.computed_count} checked</span>
-            <span className="pill pill-warn">{run.unresolved_count} need review</span>
-            <span className="pill pill-bad">{run.error_count} need corrected data</span>
+        )}
+
+        {/* Progress bar during calculation */}
+        {busy && (
+          <div role="status" className="card" style={{ marginTop: "12px", background: "rgba(var(--azure), 0.05)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <RefreshCw size={16} className="spin" color="var(--blue)" />
+              <strong>
+                {busy === "upload" ? uploaded ? "Processing entry lines against USITC HTS and Section 301/232 tables…" : `Uploading file${progress === null ? "…" : ` (${progress}%)`}`
+                  : busy === "mapping" ? "Analyzing CSV header structure…" : busy === "open" ? "Loading saved review…" : "Exporting report…"}
+              </strong>
+            </div>
+            {busy === "upload" && !uploaded && (
+              <progress aria-label="CSV upload progress" max={100} value={progress ?? undefined} style={{ display: "block", width: "100%", marginTop: 8 }} />
+            )}
           </div>
-          {run.computed_count === 0 ? <p><strong>No duties calculated.</strong> Correct missing data or supply the evidence listed below.</p> : <div className="meta-row" style={{ flexWrap: "wrap" }}>
-            <span>Potential overpayment: <strong>{usd(run.rows.filter(row => row.status === "computed" && (row.annual_delta_usd ?? 0) < 0).reduce((sum,row) => sum - row.annual_delta_usd!,0))}</strong></span>
-            <span>Potential underpayment: <strong>{usd(run.rows.filter(row => row.status === "computed" && (row.annual_delta_usd ?? 0) > 0).reduce((sum,row) => sum + row.annual_delta_usd!,0))}</strong></span>
-            <span className="muted">Checked rows only. Confirm with your broker before acting.</span>
-          </div>}
-          {run.estimated_annual_duty_delta_usd === null
-            ? <p className="pill pill-warn" style={{ whiteSpace: "normal" }}>Total unavailable — {run.unresolved_count + run.error_count} of {run.source_count} rows unresolved</p>
-            : <p>{run.analysis_kind === "historical_entries" ? "Assessed-minus-paid duty discrepancy:" : "Portfolio estimated annual duty delta:"} <strong>{usd(run.estimated_annual_duty_delta_usd)}</strong></p>}
-          <p>Effective date: {run.effective_date_status === "single" ? run.effective_date : run.effective_date_status === "mixed" ? "mixed" : "not provided"}</p>
-          <div role="region" aria-label="Tariff impact rows" tabIndex={0} style={{ overflowX: "auto" }}>
-            <table className="table">
-              <caption className="muted" style={{ textAlign: "left", marginBottom: 8 }}>{run.analysis_kind === "historical_entries" ? "Entry amounts in USD. Historical totals are withheld without verified date-specific rates." : "Annual amounts in USD. Expand a row for saved calculation evidence."}</caption>
-              <thead><tr>{["Entry / product", "HTS", "Paid", "Assessed", "Difference", "Result"].map(label => <th key={label} scope="col">{label}</th>)}</tr></thead>
-              <tbody>{run.rows.map(row => <Fragment key={row.row_number}>
-                <tr><th scope="row">{row.entry_id ?? `Row ${row.row_number}`}<br/><span className="muted">{row.sku ?? "SKU missing"}</span></th><td>{row.hts ?? "Missing"}</td><td>{usd(row.paid_duty_usd ?? row.current_annual_duty_usd)}</td><td>{usd(row.computed_annual_duty_usd)}</td><td>{usd(row.annual_delta_usd)}</td><td>{row.status === "computed" ? row.annual_delta_usd === 0 ? "Matches" : "Review difference" : row.status === "error" ? "Correct data" : "Needs evidence"}</td></tr>
-                <tr><td colSpan={6}><RowEvidence row={row}/></td></tr>
-              </Fragment>)}</tbody>
-              {/* Previous wide portfolio table retained, disabled.
-              <thead><tr>{["SKU", "HTS", "Origin", "Supplier", run.analysis_kind === "historical_entries" ? "Customs value" : "Annual value", "Baseline rate", "Computed total rate", run.analysis_kind === "historical_entries" ? "Duty paid" : "Current annual duty", run.analysis_kind === "historical_entries" ? "Assessed duty" : "Computed annual duty", "Difference", "Direction", "Status"].map(label => <th scope="col" key={label}>{label}</th>)}</tr></thead>
-              <tbody>{run.rows.map(row => (
-                <Fragment key={row.row_number}>
-                  <tr>
-                    <th scope="row">{row.sku ?? "not provided"}</th>
-                    <td className="mono">{row.hts ?? "not provided"}</td><td>{row.origin ?? "not provided"}</td><td>{row.supplier ?? "not provided"}</td>
-                    <td>{usd(row.annual_import_value_usd)}</td><td>{rate(row.current_duty_rate)}</td><td>{rate(row.computed_total_rate)}</td>
-                    <td>{usd(row.current_annual_duty_usd)}</td><td>{usd(row.computed_annual_duty_usd)}</td><td>{usd(row.annual_delta_usd)}</td>
-                    <td>{row.direction.replace(/_/g, " ")}</td>
-                    <td><span className={`pill ${row.status === "computed" ? "pill-ok" : row.status === "error" ? "pill-bad" : "pill-warn"}`}>{row.status}</span></td>
-                  </tr>
-                  <tr><td colSpan={12}><RowEvidence row={row} /></td></tr>
-                </Fragment>
-              ))}</tbody>              */}
-            </table>
+        )}
+      </div>
+
+      {/* Results Dashboard Section */}
+      {run && (
+        <section aria-labelledby="audit-dashboard-heading" style={{ marginBottom: "2rem" }}>
+          <div className="card-head" style={{ marginBottom: "14px" }}>
+            <div>
+              <h2 id="audit-dashboard-heading" style={{ fontSize: "1.25rem", fontWeight: 700, margin: "0 0 4px" }}>
+                Audit Results: {run.filename}
+              </h2>
+              <p className="muted" style={{ margin: 0 }}>
+                Analyzed on {new Date(run.created_at).toLocaleDateString()} at {new Date(run.created_at).toLocaleTimeString()}
+              </p>
+            </div>
+            <button className="btn btn-primary" disabled={busy !== null} onClick={() => void exportRun()}>
+              <Download size={14} /> Export Audit Report (CSV)
+            </button>
+          </div>
+
+          {/* Executive KPI Metric Grid */}
+          <div className="metric-grid">
+            <div className={`metric-card ${totalOverpayment > 0 ? "tone-ok" : ""}`}>
+              <span className="metric-label">Potential Duty Overpayments</span>
+              <span className="metric-value">{usd(totalOverpayment)}</span>
+              <span className="muted" style={{ fontSize: "0.75rem" }}>
+                {overpaidRows.length > 0 ? `${overpaidRows.length} entry line(s) overpaid` : "No duty overpayments flagged"}
+              </span>
+            </div>
+
+            <div className={`metric-card ${totalUnderpayment > 0 ? "tone-warn" : ""}`}>
+              <span className="metric-label">Underpaid / Additional Exposure</span>
+              <span className="metric-value">{usd(totalUnderpayment)}</span>
+              <span className="muted" style={{ fontSize: "0.75rem" }}>
+                {underpaidRows.length > 0 ? `${underpaidRows.length} entry line(s) at risk` : "No underpayments detected"}
+              </span>
+            </div>
+
+            <div className="metric-card tone-blue">
+              <span className="metric-label">Lines Checked &amp; Verified</span>
+              <span className="metric-value">{run.computed_count} / {run.source_count}</span>
+              <span className="muted" style={{ fontSize: "0.75rem" }}>
+                {run.affected_sku_count} unique SKU(s) evaluated
+              </span>
+            </div>
+
+            <div className={`metric-card ${run.unresolved_count + run.error_count > 0 ? "tone-warn" : ""}`}>
+              <span className="metric-label">Requires Broker Review</span>
+              <span className="metric-value">{run.unresolved_count + run.error_count}</span>
+              <span className="muted" style={{ fontSize: "0.75rem" }}>
+                {run.error_count > 0 ? `${run.error_count} missing fields` : "Needs evidence verification"}
+              </span>
+            </div>
+          </div>
+
+          {/* Filter Bar */}
+          <div style={{ display: "flex", gap: "8px", marginBottom: "14px", flexWrap: "wrap" }}>
+            <button
+              className={`btn btn-small ${activeFilter === "all" ? "btn-primary" : ""}`}
+              onClick={() => setActiveFilter("all")}
+            >
+              All Entries ({run.rows.length})
+            </button>
+            <button
+              className={`btn btn-small ${activeFilter === "overpaid" ? "btn-primary" : ""}`}
+              onClick={() => setActiveFilter("overpaid")}
+            >
+              Overpayments Flagged ({overpaidRows.length})
+            </button>
+            <button
+              className={`btn btn-small ${activeFilter === "review" ? "btn-primary" : ""}`}
+              onClick={() => setActiveFilter("review")}
+            >
+              Needs Review ({run.unresolved_count})
+            </button>
+            <button
+              className={`btn btn-small ${activeFilter === "error" ? "btn-primary" : ""}`}
+              onClick={() => setActiveFilter("error")}
+            >
+              Data Errors ({run.error_count})
+            </button>
+          </div>
+
+          {/* Result Entry Cards */}
+          <div role="region" aria-label="Tariff entry lines">
+            {filteredRows.length === 0 ? (
+              <div className="card empty">No entries match the selected filter.</div>
+            ) : (
+              filteredRows.map((row) => {
+                const isOverpaid = row.status === "computed" && (row.annual_delta_usd ?? 0) < 0;
+                const isUnderpaid = row.status === "computed" && (row.annual_delta_usd ?? 0) > 0;
+                const isExpanded = !!expandedRows[row.row_number];
+
+                return (
+                  <article
+                    key={row.row_number}
+                    className={`audit-entry-card ${isOverpaid ? "has-overpayment" : isUnderpaid ? "has-underpayment" : row.status === "error" ? "has-error" : ""}`}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "10px" }}>
+                      <div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", marginBottom: "4px" }}>
+                          <strong style={{ fontSize: "0.95rem", fontFamily: "var(--font-mono)" }}>
+                            {row.entry_id ? `Entry ${row.entry_id}` : `Row #${row.row_number}`}
+                          </strong>
+                          {row.sku && <span className="pill pill-blue">{row.sku}</span>}
+                          {row.hts && <span className="pill pill-muted font-mono">HTS: {row.hts}</span>}
+                          {row.origin && <span className="pill pill-muted">Origin: {row.origin}</span>}
+                          {row.evaluation_date && <span className="pill pill-muted">{row.evaluation_date}</span>}
+                        </div>
+                        <p className="muted" style={{ margin: 0, fontSize: "0.8rem" }}>
+                          {row.raw_input.description || (row.customs_value_usd ? `Customs Value: ${usd(row.customs_value_usd)}` : "No description provided")}
+                        </p>
+                      </div>
+
+                      {/* Discrepancy Figures */}
+                      <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
+                        <div style={{ textAlign: "right" }}>
+                          <span className="muted" style={{ fontSize: "0.75rem", display: "block" }}>Paid Duty</span>
+                          <strong style={{ fontSize: "0.95rem" }}>{usd(row.paid_duty_usd ?? row.current_annual_duty_usd)}</strong>
+                        </div>
+                        <div style={{ textAlign: "right" }}>
+                          <span className="muted" style={{ fontSize: "0.75rem", display: "block" }}>Cante Assessed</span>
+                          <strong style={{ fontSize: "0.95rem" }}>{usd(row.computed_annual_duty_usd)}</strong>
+                        </div>
+                        <div>
+                          {isOverpaid ? (
+                            <span className="pill pill-ok" style={{ fontSize: "0.8rem", padding: "4px 8px" }}>
+                              Potential Overpayment: {usd(Math.abs(row.annual_delta_usd!))}
+                            </span>
+                          ) : isUnderpaid ? (
+                            <span className="pill pill-warn" style={{ fontSize: "0.8rem", padding: "4px 8px" }}>
+                              Underpaid: {usd(row.annual_delta_usd!)}
+                            </span>
+                          ) : row.status === "computed" ? (
+                            <span className="pill pill-ok" style={{ fontSize: "0.8rem", padding: "4px 8px" }}>
+                              Exact Match
+                            </span>
+                          ) : row.status === "error" ? (
+                            <span className="pill pill-bad" style={{ fontSize: "0.8rem", padding: "4px 8px" }}>
+                              Missing Data
+                            </span>
+                          ) : (
+                            <span className="pill pill-warn" style={{ fontSize: "0.8rem", padding: "4px 8px" }}>
+                              Needs Review
+                            </span>
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          className="btn btn-small"
+                          onClick={() => toggleRow(row.row_number)}
+                          aria-expanded={isExpanded}
+                          aria-label={`Toggle details for row ${row.row_number}`}
+                        >
+                          {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Expandable Breakdown and Evidence */}
+                    {isExpanded && <RowEvidence row={row} />}
+                  </article>
+                );
+              })
+            )}
           </div>
         </section>
       )}
-      <details className="card"><summary>Tariff changes &amp; source status</summary><ScheduleMonitor runId={run?.id ?? null} /><MonitorCandidates runId={run?.id ?? null} /></details>
+
+      {/* Regulatory Monitoring & Schedule Accordion */}
+      <details className="card" style={{ marginBottom: "1.5rem" }}>
+        <summary style={{ cursor: "pointer", fontWeight: 600 }}>
+          Regulatory Schedule &amp; Automatic Rule Monitoring Status
+        </summary>
+        <div style={{ marginTop: "12px" }}>
+          <ScheduleMonitor runId={run?.id ?? null} />
+          <MonitorCandidates runId={run?.id ?? null} />
+        </div>
+      </details>
+
+      {/* Saved Reviews History */}
       <section className="card" aria-labelledby="impact-history-heading">
         <div className="card-head">
-          <h2 id="impact-history-heading" className="card-title">Saved reviews</h2>
-          <button className="btn btn-small" disabled={historyLoading || busy !== null} onClick={() => void loadHistory()}>Refresh history</button>
+          <div>
+            <h2 id="impact-history-heading" className="card-title">Saved Import Audits</h2>
+            <p className="muted" style={{ margin: 0 }}>Review previous customs audits and export historical records.</p>
+          </div>
+          <button className="btn btn-small" disabled={historyLoading || busy !== null} onClick={() => void loadHistory()}>
+            <RefreshCw size={13} /> Refresh
+          </button>
         </div>
-        {historyLoading ? <p role="status">Loading run history…</p>
-          : historyError ? <p role="alert">{historyError}</p>
-          : runs.length === 0 ? <p className="muted">No saved analyses yet.</p>
-          : <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>{runs.map(saved => (
-            <li key={saved.id} className="row" style={{ flexWrap: "wrap", marginBottom: 8 }}>
-              <button className="btn btn-small" disabled={busy !== null} aria-current={run?.id === saved.id ? "true" : undefined} onClick={() => void openRun(saved.id)}>{saved.filename}</button>
-              <span className="muted">{new Date(saved.created_at).toLocaleString()} · {saved.source_count} rows · {saved.computed_count} computed · {saved.unresolved_count} unresolved · {saved.error_count} need corrected data</span>
-            </li>
-          ))}</ul>}
+        {historyLoading ? (
+          <p role="status">Loading audit history…</p>
+        ) : historyError ? (
+          <p role="alert">{historyError}</p>
+        ) : runs.length === 0 ? (
+          <p className="muted">No saved import audits yet. Upload a CSV above to get started.</p>
+        ) : (
+          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+            {runs.map((saved) => (
+              <li
+                key={saved.id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "10px 12px",
+                  borderBottom: "1px solid var(--border)",
+                  flexWrap: "wrap",
+                  gap: "8px",
+                }}
+              >
+                <div>
+                  <button
+                    className="btn btn-small"
+                    style={{ fontWeight: 600, marginRight: "8px" }}
+                    disabled={busy !== null}
+                    aria-current={run?.id === saved.id ? "true" : undefined}
+                    onClick={() => void openRun(saved.id)}
+                  >
+                    {saved.filename}
+                  </button>
+                  <span className="muted" style={{ fontSize: "0.8rem" }}>
+                    {new Date(saved.created_at).toLocaleDateString()} · {saved.source_count} rows ({saved.computed_count} computed, {saved.unresolved_count} unreviewed)
+                  </span>
+                </div>
+                <div style={{ display: "flex", gap: "6px" }}>
+                  <button
+                    className="btn btn-small btn-primary"
+                    disabled={busy !== null}
+                    onClick={() => void openRun(saved.id)}
+                  >
+                    View Results
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
     </section>
   );
