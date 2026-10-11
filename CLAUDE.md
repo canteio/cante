@@ -116,6 +116,36 @@ Chat Completions also doesn't support the `web_search` tool, so which
 endpoint happened to answer would silently change what the model could do.
 Reverted to the single audited Responses call.
 
+**A third rule-1 regression from the same commits, found and fixed
+October 10:** `lib/llm/index.ts`'s `getProvider()` had been changed to fall
+back to the paid `"api"` provider whenever `OPENAI_API_KEY` or
+`ANTHROPIC_API_KEY` happened to be set in the environment and `CANTE_LLM`
+was unset — directly contradicting the doc comment two lines above it
+("Nothing reaches the paid API unless someone deliberately sets
+CANTE_LLM=api — an unset variable never starts spending") and rule 1 itself.
+Reverted to reading only `choice ?? process.env.CANTE_LLM`, no key-presence
+fallback. Not exploitable in this project's own `.env` (`CANTE_LLM=api` is
+set there explicitly), but would silently enable hosted spend in any other
+checkout that has a key configured and no explicit `CANTE_LLM`.
+
+**The "Load Sample Dataset" button, also added by these commits, was
+disabled too (October 10).** It fetched `/examples/lulzbot-synthetic-imports.csv`,
+which `.vercelignore` deliberately excludes from the deployed app — a
+decision that predates this panel's redesign ("synthetic demo downloads are
+retained locally, outside the customer app"). On production it always
+404ed, surfacing as "Could not fetch demo imports dataset." Commented out in
+`components/tariff/business-impact-panel.tsx` (handler and button both, plus
+the now-unused `Sparkles` import) rather than un-excluding the fake-data file,
+since shipping synthetic demo data into the production bundle would reopen
+the same question Mission One raised. The real "Download Blank CSV Template"
+button (`imports-template.csv`, not excluded) is unaffected.
+
+**Also surfaced this session, unresolved**: the verification script run
+earlier (`scripts/verify-lulzbot-pilot.ts`) wrote `DEMO-PLA-285` /
+`DEMO-NEMA17` into the real, live customer workspace
+(`CANTE_CUSTOMER_ID`) as a genuine test of the real import path — the
+operator has not yet said whether to keep or delete them.
+
 ⚠️ **Verified live, not assumed: `create_tariff_impact_run` (`supabase/migrations/
 20261009132549_audit_tariff_coverage_and_hts_progress.sql:160`) is granted to
 `authenticated` only, not `service_role`.** `lib/supabase/server.ts`'s

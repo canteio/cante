@@ -21,9 +21,11 @@ export type { LlmProviderChoice };
  * deliberately sets CANTE_LLM=api — an unset variable never starts spending.
  */
 export function getProvider(choice?: string | null): LlmProvider {
-  const selected = normalizeProviderChoice(
-    choice ?? process.env.CANTE_LLM ?? (process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY ? "api" : undefined),
-  );
+  // MVP: a prior change fell back to "api" whenever an OpenAI/Anthropic key
+  // happened to be set and CANTE_LLM was unset — contradicting the doc
+  // comment above it and rule 1 ("an unset variable never starts spending").
+  // Reverted: presence of a key is not an opt-in to hosted spend.
+  const selected = normalizeProviderChoice(choice ?? process.env.CANTE_LLM);
   switch (selected) {
     case "claude-code":
       return new ClaudeCodeProvider();
