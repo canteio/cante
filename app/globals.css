@@ -823,7 +823,9 @@ a:hover {
 html:has(.landing-page),
 html:has(.landing-page) body,
 html:has(.login-page),
-html:has(.login-page) body {
+html:has(.login-page) body,
+html:has(.simple-auth-page),
+html:has(.simple-auth-page) body {
   background: #fafafa;
   color-scheme: light;
 }
@@ -1011,10 +1013,91 @@ html:has(.login-page) body {
   color: var(--text);
 }
 
+/* /logout and /pending share the same minimal light treatment as /login:
+   no card chrome, no shadow, a small centred icon circle, quiet copy. */
 .simple-auth-page {
+  display: grid;
+  place-items: center;
   min-height: 100vh;
-  background: var(--app-background);
-  color: var(--text);
+  min-height: 100dvh;
+  padding: 24px;
+  background: #fafafa;
+  color: #111827;
+}
+
+.simple-auth-panel {
+  display: flex;
+  width: min(100%, 360px);
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.simple-auth-mark {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 6px;
+  border-radius: 50%;
+  background: #111827;
+  color: #fff;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.simple-auth-panel h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 1.5rem;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.simple-auth-panel p {
+  margin: 0;
+  color: rgba(17, 24, 39, 0.62);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.simple-auth-panel > a {
+  margin-top: 10px;
+  color: rgba(17, 24, 39, 0.55);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.simple-auth-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.simple-auth-actions a:first-child {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 20px;
+  border-radius: 6px;
+  background: #111827;
+  color: #fff;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.simple-auth-actions a:first-child:hover {
+  background: #1f2937;
+}
+
+.simple-auth-actions a:last-child {
+  color: rgba(17, 24, 39, 0.55);
+  font-size: 0.8125rem;
+  font-weight: 600;
 }
 
 /* ─── Memory entries ───────────────────────────────────────────── */
