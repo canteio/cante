@@ -152,8 +152,17 @@ export function BusinessImpactPanel() {
   const [activeFilter, setActiveFilter] = useState<"all" | "overpaid" | "review" | "error">("all");
   const [showMappingDrawer, setShowMappingDrawer] = useState(false);
 
+  const [checkNowBusy, setCheckNowBusy] = useState(false);
+  const [checkNowError, setCheckNowError] = useState<string | null>(null);
+  const [checkNowResult, setCheckNowResult] = useState<{ checkedAt: string; findingsEvaluated: number; eventsCreated: number; notifyDetail: string } | null>(null);
+  const [checkNowStage, setCheckNowStage] = useState<string | null>(null);
+  const [checkNowElapsed, setCheckNowElapsed] = useState(0);
+  const [lastCheckedAt, setLastCheckedAt] = useState<string | null>(null);
+  const [monitorRefreshKey, setMonitorRefreshKey] = useState(0);
+
   const uploadRef = useRef<XMLHttpRequest | null>(null);
   const historyRequest = useRef(0);
+  const autoOpenedRef = useRef(false);
 
   const loadHistory = useCallback(async () => {
     const request = ++historyRequest.current;
@@ -161,7 +170,15 @@ export function BusinessImpactPanel() {
     setHistoryError(null);
     try {
       const data = await readResponse<{ runs: ImpactRun[] }>(await fetch(endpoint, { cache: "no-store" }));
-      if (request === historyRequest.current) setRuns(data.runs);
+      if (request === historyRequest.current) {
+        setRuns(data.runs);
+        // A returning customer shouldn't have to re-open their own last
+        // result — land on it automatically, once, the first time history loads.
+        if (!autoOpenedRef.current && data.runs.length > 0) {
+          autoOpenedRef.current = true;
+          void openRun(data.runs[0].id);
+        }
+      }
     } catch (e) {
       if (request === historyRequest.current) setHistoryError(e instanceof Error ? e.message : "Could not load run history.");
     } finally {
@@ -171,8 +188,59 @@ export function BusinessImpactPanel() {
 
   useEffect(() => {
     void loadHistory();
+    void fetch("/api/checks", { cache: "no-store" })
+      .then(res => res.ok ? res.json() : null)
+      .then((data: { runs?: Array<{ run: { startedAt?: string; completedAt?: string } }> } | null) => {
+        const latest = data?.runs?.[0]?.run;
+        if (latest) setLastCheckedAt(latest.completedAt ?? latest.startedAt ?? null);
+      })
+      .catch(() => {});
     return () => { ++historyRequest.current; uploadRef.current?.abort(); };
   }, [loadHistory]);
+
+  async function checkNow() {
+    setCheckNowBusy(true);
+    setCheckNowError(null);
+    setCheckNowResult(null);
+    setCheckNowStage("Starting…");
+    setCheckNowElapsed(0);
+    const startedAt = Date.now();
+    const ticker = setInterval(() => setCheckNowElapsed(Math.round((Date.now() - startedAt) / 1000)), 1000);
+    try {
+      const res = await fetch("/api/tariff/check-now", { method: "POST" });
+      if (!res.ok || !res.body) {
+        const data = await res.json().catch(() => null);
+        throw new Error(errorMessage(data, "Could not check for updates."));
+      }
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() ?? "";
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          const event = JSON.parse(line) as { type: "progress" | "done" | "error"; message?: string; error?: string } & Record<string, unknown>;
+          if (event.type === "progress") setCheckNowStage(event.message ?? null);
+          else if (event.type === "error") throw new Error(event.error ?? "Could not check for updates.");
+          else if (event.type === "done") {
+            setCheckNowResult(event as unknown as { checkedAt: string; findingsEvaluated: number; eventsCreated: number; notifyDetail: string });
+            setLastCheckedAt(event.checkedAt as string);
+            setMonitorRefreshKey(k => k + 1);
+          }
+        }
+      }
+    } catch (e) {
+      setCheckNowError(e instanceof Error ? e.message : "Could not check for updates.");
+    } finally {
+      clearInterval(ticker);
+      setCheckNowStage(null);
+      setCheckNowBusy(false);
+    }
+  }
 
   async function propose(fileToPropose: File | null) {
     setFile(fileToPropose);
@@ -305,6 +373,33 @@ export function BusinessImpactPanel() {
   return (
     <section aria-label="Tariff impact analysis">
       {error && <div className="pill pill-bad" role="alert" style={{ marginBottom: "1rem", whiteSpace: "normal" }}>{error}</div>}
+
+      {/* Check for updates — the manual stand-in for a daily cron job. */}
+      <div className="card check-now-card">
+        <div className="check-now-row">
+          <div className={`check-now-icon ${checkNowBusy ? "is-busy" : checkNowResult?.eventsCreated ? "is-alert" : ""}`}>
+            {checkNowBusy ? <RefreshCw size={20} className="spin" /> : checkNowResult?.eventsCreated ? <AlertTriangle size={20} /> : <ShieldCheck size={20} />}
+          </div>
+          <div style={{ flex: 1, minWidth: 180 }}>
+            <strong style={{ fontSize: "1rem" }}>Check for tariff updates</strong>
+            <p className="muted" style={{ margin: "2px 0 0", fontSize: "0.84rem" }}>
+              {checkNowBusy
+                ? `${checkNowStage ?? "Working…"} · ${checkNowElapsed}s`
+                : checkNowError
+                  ? checkNowError
+                  : checkNowResult
+                    ? checkNowResult.eventsCreated > 0
+                      ? `Found ${checkNowResult.eventsCreated} new thing${checkNowResult.eventsCreated === 1 ? "" : "s"} that might affect you — see below.`
+                      : "Nothing new affects your products."
+                    : lastCheckedAt ? `Last checked ${new Date(lastCheckedAt).toLocaleString()}` : "Not checked yet"}
+            </p>
+            {checkNowBusy && <div className="check-now-bar" role="status" aria-label="Checking…"><span /></div>}
+          </div>
+          <button className="btn btn-lg btn-primary-gradient" disabled={checkNowBusy} onClick={() => void checkNow()}>
+            {checkNowBusy ? "Checking…" : "Check now"}
+          </button>
+        </div>
+      </div>
 
       {/* Hero Upload Dropzone Card */}
       <div className="card" style={{ marginBottom: "1.5rem", padding: "20px 22px" }}>
@@ -467,38 +562,34 @@ export function BusinessImpactPanel() {
             </button>
           </div>
 
-          {/* Executive KPI Metric Grid */}
+          {/* KPI grid — icon + big number + short label, minimal subtext. */}
           <div className="metric-grid">
             <div className={`metric-card ${totalOverpayment > 0 ? "tone-ok" : ""}`}>
-              <span className="metric-label">Potential Duty Overpayments</span>
+              <DollarSign size={18} className="metric-icon" />
               <span className="metric-value">{usd(totalOverpayment)}</span>
-              <span className="muted" style={{ fontSize: "0.75rem" }}>
-                {overpaidRows.length > 0 ? `${overpaidRows.length} entry line(s) overpaid` : "No duty overpayments flagged"}
-              </span>
+              <span className="metric-label">You may be owed</span>
+              {overpaidRows.length > 0 && <span className="muted" style={{ fontSize: "0.72rem" }}>{overpaidRows.length} entr{overpaidRows.length === 1 ? "y" : "ies"}</span>}
             </div>
 
             <div className={`metric-card ${totalUnderpayment > 0 ? "tone-warn" : ""}`}>
-              <span className="metric-label">Underpaid / Additional Exposure</span>
+              <AlertTriangle size={18} className="metric-icon" />
               <span className="metric-value">{usd(totalUnderpayment)}</span>
-              <span className="muted" style={{ fontSize: "0.75rem" }}>
-                {underpaidRows.length > 0 ? `${underpaidRows.length} entry line(s) at risk` : "No underpayments detected"}
-              </span>
+              <span className="metric-label">You may owe more</span>
+              {underpaidRows.length > 0 && <span className="muted" style={{ fontSize: "0.72rem" }}>{underpaidRows.length} entr{underpaidRows.length === 1 ? "y" : "ies"}</span>}
             </div>
 
             <div className="metric-card tone-blue">
-              <span className="metric-label">Lines Checked &amp; Verified</span>
+              <CheckCircle2 size={18} className="metric-icon" />
               <span className="metric-value">{run.computed_count} / {run.source_count}</span>
-              <span className="muted" style={{ fontSize: "0.75rem" }}>
-                {run.affected_sku_count} unique SKU(s) evaluated
-              </span>
+              <span className="metric-label">Checked</span>
+              <span className="muted" style={{ fontSize: "0.72rem" }}>{run.affected_sku_count} product{run.affected_sku_count === 1 ? "" : "s"}</span>
             </div>
 
             <div className={`metric-card ${run.unresolved_count + run.error_count > 0 ? "tone-warn" : ""}`}>
-              <span className="metric-label">Requires Broker Review</span>
+              <FileText size={18} className="metric-icon" />
               <span className="metric-value">{run.unresolved_count + run.error_count}</span>
-              <span className="muted" style={{ fontSize: "0.75rem" }}>
-                {run.error_count > 0 ? `${run.error_count} missing fields` : "Needs evidence verification"}
-              </span>
+              <span className="metric-label">Needs attention</span>
+              {run.error_count > 0 && <span className="muted" style={{ fontSize: "0.72rem" }}>{run.error_count} missing data</span>}
             </div>
           </div>
 
@@ -616,16 +707,12 @@ export function BusinessImpactPanel() {
         </section>
       )}
 
-      {/* Regulatory Monitoring & Schedule Accordion */}
-      <details className="card" style={{ marginBottom: "1.5rem" }}>
-        <summary style={{ cursor: "pointer", fontWeight: 600 }}>
-          Regulatory Schedule &amp; Automatic Rule Monitoring Status
-        </summary>
-        <div style={{ marginTop: "12px" }}>
-          <ScheduleMonitor runId={run?.id ?? null} />
-          <MonitorCandidates runId={run?.id ?? null} />
-        </div>
-      </details>
+      {/* Regulatory monitoring — always visible, not buried in an accordion,
+          since "Check now" above is the feature this surfaces the result of. */}
+      <div style={{ marginBottom: "1.5rem" }} key={monitorRefreshKey}>
+        <ScheduleMonitor runId={run?.id ?? null} />
+        <MonitorCandidates runId={run?.id ?? null} />
+      </div>
 
       {/* Saved Reviews History */}
       <section className="card" aria-labelledby="impact-history-heading">

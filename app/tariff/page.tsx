@@ -1,5 +1,5 @@
 import { Sidebar } from "@/components/dashboard/sidebar";
-import { BusinessImpactPanel } from "@/components/tariff/business-impact-panel";
+import { ImportReviewHome } from "@/components/tariff/import-review-home";
 // MVP: MissionOneHub showed a "Critical Regulatory Action Detected" banner
 // computed from a hardcoded fake catalogue (ENG-ROTOR-01 etc.) and a notice
 // that silently falls back to canned data on any fetch failure, presented
@@ -14,10 +14,8 @@ export default function Page() {
     <div className="shell">
       <Sidebar active="tariff" />
       <main className="main">
-        <div className="main-scroll" style={{ padding: "1.5rem" }}>
-          <BusinessImpactPanel />
-          {/* <MissionOneHub /> */}
-        </div>
+        <ImportReviewHome />
+        {/* <MissionOneHub /> */}
       </main>
     </div>
   );

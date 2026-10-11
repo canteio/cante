@@ -155,6 +155,84 @@ doesn't flash dark behind it. Not yet re-verified in an actual browser (no
 extension/login access this session) — verified by reading the rendered
 class names against the new CSS, not by screenshot.
 
+### "Check for updates" button and the one-page merge (added October 11)
+
+Decided against a cron job for the MVP (one pilot customer doesn't need a
+timer; a button calling the same code is simpler and the cron plumbing is
+unchanged work for later). Two real pieces landed:
+
+**1. `app/api/tariff/check-now/route.ts`** — a new, authenticated POST route
+that runs the two real stages a schedule would run, on click instead of a
+timer: `runCheck(customerId, undefined, "United States")`
+(`lib/checks/run.ts` — fetches Federal Register/CBP CSMS/USITC/USTR and
+judges them) then `recalculateForCustomer()`
+(`lib/tariff/recalculate-customer-impacts.ts` — matches any new finding
+against this customer's real catalogue via `lib/tariff/monitor-bridge.ts`'s
+exact-code/code-prefix matching, never fuzzy). This is deployable to Vercel
+where the old `/api/checks` POST (still 409, untouched) was not: `runCheck()`
+calls `getProvider()`, and this project's own `.env` already sets
+`CANTE_LLM=api`, so judgment runs through the hosted Anthropic API rather
+than shelling out to the local Claude Code CLI `/api/checks`'s 409 comment
+was written against. `maxDuration = 300`, same pattern as the other tariff
+routes. Scoped to one signed-in customer only — a real schedule across many
+customers is a later, separate decision (the existing `pg_cron` →
+`tariff-impact-recalculate` → "trusted worker" path from the October 9 audit
+is still undeployed and untouched by this change).
+
+**2. Products and Imports & results are one page**, per the operator's own
+call ("a middle schooler shouldn't have to decide which tab to click first").
+`components/tariff/import-review-home.tsx` is the new composition: Step 1 is
+`CataloguePanel` with a new `compact` prop (suppresses its own `<h1>` and the
+"Continue to Imports tab" CTA) inside a collapsible card that opens
+automatically at zero products and collapses to a one-line summary once any
+exist; Step 2 is the unchanged, already-audited `BusinessImpactPanel`, now
+also carrying the "Check for updates" card (calls the route above) and the
+regulatory-monitoring section promoted out of a collapsed `<details>` into
+an always-visible block (remounted via a `key` bump after each check). A
+returning customer's most recent saved run now opens automatically on load
+(`loadHistory()`'s new `autoOpenedRef` guard) instead of showing an empty
+state until they click into history themselves.
+`/catalogue` now redirects to `/tariff` in `middleware.ts` (its own list of
+archived-page redirects, same pattern as `/chat`/`/checks`/etc.) — its API
+routes (`/api/products`) are untouched. Sidebar is down to one nav link.
+
+**Also fixed in the same pass**: `components/catalogue/catalogue-panel.tsx`
+had the identical broken-demo-button bug as `business-impact-panel.tsx`'s
+`loadDemoImports()` — a "Load Sample Products" button fetching
+`lulzbot-public-products.csv`, which `.vercelignore` also excludes from the
+deployed app. Disabled the same way (commented out, not deleted).
+
+**Live progress on "Check now" (added October 11, same day).** The first
+version's single silent `await fetch()` read as frozen for the 10–30s a real
+check takes. `app/api/tariff/check-now/route.ts` now streams
+newline-delimited JSON from a `ReadableStream`, writing one line immediately
+before `runCheck()` and one before `recalculateForCustomer()` — two real
+stage boundaries, not a fake animated progress bar. `runCheck()` has no
+internal progress hook (adding one means touching widely-used, already-
+tested code outside this change's scope), so it's coarse: two messages, not
+per-source granularity. The client (`business-impact-panel.tsx`'s
+`checkNow()`) reads the stream with `response.body.getReader()`, shows the
+latest stage message plus a real wall-clock elapsed-seconds counter
+(`setInterval`, not a fake timer), and an indeterminate CSS progress bar.
+
+**Visual pass on the two busiest sections (same day), per the operator's
+explicit "less text, more graphics, Apple-simple" direction.** The check-now
+card gained a status icon (spinning refresh while busy, shield when clear,
+warning triangle when something was found) replacing a text-only row. The
+KPI grid's four labels were corporate/formal ("Potential Duty Overpayments",
+"Underpaid / Additional Exposure", "Lines Checked & Verified", "Requires
+Broker Review") — shortened to plain language ("You may be owed" / "You may
+owe more" / "Checked" / "Needs attention") with a small icon added to each
+card and the secondary subtext line trimmed or dropped when it added nothing.
+This was a scoped pass on the most-visible, first-seen parts of the page,
+not a full redesign of the ~700-line component — the entry-card list and
+upload flow were not touched this round.
+
+Not yet verified in a live browser this session (no extension/login
+access) — verified by reading the code paths, `tsc --noEmit`, the full test
+suite (872/872, one known-flaky unrelated test in `lib/llm/api.test.ts`),
+and a successful `npm run build`.
+
 **Also surfaced this session, unresolved**: the verification script run
 earlier (`scripts/verify-lulzbot-pilot.ts`) wrote `DEMO-PLA-285` /
 `DEMO-NEMA17` into the real, live customer workspace
