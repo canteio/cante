@@ -28,7 +28,10 @@ export async function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   // MVP: archived pages remain in the repository, but their old entry points
   // redirect to the focused import workflow. No old page component is executed.
-  const archivedPages = ["/chat", "/checklist", "/checks", "/documents", "/memory", "/profile", "/suppliers", "/workqueue", "/import-monitor", "/onboarding"];
+  // /catalogue joined this list once Products merged into /tariff as its
+  // collapsible Step 1 (components/tariff/import-review-home.tsx) — its API
+  // routes (/api/products) are untouched, only the standalone page redirects.
+  const archivedPages = ["/chat", "/checklist", "/checks", "/documents", "/memory", "/profile", "/suppliers", "/workqueue", "/import-monitor", "/onboarding", "/catalogue"];
   if (archivedPages.some(path => pathname === path || pathname.startsWith(`${path}/`))) {
     return NextResponse.redirect(new URL("/tariff", request.url));
   }

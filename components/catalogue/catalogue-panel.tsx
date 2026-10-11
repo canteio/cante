@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Plus, Tag, Search, LayoutGrid, List, Upload, Download, Sparkles, ArrowRight, FileSpreadsheet, CheckCircle2, X } from "lucide-react";
+import { Plus, Tag, Search, LayoutGrid, List, Upload, Download, ArrowRight, FileSpreadsheet, CheckCircle2, X } from "lucide-react";
 import { ChipInput } from "@/components/chip-input";
 import type { JurisdictionName } from "@/lib/countries";
 
@@ -52,7 +52,7 @@ const TIER_LABEL: Record<string, string> = {
   guess: "Seed / Guess",
 };
 
-export function CataloguePanel({ country }: { country: JurisdictionName }) {
+export function CataloguePanel({ country, compact = false }: { country: JurisdictionName; compact?: boolean }) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -175,19 +175,23 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
     }
   }
 
-  async function loadDemoProducts() {
-    setBusy(true);
-    setError(null);
-    try {
-      const res = await fetch("/examples/lulzbot-public-products.csv");
-      if (!res.ok) throw new Error("Could not fetch demo product dataset.");
-      const demoCsv = await res.text();
-      await importCsv(demoCsv);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load demo products.");
-      setBusy(false);
-    }
-  }
+  // MVP: disabled, not deleted. Fetched lulzbot-public-products.csv, which
+  // .vercelignore deliberately excludes from the deployed app, so this
+  // always 404s in production — same bug as business-impact-panel.tsx's
+  // loadDemoImports(), see CLAUDE.md for the fix rationale.
+  // async function loadDemoProducts() {
+  //   setBusy(true);
+  //   setError(null);
+  //   try {
+  //     const res = await fetch("/examples/lulzbot-public-products.csv");
+  //     if (!res.ok) throw new Error("Could not fetch demo product dataset.");
+  //     const demoCsv = await res.text();
+  //     await importCsv(demoCsv);
+  //   } catch (e) {
+  //     setError(e instanceof Error ? e.message : "Failed to load demo products.");
+  //     setBusy(false);
+  //   }
+  // }
 
   const filteredProducts = products.filter((p) => {
     if (!search.trim()) return true;
@@ -198,16 +202,18 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
   });
 
   return (
-    <div className="main-scroll catalogue-editor">
+    <div className={compact ? undefined : "main-scroll catalogue-editor"}>
       {/* Page Header */}
-      <div className="page-head">
-        <div>
-          <h1>Product Catalogue</h1>
-          <p className="page-sub">
-            Add your company&apos;s product catalogue so Cante can cross-reference import duties and flag regulatory tariff changes.
-          </p>
+      {!compact && (
+        <div className="page-head">
+          <div>
+            <h1>Product Catalogue</h1>
+            <p className="page-sub">
+              Add your company&apos;s product catalogue so Cante can cross-reference import duties and flag regulatory tariff changes.
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       {error && <div className="pill pill-bad" role="alert" style={{ marginBottom: "1rem", whiteSpace: "normal" }}>{error}</div>}
 
@@ -235,11 +241,7 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
             <a href="/examples/products-template.csv" download className="btn btn-lg" style={{ color: "var(--text)" }}>
               <Download size={16} /> Download Template
             </a>
-            {products.length === 0 && (
-              <button className="btn btn-lg" disabled={busy} onClick={() => void loadDemoProducts()} title="Load sample 3D printer parts to test the system instantly">
-                <Sparkles size={16} color="var(--blue)" /> Load Sample Products
-              </button>
-            )}
+            {/* MVP: "Load Sample Products" disabled — see loadDemoProducts() above. */}
           </div>
         </div>
 
@@ -366,11 +368,13 @@ export function CataloguePanel({ country }: { country: JurisdictionName }) {
             <span className="pill pill-muted">{summary.unchanged} unchanged</span>
             {summary.rejected > 0 && <span className="pill pill-bad">{summary.rejected} rejected</span>}
           </div>
-          <div style={{ marginTop: "8px" }}>
-            <a href="/tariff" className="btn btn-small btn-primary">
-              Continue to Imports tab to audit duties <ArrowRight size={13} />
-            </a>
-          </div>
+          {!compact && (
+            <div style={{ marginTop: "8px" }}>
+              <a href="/tariff" className="btn btn-small btn-primary">
+                Continue to Imports tab to audit duties <ArrowRight size={13} />
+              </a>
+            </div>
+          )}
         </div>
       )}
 

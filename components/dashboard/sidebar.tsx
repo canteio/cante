@@ -78,10 +78,8 @@ export async function Sidebar({
       </div>
 
       <div className="side-section" style={{ paddingTop: 0 }}>
-        <div className="side-label">Import review</div>
         <nav className="nav" aria-label="Main navigation">
-          <Link href="/tariff" data-active={active === "tariff"}><Calculator size={15} />Imports &amp; results</Link>
-          <Link href="/catalogue?country=United%20States" data-active={active === "catalogue"}><Boxes size={15} />Products</Link>
+          <Link href="/tariff" data-active={active === "tariff" || active === "catalogue"}><Calculator size={15} />Imports &amp; results</Link>
         </nav>
       </div>
       {/* MVP: broad compliance navigation retained below, disabled.
