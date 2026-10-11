@@ -140,6 +140,21 @@ since shipping synthetic demo data into the production bundle would reopen
 the same question Mission One raised. The real "Download Blank CSV Template"
 button (`imports-template.csv`, not excluded) is unaffected.
 
+**`/logout` and `/pending` were rendering as unstyled HTML (fixed October
+11).** Both pages use `.simple-auth-page` / `.simple-auth-panel` /
+`.simple-auth-mark` / `.simple-auth-actions`, but only `.simple-auth-page`
+had a rule in `app/globals.css` — a bare background color, nothing else. The
+other three classes were referenced and never defined, so the panel, icon
+circle, and action links all rendered with zero styling. Added the missing
+rules in `app/globals.css`, matching `/login`'s already-established minimal
+light treatment exactly (centred, `#fafafa`, no card chrome, `#111827`
+accents, 6px-radius buttons) rather than inventing a new look, and added
+`.simple-auth-page` to the existing `html:has(...)` overscroll-background
+fix alongside `.landing-page`/`.login-page` so mobile rubber-band scroll
+doesn't flash dark behind it. Not yet re-verified in an actual browser (no
+extension/login access this session) — verified by reading the rendered
+class names against the new CSS, not by screenshot.
+
 **Also surfaced this session, unresolved**: the verification script run
 earlier (`scripts/verify-lulzbot-pilot.ts`) wrote `DEMO-PLA-285` /
 `DEMO-NEMA17` into the real, live customer workspace
