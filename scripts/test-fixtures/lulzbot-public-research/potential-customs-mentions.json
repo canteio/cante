@@ -1,0 +1,90 @@
+[
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx",
+    "sheet": "Olive ",
+    "source_row": 221,
+    "cells": [
+      "Mechanical",
+      "HD-BU0029",
+      "DryLin® R - Solid polymer bearing RJMP-01, 12mm",
+      "Igus",
+      "RJMP-01-12",
+      "Igus",
+      "RJMP-01-12",
+      "3",
+      "ea",
+      "9150",
+      "PO10907",
+      "42341",
+      "See notes",
+      "Received 10 Week lead time – Country of Origin – Germany.  Ordered for Olive – see delivery schedule. TS"
+    ]
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx",
+    "sheet": "Olive ",
+    "source_row": 222,
+    "cells": [
+      "**** Mechanical ****",
+      "HD-BU0030",
+      "DryLin® R - Solid polymer bearing RJMp-01, 10mm",
+      "Igus",
+      "RJMP-01-10",
+      "Igus",
+      "RJMP-01-10",
+      "8",
+      "ea",
+      "24400",
+      "PO10907 / 11179",
+      "42341",
+      "See notes",
+      "10 Week lead time – Country of Origin – Germany.  Ordered for Olive see delivery schedule.TS    We upgraded last minute to the higher precision 10mm bushing."
+    ]
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx",
+    "sheet": "Olive Full BOM",
+    "source_row": 212,
+    "cells": [
+      "Mechanical",
+      "HD-BU0029",
+      "DryLin® R - Solid polymer bearing RJMP-01, 12mm",
+      "Igus",
+      "RJMP-01-12",
+      "Igus",
+      "RJMP-01-12",
+      "3",
+      "ea",
+      "#REF!",
+      "#REF!",
+      "9150",
+      "PO10907",
+      "42341",
+      "See notes",
+      "Received 10 Week lead time – Country of Origin – Germany.  Ordered for Olive – see delivery schedule. TS"
+    ]
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx",
+    "sheet": "Olive Full BOM",
+    "source_row": 213,
+    "cells": [
+      "**** Mechanical ****",
+      "HD-BU0030",
+      "DryLin® R - Solid polymer bearing RJMp-01, 10mm",
+      "Igus",
+      "RJMP-01-10",
+      "Igus",
+      "RJMP-01-10",
+      "8",
+      "ea",
+      "#REF!",
+      "#REF!",
+      "24400",
+      "PO10907 / 11179",
+      "42341",
+      "See notes",
+      "10 Week lead time – Country of Origin – Germany.  Ordered for Olive see delivery schedule.TS    We upgraded last minute to the higher precision 10mm bushing."
+    ]
+  }
+]

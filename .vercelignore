@@ -37,3 +37,13 @@ supabase/.temp/
 output/playwright/
 # Old synthetic demo downloads are retained locally, outside the customer app.
 public/examples/lulzbot-*.csv
+# Public research fixtures are local test evidence, outside the customer app.
+scripts/test-fixtures/lulzbot-public-research/
+scripts/test-fixtures/prusa-public/
+output/lulzbot-public-research/
+output/prusa-public-research/
+/testsomething.csv
+output/prusa-first-scan/
+
+# Dated official-source fixtures are for offline tests, not runtime bundles.
+scripts/test-fixtures/tariff-remedies/

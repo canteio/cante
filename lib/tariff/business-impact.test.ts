@@ -222,3 +222,22 @@ test("parseBusinessImpact tolerates unpunctuated HTS, natural country names, and
   assert.equal(rows[2].annual_import_value_usd, 1500);
 });
 
+
+test("annual portfolio forwards explicit USMCA evidence without inferring qualification", async () => {
+  const rows = parse(`${header},usmca_verified,usmca_decision,usmca_details\nA,0101.21.00.10,MX,Acme,1000,5,yes,qualifies,Signed certificate and reviewed origin rule`);
+  assert.equal(rows[0].input_valid, true);
+  await evaluate(rows, async args => {
+    assert.deepEqual(args.usmcaQualification, { verified: true, decision: "qualifies", details: "Signed certificate and reviewed origin rule" });
+    return result();
+  });
+  for (const bad of ["maybe,qualifies,Certificate", "true,assumed,Certificate"]) {
+    assert.equal(parse(`${header},usmca_verified,usmca_decision,usmca_details\nA,0101,MX,S,1,0,${bad}`)[0].input_valid, false);
+  }
+});
+
+test("a verified USMCA claim can calculate, but a bare claim still withholds", async () => {
+  const text = `${header},fta,usmca_verified,usmca_decision,usmca_details\nA,0101,MX,S,1000,5,USMCA,true,qualifies,Certificate reference`;
+  const verified = { ...result(0, 0), usmcaQualification: { status: "verified" as const, specialRateRequested: true as const, decision: "qualifies" as const, details: "Certificate reference", explanation: "Verified" } };
+  assert.equal((await evaluate(parse(text), async () => verified))[0].status, "computed");
+  assert.equal((await evaluate(parse(`${header},fta\nA,0101,MX,S,1000,5,USMCA`), async () => result()))[0].status, "unresolved");
+});

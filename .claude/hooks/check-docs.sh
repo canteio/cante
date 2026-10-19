@@ -27,6 +27,6 @@ echo "$now" >"$marker"
 jq -cn --arg f "$(echo "$changed" | tr '\n' ' ')" '{
   decision: "block",
   reason: ("These files are newer than CLAUDE.md: " + $f
-    + "\nUpdate CLAUDE.md to match what actually changed — and readme.md, appplan.md, or plan.md if the change touches status, architecture, or scope. Record what was verified versus assumed. If the change genuinely does not belong in any doc, say so in one line and stop."),
+    + "\nUpdate CLAUDE.md to match what actually changed — and docs/product/status.md, docs/operations/supabase-vercel.md, or docs/plans/mission-one.md if the change touches status, architecture, or scope. Record what was verified versus assumed. If the change genuinely does not belong in any doc, say so in one line and stop."),
   systemMessage: "Docs check: code is newer than CLAUDE.md."
 }'

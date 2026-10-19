@@ -1,9 +1,11 @@
+import { normalizeCountryCode, normalizeHtsCode, parseRemedyFacts } from "@/lib/tariff/bulk";
 import { isStrictIsoDate } from "@/lib/tariff/date";
 import {
   computeStackedDuty,
   type UsmcaQualificationDecision,
   type UsmcaQualificationInput,
 } from "@/lib/tariff/stack";
+import { withOfficialRemedyCache } from "@/lib/tariff/section232-live";
 import { TariffLookupError } from "@/lib/tariff/rates";
 
 export const runtime = "nodejs";
@@ -24,8 +26,8 @@ export const dynamic = "force-dynamic";
  */
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const code = url.searchParams.get("code");
-  const country = url.searchParams.get("country");
+  const code = url.searchParams.has("code") ? normalizeHtsCode(url.searchParams.get("code")!) : null;
+  const country = url.searchParams.has("country") ? normalizeCountryCode(url.searchParams.get("country")!) : null;
   const rawValue = url.searchParams.get("value");
   const value = rawValue === null || rawValue.trim() === "" ? null : Number(rawValue);
   const rawQuantity = url.searchParams.get("quantity");
@@ -111,8 +113,11 @@ export async function GET(request: Request) {
           details: usmcaDetails,
         };
 
+  let remedyFacts;
+  try { remedyFacts=parseRemedyFacts(Object.fromEntries(url.searchParams)); }
+  catch(error) { return Response.json({error:error instanceof Error?error.message:"Invalid remedy facts."},{status:400}); }
   try {
-    const result = await computeStackedDuty({
+    const result = await withOfficialRemedyCache(() => computeStackedDuty({
       signal: request.signal,
       htsCode: code,
       countryOfOrigin: country,
@@ -124,7 +129,8 @@ export async function GET(request: Request) {
       steelContentValue,
       aluminumContentValue,
       usmcaQualification,
-    });
+      remedyFacts,
+    }));
     if (!result) {
       return Response.json({ error: `No published HTS row matched ${code}.` }, { status: 404 });
     }

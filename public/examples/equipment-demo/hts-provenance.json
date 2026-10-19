@@ -1,0 +1,56 @@
+{
+  "checked_at_utc": "2026-10-18T02:41:37.334528+00:00",
+  "scope": "Published code existence only. Product assignments and baseline rates are fictional assumptions, not verified legal classifications.",
+  "codes": [
+    {
+      "code": "8433.11.00.10",
+      "published_description": "Electric mowers, including battery operated",
+      "source_url": "https://hts.usitc.gov/reststop/search?keyword=843311"
+    },
+    {
+      "code": "8433.90.10.10",
+      "published_description": "Wheel and tire assemblies",
+      "source_url": "https://hts.usitc.gov/reststop/search?keyword=843390"
+    },
+    {
+      "code": "8433.90.10.90",
+      "published_description": "Other",
+      "source_url": "https://hts.usitc.gov/reststop/search?keyword=843390"
+    },
+    {
+      "code": "8407.90.10.60",
+      "published_description": "Air-cooled",
+      "source_url": "https://hts.usitc.gov/reststop/search?keyword=840790"
+    },
+    {
+      "code": "8501.31.40.00",
+      "published_description": "Exceeding <il>74.6 W</il> but not exceeding <il>735 W</il>",
+      "source_url": "https://hts.usitc.gov/reststop/search?keyword=850131"
+    },
+    {
+      "code": "8413.30.90.30",
+      "published_description": "Fuel pumps",
+      "source_url": "https://hts.usitc.gov/reststop/search?keyword=841330"
+    },
+    {
+      "code": "8483.40.50.10",
+      "published_description": "Fixed ratio speed changers",
+      "source_url": "https://hts.usitc.gov/reststop/search?keyword=848340"
+    },
+    {
+      "code": "8482.10.50.16",
+      "published_description": "Flanged",
+      "source_url": "https://hts.usitc.gov/reststop/search?keyword=848210"
+    },
+    {
+      "code": "8537.10.91.60",
+      "published_description": "Programmable controllers",
+      "source_url": "https://hts.usitc.gov/reststop/search?keyword=853710"
+    },
+    {
+      "code": "8424.90.90.20",
+      "published_description": "Other",
+      "source_url": "https://hts.usitc.gov/reststop/search?keyword=842490"
+    }
+  ]
+}

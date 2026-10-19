@@ -1,0 +1,14 @@
+{
+  "source_url": "https://www.importgenius.com/importers/aleph-objects-inc",
+  "retrieved_at": "2026-10-12T01:09:54.666Z",
+  "sha256": "a0a963f75118151f492a3572766574cd40a0fc0b05fbb68a2b45878b6a70c4fe",
+  "public_rows": 10,
+  "reported_total_shipments": "23",
+  "available_hs_code": "No verified HTS field extracted",
+  "limitations": [
+    "Public sample rows only, not full shipment history",
+    "Reported country is not a reviewed customs origin",
+    "Arrival is not legal entry date; gross weight and packages are not tariff quantity",
+    "No published SKU, exact HTS, customs value, duty paid or qualification"
+  ]
+}

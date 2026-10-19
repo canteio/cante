@@ -1,3 +1,5 @@
+import { queueStackingRuleSource, processNextStackingSource } from "@/lib/tariff/stacking-authoring";
+import { mentionsStackingInteraction } from "@/lib/tariff/stacking-authoring-contract";
 import { queueTariffMonitorCandidates } from "@/lib/tariff/monitor-bridge";
 import { randomUUID } from "node:crypto";
 import path from "node:path";
@@ -38,7 +40,7 @@ export async function runCheck(
   customerId: string,
   providerChoice?: LlmProviderChoice,
   jurisdiction: JurisdictionName = DEFAULT_JURISDICTION,
-): Promise<{ runId: string }> {
+): Promise<{ runId: string; coverageCaveats: string[] }> {
   // MVP: Indonesian source definitions/parsers remain archived in the codebase.
   // Their runtime activation is disabled; do not report them as checked.
   if (["Indonesia"].includes(jurisdiction)) throw new Error("Indonesian monitoring is disabled in the US import MVP.");
@@ -336,6 +338,14 @@ export async function runCheck(
       // no matter what ran. Only worth doing for findings a person will read;
       // a `clear` verdict is not a rule anyone is tracking.
       if (finding.relevance === "flagged" || finding.relevance === "noted") {
+        const sourceEntry = report.regulations.find(entry => normalizeUrlKey(entry.url) === normalizeUrlKey(finding.url));
+        if (sourceEntry && mentionsStackingInteraction([sourceEntry.fullTitle, sourceEntry.listingTitle, sourceEntry.action, finding.title, finding.summaryEn, finding.reasoning].filter(Boolean).join(" "))) {
+          try {
+            await queueStackingRuleSource(findingId, sourceEntry);
+          } catch {
+            allCaveats.push("A stacking-exclusion source could not be queued for rule authoring. Manual source review is required.");
+          }
+        }
         try {
           await queueTariffMonitorCandidates(customerId, { ...finding, id: findingId });
         } catch (error) {
@@ -356,6 +366,12 @@ export async function runCheck(
           // A missing amendment link is a lost nicety; it must not cost the run.
         }
       }
+    }
+    try {
+      const caveat = await processNextStackingSource();
+      if (caveat) allCaveats.push(caveat);
+    } catch {
+      allCaveats.push("The stacking authoring queue could not be processed. No draft was confirmed; manual rule review remains required.");
     }
     if (linksStored > 0) console.log(`[lifecycle] ${linksStored} regulation link(s) stored`);
 
@@ -422,7 +438,7 @@ export async function runCheck(
 
     await refreshChecklistForCustomer(customerId, jurisdiction);
 
-    return { runId };
+    return { runId, coverageCaveats: caveats };
   } catch (err) {
     await checked(supabase.from("check_runs").update({
       status: "failed",

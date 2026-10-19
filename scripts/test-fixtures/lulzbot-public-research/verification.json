@@ -1,0 +1,13 @@
+{
+  "catalogue_products": 270,
+  "catalogue_variants": 821,
+  "distinct_bom_identifiers": 1677,
+  "calculator_rows_honestly_rejected": 1677,
+  "public_manifests_retained": 10,
+  "tariff_calculation_calls": 0,
+  "computed_duties": 0,
+  "tenant_writes": 0,
+  "llm_calls": 0,
+  "tariff_accuracy_verified": false,
+  "reason": "No broker-reviewed HTS, legal entry date, customs value, duty paid or qualification was supplied."
+}

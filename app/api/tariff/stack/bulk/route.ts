@@ -1,5 +1,8 @@
 import { parseStackRequestRows, MAX_BULK_ROWS, type StackRequestRow } from "@/lib/tariff/bulk";
 import { computeStackedDuty, type StackedDutyResult } from "@/lib/tariff/stack";
+import { withStackingRulesCache } from "@/lib/tariff/stacking-rules";
+import { isStrictIsoDate, easternIsoDate } from "@/lib/tariff/date";
+import { withOfficialRemedyCache } from "@/lib/tariff/section232-live";
 import { TariffLookupError } from "@/lib/tariff/rates";
 
 export const runtime = "nodejs";
@@ -56,7 +59,7 @@ async function readBoundedText(request: Request): Promise<string> {
 
 export interface BulkStackRowResult {
   rowNumber: number;
-  input: Pick<StackRequestRow, "htsCode" | "countryOfOrigin">;
+  input: Omit<StackRequestRow, "rowNumber">;
   result: StackedDutyResult | null;
   error: string | null;
 }
@@ -78,6 +81,8 @@ async function runBounded<T, R>(items: T[], limit: number, fn: (item: T) => Prom
 }
 
 export async function POST(request: Request) {
+  const fallbackDate = new URL(request.url).searchParams.get("importDate");
+  if (fallbackDate !== null && !isStrictIsoDate(fallbackDate)) return Response.json({ error: "Import date must be a real YYYY-MM-DD date." }, { status: 400 });
   const contentLength = Number(request.headers.get("content-length"));
   if (Number.isFinite(contentLength) && contentLength > MAX_BODY_BYTES) {
     return Response.json({ error: `File exceeds the ${MAX_BODY_BYTES / (1024 * 1024)} MiB upload limit.` }, { status: 413 });
@@ -102,7 +107,9 @@ export async function POST(request: Request) {
     );
   }
 
-  const rowResults = await runBounded<StackRequestRow, BulkStackRowResult>(rows, CONCURRENCY, async (row) => {
+  const rowResults = await withOfficialRemedyCache(() => withStackingRulesCache(() => runBounded<StackRequestRow, BulkStackRowResult>(rows, CONCURRENCY, async (row) => {
+    row.importDate ??= fallbackDate ?? easternIsoDate();
+    const { rowNumber: _rowNumber, ...input } = row;
     try {
       const result = await computeStackedDuty({
         signal: request.signal,
@@ -116,22 +123,23 @@ export async function POST(request: Request) {
         steelContentValue: row.steelContentValue,
         aluminumContentValue: row.aluminumContentValue,
         usmcaQualification: row.usmcaQualification,
+        remedyFacts: row.remedyFacts,
       });
       return {
         rowNumber: row.rowNumber,
-        input: { htsCode: row.htsCode, countryOfOrigin: row.countryOfOrigin },
+        input,
         result,
         error: result ? null : `No published HTS row matched ${row.htsCode}.`,
       };
     } catch (error) {
       return {
         rowNumber: row.rowNumber,
-        input: { htsCode: row.htsCode, countryOfOrigin: row.countryOfOrigin },
+        input,
         result: null,
         error: error instanceof TariffLookupError ? "Tariff lookup unavailable." : "Tariff stacking lookup failed.",
       };
     }
-  }, request.signal);
+  }, request.signal)));
 
   if (request.signal.aborted) return Response.json({ error: "Request cancelled." }, { status: 499 });
   return Response.json({

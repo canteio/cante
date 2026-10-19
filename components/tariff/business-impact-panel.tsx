@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 const fieldLabels: Record<CanonicalField, string> = {
+  usmca_verified: "USMCA decision verified", usmca_decision: "USMCA qualification decision", usmca_details: "USMCA supporting evidence",
   qualification_verified: "Qualification explicitly reviewed (true/false)", qualification_basis: "Qualification review basis",
   entry_id: "Historical entry ID", line_number: "Entry line number", customs_value_usd: "Entry customs value (USD)", paid_duty_usd: "Duty paid (USD)",
   sku: "SKU", hts: "HTS code", origin: "Country of origin", supplier: "Supplier",
@@ -136,7 +137,7 @@ function RowEvidence({ row }: { row: ImpactRow }) {
   );
 }
 
-export function BusinessImpactPanel() {
+export function BusinessImpactPanel({ monitoring = true }: { monitoring?: boolean }) {
   const [file, setFile] = useState<File | null>(null);
   const [proposal, setProposal] = useState<MappingProposal | null>(null);
   const [run, setRun] = useState<ImpactSnapshot | null>(null);
@@ -148,6 +149,7 @@ export function BusinessImpactPanel() {
   const [progress, setProgress] = useState<number | null>(null);
   const [uploaded, setUploaded] = useState(false);
   const [dragOver, setDragOver] = useState(false);
+  const [uploadOpen, setUploadOpen] = useState(false);
   const [expandedRows, setExpandedRows] = useState<Record<number, boolean>>({});
   const [activeFilter, setActiveFilter] = useState<"all" | "overpaid" | "review" | "error">("all");
   const [showMappingDrawer, setShowMappingDrawer] = useState(false);
@@ -188,7 +190,7 @@ export function BusinessImpactPanel() {
 
   useEffect(() => {
     void loadHistory();
-    void fetch("/api/checks", { cache: "no-store" })
+    if (monitoring) void fetch("/api/tariff/check-now", { cache: "no-store" })
       .then(res => res.ok ? res.json() : null)
       .then((data: { runs?: Array<{ run: { startedAt?: string; completedAt?: string } }> } | null) => {
         const latest = data?.runs?.[0]?.run;
@@ -196,7 +198,7 @@ export function BusinessImpactPanel() {
       })
       .catch(() => {});
     return () => { ++historyRequest.current; uploadRef.current?.abort(); };
-  }, [loadHistory]);
+  }, [loadHistory, monitoring]);
 
   async function checkNow() {
     setCheckNowBusy(true);
@@ -375,7 +377,7 @@ export function BusinessImpactPanel() {
       {error && <div className="pill pill-bad" role="alert" style={{ marginBottom: "1rem", whiteSpace: "normal" }}>{error}</div>}
 
       {/* Check for updates — the manual stand-in for a daily cron job. */}
-      <div className="card check-now-card">
+      {monitoring && <div className="card check-now-card">
         <div className="check-now-row">
           <div className={`check-now-icon ${checkNowBusy ? "is-busy" : checkNowResult?.eventsCreated ? "is-alert" : ""}`}>
             {checkNowBusy ? <RefreshCw size={20} className="spin" /> : checkNowResult?.eventsCreated ? <AlertTriangle size={20} /> : <ShieldCheck size={20} />}
@@ -401,18 +403,194 @@ export function BusinessImpactPanel() {
         </div>
       </div>
 
-      {/* Hero Upload Dropzone Card */}
+      }
+
+      {/* What the check above found, directly underneath it — not a separate, unlabeled "Company impact" section several cards down. */}
+      {monitoring && <div key={monitorRefreshKey} style={{ marginBottom: run ? "1.5rem" : 0 }}>
+        <MonitorCandidates runId={run?.id ?? null} compact />
+      </div>
+
+      }
+
+      {/* Results lead once you have them; upload becomes a small secondary action. */}
+      {run && (
+        <section aria-labelledby="audit-dashboard-heading" style={{ marginBottom: "1.5rem" }}>
+          <div className="card-head" style={{ marginBottom: "14px" }}>
+            <div>
+              <h2 id="audit-dashboard-heading" style={{ fontSize: "1.25rem", fontWeight: 700, margin: "0 0 4px" }}>
+                Results — {run.filename}
+              </h2>
+              <p className="muted" style={{ margin: 0 }}>
+                {new Date(run.created_at).toLocaleDateString()} at {new Date(run.created_at).toLocaleTimeString()}
+              </p>
+            </div>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+              <button className="btn btn-small" disabled={busy !== null} onClick={() => setUploadOpen(v => !v)}>
+                {uploadOpen ? "Hide upload" : "Upload another file"}
+              </button>
+              <button className="btn btn-primary btn-small" disabled={busy !== null} onClick={() => void exportRun()}>
+                <Download size={14} /> Export
+              </button>
+            </div>
+          </div>
+          {/* KPI grid — icon + big number + short label, minimal subtext. */}
+          <div className="metric-grid">
+            <div className={`metric-card ${totalOverpayment > 0 ? "tone-ok" : ""}`}>
+              <DollarSign size={18} className="metric-icon" />
+              <span className="metric-value">{usd(totalOverpayment)}</span>
+              <span className="metric-label">You may be owed</span>
+              {overpaidRows.length > 0 && <span className="muted" style={{ fontSize: "0.72rem" }}>{overpaidRows.length} entr{overpaidRows.length === 1 ? "y" : "ies"}</span>}
+            </div>
+
+            <div className={`metric-card ${totalUnderpayment > 0 ? "tone-warn" : ""}`}>
+              <AlertTriangle size={18} className="metric-icon" />
+              <span className="metric-value">{usd(totalUnderpayment)}</span>
+              <span className="metric-label">You may owe more</span>
+              {underpaidRows.length > 0 && <span className="muted" style={{ fontSize: "0.72rem" }}>{underpaidRows.length} entr{underpaidRows.length === 1 ? "y" : "ies"}</span>}
+            </div>
+
+            <div className="metric-card tone-blue">
+              <CheckCircle2 size={18} className="metric-icon" />
+              <span className="metric-value">{run.computed_count} / {run.source_count}</span>
+              <span className="metric-label">Checked</span>
+              <span className="muted" style={{ fontSize: "0.72rem" }}>{run.affected_sku_count} product{run.affected_sku_count === 1 ? "" : "s"}</span>
+            </div>
+
+            <div className={`metric-card ${run.unresolved_count + run.error_count > 0 ? "tone-warn" : ""}`}>
+              <FileText size={18} className="metric-icon" />
+              <span className="metric-value">{run.unresolved_count + run.error_count}</span>
+              <span className="metric-label">Needs attention</span>
+              {run.error_count > 0 && <span className="muted" style={{ fontSize: "0.72rem" }}>{run.error_count} missing data</span>}
+            </div>
+          </div>
+
+          {/* Filter Bar */}
+          <div style={{ display: "flex", gap: "8px", marginBottom: "14px", flexWrap: "wrap" }}>
+            <button
+              className={`btn btn-small ${activeFilter === "all" ? "btn-primary" : ""}`}
+              onClick={() => setActiveFilter("all")}
+            >
+              All ({run.rows.length})
+            </button>
+            <button
+              className={`btn btn-small ${activeFilter === "overpaid" ? "btn-primary" : ""}`}
+              onClick={() => setActiveFilter("overpaid")}
+            >
+              Overpaid ({overpaidRows.length})
+            </button>
+            <button
+              className={`btn btn-small ${activeFilter === "review" ? "btn-primary" : ""}`}
+              onClick={() => setActiveFilter("review")}
+            >
+              Review ({run.unresolved_count})
+            </button>
+            <button
+              className={`btn btn-small ${activeFilter === "error" ? "btn-primary" : ""}`}
+              onClick={() => setActiveFilter("error")}
+            >
+              Errors ({run.error_count})
+            </button>
+          </div>
+
+          {/* Result Entry Cards */}
+          <div role="region" aria-label="Tariff entry lines">
+            {filteredRows.length === 0 ? (
+              <div className="card empty">No entries match the selected filter.</div>
+            ) : (
+              filteredRows.map((row) => {
+                const isOverpaid = row.status === "computed" && (row.annual_delta_usd ?? 0) < 0;
+                const isUnderpaid = row.status === "computed" && (row.annual_delta_usd ?? 0) > 0;
+                const isExpanded = !!expandedRows[row.row_number];
+
+                return (
+                  <article
+                    key={row.row_number}
+                    className={`audit-entry-card ${isOverpaid ? "has-overpayment" : isUnderpaid ? "has-underpayment" : row.status === "error" ? "has-error" : ""}`}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "10px" }}>
+                      <div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", marginBottom: "4px" }}>
+                          <strong style={{ fontSize: "0.95rem", fontFamily: "var(--font-mono)" }}>
+                            {row.entry_id ? `Entry ${row.entry_id}` : `Row #${row.row_number}`}
+                          </strong>
+                          {row.sku && <span className="pill pill-blue">{row.sku}</span>}
+                          {row.hts && <span className="pill pill-muted">{row.hts}</span>}
+                          {row.origin && <span className="pill pill-muted">{row.origin}</span>}
+                          {row.evaluation_date && <span className="pill pill-muted">{row.evaluation_date}</span>}
+                        </div>
+                        <p className="muted" style={{ margin: 0, fontSize: "0.8rem" }}>
+                          {row.raw_input.description || (row.customs_value_usd ? `Customs value: ${usd(row.customs_value_usd)}` : "No description provided")}
+                        </p>
+                      </div>
+
+                      {/* Discrepancy Figures */}
+                      <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
+                        <div style={{ textAlign: "right" }}>
+                          <span className="muted" style={{ fontSize: "0.75rem", display: "block" }}>Paid</span>
+                          <strong style={{ fontSize: "0.95rem" }}>{usd(row.paid_duty_usd ?? row.current_annual_duty_usd)}</strong>
+                        </div>
+                        <div style={{ textAlign: "right" }}>
+                          <span className="muted" style={{ fontSize: "0.75rem", display: "block" }}>Assessed</span>
+                          <strong style={{ fontSize: "0.95rem" }}>{usd(row.computed_annual_duty_usd)}</strong>
+                        </div>
+                        <div>
+                          {isOverpaid ? (
+                            <span className="pill pill-ok" style={{ fontSize: "0.8rem", padding: "4px 8px" }}>
+                              Overpaid {usd(Math.abs(row.annual_delta_usd!))}
+                            </span>
+                          ) : isUnderpaid ? (
+                            <span className="pill pill-warn" style={{ fontSize: "0.8rem", padding: "4px 8px" }}>
+                              Underpaid {usd(row.annual_delta_usd!)}
+                            </span>
+                          ) : row.status === "computed" ? (
+                            <span className="pill pill-ok" style={{ fontSize: "0.8rem", padding: "4px 8px" }}>
+                              Match
+                            </span>
+                          ) : row.status === "error" ? (
+                            <span className="pill pill-bad" style={{ fontSize: "0.8rem", padding: "4px 8px" }}>
+                              Missing data
+                            </span>
+                          ) : (
+                            <span className="pill pill-warn" style={{ fontSize: "0.8rem", padding: "4px 8px" }}>
+                              Review
+                            </span>
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          className="btn btn-small"
+                          onClick={() => toggleRow(row.row_number)}
+                          aria-expanded={isExpanded}
+                          aria-label={`Toggle details for row ${row.row_number}`}
+                        >
+                          {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Expandable Breakdown and Evidence */}
+                    {isExpanded && <RowEvidence row={row} />}
+                  </article>
+                );
+              })
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* Upload card — leads when there's no result yet; a small secondary toggle once there is one. */}
+      {(!run || uploadOpen) && (
       <div className="card" style={{ marginBottom: "1.5rem", padding: "20px 22px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
           <div>
-            <h2 style={{ fontSize: "1.1rem", fontWeight: 600, margin: "0 0 4px" }}>Customs Entry Ingestion</h2>
+            <h2 style={{ fontSize: "1.1rem", fontWeight: 600, margin: "0 0 4px" }}>Upload your imports</h2>
             <p className="muted" style={{ margin: 0 }}>
-              Drop your broker CSV or entry summary spreadsheet below. Column headers are automatically recognized.
+              A CSV from your broker. We'll recognize the columns.
             </p>
           </div>
           <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
             <a href="/examples/imports-template.csv" download className="btn btn-lg" style={{ color: "var(--text)" }}>
-              <Download size={16} /> Download Blank CSV Template
+              <Download size={16} /> Blank template
             </a>
             {/* MVP: "Load Sample Dataset" disabled — see loadDemoImports() above. */}
           </div>
@@ -460,19 +638,16 @@ export function BusinessImpactPanel() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
               <div>
                 <strong style={{ fontSize: "0.95rem", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <CheckCircle2 size={16} color="var(--ok)" /> Ready to Audit: {file.name}
+                  <CheckCircle2 size={16} color="var(--ok)" /> Ready — {file.name}
                 </strong>
-                <p className="muted" style={{ margin: "2px 0 0", fontSize: "0.8rem" }}>
-                  Columns recognized. Review mappings if you have custom header names.
-                </p>
               </div>
               <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                 <button
                   type="button"
-                  className="btn"
+                  className="btn btn-small"
                   onClick={() => setShowMappingDrawer(v => !v)}
                 >
-                  {showMappingDrawer ? "Hide Column Matches" : "Review Column Matches"}
+                  {showMappingDrawer ? "Hide columns" : "Check columns"}
                 </button>
                 <button
                   type="button"
@@ -480,7 +655,7 @@ export function BusinessImpactPanel() {
                   disabled={busy !== null}
                   onClick={() => void upload()}
                 >
-                  {busy === "upload" ? "Analyzing Duties…" : "Run Tariff Audit & Calculate Discrepancies →"}
+                  {busy === "upload" ? "Analyzing…" : "Analyze"}
                 </button>
               </div>
             </div>
@@ -534,8 +709,8 @@ export function BusinessImpactPanel() {
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <RefreshCw size={16} className="spin" color="var(--blue)" />
               <strong>
-                {busy === "upload" ? uploaded ? "Processing entry lines against USITC HTS and Section 301/232 tables…" : `Uploading file${progress === null ? "…" : ` (${progress}%)`}`
-                  : busy === "mapping" ? "Analyzing CSV header structure…" : busy === "open" ? "Loading saved review…" : "Exporting report…"}
+                {busy === "upload" ? uploaded ? "Checking tariffs…" : `Uploading${progress === null ? "…" : ` (${progress}%)`}`
+                  : busy === "mapping" ? "Reading columns…" : busy === "open" ? "Loading…" : "Exporting…"}
               </strong>
             </div>
             {busy === "upload" && !uploaded && (
@@ -544,212 +719,31 @@ export function BusinessImpactPanel() {
           </div>
         )}
       </div>
-
-      {/* Results Dashboard Section */}
-      {run && (
-        <section aria-labelledby="audit-dashboard-heading" style={{ marginBottom: "2rem" }}>
-          <div className="card-head" style={{ marginBottom: "14px" }}>
-            <div>
-              <h2 id="audit-dashboard-heading" style={{ fontSize: "1.25rem", fontWeight: 700, margin: "0 0 4px" }}>
-                Audit Results: {run.filename}
-              </h2>
-              <p className="muted" style={{ margin: 0 }}>
-                Analyzed on {new Date(run.created_at).toLocaleDateString()} at {new Date(run.created_at).toLocaleTimeString()}
-              </p>
-            </div>
-            <button className="btn btn-primary" disabled={busy !== null} onClick={() => void exportRun()}>
-              <Download size={14} /> Export Audit Report (CSV)
-            </button>
-          </div>
-
-          {/* KPI grid — icon + big number + short label, minimal subtext. */}
-          <div className="metric-grid">
-            <div className={`metric-card ${totalOverpayment > 0 ? "tone-ok" : ""}`}>
-              <DollarSign size={18} className="metric-icon" />
-              <span className="metric-value">{usd(totalOverpayment)}</span>
-              <span className="metric-label">You may be owed</span>
-              {overpaidRows.length > 0 && <span className="muted" style={{ fontSize: "0.72rem" }}>{overpaidRows.length} entr{overpaidRows.length === 1 ? "y" : "ies"}</span>}
-            </div>
-
-            <div className={`metric-card ${totalUnderpayment > 0 ? "tone-warn" : ""}`}>
-              <AlertTriangle size={18} className="metric-icon" />
-              <span className="metric-value">{usd(totalUnderpayment)}</span>
-              <span className="metric-label">You may owe more</span>
-              {underpaidRows.length > 0 && <span className="muted" style={{ fontSize: "0.72rem" }}>{underpaidRows.length} entr{underpaidRows.length === 1 ? "y" : "ies"}</span>}
-            </div>
-
-            <div className="metric-card tone-blue">
-              <CheckCircle2 size={18} className="metric-icon" />
-              <span className="metric-value">{run.computed_count} / {run.source_count}</span>
-              <span className="metric-label">Checked</span>
-              <span className="muted" style={{ fontSize: "0.72rem" }}>{run.affected_sku_count} product{run.affected_sku_count === 1 ? "" : "s"}</span>
-            </div>
-
-            <div className={`metric-card ${run.unresolved_count + run.error_count > 0 ? "tone-warn" : ""}`}>
-              <FileText size={18} className="metric-icon" />
-              <span className="metric-value">{run.unresolved_count + run.error_count}</span>
-              <span className="metric-label">Needs attention</span>
-              {run.error_count > 0 && <span className="muted" style={{ fontSize: "0.72rem" }}>{run.error_count} missing data</span>}
-            </div>
-          </div>
-
-          {/* Filter Bar */}
-          <div style={{ display: "flex", gap: "8px", marginBottom: "14px", flexWrap: "wrap" }}>
-            <button
-              className={`btn btn-small ${activeFilter === "all" ? "btn-primary" : ""}`}
-              onClick={() => setActiveFilter("all")}
-            >
-              All Entries ({run.rows.length})
-            </button>
-            <button
-              className={`btn btn-small ${activeFilter === "overpaid" ? "btn-primary" : ""}`}
-              onClick={() => setActiveFilter("overpaid")}
-            >
-              Overpayments Flagged ({overpaidRows.length})
-            </button>
-            <button
-              className={`btn btn-small ${activeFilter === "review" ? "btn-primary" : ""}`}
-              onClick={() => setActiveFilter("review")}
-            >
-              Needs Review ({run.unresolved_count})
-            </button>
-            <button
-              className={`btn btn-small ${activeFilter === "error" ? "btn-primary" : ""}`}
-              onClick={() => setActiveFilter("error")}
-            >
-              Data Errors ({run.error_count})
-            </button>
-          </div>
-
-          {/* Result Entry Cards */}
-          <div role="region" aria-label="Tariff entry lines">
-            {filteredRows.length === 0 ? (
-              <div className="card empty">No entries match the selected filter.</div>
-            ) : (
-              filteredRows.map((row) => {
-                const isOverpaid = row.status === "computed" && (row.annual_delta_usd ?? 0) < 0;
-                const isUnderpaid = row.status === "computed" && (row.annual_delta_usd ?? 0) > 0;
-                const isExpanded = !!expandedRows[row.row_number];
-
-                return (
-                  <article
-                    key={row.row_number}
-                    className={`audit-entry-card ${isOverpaid ? "has-overpayment" : isUnderpaid ? "has-underpayment" : row.status === "error" ? "has-error" : ""}`}
-                  >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "10px" }}>
-                      <div>
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", marginBottom: "4px" }}>
-                          <strong style={{ fontSize: "0.95rem", fontFamily: "var(--font-mono)" }}>
-                            {row.entry_id ? `Entry ${row.entry_id}` : `Row #${row.row_number}`}
-                          </strong>
-                          {row.sku && <span className="pill pill-blue">{row.sku}</span>}
-                          {row.hts && <span className="pill pill-muted font-mono">HTS: {row.hts}</span>}
-                          {row.origin && <span className="pill pill-muted">Origin: {row.origin}</span>}
-                          {row.evaluation_date && <span className="pill pill-muted">{row.evaluation_date}</span>}
-                        </div>
-                        <p className="muted" style={{ margin: 0, fontSize: "0.8rem" }}>
-                          {row.raw_input.description || (row.customs_value_usd ? `Customs Value: ${usd(row.customs_value_usd)}` : "No description provided")}
-                        </p>
-                      </div>
-
-                      {/* Discrepancy Figures */}
-                      <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
-                        <div style={{ textAlign: "right" }}>
-                          <span className="muted" style={{ fontSize: "0.75rem", display: "block" }}>Paid Duty</span>
-                          <strong style={{ fontSize: "0.95rem" }}>{usd(row.paid_duty_usd ?? row.current_annual_duty_usd)}</strong>
-                        </div>
-                        <div style={{ textAlign: "right" }}>
-                          <span className="muted" style={{ fontSize: "0.75rem", display: "block" }}>Cante Assessed</span>
-                          <strong style={{ fontSize: "0.95rem" }}>{usd(row.computed_annual_duty_usd)}</strong>
-                        </div>
-                        <div>
-                          {isOverpaid ? (
-                            <span className="pill pill-ok" style={{ fontSize: "0.8rem", padding: "4px 8px" }}>
-                              Potential Overpayment: {usd(Math.abs(row.annual_delta_usd!))}
-                            </span>
-                          ) : isUnderpaid ? (
-                            <span className="pill pill-warn" style={{ fontSize: "0.8rem", padding: "4px 8px" }}>
-                              Underpaid: {usd(row.annual_delta_usd!)}
-                            </span>
-                          ) : row.status === "computed" ? (
-                            <span className="pill pill-ok" style={{ fontSize: "0.8rem", padding: "4px 8px" }}>
-                              Exact Match
-                            </span>
-                          ) : row.status === "error" ? (
-                            <span className="pill pill-bad" style={{ fontSize: "0.8rem", padding: "4px 8px" }}>
-                              Missing Data
-                            </span>
-                          ) : (
-                            <span className="pill pill-warn" style={{ fontSize: "0.8rem", padding: "4px 8px" }}>
-                              Needs Review
-                            </span>
-                          )}
-                        </div>
-                        <button
-                          type="button"
-                          className="btn btn-small"
-                          onClick={() => toggleRow(row.row_number)}
-                          aria-expanded={isExpanded}
-                          aria-label={`Toggle details for row ${row.row_number}`}
-                        >
-                          {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Expandable Breakdown and Evidence */}
-                    {isExpanded && <RowEvidence row={row} />}
-                  </article>
-                );
-              })
-            )}
-          </div>
-        </section>
       )}
 
-      {/* Regulatory monitoring — always visible, not buried in an accordion,
-          since "Check now" above is the feature this surfaces the result of. */}
-      <div style={{ marginBottom: "1.5rem" }} key={monitorRefreshKey}>
-        <ScheduleMonitor runId={run?.id ?? null} />
-        <MonitorCandidates runId={run?.id ?? null} />
-      </div>
-
-      {/* Saved Reviews History */}
-      <section className="card" aria-labelledby="impact-history-heading">
-        <div className="card-head">
-          <div>
-            <h2 id="impact-history-heading" className="card-title">Saved Import Audits</h2>
-            <p className="muted" style={{ margin: 0 }}>Review previous customs audits and export historical records.</p>
+      {/* History & sources — low-frequency, tucked away by default. */}
+      <details className="card">
+        <summary style={{ cursor: "pointer", fontWeight: 600 }}>History &amp; sources</summary>
+        <div style={{ marginTop: 14 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+            <strong style={{ fontSize: "0.9rem" }}>Saved imports</strong>
+            <button className="btn btn-small" disabled={historyLoading || busy !== null} onClick={() => void loadHistory()}>
+              <RefreshCw size={13} /> Refresh
+            </button>
           </div>
-          <button className="btn btn-small" disabled={historyLoading || busy !== null} onClick={() => void loadHistory()}>
-            <RefreshCw size={13} /> Refresh
-          </button>
-        </div>
-        {historyLoading ? (
-          <p role="status">Loading audit history…</p>
-        ) : historyError ? (
-          <p role="alert">{historyError}</p>
-        ) : runs.length === 0 ? (
-          <p className="muted">No saved import audits yet. Upload a CSV above to get started.</p>
-        ) : (
-          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-            {runs.map((saved) => (
-              <li
-                key={saved.id}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  padding: "10px 12px",
-                  borderBottom: "1px solid var(--border)",
-                  flexWrap: "wrap",
-                  gap: "8px",
-                }}
-              >
-                <div>
+          {historyLoading ? (
+            <p role="status">Loading…</p>
+          ) : historyError ? (
+            <p role="alert">{historyError}</p>
+          ) : runs.length === 0 ? (
+            <p className="muted">No saved imports yet.</p>
+          ) : (
+            <ul style={{ listStyle: "none", padding: 0, margin: "0 0 16px" }}>
+              {runs.map((saved) => (
+                <li key={saved.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid var(--border)", flexWrap: "wrap", gap: "8px" }}>
                   <button
                     className="btn btn-small"
-                    style={{ fontWeight: 600, marginRight: "8px" }}
+                    style={{ fontWeight: 600 }}
                     disabled={busy !== null}
                     aria-current={run?.id === saved.id ? "true" : undefined}
                     onClick={() => void openRun(saved.id)}
@@ -757,23 +751,16 @@ export function BusinessImpactPanel() {
                     {saved.filename}
                   </button>
                   <span className="muted" style={{ fontSize: "0.8rem" }}>
-                    {new Date(saved.created_at).toLocaleDateString()} · {saved.source_count} rows ({saved.computed_count} computed, {saved.unresolved_count} unreviewed)
+                    {new Date(saved.created_at).toLocaleDateString()} · {saved.computed_count} computed, {saved.unresolved_count} unreviewed
                   </span>
-                </div>
-                <div style={{ display: "flex", gap: "6px" }}>
-                  <button
-                    className="btn btn-small btn-primary"
-                    disabled={busy !== null}
-                    onClick={() => void openRun(saved.id)}
-                  >
-                    View Results
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+                </li>
+              ))}
+            </ul>
+          )}
+          <ScheduleMonitor runId={run?.id ?? null} />
+
+        </div>
+      </details>
     </section>
   );
 }

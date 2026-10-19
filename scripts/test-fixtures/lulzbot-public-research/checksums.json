@@ -1,0 +1,20 @@
+{
+  "README.md": "2fc8763d1936e06c7faab9f3fa766886140be03b8041f5aeb1bf537260c5f533",
+  "bom-lines.csv": "589c1a1f7a606ca58c2ce4fc8380792bcb69db029612d4152da438a4c9479c4f",
+  "bom-parts.csv": "9d028345f3afc912bbf2d2136ba0777f2c2a3bebf46b93ba64367782cf890114",
+  "bom-sources.json": "fa25f4d39433c2a3a8691078bc605e60f077c2f67563a5cb73d1811e4abde221",
+  "bom-supplier-links.csv": "fbabf22ab9de8f8659403676ad4c7c886eb4071c44992de4ffd9802efa112b8e",
+  "calculator-intake-01.csv": "d4d756abc09c88986b95ef3d9f9bf2d3a4be51d0b78c9a05b39989af4b9e84d9",
+  "calculator-intake-02.csv": "318e90a950c1e0dc2d8ced8939fc19998b7f0e7112f7c332c849087c4f86a776",
+  "calculator-intake-03.csv": "37c9a0a08994f6a7a9ada07a859ea7d8331147d87fdce08ab74052805326ecb0",
+  "calculator-intake-04.csv": "1776e962ae2c3334d4926cb5c6ec87a108395fe2964fd50fc1279a91c9fbffc3",
+  "crawl-report.json": "368df39b272f5a929045d65fedf5614554736d0e34155588f86fa44e61bd0167",
+  "historic-origin-notes.csv": "b437bc838d376fb83d3eb680847f91ce3b94520daa7ad70c22e429e4c31ab914",
+  "manifest-source-report.json": "4d963df5efea281c7fc68fd3c234cd0c60283468a21a2e88bfc9b73894b0538b",
+  "manifest-suppliers.json": "b872e2d8b9c7000609e3e91302196eda9d4578b61135689ee1e5f990bc23ee77",
+  "potential-customs-mentions.json": "ee2728cba3de9b209a3f24e0c26b8984aab8109129bb09866c8a0f00ac25bf42",
+  "products.csv": "a66c6865256bd8f8902855b7d08b70ad6715e9fa45f70ba96ba43cfd8094f23b",
+  "public-manifests.csv": "cbea37a95bad485aac08c809757157cf901b4ad96cb2cb4085c74481b8cc3f00",
+  "summary.json": "c251324de2cf1241d69cd1ea05b3aeb66b8ee3eab8c57bda98b834438fd0595d",
+  "verification.json": "3308bc5ac3b6b897737647d13b4cbd613e7f2ef6b88abd6f68a86415a61cf59c"
+}

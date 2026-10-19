@@ -1,69 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ChevronDown, ChevronUp, Boxes } from "lucide-react";
-import { CataloguePanel } from "@/components/catalogue/catalogue-panel";
-import { BusinessImpactPanel } from "@/components/tariff/business-impact-panel";
+import { useState } from "react";
+import Link from "next/link";
+import { ProductSetup, type SelectedProduct } from "@/components/tariff/product-setup";
+import { TariffStackPanel } from "@/components/tariff/tariff-stack-panel";
+import { TariffUpdates } from "@/components/tariff/tariff-updates";
 
-/**
- * One page, not two tabs. Products and Imports & results used to be
- * separate sidebar items; a manufacturer's actual job is sequential (add
- * what you make, then check what you paid), not a choice between two
- * unlabeled nouns. Step 1 collapses to a one-line summary the moment a
- * product exists, so a returning user lands straight on real results —
- * the thing they actually came back for — instead of an empty form.
- */
-export function ImportReviewHome() {
-  const [productCount, setProductCount] = useState<number | null>(null);
-  const [stepOpen, setStepOpen] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-    void fetch("/api/products", { cache: "no-store" })
-      .then(res => res.ok ? res.json() : { products: [] })
-      .then((data: { products?: unknown[] }) => {
-        if (cancelled) return;
-        const count = data.products?.length ?? 0;
-        setProductCount(count);
-        setStepOpen(count === 0);
-      })
-      .catch(() => { if (!cancelled) setProductCount(0); });
-    return () => { cancelled = true; };
-  }, []);
-
-  return (
-    <div className="main-scroll">
-      <div className="page-head">
-        <div>
-          <h1>Imports &amp; results</h1>
-          <p className="page-sub">Check duties paid. See what needs attention.</p>
-        </div>
-      </div>
-
-      <section className="card step-one-card" style={{ marginBottom: "1.5rem" }}>
-        <button
-          type="button"
-          className="step-one-toggle"
-          aria-expanded={stepOpen}
-          onClick={() => setStepOpen(v => !v)}
-        >
-          <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <Boxes size={16} />
-            <strong>Step 1 · Your products</strong>
-            <span className="muted">
-              {productCount === null ? "Loading…" : productCount === 0 ? "None yet — add some below" : `${productCount} product${productCount === 1 ? "" : "s"}`}
-            </span>
-          </span>
-          {stepOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-        </button>
-        {stepOpen && (
-          <div style={{ marginTop: 14 }}>
-            <CataloguePanel country="United States" compact />
-          </div>
-        )}
-      </section>
-
-      <BusinessImpactPanel />
-    </div>
-  );
+export function ImportReviewHome({ canReviewRules = false }: { canReviewRules?: boolean }) {
+  const [selected, setSelected] = useState<SelectedProduct | null>(null);
+  const [calculatorOpen, setCalculatorOpen] = useState(false);
+  return <div className="main-scroll tariff-dashboard">
+    <div className="page-head"><div><h1>Your trade dashboard</h1><p className="page-sub">Upload products once. Check for changes.</p></div>{canReviewRules && <Link className="tariff-text-button" href="/tariff/rules">Rule reviews</Link>}</div>
+    <nav className="tariff-workflow" aria-label="Dashboard sections"><a href="#products">1 <span>Your products</span></a><a href="#updates">2 <span>Check for changes</span></a></nav>
+    <div id="updates"><TariffUpdates /></div>
+    <ProductSetup onDelete={id => setSelected(current => current?.id === id ? null : current)} onSelect={product => { setSelected({ ...product }); setCalculatorOpen(true); requestAnimationFrame(() => document.getElementById("duties")?.scrollIntoView({ behavior: "smooth", block: "start" })); }} />
+    <details id="duties" className="tariff-optional-calculator" open={calculatorOpen} onToggle={event => setCalculatorOpen(event.currentTarget.open)}><summary>Optional: calculate duties</summary><TariffStackPanel embedded selectedProduct={selected} /></details>
+    <div className="tariff-history-link"><span>Check your CSV against freshly fetched official rates.</span><Link href="/tariff/demo">Run a live data check →</Link></div>
+    <footer className="tariff-history-link"><span>Already imported? Check what you paid.</span><Link href="/tariff/audits">Historical audits →</Link></footer>
+  </div>;
 }

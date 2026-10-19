@@ -1,0 +1,13 @@
+{
+  "sitemap_urls_attempted": 1304,
+  "pages_extracted": 1222,
+  "distinct_catalogue_records": 1222,
+  "raw_source_hashes_verified": true,
+  "catalogue_intake_rows": 1222,
+  "public_manifest_rows": 1,
+  "tariff_calculation_calls": 0,
+  "tenant_writes": 0,
+  "llm_calls": 0,
+  "full_public_sitemap_extracted": false,
+  "complete_customs_ledger_obtained": false
+}

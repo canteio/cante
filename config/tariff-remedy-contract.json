@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "source": "https://hts.usitc.gov/reststop/getChapterNotes?doc=99",
+  "basis": "2026HTSRev21",
+  "notes": {
+    "16": {
+      "(a)": "df7bbf22b4c4e7f5246b32b7415b20a0a4d5ef20ab9389ff3d290d74f26d9b88",
+      "(b)": "ac7e528787203d9e900a2036b09c891259c94575e876d3d1dcab386e12a87ca1",
+      "(c)": "ece7dbeb6ba491f579d973b9b182c756e4badf24a7d24aa414eb62c67d627077",
+      "(d)": "c99a59e107a387b977d981f56579b0fbc0922d889ee37733b0ed343e923133dc",
+      "(e)": "422d6130e4dbc1042dc30994f8ff4cf9e15dd6e27ce4575d7cae7938ce7a5007",
+      "(f)": "1901ae27ceb95053dad27a909f59793baf655163626d02e827c1f83e42a0e549",
+      "(g)": "6c18d395c4b473b93837ee55129841505ef1d7557b691114a177dd717a658723",
+      "(h)": "fc107165d0735190d17245600c7b4fd73bf1414c5e0dd92fd67e6740b6a792fb",
+      "(i)": "47dca6096148b85e6ac59e0f462b0c7a6d1546225cd649902858c3ba21d09e72",
+      "(j)": "6e3affb4608a6f42026e6e7b6d00c31d89ddbf488e1d82997514b2c718c8bc8d",
+      "(k)": "58b340bff84d5c4b66e106983d1ba5b0f1d029ab161835197180a2db1de03a7f"
+    },
+    "20": {
+      "(a)": "4516d59b007ef105612e08f24e2e7ead735c7d63506f4f9649cd657b4eb0aa82",
+      "(c)": "47ac611266e9a29848b6a55df217e9776d7a32a3ca67acfb3edb3a9504ffc8aa",
+      "(e)": "e25e1d784372e83de1d90a9ffeda548cb1eb7e4f5d545a91eb8c1d5c8361e315",
+      "(r)": "cdafcde37beef99764ac2f0796e7b056123ad29ba3b228bef7f332cf5bb3ff2b"
+    },
+    "52": {
+      "(a)": "72d0cefcd397548d71636e0b57d9eae42d2b93b812dd531edb4462f4ac68699c",
+      "(b)": "ff2265bdf7b4f22b350fe0ba52fc5919a253a6b3a2afe75dc2a6ee9178b2dbf0",
+      "(c)": "0b97f7929a5db311f6bf95837fe87160918f921af41baedc26ccddb5983308ac",
+      "(d)": "098d55050fa3ceff57aa54468d64fd31953593a6fe4726fc32e405d525e62ba2",
+      "(e)": "584bd6e413ae443fdabb0f8d949faf85945f2061c2cfbf517104e946a9fa78e3",
+      "(f)": "808843fadbd71835cc03b335780cea2cae23affa12be688a3bc445bd95609c39",
+      "(g)": "9ee8bcef5c3b53fe6124ccdb0efb4d67e1d3e0140bd3fa2cfa201decfa6824e6",
+      "(h)": "7801ca7b14747218614376561f6bb518bd06632fd7ab2a69afa8f84ca990f044",
+      "(i)": "e0f580157f98a7ebd727b4656f0c0de5a212e4092575de81f105600fccc3309b",
+      "(j)": "4f8cd16e6fc5d69e8ec9cb7598baaf09bde08ed3eb1c8b5940d61cc06656e5ea",
+      "(k)": "ae599c1592d29f111dde7688a0281cdbd116990b612ffa813edc033ede364ba2"
+    }
+  },
+  "listIntroHashes": {
+    "b": "41373c43a4076d8cd706a7e48ea6b0ea07d48e3bed8da84c82adb88f58776094",
+    "d": "0cdb3c1a2986dc9bbd9e4f59db3fa5d228b191216d6566a0a6a49fd8f77f7924",
+    "f": "d1a345ceca701a8fc3baf451b15f1f5fc9d2b945cf5cff379f1854fc04572e45",
+    "s": "a8abbd9c94926bb485848aa645e4d88922af3fa345777ea67644bbd487f0b8db"
+  },
+  "scopeCounts": {
+    "16": {
+      "(i)": 9,
+      "(ii)": 17,
+      "(iii)": 39,
+      "(iv)": 139,
+      "(v)": 76,
+      "(vi)": 101,
+      "(vii)": 242,
+      "(viii)": 4,
+      "(ix)": 18,
+      "(x)": 69,
+      "(xi)": 28
+    },
+    "20": {
+      "(b)": 856,
+      "(d)": 283,
+      "(f)": 5906,
+      "(s)": 2958
+    },
+    "52": {
+      "(c)": 16,
+      "(b)": 863,
+      "(d)": 541,
+      "(e)": 700
+    }
+  }
+}

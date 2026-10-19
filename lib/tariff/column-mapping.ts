@@ -4,6 +4,7 @@ import { impactFieldAliases } from "./bulk";
 import type { CsvTable } from "@/lib/catalogue/csv";
 
 export const canonicalFields = [
+  "usmca_verified", "usmca_decision", "usmca_details",
   "qualification_verified", "qualification_basis",
   "entry_id", "line_number", "customs_value_usd", "paid_duty_usd",
   "sku", "hts", "origin", "supplier", "annual_import_value_usd", "current_duty_rate",
@@ -39,6 +40,7 @@ annual_import_value_usd is annual USD import value, not unit price. evaluation_d
 Historical files instead use entry_id, line_number, customs_value_usd and paid_duty_usd. Never map paid duty to a percentage or customs value to annual value.
 quantity and unit are the matching physical amount and measurement unit for specific duties.
 chapter99_codes, exclusion_id and special_program_claim are optional customer-supplied context.
+usmca_verified, usmca_decision and usmca_details are explicit USMCA decision fields; never infer qualification from country or a programme claim.
 qualification_verified and qualification_basis are explicit caller review fields; never infer or supply verification.
 Do not convert units, currencies, countries, dates or rates. Only propose column names for the user to confirm.`,
     prompt: JSON.stringify({ headers, sampleRows: preview }),

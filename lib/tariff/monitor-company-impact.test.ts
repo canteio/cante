@@ -437,3 +437,20 @@ test("source-matched July rule replays reviewed historical goods without any cur
   assert.equal(impact.rows[0].beforeEvidence?.totalAmount, 830);
   assert.equal(impact.rows[0].evidence?.totalAmount, 880);
 });
+
+test("monitor recalculation preserves explicit USMCA evidence from a saved audit", async () => {
+  const restore = stubUsitc();
+  try {
+    const row = portfolioRow();
+    const evidence = await realResult({ htsCode: row.hts!, countryOfOrigin: row.origin!, value: row.annual_import_value_usd });
+    evidence.usmcaQualification = { status: "verified", specialRateRequested: true, decision: "qualifies", details: "Saved reviewed certificate reference", explanation: "Fixture audit evidence" };
+    row.stack_result = evidence;
+    let calls = 0;
+    await buildMonitoredCompanyImpacts([candidate()], [row], async input => {
+      calls++;
+      assert.deepEqual(input.usmcaQualification, { verified: true, decision: "qualifies", details: "Saved reviewed certificate reference" });
+      return realVersionedComputer(input);
+    });
+    assert.ok(calls > 0);
+  } finally { restore(); }
+});

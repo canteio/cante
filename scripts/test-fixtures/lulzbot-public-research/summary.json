@@ -1,0 +1,29 @@
+{
+  "products": 270,
+  "variants": 821,
+  "bom_files_requested": 156,
+  "bom_files_fetched": 156,
+  "unique_workbooks_extracted": 148,
+  "raw_bom_source_rows": 150958,
+  "normalized_bom_lines": 45825,
+  "distinct_published_part_identifiers": 1677,
+  "supplier_links": 6000,
+  "public_manifest_rows": 10,
+  "public_manifest_total_reported": "23",
+  "source_customs_mentions": 4,
+  "historic_origin_notes": 4,
+  "verified_company_hts_codes": 0,
+  "verified_company_customs_entries": 0,
+  "paid_duty_records": 0,
+  "origin_qualification_records": 0,
+  "calculator_intake_batches": 4,
+  "coverage_limits": [
+    "Public catalogue pagination completed, not an internal inventory export",
+    "Archive crawl covers selected model/production-document paths only, not all internet sources",
+    "Historic BOM quantities, prices, vendors and region suffixes are not shipment/entry/origin facts",
+    "Visible manifest sample only; paid/private rows were not accessed",
+    "Blank customs fields are missing, not zero",
+    "Cached formula results in source workbooks were read without recalculation",
+    "Sparse cells beyond column 256 remain in raw JSONL separately"
+  ]
+}

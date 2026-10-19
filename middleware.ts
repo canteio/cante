@@ -31,7 +31,7 @@ export async function middleware(request: NextRequest) {
   // /catalogue joined this list once Products merged into /tariff as its
   // collapsible Step 1 (components/tariff/import-review-home.tsx) — its API
   // routes (/api/products) are untouched, only the standalone page redirects.
-  const archivedPages = ["/chat", "/checklist", "/checks", "/documents", "/memory", "/profile", "/suppliers", "/workqueue", "/import-monitor", "/onboarding", "/catalogue"];
+  const archivedPages = ["/checklist", "/checks", "/documents", "/memory", "/profile", "/suppliers", "/workqueue", "/import-monitor", "/onboarding", "/catalogue"];
   if (archivedPages.some(path => pathname === path || pathname.startsWith(`${path}/`))) {
     return NextResponse.redirect(new URL("/tariff", request.url));
   }
@@ -57,7 +57,7 @@ export async function middleware(request: NextRequest) {
     const { response, userIsAuthenticated, workspace } = await updateSupabaseSession(request);
     if (userIsAuthenticated && workspace) {
       // MVP: legacy API entry points are disabled; implementations remain intact.
-      const archivedApis = ["/api/chat", "/api/checklist", "/api/checks", "/api/memories", "/api/documents", "/api/workqueue", "/api/screening", "/api/substances", "/api/import-monitor", "/api/onboarding"];
+      const archivedApis = ["/api/checklist", "/api/checks", "/api/memories", "/api/documents", "/api/workqueue", "/api/screening", "/api/substances", "/api/import-monitor", "/api/onboarding"];
       if (archivedApis.some(path => pathname === path || pathname.startsWith(`${path}/`))) {
         return NextResponse.json({ error: "This feature is archived. Use Products and Imports & results." }, { status: 410 });
       }

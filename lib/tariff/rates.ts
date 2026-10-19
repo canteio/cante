@@ -1,3 +1,4 @@
+import { AsyncLocalStorage } from "node:async_hooks";
 import {
   computeDuty,
   parseDutyRate,
@@ -112,7 +113,7 @@ function codesOverlap(a: string, b: string): boolean {
   return x.startsWith(y) || y.startsWith(x);
 }
 
-interface RawHtsRow {
+export interface RawHtsRow {
   htsno?: unknown;
   description?: unknown;
   units?: unknown;
@@ -133,9 +134,9 @@ function str(value: unknown): string | null {
  * quiet result. Throws only when the lookup itself failed, so a caller can
  * tell "no such code" from "we could not ask".
  */
-export async function lookupTariff(
+async function lookupTariffUnshared(
   code: string,
-  options: { signal?: AbortSignal; now?: number } = {},
+  options: { signal?: AbortSignal; now?: number; fresh?: boolean; onSource?: (source: { url: string; fetchedAt: string; rows: RawHtsRow[] }) => void } = {},
 ): Promise<TariffRow | null> {
   options.signal?.throwIfAborted();
   const key = digits(code);
@@ -144,7 +145,7 @@ export async function lookupTariff(
   const now = options.now ?? Date.now();
   for (const [key, entry] of cache) if (entry.expiresAt <= now) cache.delete(key);
   const cached = cache.get(key);
-  if (cached && cached.expiresAt > now) return cached.row;
+  if (!options.fresh && cached && cached.expiresAt > now) return cached.row;
 
   const search = async (keyword: string): Promise<RawHtsRow[]> => {
     const url = `${HTS_SEARCH}?${new URLSearchParams({ keyword }).toString()}`;
@@ -160,9 +161,23 @@ export async function lookupTariff(
       const res = await fetch(url, {
         signal,
         headers: { Accept: "application/json" },
+        ...(options.fresh ? { cache: "no-store" as const } : {}),
       });
       if (!res.ok) throw new TariffLookupError(`USITC HTS returned HTTP ${res.status}.`);
-      payload = await res.json();
+      if (options.fresh) {
+        const reader = res.body?.getReader();
+        if (!reader) throw new TariffLookupError("USITC HTS returned no response body.");
+        const chunks: Uint8Array[] = []; let size = 0;
+        while (true) {
+          const part = await reader.read(); if (part.done) break;
+          size += part.value.byteLength;
+          if (size > 4 * 1024 * 1024) { await reader.cancel(); throw new TariffLookupError("USITC HTS response exceeds the capture limit."); }
+          chunks.push(part.value);
+        }
+        const bytes = new Uint8Array(size); let offset = 0;
+        for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+        payload = JSON.parse(new TextDecoder().decode(bytes));
+      } else payload = await res.json();
     } catch (error) {
       if (error instanceof TariffLookupError) throw error;
       // Never surface the raw underlying error message here — a synthetic or
@@ -179,6 +194,8 @@ export async function lookupTariff(
     if (!Array.isArray(payload)) {
       throw new TariffLookupError("USITC HTS returned an unexpected payload shape.");
     }
+
+    options.onSource?.({ url, fetchedAt: new Date().toISOString(), rows: payload as RawHtsRow[] });
 
     return payload as RawHtsRow[];
   };
@@ -232,7 +249,7 @@ export async function lookupTariff(
     htsCode: inheritedFromHtsCode ? code : str(match.htsno) ?? code,
     ...(inheritedFromHtsCode ? { inheritedFromHtsCode } : {}),
     description: str(match.description) ?? "",
-    units: Array.isArray(match.units) ? match.units.filter((u): u is string => typeof u === "string") : [],
+    units: Array.isArray(exact.units) && exact.units.length ? exact.units.filter((u): u is string => typeof u === "string") : Array.isArray(match.units) ? match.units.filter((u): u is string => typeof u === "string") : [],
     general: parseDutyRate(str(match.general)),
     special: parseDutyRate(special),
     specialProgrammes: specialProgrammeCodes(special),
@@ -243,6 +260,16 @@ export async function lookupTariff(
 
   cacheRow(key, row, now);
   return row;
+}
+
+const freshLookupContext = new AsyncLocalStorage<Map<string,Promise<TariffRow|null>>>();
+/** Share fresh data within one request, never across checks or workspaces. */
+export function withFreshTariffCache<T>(fn:()=>Promise<T>):Promise<T>{return freshLookupContext.run(new Map(),fn);}
+export async function lookupTariff(code:string,options:Parameters<typeof lookupTariffUnshared>[1]={}):Promise<TariffRow|null>{
+  const context=freshLookupContext.getStore();
+  if(!options?.fresh||!context)return lookupTariffUnshared(code,options);
+  const key=digits(code);const existing=context.get(key);if(existing)return existing;
+  const pending=lookupTariffUnshared(code,options);context.set(key,pending);return pending;
 }
 
 export interface DutyQuote {
@@ -274,8 +301,11 @@ export async function quoteDuty(input: {
   claimedProgramme?: string | null;
   countryOfOrigin?: string | null;
   signal?: AbortSignal;
-}): Promise<DutyQuote | null> {
-  const row = await lookupTariff(input.htsCode, { signal: input.signal });
+}, publishedRow?: TariffRow): Promise<DutyQuote | null> {
+  // Internal callers may reuse a freshly fetched row within one check. Never
+  // accept a row for a different code or read one from a public request body.
+  if (publishedRow && digits(publishedRow.htsCode) !== digits(input.htsCode)) throw new TariffLookupError("Published row does not match the requested code.");
+  const row = publishedRow ?? await lookupTariff(input.htsCode, { signal: input.signal });
   if (!row) return null;
 
   const caveats: string[] = [];

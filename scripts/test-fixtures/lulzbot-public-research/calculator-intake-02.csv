@@ -1,0 +1,501 @@
+sku,name,hts_code,country_of_origin,import_date,source_url,evidence_kind
+EL-CA0056,6ft 18AWG Australian Power Cord Cable - H05VV-FNEMA C13 – Black,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+EL-CA0063,6ft Tripp Lite - USB 2.0 A/B Gold Device Cable Ferrite Chokes A Male B Male,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-CA0073,"Multi-Conductor Cables 14AWG 4C UNSHLD, BLACK",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_500w_PSU_KT-EL0063/24v_500w_PSU_BoM_KT-EL0063.xlsx,public_archived_bom_part; unclassified
+EL-CA0078,"Flat Cables .050"" 10C 10 COLOR 28AWG STRANDED",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+EL-CA0082,[3271VF76] 6ft Japan NEMA 5-15P 3-pin to C13 Power Cord with VCTF 0.75mm Black (Box of 100),,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+EL-CA0205,"[EL-CA0205] Flat Cables .050"" 10C 10 28AWG STRANDED, BLACK",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+EL-FA0003,80x80x15mm 12V DC Fan,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+EL-FA0011,"FAN,24VDC,Sleeve,5.75CFM,40X40X10MM,60mA 6000RPM,1.44W,280MM LEADS,CE/RoHS",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-FA0012,"FAN,24VDC,BALL,31.60CFM,80×80×15 MM,100mA",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-FA0020,RFB2008 Micro Blower,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-FA0032,Pelonis FAN 24V 40mmx40mmx10mm Low flow,,,,https://download.lulzbot.com/Mini/1.02/production_docs/foxglove_BOM_revA.xlsx,public_archived_bom_part; unclassified
+EL-FA0033,Pelonis FAN 24V 80x15mm Low flow,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+EL-FA0034,Pelonis 40mm 5v low flow fan,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-FA0036,TAZ 6 CB Case Fan Assembly v1.0,,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+EL-FA0045,"PELONIS FAN, high flow,24VDC,BALL,31.60CFM,80×80×15 MM,100mA",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-FA0047,"[EL-FA0047] RB5015 Series DC Blower, 51 x 51 x 15mm, 24V",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+EL-FA0061,[EL-FA0061]  CB Case Fan Assembly,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0005,LCD wire harness,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+EL-HR0006,Heat bed extensions,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+EL-HR0007,Heat bed wiring assembly,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+EL-HR0008,"Z switch extension, TAZ",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+EL-HR0009,"Y switch extension, TAZ",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+EL-HR0010,"X switch extension, TAZ",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+EL-HR0011,Jumper wire yellow,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+EL-HR0012,Jumper wire red,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+EL-HR0013,Switch wire assembly,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+EL-HR0014,Power thru case assembly,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+EL-HR0015,Power supply assembly,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+EL-HR0016-1,Motor wires -1,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+EL-HR0016-2,Motor wires -2,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-HR0017-1,Motor extension -1,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+EL-HR0017-2,Motor extension -2,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+EL-HR0017-3,Motor extension -3,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+EL-HR0017-4,Motor extension -4,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+EL-HR0020,24vDC Power supply assembly,,,,https://download.lulzbot.com/TAZ/3.0/production_docs/TAZ-BOM-version3.0.xlsx,public_archived_bom_part; unclassified
+EL-HR0021,"Power through case assembly, TAZ",,,,https://download.lulzbot.com/TAZ/3.0/production_docs/TAZ-BOM-version3.0.xlsx,public_archived_bom_part; unclassified
+EL-HR0060,TAZ Extruder Extension v3.0,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_v2c_tool_head_wiring_harness_KT-EL0060/TAZ_v2c_tool_head_wiring_harness_KT-EL0060_BoM.xlsx,public_archived_bom_part; unclassified
+EL-HR0068,Mini Plug to Ground Post Extension,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-HR0069,Mini PS to Ground Post Extension,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-HR0074,DC Power Harness v1.0 TAZ 6,,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+EL-HR0075,X Harness External TAZ 6,,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+EL-HR0076,TAZ 6 CB Switch to PSU white,,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+EL-HR0077,TAZ 6 CB Switch to PSU Black,,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+EL-HR0078,TAZ 6 plug to ground green,,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+EL-HR0079,TAZ 6 CB PS to Ground,,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+EL-HR0080,TAZ 6 CB Plug to Switch Harness,,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+EL-HR0081,TAZ 6 Bed Harness Internal,,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+EL-HR0082,TAZ 6 Bed Power Harness Internal,,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+EL-HR0083,"Bed power harness external, TAZ 6",,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+EL-HR0084,TAZ 6 CB X Harness,,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+EL-HR0087,"TAZ 6, CB Extruder Harness Internal",,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+EL-HR0088,TAZ 6 CB Y-Z Harness,,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+EL-HR0089,"Taz 6, Bed harness extension",,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+EL-HR0091,Taz 6 Y & Z harness external,,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+EL-HR0092,"Taz 6, Extruder 0 harness external",,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+EL-HR0095,"Extruder Fan Harness TAZ 6, v0.1",,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+EL-HR0096,RevB Stepper Motor JST 115mm Harness,,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+EL-HR0097,"LCD Harness TAZ 6, v0.1",,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+EL-HR0101,"Taz 6, CB extruder 1 harness",,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+EL-HR0102,Bed Harness,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-HR0104,Plug to Sw Extension,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-HR0106,[EL-HR0106] Mini PS to RAMBo Harness Assembly - Gladiola,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+EL-HR0107,Mini PS to Rambo Harness,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-HR0108,X Extruder Harness,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-HR0109,[EL-HR0109] Finger Guard 80mm Plastic,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+EL-HR0114,Bed Harness Completed Assembly,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-HR0115,XY Harness Assembly,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-HR0117,[EL-HR0117] Earth Ground Extension Wire Harness,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+EL-HR0118,[EL-HR0118] Chassis Ground Extension Wire Harness,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+EL-HR0121,"[EL-HR0121] Mini, Nozzle Fan Harness",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+EL-HR0122,"[EL-HR0122] Mini, Extruder Motor Harness",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+EL-HR0123,"[EL-HR0123] Mini, Heat Sink Fan Harness",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+EL-HR0124,"[EL-HR0124] Mini, Zero Sense 215mm Harness",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+EL-HR0125,[EL-HR0125] Mini X Max Switch Harness,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+EL-HR0127,[EL-HR0127] Mini SW to PS - White Wire Extension Harness Assembly – Gladiola,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+EL-HR0128,[EL-HR0128] Mini Case Fan Harness RevA,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+EL-HR0130,[EL-HR0130] Mini X Extruder Harnesses Assembly,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+EL-HR0135,[EL-HR0135] Mini 2 Bed Harness Igus,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+EL-HR0140,"[EL-HR0140] Bed Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0141,"[EL-HR0141] Extruder X Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0142,"[EL-HR0142] Z Endstop Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0143,"[EL-HR0143] Y-Z Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0144,"[EL-HR0144] Filament Sensor Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0145,"[EL-HR0145] E1 Extension Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0146,"[EL-HR0146] Bed Extension Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0147,"[EL-HR0147] LCD-USB Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0148,"[EL-HR0148] CB Bed Power Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0149,"[EL-HR0149] CB Y-Z Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0150,"[EL-HR0150] CB Z Endstop Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0151,"[EL-HR0151] CB X Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0152,"[EL-HR0152] CB PSU to Ground Green Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0153,"[EL-HR0153] CB Extruder Sensor Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0154,"[EL-HR0154] DC Power Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0155,"[EL-HR0155] CB Bed Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0156,"[EL-HR0156] CB Erase Switch Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0157,"[EL-HR0157] CB Switch to PSU Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0160,"[EL-HR0160] E1 Extruder Motor Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0161,"[EL-HR0161] E2 Extruder Motor Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0164,"[EL-HR0164] USB Ground Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0165,[EL-HR0165] Standard Aero Extruder Harness,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0166,[EL-HR0166] Mirrored Aero Extruder Harness,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0167,[EL-HR0167] Plug to ground green,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0168,[EL-HR0168] Plug to switch black and white with ferrite,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0170,"[EL-HR0170] PFG 40, Fan Finger Guard Plastic, 40mm",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0171,[EL-HR0171] Y Motor Ground Extension,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0173,"[EL-HR0173] TAZ Workhorse, CB X Harness",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0174,"[EL-HR0174] TAZ Workhorse, Bed Power Harness",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0175,"[EL-HR0175] TAZ Workhorse,  CB Extruder Harness",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0176,"[EL-HR0176] TAZ Workhorse, CB Dual Extruder Harness",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0177,"[EL-HR0177] TAZ Workhorse, CB Y End-Stop Harness",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0178,"[EL-HR0178] TAZ Workhorse, Extruder Harness",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0179,"[EL-HR0179] TAZ Workhorse, X Harness",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0180,"[EL-HR0180] TAZ Workhorse, Y Bed Harness",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0181,"[EL-HR0181] TAZ Workhorse, YZ End Harness",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0182,"[EL-HR0182] TAZ Workhorse, Y Motor Ground Extension",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0183,"[EL-HR0183] TAZ Workhorse, CB YZ Harness",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0184,"[EL-HR0184] TAZ Workhorse, CB Bed Harness",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR0185,"[EL-HR0185] TAZ Workhorse, CB Z Endstop Harness, Assembled",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-HR01??,Igus Bed Harness,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0001,female molex pins for 22-24AWG wire,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0008,"Anderson-Heavy Duty Power Connectors HOUSING ONLY, BLACK-BULK POWERPOLE 15/45",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0010,Heavy Duty Power Connectors POWERPOLE 15A CONT,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0012,"Noninsulated Wire Ferrule, 24-20 AWG, .31"" Pin Length",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0014,"Noninsulated Wire Ferrule, 16 AWG, .28"" Pin Length",,,,https://download.lulzbot.com/TAZ/6.03/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0053,6ft 18AWG Power Cord Cable w/ 3 Conductor PC Power Connector Socket (C13/5-15P) – Black,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+EL-MS0058,CONN PIN MALE 24-30AWG CRIMP TIN,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0059,CONN TERM FEMALE 22-24AWG TIN,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0061,CONN 4 pin Male housing with latch,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0062,CONN 4 pin Female housing with latch,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0073,Shielded 22AWG UL2464 4 COND,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0074,20-POS  .100 Dual (Black),,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0075,8-POS   .100 Dual  (Black),,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0096,Cartridge Fuses 125V 7A 5X20 MA UL LBC,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-MS0119,SD Card from GLCD Kit,,,,https://download.lulzbot.com/TAZ/5.0.1/production_docs/TAZ-BOM-juniperbush_3000order.xlsx,public_archived_bom_part; unclassified
+EL-MS0121,14-18 AWG Tin Sockets for Receptacle,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0122,14-18 AWG Tin Pin for Plug,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0123,20-24 AWG Tin Pin for Plug,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0124,20-24 AWG Tin Sockets for Receptacle,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0126,"CONN PLUG, 25 POS, IDC GOLD",,,,https://download.lulzbot.com/TAZ/4.0/production_docs/TAZ-BOM-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0127,CONN D-SUB RCPT 25 POS IDC GOLD,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0128,"4-POS, free hanging",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0129,Cable Clamp for 14-Pos; 0.453” opening,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0130,Cable Clamp for 14-Pos; 0.453” opening; full cover,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0131,"14-POS, free hanging",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0133,"14-POS, panel mount w. brass inserts",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0134,Backshell DB25 Flat Ribbon,,,,https://download.lulzbot.com/TAZ/4.0/production_docs/TAZ-BOM-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0138,SPEAKER 4OHM 3W 82DB 28X40MM,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-MS0139,"Tubing Corrugated Loom 3/8"" ID, Black",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0140,Cable Clamp for 4-Pos; 0.329” opening,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0141,Ring Term. Non ins. 26-22 AWG,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0142,CONN RECEPT FASTON 22-26AWG .110,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0143,CONN Fast Receptacle14-16 AWG .250 – REEL of 2200 Units,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0144,"Connector Accessories, Sealing Cap, Shell Size 17",,,,https://download.lulzbot.com/TAZ/4.0/production_docs/TAZ-BOM-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0160,"Noninsulated Wire Ferrule, 14 AWG, .39"" Pin Length",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MS0165,"Snap-Together Cable and Hose Carrier, Feed-Through, 0.41"" High x 0.39"" Wide Interior Size",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-MS0166,"Mounting Brackets for .41"" High x .39"" Wide Interior Snap-Together Cable and Hose Carrier",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-MS0166-Female,"Mounting Brackets for .41"" High x .39"" Wide Interior Snap-Together Cable and Hose Carrier",,,,https://download.lulzbot.com/Mini/1.02/production_docs/foxglove_BOM_revA.xlsx,public_archived_bom_part; unclassified
+EL-MS0166-Male,"Mounting Brackets for .41"" High x .39"" Wide Interior Snap-Together Cable and Hose Carrier",,,,https://download.lulzbot.com/Mini/1.02/production_docs/foxglove_BOM_revA.xlsx,public_archived_bom_part; unclassified
+EL-MS0176,Kingston Digital 8 GB microSD Class 10 UHS-1 Memory Card 30MB/s with Adapter SDC10/8GB,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-MS0184,[EL-MS0184] 24V 40W Heater Cartridge,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_40w_Heater_Cartridge_KT-CP0111/BoM_24v_40w_Heater_Cartridge_KT-CP0111.xlsx,public_archived_bom_part; unclassified
+EL-MS0205,CONN TERM MALE 22-24AWG TIN,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-MS0207,POT 10K OHM 17MM RD .06W CARB,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-MS0210,CONN RING UNINS 15-20AWG #M3,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-MS0211,REEL – RING TONGUE CONN 16-22 AWG #10 PIDG,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-MS0212,CONN PIN 24-30AWG CRIMP TIN,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-MS0216,Ferrite Tubular Bead 19.00mm,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-MS0220,"SWM Style USB Flash drive, 4gb, black",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-MS0235,[EL-MS0235] Surface Mount Fuses 125V V/FA 5A NANO2,,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-MS0236,"FERRIT CYLINDR BOX CLAMP.350""WHT",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-MS0242,TAPE COPPER FOIL 12.7MMX5.5,,,,https://download.lulzbot.com/TAZ/5.0.1/production_docs/TAZ-BOM-juniperbush_3000order.xlsx,public_archived_bom_part; unclassified
+EL-MS0246,Conn Ring 16-22 AWG #4 Red PIDG,,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0247,"Heat Shrink Tubing – 0.19-0.09 – Black, 100'",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0248,CONN RING 14-16 AWG #10 PIDG,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0249,"Front Mount Male, 4 pin, solder",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_500w_PSU_KT-EL0063/24v_500w_PSU_BoM_KT-EL0063.xlsx,public_archived_bom_part; unclassified
+EL-MS0250,"Cable connector female, 4 pin, solder",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_500w_PSU_KT-EL0063/24v_500w_PSU_BoM_KT-EL0063.xlsx,public_archived_bom_part; unclassified
+EL-MS0251,CONN HOUSING 16POS .100 DUAL,,,,https://download.lulzbot.com/TAZ/5.0.1/production_docs/TAZ-BOM-juniperbush_3000order.xlsx,public_archived_bom_part; unclassified
+EL-MS0254,FERRITE BRDBAND CYLINDER 17.07MM – 28B0672-000,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_500w_PSU_KT-EL0063/24v_500w_PSU_BoM_KT-EL0063.xlsx,public_archived_bom_part; unclassified
+EL-MS0259,"HEAT SHRNK DL WL Q53X 3/4""X 4'BLK",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0262,"SWM Style USB Flash drive, 4gb, Black Pre-flashed with Data and Logo",,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0329,"TVS Diode – 1500W, 5V Reverse Standoff, 6V Breakdown, 9.4V Clamp, 200A Surge",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0332,Ferrite Cable Cores 220ohms 100MHz 5mm I.D.,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0336,Ferrite Cable Cores 310ohms 100MHz 7mm Inside Dia.,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0342,FERRITE TUBULAR BEAD 7.87MM RoHS Status,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0343,Ferrite 10.16mm ID for 16 pin Y&Z connector,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0344,Ferrite Tubular Bead 5.90mm,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0346,MOD PWR ENTRY INLET W/FUSE 6A - IEC C14 Receptacle – AC Filter 6A 250VAC,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0347,FUSE CERAMIC 6.3A 250VAC 5X20MM,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0351,Female JST pin,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0353,Ferrule for 16 AWG wire,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0355,CONN HOUSING PH 6POS 2MM WHITE,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0356,"HEAT SHRINK DUAL 1/2"" BLACK 4FT",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0357,24 AWG 8.0mm Pin Length  Insulated Ferrule,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0360,"Ferrule, Terminals 16AWG NON-INSL",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0361,16 AWG 6.0mm Pin Length Power Phase Black Single Wire - Insulated Ferrule,,,,https://download.lulzbot.com/Mini/1.02/production_docs/foxglove_BOM_revA.xlsx,public_archived_bom_part; unclassified
+EL-MS0362,16 AWG 6.0mm Pin Length Power Phase Black Single Wire - Insulated Ferrule,,,,https://download.lulzbot.com/Mini/1.02/production_docs/foxglove_BOM_revA.xlsx,public_archived_bom_part; unclassified
+EL-MS0377,"24V 30W Heater Cartridge, 23cm Leads (with no connectors on end)",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+EL-MS0379,"Igus 06 Series Energy Chain 20mm Inner Width, 28mm Bend Radius",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0380,"Igus 06 Series Energy Chain 30mm Inner Width, 28mm Bend Radius",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0382,Igus 06 Series Mounting Bracket Set 20mm Inner Width (male and female),,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0383,Igus 06 Series Mounting Bracket Set 30mm Inner Width (male and female),,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0385,SD Card from GLCD Kit,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+EL-MS0414,"Cartridge Fuses(We need to change this to a ceramic one like EL-MS0347 but likely rated to a lower current. UPDATE – Erick spec'd one, we still need part number and to test it.)",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0416,2.7mm Solder Sleeve,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MS0418,[EL-MS0418] Conn Housing 10Pos .100 Dual,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-MS0420,"[EL-MS0420] SWM Style USB Flash Drive, 16gb, Black with Mini Logo - No Data",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+EL-MS0431,"[EL-MS0431] Fork Terminal, non-insulated, 26 – 22 AWG, #4 stud size",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+EL-MS0432,[EL-MS0432] Clip-On EMI Shielding Gasket 150.876mm length,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+EL-MS0434,"Heat Shrink Tubing – 0.19-0.09 – Red, 100'",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+EL-MS0479,[EL-MS0479] CONN TERM FEMALE 20-24AWG TIN (Micro-Fit 3.0â„¢) 12K REEL,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+EL-MS0480,[EL-MS0480] CONN TERM MALE 20-24AWG TIN (Micro-Fit 3.0â„¢) 12K REEL,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+EL-MS0489,[EL-MS0489] Housing 2.54MM Crimp House 22 CKT,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-MS0496,"[EL-MS0496]  5"" 800 x480 TFT LCD Display&Touch Panel, Standard 40 pin",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-MS0497,[EL-MS0497] CONN SPADE TERM 16-22AWG #6 RED,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+EL-MS0502,[EL-MS0502] CONN SPADE TERM 24-26AWG #6 YEL,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+EL-MS0523,[EL-MS0523] Power Connector Heavy Duty Retention Clip PP15/45,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-MS0531,"[EL-MS0531] G8 RADIAL MULTIPOLE RING - 1/2"" 20 pole, G8-H-125-50-20",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-MS0535,[EL-MS0535] USB ESD Sheilding fingers,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-MS0536,"[EL-MS0536] PQ12-100-6-R-Alep, Micro Linear Servo w/custom cable and connector",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-MS0540,[EL-MS0540] Ferrite Core277 OHM Hinged,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-MS0543,"[EL-MS0543] USB Flash drive, 4gb, Green USB, black case, white letters",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-MS0552,"[EL-MS0552] Display, 5"" BOE VTFT050MRNT01, WVGA TFT with resistive touch panel",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.3/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-MS0560,"[EL-MS0560] Conductive Copper Foil Electrical Tape Conductive Adhesive, 3/4"" Wide, 18 Ft",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-MS0562,[EL-MS0562] 16GB USB 2.0 DataTraveler SE9 (Metal casing) US,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.6/production_docs/bom/BoM_TAZ_Pro_KT-PR0050AU_OCA.csv,public_archived_bom_part; unclassified
+EL-MT0001,NEMA 17 Stepper Motors,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-MT0029,"NEMA 17 Stepper Motor, Moons'  -  NOT INCLUDING wire harness",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MT0032,Moon’s motor Dampener,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-MT0040,"[EL-MT0040] NEMA 17 Half Height Stepper Motor, Moons",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+EL-MT0056,"[EL-MT0056] Motor, Moons  4118S-08P-07RO",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-PS0009,"Power Supply 12V, 30A",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+EL-PS0014,"Power Supply 24V, 15A",,,,https://download.lulzbot.com/TAZ/3.0/production_docs/TAZ-BOM-version3.0.xlsx,public_archived_bom_part; unclassified
+EL-PS0017,"Power Supply, 24V, 16.66A, 400W, 4pin, Pengchu Ltd.",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-PS0018,"Power Supply, 24V, 16.66A, 400W, 4pin, Pengchu Ltd.",,,,https://download.lulzbot.com/TAZ/4.0/production_docs/TAZ-BOM-Guava.xlsx,public_archived_bom_part; unclassified
+EL-PS0022,"Power Supply, 24V, 16.66A, 400W, 4pin, Pengchu Ltd. V2",,,,https://download.lulzbot.com/TAZ/5.0/production_docs/TAZ-BOM-Juniper_1500order.xlsx,public_archived_bom_part; unclassified
+EL-PS0025,POWER SUP 150W 24V 6.25A PNL MT,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-PS0029,Lulzbot 24VDC 500W Power Supply + internal plug,,,,https://download.lulzbot.com/TAZ/5.0.1/production_docs/TAZ-BOM-juniperbush_3000order.xlsx,public_archived_bom_part; unclassified
+EL-PS0031,Mean Well Switching Power Supplies 500W 24V 21A Power Supply W/PFC,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+EL-SW0009,SWITCH ROCKER DPST 20A 250V,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+EL-SW0010,SWITCH ROCKER DPST 20A 250V,,,,https://download.lulzbot.com/TAZ/3.1/production_docs/TAZ-BOM-version3.1.xlsx,public_archived_bom_part; unclassified
+EL-SW0020,SWITCH ROCKER DPST 20A 125V,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-SW0021,SWITCH SIM ROLL SPDT 3A 125V,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-SW0022,SWITCH BASIC SPDT 3A .110QC 125V,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-SW0023,"SWITCH ROCKER DPST 20A 250V, Illuminated Red",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-SW0030,Momentary Metal Flat Flush Mount Push Button Switch,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+EL-TH0011,Semitec GT2 Thermistor (100kOhm type) 23cm Leads with no connectors on end.,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+EL-TH0012,[EL-TH0012] Cartridge Style Thermistor with Molex Connector,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/100k_Semitec_NTC_Thermistor_235mm_KT-CP0110/BoM_100k_Semitec_NTC_Thermistor_235mm_KT-CP0110.xlsx,public_archived_bom_part; unclassified
+EL-WR0013,HOOK-UP WIRE 100FT 18AWG TIN-COPPER BLK,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-WR0040,"Wire - Single Conductor 20AWG SOLID PTFE, RED",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-WR0098,25Cond Ribbon LT GRY,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-WR0099,Shielded 22AWG UL2464 4 COND,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-WR0103,24AWG Stranded – Red,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-WR0104,24AWG Stranded – Orange,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-WR0105,24AWG Stranded – Black,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-WR0106,16AWG Stranded – Red,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-WR0107,24AWG Stranded – White,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-WR0108,16AWG Stranded – Violet,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-WR0109,24AWG Stranded – Yellow,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-WR0110,16AWG Stranded – Yellow,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-WR0111,24AWG Stranded – Blue,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+EL-WR0118,24AWG Stranded – Blue,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-WR0119,24AWG Stranded Wire – Green,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-WR0120,24AWG Stranded Wire – Purple,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-WR0121,16AWG Stranded Wire – Black,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-WR0122,16AWG Stranded – Green,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-WR0123,16AWG Stranded Wire – White,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+EL-WR0124,16AWG Stranded – Green w/ yellow stripe,,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+EL-WR0135,WIRE MTW 16AWG PPL 500ft REEL 600V 19-STRAND BARE COPPER – Purple,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+EL-WR0136,Hook-up Wire 20AWG 600V MICA 100ft SPOOL TAN  538C,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+EL-WR0137,IGUS 2-Wire 16AWG Chainflex Cable,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-WR0138,Igus 6-wire Chainflex Cable,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-WR0140,Igus 4-wire Shielded Chainflex Cable,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-WR0141,IGUS Chainflex® CF9 control cable TPE,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+EL-WR0155,"[EL-WR0155] Wire - Single Conductor 20AWG Stranded, PTFE, RED",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+EL-WR0157,"[EL-WR0157] SELF-WRAPPING BRAIDED SLEEVING - 1/4"" - BLACK - 200 FT SPOOL",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+El-HR0087,"TAZ 6, Extruder 0 harness internal",,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+HD-BL0006,"GT2, Single sided Neoprene Belt, 2mm pitch, 582 teeth, 6mm wide,fiberglass cords",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+HD-BL0009,1164-2P-06-2MR-1164-06 / GT 2 Single Sided Neoprene Belt - 1164mm by 6mm belt,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-BL0015,"GT2, Single sided Neoprene Belt",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-BL0023,[HD-BL0023] 866-2P-06 POWERHOUSEâ„¢ BELT,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-BL0028,[HD-BL0028] 956-2P-06 POWERHOUSE BELT,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-BL0032,[HD-BL0032] 1164-2P-06-2MR-1164-06 / GT 3 Single Sided Neoprene Belt - 1164mm by 6mm,,,,https://download.lulzbot.com/TAZ/6.03/production_docs/BoM_KT-PR0041AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-BL0033,[HD-BL0033] 744-2P06-2MR-744-06 / GT 3 Single Sided Neoprene Belt - 744mm by 6mm belt,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-BR0159,"M5 x 14 Bolt, SHCS Black-Oxide",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+HD-BT0005,"[HD-BT0005] M3 x 10 Bolt, SHCS Black-oxide",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+HD-BT0010,M4 x 20 Bolt SHCS Black-Oxide,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-BT0012,M3 Set Screw (Grub Screw),,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-BT0020,"M3 x 5 Bolt, SHCS Black-Oxide",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+HD-BT0028,"Hobbed, M8 x 60 Hex Head Bolt",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+HD-BT0030,"Metric 8.8 Zinc-Pltd Steel Hex Head Cap Screw M4 Size, 20mm Length, .7mm Pitch, Fully Threaded",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+HD-BT0038,"Metric Class 12.9 Socket Head Cap Screw Alloy Steel, M2 Thread, 12mm Length, 0.4mm Pitch",,,,https://download.lulzbot.com/TAZ/3.0/production_docs/TAZ-BOM-version3.0.xlsx,public_archived_bom_part; unclassified
+HD-BT0039,"M3 x 12 Bolt, SHCS Black-Oxide",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-BT0041,"M3 x 25 Bolt, SCHS blk-oxide",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-BT0042,"[HD-BT0042] Metric Class 12.9 Socket Head Cap Screw, Alloy Steel, M3 Thread, 30MM Length, 0.50MM Pitch",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-BT0043,"[HD-BT0043] Metric Class 12.9 Socket Head Cap Screw, Alloy Steel, M3 Thread, 35MM Length, 0.50MM Pitch",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-BT0044,"M3 x 5 Bolt, SHCS Black-Oxide",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-BT0048,"M5 x 10 Bolt, SHCS Black-Oxide",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-BT0049,"M5 x 14 Bolt, SHCS Black_Oxide",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-BT0052,"M4 x 55 Bolt, SHCS Black-Oxide",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-BT0053,"18-8 SS Flat Head Phillips Machine Screw Black-Oxide Finish, 4-40 Thread, 1/4"" Length",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-BT0054,"Metric Class 12.9 Socket Head Cap Screw Alloy STL, M2.5 Thread, 12mm Length, 0.45mm Pitch",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+HD-BT0055,"Class 10.9 STL Button Head Socket Cap Screw M5 Size, 8 mm Length, .8 mm Pitch",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+HD-BT0056,"Class 10.9 STL Button Head Socket Cap Screw M4 Size, 8 mm Length, .7 mm Pitch",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+HD-BT0057,"Class 10.9 STL Button Head Socket Cap Screw M5 Size, 8 mm Length, .8 mm Pitch",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+HD-BT0059,"M8 x 35 Bolt, BHCS Black-oxide",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-BT0061,"Class 10.9 Stl Button Head Socket Cap Screw M8 Size, 40 Mm Length, 1.25 Mm Pitch",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+HD-BT0073,"Class 10.9 Stl Button Head Socket Cap Screw M5 Size, 10 Mm Length, .8 Mm Pitch",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+HD-BT0082,"Metric 18-8 SS Flat Head Socket Cap Screw M3 Size, 16mm Length, .50mm Pitch",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-BT0085,"[HD-BT0085] 18-8 Stainless Steel Button-Head Socket Cap Screw, M3 Size, 5 mm Length, .5 mm Pitch",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+HD-BT0096,M3 x  6 BHCS,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+HD-BT0104,"M3 x 8 Bolt, BHCS, SST",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-BT0107,"Metric Class 12.9 Socket Head Cap Screw Alloy Steel, Black, M2 Thread, 10mm Length, 0.4mm Pitch",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-BT0108,"Hobbed Bolt, M8 x 50mm Hex head, 26mm offset, Stainless Steel",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-BT0116,"Black Alloy Steel Flat-Head Socket Cap Screw, Class 10.9, M3 Size, 10mm",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-BT0117,"Black Alloy Steel Flat-Head Socket Cap Screw, Class 10.9, M8 Size, 40mm Length, 1.25mm Pitch",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-BT0118,"M3 x 14 Bolt FHCS, Black-Oxide",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-BT0119,"M3 x  8 Bolt, SHCS Black-Oxide",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+HD-BT0120,"Alloy Steel Shoulder Screw, 6mm Diameter x 10mm Long Shoulder, M5 Thread",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-BT0128,"M3 x 6 Bolt, FHCS Black-Oxide",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-BT0130,"[HD-BT0130] M3 x 8 Bolt, FHCS Black-Oxide",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+HD-BT0131,"Black Alloy Steel Flat-Head Socket Cap Screw, Class 10.9, M8 Size, 45mm Length, 1.25mm Pitch",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-BT0135,"M3 x 25 Bolt FHCS, Black-Oxide",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-BT0136,"M3 x 12 Bolt FHCS, SST",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-BT0137,"M3 x 8 Bolt, BHCS, Black-Oxide",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-BT0140,"M3 x 6 Bolt, BHCS Black-Oxide",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-BT0146,"M3 X 12 BHCS, Black Oxide, Class 10.9 Steel",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+HD-BT0148,"Class 10.9 Steel Button-Head Socket Cap Screw, M3 Size, 10 mm Length, .5 mm Pitch",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+HD-BT0151,"[HD-BT0151] M5 x 20mm SCHS, Black Oxide",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+HD-BT0155,"Black Alloy Steel Flat-Head Socket Cap Screw, Class 10.9, M4 Size, 6mm Length, .70mm Pitch",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+HD-BT0157,"[HD-BT0157] Black-Oxide Class 12.9 Socket Head Cap Screw, Alloy Steel, M3 Thread, 8mm Length, 0.50mm Pitch",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-BT0158,"[HD-BT0158] Class 10.9 Steel Button-Head Socket Cap Screw, M5 Size, 12 mm Length, .8 mm Pitch",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-BT0161,"[HD-BT0161] M4x25 BHCS, Metric Black-Oxide Class 10.9 Alloy Steel",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-BT0162,"[HD-BT0162] Alloy Steel Cup Point Set Screw, M3 Size, 4mm Long, 0.5mm Pitch",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-BT0171,"Class 10.9 Steel Button-Head Socket Cap Screw M3 Size, 20 mm Length, .5 mm Pitch",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-BT0172,M3 x 4 Setscrew (Heater Cartridge Set Screw),,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+HD-BT0173,Heat Sink Setscrew (M2 x 6 SCHS),,,,https://download.lulzbot.com/TAZ/6.03/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+HD-BT0175,"Thread-Locking Socket Head Cap Screw, Alloy Steel, M5 Thread, 16mm Long, 0.8mm Pitch",,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+HD-BT0185,"[HD-BT0185] Black-Oxide Alloy Steel Socket Head Screw M3 x 0.5 mm Thread, 16 mm Long",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-BT0196,"[HD-BT0196] Black-Oxide Alloy Steel Socket Head Screw M5 x 0.8 mm Thread, 25 mm Long",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-BT0197,[HD-BT0197] M4 Thumb Screw for Aero,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-BT0204,"[HD-BT0204] Black-Oxide Alloy Steel Hex Drive Flat Head Screw M3 x 0.5 mm Thread, 22 mm Long",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-BT0206,"[HD-BT0206] Black-Oxide Alloy Steel Hex Drive Flat Head Screw M3 x 0.5 mm Thread, 25 mm Long",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-BT0210,"[HD-BT0210] Blue-Dyed Zinc-Plated Alloy Steel Socket Head Screw M3 x 0.5 mm Thread, 30 mm Long",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-BT0211,"[HD-BT0211] Blue-Dyed Zinc-Plated Alloy Steel Socket Head Screw M3 x 0.5 mm Thread, 8 mm Long",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-BT0216,"[HD-BT0216] Black-Oxide Alloy Steel Hex Drive Flat Head Screw M5 x 0.8 mm Thread, 40 mm Long",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-BT0222,"[HD-BT0222] Blue-Dyed Zinc-Plated Alloy Steel Socket Head Screw M3 x 0.5 mm Thread, 50 mm Long",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-BT0223,"[HD-BT0223] Blue-Dyed Zinc-Plated Alloy Steel Socket Head Screw M3 x 0.5 mm Thread, 16 mm Long",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-BT0224,"[HD-BT0224] Black-Oxide Alloy Steel Hex Drive Flat Head Screw M3 x 0.5 mm Thread, 30 mm Long",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-BT0225,"[HD-BT0225] 316 Stainless Steel Button Head Hex Drive Screws, M5 x 0.8mm Thread, 10mm Long",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-BT0231,"[HD-BT0231] METRIC, 12.9 SOCKET HEAD CAP SCREW, ALLOY STEEL, M5 THREAD, 14MM LENGTH, 0.80MM PITCH w/ METRIC PRESS-FIT PLASTIC THUMB SCREW HEAD KNURLED",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-BT0234,"[HD-BT0234] 316 Stainless Steel, Button Head - M3 x 0.5mm Thread, 10mm Long",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-BT0235,"[HD-BT0235] M2 x 0.4 mm, Black-Oxide Alloy Steel, Class 10.9, 6mm Long",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-BT0248,"[HD-BT0248] 18-8 Stainless Steel, Socket Head Screw, M3 x 0.50 mm Thread, 55 mm Long",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.6/production_docs/bom/BoM_TAZ_Pro_KT-PR0050AU_OCA.csv,public_archived_bom_part; unclassified
+HD-BT0249,"[HD-BT0249] 18-8 Stainless Steel, Socket Head Screw, M3 x 0.5 mm Thread, 16 mm Long",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.6/production_docs/bom/BoM_TAZ_Pro_KT-PR0050AU_OCA.csv,public_archived_bom_part; unclassified
+HD-BT0250,"[HD-BT0250] M5 x 0.8mm Thread, 10mm Long, Flanged Hex Head Screw",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-BU0001,"DryLin® R - Solid polymer bearing RJM-01, 10mm",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-BU0013,"DryLin® R - Solid polymer bearing RJM-01, 8mm",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-BU0029,"DryLin® R - Solid Polymer Bearing RJMP-01, 12mm",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+HD-BU0030,DryLin® R - Solid Polymer Bearing RJMP-01-10mm,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+HD-BU0039,[HD-BU0039] Igus Bushing RJUM-03-10,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-BU0046,"[HD-BU0046] Drylin® Precision, Polymer 8 mm Bearing RJMP-01-08",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-EX0010,"Aluminum Frame, extrusion 20mm x 20mm x 500mm, black",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-EX0011,"Aluminum Frame LTP, extrusion 20mm x 20mm x 500mm,Tapped M5x0.8 on one End, black",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-EX0012,"Aluminum Frame TPW, extrusion 20mm x 20mm x 500mm,Tapped M5x0.8 on both Ends, black",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-EX0061,"T-Slot Extrusion, Aluminum, 20mm x 20mm x 510mm, Black",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+HD-EX0062,"T-Slot Aluminum Frame TPW, Extrusion 20mm x 20mm x 500mm,Tapped M5x0.8 on Both Ends, Black (Ends free of anodize)",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+HD-EX0063,"T-Slot Aluminum Frame LTP, Extrusion 20mm x 20mm x 500mm,Tapped M5x0.8 on One End, Black",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+HD-EX0086,"[HD-EX0086] T-Slot Extrusion, Aluminum, 20mm x 20mm, 20.866"" 530mm",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-EX0090,[HD-EX0090] 90 degree Corner Bracket 2 Hole 20mm Slotted Inside Corner Bracket with Dual Support for 20 Series,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-EX0092,[HD-EX0092] 2 Hole Inside Corner Bracket For 20 Series,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-EX0093,[HD-EX0093] T-Slot Dust Cover,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-MS0002,"[HD-MS0002] Borosilicate Glass Bed 300mm x 300mm x 1/8""",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.6/production_docs/bom/BoM_TAZ_Pro_KT-PR0050AU_OCA.csv,public_archived_bom_part; unclassified
+HD-MS0002-3,Borosilicate Glass Bed 300mm x 300mm,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-MS0009,"Spring, 4.6mm OD, 0.5mm WD, 19mm",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+HD-MS0013,608ZZ bearing,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-MS0027,"Extruder Comp Spring - Music Wire, Extruder, 6mm OD, 0.8mm WD, 9.7mm FL",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-MS0030,M3-.5 3.8mm Heatset Insert,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-MS0031,"Metric Press-Fit Plastic Thumb Screw Head Knurled, Black, Fits M4 Screw, 13mm A, 5.5mm B",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-MS0033,"GT2 Timing Pulley, 5mm Bore Aluminum",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-MS0050,"Steel Compression Spring Music Wire, 1.00"" L,.420"" OD,.045"" Wire",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+HD-MS0054,Square Bumper,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-MS0055,"Metric Press-Fit Plastic Thumb Screw Head Knurled, Black, Fits M5 Screw, 16mm A, 6.5mm B",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-MS0056,"Thumb Screw Knob for M3 SHCS, Red",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+HD-MS0057,"PET Tape, 12""x12"" sheet, green",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-MS0058,"Wire Tie, 8""",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-MS0059,"Standard Nylon Cable Tie 7-1/2"" L, 1-7/8"" Bundle Dia, 50#Tensile Strg, Black",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+HD-MS0060,M5-.8 11mm Heatset Insert,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-MS0061,"KNOB CLR/MATTE .50""DIA 6MM SHAFT",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+HD-MS0062,"Metric Aluminum Unthreaded Spacer, 8MM OD, 8MM Length, M5 Screw Size",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-MS0143,"Steel Compression Spring, Zinc-Plated Spring-Tempered, 1.0"" L,.313"" OD, .029"" Wire",,,,https://download.lulzbot.com/TAZ/3.1/production_docs/TAZ-BOM-version3.1.xlsx,public_archived_bom_part; unclassified
+HD-MS0157,"Plastic Head Thumb Screw, Knurled Head, M5 Thread, 0.8mm Pitch, 20mm Long",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-MS0158,M5-.8 6.7mm Heatset Insert,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-MS0164,"Aluminum Male-Female Threaded Hex Standoff, 3/16"" Hex, 3/16"" Length",,,,https://download.lulzbot.com/TAZ/4.0/production_docs/TAZ-BOM-Guava.xlsx,public_archived_bom_part; unclassified
+HD-MS0172,"Screw, Lead, Misumi MTSBRK12-420-F7-R8-T9-Q8-S20-E5-FE0-FW7-FY1",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-MS0173,"Nut, Lead Screw, Resin, Misumi MTSRR12",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-MS0174,"Spring, 7.6mm OD, 0.56mm WD, 19mm",,,,https://download.lulzbot.com/TAZ/4.0/production_docs/TAZ-BOM-Guava.xlsx,public_archived_bom_part; unclassified
+HD-MS0194,"Coupling, Set Screw, Misumi GSASL16-5-5",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-MS0197,"Type 316 Stainless Steel Socket Head Cap Screw, M5 Thread, 12mm Length, .8mm Pitch",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-MS0203,"Steel Compression Spring, Zinc-Plated Music Wire, 1.00"" Long,.300"" OD,.022"" Wire",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-MS0204,100 Sealed Skateboard/inline/Rollerblade Skate Bearing Ball Bearings,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-MS0209,"Motor Isolator, cork 2mm",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-MS0211,Borosilicate Glass Bed 170mm x 170mm,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-MS0211-1,Borosilicate Glass Bed 170mm x 170mm,,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+HD-MS0229,"M4 x 25 Bolt, SHCS Black-Oxide",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-MS0230,"M2 x 6 SHCS, Black-Oxide",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-MS0235,"Metric Aluminum Unthreaded Spacer, 4.5mm OD, 8mm Length, M3 Screw Size",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-MS0244,"Firm White Polyester Felt Strip, 1/4"" Thick, 1"" Width, Plain Back",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-MS0249,"UV-Resistant Cable Tie Holder, Adhesive Back/Screw Mount, 4-Way, for .18"" Maximum Tie, Black",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-MS0254,"S-13994 3M 468MP Adhesive Transfer Tape - 12"" x 60 yards",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-MS0255,"Ultem PEI, 0.010"" x 12"" x 90ft rolls",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-MS0259,"Metric Steel Ball Bearing, Double Sealed Bearing No.627 for 7mm Shaft Diameter",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-MS0262,"Ultem PEI, 0.010"" x 12.50"" x 90ft rolls",,,,https://download.lulzbot.com/TAZ/5.0/production_docs/TAZ-BOM-Juniper_1500order.xlsx,public_archived_bom_part; unclassified
+HD-MS0263,"3M 468MP Adhesive Transfer Tape - 12.50"" x 60 yards",,,,https://download.lulzbot.com/TAZ/5.0/production_docs/TAZ-BOM-Juniper_1500order.xlsx,public_archived_bom_part; unclassified
+HD-MS0277,Bearing 627 Ball Bearings 627 RS – BLACK,,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+HD-MS0279,TAZ PEI Sheet for Retail,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_PEI_Sheet_KT-HB0000/BoM_TAZ_PEI_Sheet_KT-HB0000_MO16-0054.xlsx,public_archived_bom_part; unclassified
+HD-MS0282,608-2RS ABEC3/C3 Rubber Sealed Bearing - BLACK,,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+HD-MS0283,"Coupling, Set Screw, Misumi GSASL16-5-5-NAB",,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+HD-MS0287,"Metric 18-8 Stainless Steel Unthreaded Spacer, 8mm OD, 10mm Length, M3 Screw Size",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-MS0288,"Adhesive-Back Bumper, Tapered, Polyurethane, 1/2"" Wide, 15/64"" High, Black",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_500w_PSU_KT-EL0063/24v_500w_PSU_BoM_KT-EL0063.xlsx,public_archived_bom_part; unclassified
+HD-MS0289,"Nylon Loop Clamp, 5/16"" ID, Black",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_500w_PSU_KT-EL0063/24v_500w_PSU_BoM_KT-EL0063.xlsx,public_archived_bom_part; unclassified
+HD-MS0290,"Mil. Spec. Grommet, Fits 9/16"" Diameter Hole & 1/16"" Thick Panel, MS-35489-9",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_500w_PSU_KT-EL0063/24v_500w_PSU_BoM_KT-EL0063.xlsx,public_archived_bom_part; unclassified
+HD-MS0310,3M 468MP Adhesive Transfer Tape – 26” x 60 yards,,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+HD-MS0311,SULT1000NA.010X26.000X90FT - 0.010 X 26.000 WIDE X 90 FT NAT ULTEM 1000 FILM,,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+HD-MS0336,"Black Adhesive-Back Bumper, Square, Polyurethane, 3/4"" Wide, 1/4"" High",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+HD-MS0348,ESD Foam 40mm x 20mm x 10mm - Extruder Pin Protector,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+HD-MS0349,"PEI (10mil) with 3M 468 adhesive attached, heat-treated, TAZ",,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+HD-MS0350,"[HD-MS0350] PEI (10mil) with 3M 468 adhesive attached, heat-treated, Mini",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+HD-MS0351,Helical Flexible Shaft Coupling with Set Screw - X10835-5mm-5mm - Anodize IAW HPS1000,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+HD-MS0360,"[HD-MS0360] Stainless Steel Unthreaded Spacer 8 mm OD, 8 mm Length, for M3 Screw Size",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+HD-MS0375,"ESD Foam 1.06"" x .6"" x .3"" - Extruder Pin Insertion",,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+HD-MS0411,[HD-MS0411] 625-2RS Premium Two Side Rubber Sealed Bearing ABEC3,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-MS0412,[HD-MS0412] Smooth Idler Pulley Wheel Kit,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-MS0427,"[HD-MS0427] Nylon Unthreaded Spacer 8 mm OD, 2 mm Length, for M5 Screw Size",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-MS0430,"[HD-MS0430] E3D, Idler Spring for Aero",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-MS0446,[HD-MS0446] MR95-2RS Radial Ball Bearing Double Sealed Bore Dia. 5mm OD 9mm Width 3mm,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-MS0463,"[HD-MS0463] Insul-Fab Fujipoly Thermal Gap Filler, 70 pc sheet",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-MS0467,"[HD-MS0467] Oil-Resistant Buna-N O-Ring 3 mm Wide, 11 mm ID",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-MS0470,"[HD-MS0470] Two side Rubber seal Bearing, 623-2RS, ABEC1 grade",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-MS0471,[HD-MS0471] Round compression spring .22OD 21lbs/in  D11450,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-MS0531,"[HD-MS0531] Scotch-Brite, Light Cleansing Pad, 7445B - 9 x 6"", White",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-MS0550,"[HD-MS0550] Synthetic Felt Plain Backing, 1"" Wide, 1/4"" Thick - 50 ft",,,,https://download.lulzbot.com/Mini/2.0.5/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-MS0554,"[HD-MS0554] Workhorse, M5 x 0.8 Knob Thumb Screw Drive, Stainless Steel",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-NT0001,"M3 Nyloc Nut, Zinc Plated",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-NT0002,"M8 Nyloc Nut, Zinc Plated",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-NT0003,"M8 Nut, Zinc Plated",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+HD-NT0004,"M3 Nut, Steel, Zinc Plated",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-NT0007,"Metric Zinc-Plated Class 5 Steel Wing Nut M4 Screw Size, 0.7mm Pitch",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+HD-NT0011,"M4 Nut, Steel, Zinc Plated",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-NT0017,T-nut M5 Thread,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-NT0021,"M8 Wing Nut, Zinc-Plated Steel",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+HD-NT0029,"Metric Brass Hex Nut M6 Size, 1 mm Pitch, 10 mm Width, 5 mm Height",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+HD-NT0044,Plastic Laser Cut LCD cover for UL,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+HD-NT0047,10mm x 2mm Flange mount supernut,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-NT0053,"T-Slot Slide in T-nuts for Aluminum Frame, M5",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+HD-NT0057,[HD-NT0057] 18-8 Stainless Steel Nylon-Insert Locknut M5 x 0.8 mm Thread,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-NT0355,"Helix - Nut, Lead Screw, Resin, 12mm x 2mm, RH PPS, Round Flange",,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+HD-RD0004,8mm Smooth Rod x 18-19mm,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-RD0018,"10mm Smooth Rod, Stainless Steel, 500mm",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-RD0021,"Metric 18-8 Stainless Steel Threaded Rod M6 Size, 410mm",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+HD-RD0022,M8 x 175mm threaded rod,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+HD-RD0035,"8mm Smooth rod, 315mm, 304 Stainless Steel",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-RD0037,Drive Rod 10mm,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-RD0046,"Screw, Lead, MTSTRK12-420-F7-R8-T12-Q8-S10-E5-FE0-FW7-FY1, Stainless Steel",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+HD-RD0047,12mm X 515mm Stainless Steel Smooth Rod,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+HD-RD0048,"Helix - Screw, Lead, Stainless Steel 12mm x 2mm, RH, 420mm OAL, Machined",,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+HD-RD0061,"[HD-RD0061] 10 mm Smooth Rod, Stainless Steel, 405mm, EMWR-10-405X",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-RD0066,"[HD-RD0066] 12mm Smooth Rod, Stainless Steel, 540mm EWMR-12-540x",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-RD0068,"[HD-RD0068] 18-8 Stainless Steel Dowel Pin 1mm Diameter, 20mm Long",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+HD-RD0070,"[HD-RD0070]  6mm Smooth Rod, Aluminum, 65mm",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-TB0007,"Feed Tube, 0.187 ID X .250 OD NAT PTFE Tube",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-TB0023,Watts 5/16 in. OD x 3/16 in. ID x 20 ft. Clear PVC Tubing,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+HD-TB0032,"Flexible Polyolefin Heat Shrink Tubing 1/8"" ID Before, 1/16"" ID After, 100' L, Black",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+HD-TB0066,"Flexible Polyolefin Heat Shrink Tubing 1/8"" ID Before, 1/16"" ID After, 100' L, Black",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+HD-TB0075,"[HD-TB0075] Heat-Shrink Tubing, 25 Feet Long, 0.38"" ID Before Shrinking",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+HD-WA0001,"M3 Washer, Steel, Zinc Plated",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-WA0005,M4 Washer,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-WA0006,"M8 Washer, Steel, Zinc Plated",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-WA0007,"M5 Washer, Steel, Zinc Plated",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-WA0008,"Metric Spring Steel Shim - DIN 988 0.5mm Thick, 8mm ID, 14mm OD",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-WA0009,"Metric Spring Steel Shim - DIN 988 1.0mm Thick, 8mm ID, 14mm OD",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-WA0012,"Steel Flat Washer, DIN 125 zinc-plated class 4,M2 screw sz, 5mm OD, .25mm-.35mm thick",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-WA0013,"DIN 125 Zinc-Plated Class 4 Steel Flat Washer M2.5 Screw Size, 6mm OD, .45mm-.55mm Thick",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+HD-WA0027,"Metric 18-8 Stainless Steel Internal-Tooth Lock Washer, M3 Screw Size, 6MM OD, .4MM Min Thick",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HD-WA0035,M3 star washer,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HD-WA0038,"Black-Oxide 18-8 Stainless Steel Flat Washer, M3 Screw Size, 3.2mm ID, 7.0mm OD",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+HD-WA0039,"Black-Oxide 18-8 Stainless Steel Flat Washer, M4 Screw Size, 4.3mm ID, 9.0mm OD",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+HD-WA0040,"Black-Oxide 18-8 Stainless Steel Flat Washer, M5 Screw Size, 5.3mm ID, 10.0mm OD",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+HE-SH0016,"Assy, Budaschnozzle 2.0a with 0.35 nozzle",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+HE-SH0031,"Hexagon Hotend, Lulzbot Edition, 3.0mm Filament, 0.5mm nozzle",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+HE-SH0033,"Reprap Modified Hexagon Hotend, Lulzbot Edition, 3.0mm Filament, 0.35mm nozzle",,,,https://download.lulzbot.com/TAZ/5.0/production_docs/TAZ-BOM-Juniper_1500order.xlsx,public_archived_bom_part; unclassified
+Internal Part #,TAZ 6 Complete Packaging,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_6_Packaging_KT-PA0000/TAZ_6_Packaging_KT-PA0000_BoM.xlsx,public_archived_bom_part; unclassified
+Internal Part # KT-CP0096,LulzBot TAZ Single Extruder Tool Head v2.1,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_6_Tool_Head_KT-CP0096/TAZ_6_Tool_Head_BoM_KT-CP0096.xlsx,public_archived_bom_part; unclassified
+Internal Part Number,10mm x 282mm Drive Rod (x2),,,,https://download.lulzbot.com/retail_parts/Completed_Parts/10mm-x-282mm_Drive_Rod_(x2)_KT-HD0004/10mm-x-282mm-Drive-Rod-(x2)_KT-HD0004_BoM.xlsx,public_archived_bom_part; unclassified
+KT-CP0097,12mm High Precision Bushing (3),,,,https://download.lulzbot.com/retail_parts/Completed_Parts/12mm_Igus_High_Precision_Bearings_KT-CP0097/12mm_High_Precision_Bearings_BoM_KT-CP0097.xlsx,public_archived_bom_part; unclassified
+KT-CP0101,"24v 30w Heater Cartridge, 225mm",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_30w_Heater_Cartridge_225mm_KT-CP0101/24v_30w_Heater_Cartridge_225mm_KT-CP0101_BoM.xlsx,public_archived_bom_part; unclassified
+KT-CP0103,Assembled RAMBo 1.3L Kit,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_RAMBo_Assembled_KT-CP0103/assembled_rambo_bom_KT-CP0103.ods,public_archived_bom_part; unclassified
+KT-CP0110,"100k Semitec NTC Thermistor, 235mm",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/100k_Semitec_NTC_Thermistor_235mm_KT-CP0110/BoM_100k_Semitec_NTC_Thermistor_235mm_KT-CP0110.xlsx,public_archived_bom_part; unclassified
+KT-CP0111,"24v 40w Heater Cartridge, 235mm",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_40w_Heater_Cartridge_KT-CP0111/BoM_24v_40w_Heater_Cartridge_KT-CP0111.xlsx,public_archived_bom_part; unclassified
+KT-CP0131,RAMBo v1.4L Kit with LCD Harnesses,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_6_RAMBo_Kit_1.4_KT-CP0131/BoM_TAZ_6_RAMBo_Kit_1.4_KT-CP0131.xlsx,public_archived_bom_part; unclassified
+KT-EL0010,"Heat Bed Extension v1.0, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+KT-EL0011,"Extruder Extension v1.0, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+KT-EL0012,"Xz Extension v1.0, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified

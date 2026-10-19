@@ -1,0 +1,71 @@
+{
+  "source": {
+    "url": "https://www.importinfo.com/prusa-research-a-s",
+    "retrieved_at": "2026-10-12T02:09:50.761Z",
+    "status": 200,
+    "final_url": "https://www.importinfo.com/prusa-research-a-s",
+    "bytes": 46192,
+    "sha256": "25cc87dc3ffc0fb1e19e47069db12fc247016a50795498e3e4e0842ee80a0dc7",
+    "raw_file": "raw/prusa-catalogue/986ba5ab51ec4cc809be35727ff6c17b0cf5d6c6772c860f3cb579f77185eadb.html.gz"
+  },
+  "summary": {
+    "Total Records": "126",
+    "Shipper Records": "126",
+    "Consignee Records": "1",
+    "Notify Party Records": "0",
+    "First Shipment on File": "Apr 5th, 2019",
+    "Most Recent Shipment on File": "Sep 18th, 2026",
+    "Records in Last 30 Days": "1",
+    "Records in Last 90 Days": "1",
+    "Records in the Past Year": "19"
+  },
+  "bill": {
+    "Master BOL #": "ONEYPRGG00912300",
+    "House BOL #": "AOAEA1NYC562363",
+    "Manifest Number": "000001",
+    "Bill Type": "House Bill",
+    "Carrier Code": "AOAE",
+    "Voyage #": "118W",
+    "IMO #": "",
+    "Vessel Name": "OOCL SEOUL",
+    "Vessel Country": "HK",
+    "Place of Receipt": "PRAGUE",
+    "Foreign Port of Lading": "BREMERHAVEN GERMANY (42870)",
+    "Port of Unlading": "NEW YORK, NEW YORK (1001)",
+    "Port of Destination": "",
+    "Foreign Port of Destination": "",
+    "Weight": "620 K",
+    "Weight in KG": "620 KG",
+    "Quantity": "104 PKG",
+    "Volume": "",
+    "Record Status": "New Record",
+    "In-bond Entry Type": "",
+    "Transportation Mode": "Vessel, containerized",
+    "Container": "ONEU6525564",
+    "Commodity Description": "ORIGINAL PRUSA XL TOOL HEAD ASSEMBLED"
+  },
+  "dates": {
+    "Run Date": "2026-03-30",
+    "Estimated Arrival Date": "2026-03-14",
+    "Actual Arrival Date": "2026-03-29",
+    "Trade Update Date": "2026-03-18"
+  },
+  "shipper": {
+    "Shipper Name": "PRUSA RESEARCH A.S.",
+    "Address Line 1": "PARTYZANSKA 188 7A",
+    "Address Line 2": "PRAGUE 170 00 CZ"
+  },
+  "consignee": {
+    "Consignee Name": "MATTERHACKERS INC.",
+    "Address Line 1": "20321 VALENCIA CIR",
+    "Address Line 2": "LAKE FOREST CA 92630 US"
+  },
+  "published_harmonized_fields": [
+    [
+      "84859090",
+      "00000000",
+      "0000000620 K"
+    ]
+  ],
+  "limitation": "Recent-history rows are blank registration placeholders. Only the visible sample was collected. Harmonized fields retained verbatim, not legal U.S. entry facts; zero-filled harmonized value is not asserted as customs value."
+}

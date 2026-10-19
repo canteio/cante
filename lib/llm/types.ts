@@ -28,6 +28,8 @@ export interface LlmProvider {
 }
 
 export interface StreamRequest extends CompletionRequest {
+  /** Request provider-generated reasoning summaries, when the configured model supports them. */
+  reasoningSummary?: boolean;
   /**
    * Tool names the model may use for this call, e.g. ["WebSearch", "WebFetch"].
    * Omitted means no tools.
@@ -53,7 +55,7 @@ export type StreamEvent =
       hostname?: string;
     }
   /** The tool returned. `results` carries what a search actually found. */
-  | { type: "tool_end"; id: string; results?: SearchResult[] }
+  | { type: "tool_end"; id: string; results?: SearchResult[]; detail?: string; name?: string; url?: string; hostname?: string }
   /**
    * A thinking block opened.
    *
@@ -66,6 +68,8 @@ export type StreamEvent =
   | { type: "thinking_start" }
   | { type: "thinking"; tokens?: number; text?: string }
   | { type: "thinking_end"; tokens?: number }
+  /** Provider summary only; never private reasoning text. `done` replaces earlier deltas. */
+  | { type: "reasoning_summary"; id: string; text: string; done: boolean }
   /** A chunk of the answer. Concatenate in arrival order. */
   | { type: "text"; text: string }
   | { type: "done" }

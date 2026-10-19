@@ -1,0 +1,55 @@
+{
+  "purpose": "Local, public-data first-scan test; no actual company classification or origin established.",
+  "privacy": "Only pseudonymous product labels, HTS codes and origin countries in the intake CSV. No supplier, price, shipment, account or customer identifier.",
+  "source": "scripts/test-fixtures/prusa-public/testsomething.csv",
+  "rows": [
+    {
+      "label": "DEMO ESTIMATE — Part A",
+      "publicProductName": "DEMO ESTIMATE — Prusa CORE One L+",
+      "sourceUrl": "https://www.prusa3d.com/product/prusa-core-one-l/",
+      "htsCode": "8485.20.00.00",
+      "classificationStatus": "ESTIMATED_NOT_REVIEWED",
+      "originStatus": "ASSUMED_FOR_TEST_ONLY"
+    },
+    {
+      "label": "DEMO ESTIMATE — Part B",
+      "publicProductName": "DEMO ESTIMATE — Prusa CORE One+ (Gen 2)",
+      "sourceUrl": "https://www.prusa3d.com/product/prusa-core-one/",
+      "htsCode": "8485.20.00.00",
+      "classificationStatus": "ESTIMATED_NOT_REVIEWED",
+      "originStatus": "ASSUMED_FOR_TEST_ONLY"
+    },
+    {
+      "label": "DEMO ESTIMATE — Part C",
+      "publicProductName": "DEMO ESTIMATE — Original Prusa MK4S 3D Printer",
+      "sourceUrl": "https://www.prusa3d.com/product/original-prusa-mk4s/",
+      "htsCode": "8485.20.00.00",
+      "classificationStatus": "ESTIMATED_NOT_REVIEWED",
+      "originStatus": "ASSUMED_FOR_TEST_ONLY"
+    },
+    {
+      "label": "DEMO ESTIMATE — Part D",
+      "publicProductName": "DEMO ESTIMATE — Prusament PETG Prusa Orange 1kg",
+      "sourceUrl": "https://www.prusa3d.com/product/prusament-petg-filament-nfc/",
+      "htsCode": "3916.90.30.00",
+      "classificationStatus": "ESTIMATED_NOT_REVIEWED",
+      "originStatus": "ASSUMED_FOR_TEST_ONLY"
+    },
+    {
+      "label": "DEMO ESTIMATE — Part E",
+      "publicProductName": "DEMO ESTIMATE — Prusament PETG filament",
+      "sourceUrl": "https://www.prusa3d.com/product/prusament-petg-filament/",
+      "htsCode": "3916.90.30.00",
+      "classificationStatus": "ESTIMATED_NOT_REVIEWED",
+      "originStatus": "ASSUMED_FOR_TEST_ONLY"
+    },
+    {
+      "label": "DEMO ESTIMATE — Part F",
+      "publicProductName": "DEMO ESTIMATE — Prusament PETG Recycled 2kg (NFC)",
+      "sourceUrl": "https://www.prusa3d.com/product/prusament-petg-recycled-nfc/",
+      "htsCode": "3916.90.30.00",
+      "classificationStatus": "ESTIMATED_NOT_REVIEWED",
+      "originStatus": "ASSUMED_FOR_TEST_ONLY"
+    }
+  ]
+}

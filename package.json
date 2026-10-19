@@ -17,7 +17,15 @@
     "tariff:recalculate": "tsx scripts/recalculate-tariff-impacts.ts",
     "imports:validate": "node --import tsx scripts/validate-import-shipments.ts",
     "imports:refresh": "node --import tsx scripts/refresh-import-monitor.ts",
-    "hts:check-revision": "node --import tsx scripts/check-hts-revision.ts"
+    "hts:check-revision": "node --import tsx scripts/check-hts-revision.ts",
+    "test:demo": "node --import tsx --test scripts/test-equipment-demo.test.ts",
+    "test:live-check": "node --import tsx --test scripts/test-live-tariff-check.test.ts",
+    "verify:live-check": "node --import tsx scripts/verify-live-tariff-check.ts",
+    "test:history": "node --import tsx --test scripts/test-historical-rules.test.ts scripts/test-check-archive.test.ts",
+    "verify:history": "node --import tsx scripts/verify-historical-rules.ts",
+    "test:archive": "node --import tsx --test scripts/test-check-archive.test.ts scripts/test-live-tariff-check.test.ts",
+    "test:remedies": "node --import tsx --test scripts/test-remedy-refresh.test.ts",
+    "verify:remedies": "node --import tsx scripts/verify-remedy-refresh.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",

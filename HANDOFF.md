@@ -1,130 +1,155 @@
-# Handoff — where things actually stand
+# Handoff
 
-`CLAUDE.md` describes the code exhaustively and a new session reads it
-automatically. This file covers what CLAUDE.md deliberately does not: the
-business state, the decisions already made, and what is in flight right now.
+Updated October 18, 2026. Read this first, then [current status](docs/product/status.md). Current agent rules are in [CLAUDE.md](CLAUDE.md); dated implementation records are in the [engineering archive](docs/archive/engineering-history-2026-10-17.md).
 
-Written 18 Aug 2026. If the dates below are weeks old, ask before trusting the
-"in flight" section.
+Historical before/after comparison is implemented for live checks (October 18).
+Each check discovers the immediately preceding published USITC revision, retains
+its original JSON and both versioned Chapter 99 subchapter III PDFs, compares
+exact-code base duties, Chapter 99 headings and legal notes 16/20/52, and retains
+the linked modifying notices and official PDFs. UI changes are review leads, not
+automatically approved exemptions or a complete historical stacked-duty impact.
+Publication, release availability and document effective dates remain separate.
 
----
+The real Rev20 → Rev21 comparison found an exclusion-note insertion for statistical
+code 8479.90.9591 while the tested base rates stayed unchanged. The notice was
+published October 7 but states a July 1 effective date. Old/new text and original
+bytes are preserved in immutable check history. Historical JSON is losslessly
+gzipped with both stored-byte and original-byte hashes; PDF bytes stay original.
+The migration `20261019033002_tariff_historical_source_evidence.sql` is applied.
+This is adjacent-version backfill per check, not a full corpus since 1989, automatic
+historical liability determination, notification delivery or a connected worker.
+See [verification](docs/audits/2026-10-18-historical-rule-comparison.md).
 
-## October 9 rollout note
+Live-check bookkeeping is implemented (October 18). `/tariff/history` lists saved
+checks and captured government-source versions. Accepted live-check CSVs and explicit
+confirmations are saved before fetching; evidence versions and the terminal result
+are committed atomically. Failures are recorded when possible; interrupted runtime
+writes remain visibly incomplete. Review decisions append dated, attributed notes
+without rewriting inputs, results or earlier decisions. Export verifies input,
+event and source hashes. Reopening a result uses its saved evidence, not today's law.
 
-The operator explicitly requested no Telegram or launchd. There is no proprietary customer data;
-the current public-product demonstration uses cited LulzBot descriptions and
-explicitly synthetic customs entries. See `MVP_STATUS.md` for the exact scope.
-All 28 Supabase migrations are applied, HTS Edge Function version 6 is active,
-and Revision 21 completed all 99 chapter markers at 19:00:37 UTC October 9.
-The existing six-hour HTS job is unchanged; no new schedule was activated.
-Dev preview and authorized main production deployment succeeded; production is
-https://www.cante.io. Local dev/main contain the implementation. GitHub pushes
-remain blocked by local credentials (gh is logged out, Keychain helper stalls);
-remote branches are still 80b4f2e. Authenticate and push dev then main.
-All edits are made on dev. CLI 2.120.0 has working
-Cante access; the older repo CLI blocked on Keychain.
+The archive migration `20261018050226_tariff_check_archive.sql` is applied to the
+linked project. Authenticated RLS/column grants and mutation-blocking triggers protect
+records; request paths require no service key. This is application/database append-only
+history, not certified WORM storage against database administrators. Broader historical backfill remains incomplete: unseen older law versions and previous unsaved checks are not
+backfilled, and capture dates are not inferred legal effective dates. Standalone
+calculator previews and the separately saved historical-entry audits are not silently
+relabelled as live-check archive records. See [verification](docs/audits/2026-10-18-check-history.md).
 
-## The one-line state
+Current Section 232/301 refresh is built (October 18). Today's calculations now
+fetch the current USITC Chapter 99 notes and duty headings, plus the China tariff
+reference, rather than relying solely on stale remedy tables. Supported metal
+Section 232, legacy China Section 301 and current Note 52 rules use deterministic
+calculations. Changed operative wording, unsupported rules, missing qualifications
+and failed fetches remain unresolved. Historical calculations retain their existing
+reviewed-data path. This is refresh-on-check, not a new background schedule.
 
-Supabase is the runtime database for the trusted worker and hosted app.
-This open-source checkout includes only a fictional example customer. No existing
-customer, production ledger, account, or delivery destination is assumed.
+The authenticated `/tariff/demo` live check accepts product CSVs or up to 6,000
+historical entry rows, exports fetched evidence and shows the facts needed per
+product. Ordinary-commercial and other-sector declarations are explicit and reset
+when the file changes. Repeated checks can compare complete calculated duties only
+when both runs are complete and inputs/facts match; base comparisons stay separate.
+No first baseline is called a change or a zero impact. Real authenticated uploads,
+calculator routes and desktop/mobile browser checks passed without worker/model
+secrets in the hosted test process. The 600-entry example produced 15 calculable
+product groups, 25 missing metal-weight facts and 10 conditional-scope reviews;
+its overall total remains null. No customer facts were invented to clear them.
+See [current verification](docs/audits/2026-10-18-current-remedy-refresh.md).
 
-Use `SUPABASE_VERCEL.md` to bootstrap a new project and tenant. Configure the
-worker and delivery destination for your own deployment before scheduling runs.
+Federal Register/CBP listings remain unapplied review leads. The disconnected
+monitoring worker, unsupported Section 232 sectors, conditional exclusions, AD/CVD
+and wider legal coverage are not completed by this change. The earlier
+[October 17 check](docs/audits/2026-10-17-live-tariff-check.md) records the original
+all-unresolved baseline and is superseded for current remedy refresh only.
 
----
+The previous fictional simulation is retained at `/tariff/demo/simulation`.
+An isolated fictional equipment demo was made available at `/tariff/demo` (October 17).
+It generates 50 labelled products and 600 historical entry lines, validates CSVs,
+selects a simulated rule, computes integer-cent impacts, exports reports, and opens
+chat with the recomputed scenario. The main hypothetical affects 18 products and
+adds $8,817,300/year. All company, price, volume, origin, baseline-rate and regulation
+facts are synthetic. Ten example HTS codes were found in public USITC responses;
+their assignment to the fictional products is not verified classification.
+Demo chat bypasses real customer context, conversation storage, catalogue imports
+and memory extraction. One real API request through the actual route (with database
+access forbidden by a test harness) answered the requested tomorrow question from
+computed figures. This does not connect the monitoring worker or prove real legal
+coverage. See [demo methodology](public/examples/equipment-demo/README.md) and
+[verification](docs/audits/2026-10-17-fictional-equipment-demo.md).
 
-## Decisions already made (don't relitigate)
+The duplicate chat header/company label has been removed. Old pilot company-profile
+facts were cleared from the configured workspace after an ignored local backup;
+all 22 catalogue products were preserved. Two historical findings and one saved
+alert still contain the former company name; those records were not deleted.
+New company facts must come from the user, not historical monitor identity.
 
-| Decision | Why |
-|---|---|
-| Mac + launchd, **not** GitHub Actions | Actions can't use the local Claude Code login (breaks rule 1) and runners are ephemeral, which destroys `cante.db` and the seen-log |
-| Vercel for the authenticated app, not the daily runner | Supabase is the deployed system of record. The long-running source check remains on the Mac and syncs verified results after each run. |
-| Telegram for the **operator**, WhatsApp for the customer | Indonesian businesses live on WhatsApp; the Business API needs Meta verification and per-message fees, which don't belong in a pilot |
-| Secrets in `.env`, loaded by `scripts/load-env.ts` | A LaunchAgent inherits no shell environment; without the loader a scheduled run silently loses the token and marks alerts `skipped` |
-| Not export-only | `sideOfTrade` gates the cross-border packs. All 13 Indonesian sources and 29 of 52 US sources apply to a domestic-only factory |
-| Hosted API is approved for deployed chat | `lib/llm/api.ts` supports OpenAI or Anthropic. The local check still defaults to the CLI; Vercel uses `CANTE_LLM=api` and locks the selector. |
+The user now wants chat as an easy entry point, with Cante represented by a cute
+2D beagle. `/chat` and its authenticated API have been restored;
+the sidebar calls it **Ask Cante**. It supports existing files, conversations,
+and web research, plus a bounded read of actual workspace products. This does not
+connect the missing monitoring worker or enable schedules. See current status.
 
----
+Chat now requests provider-generated reasoning summaries for the configured GPT-5
+streaming model. Actual summaries are live-only: each disappears on completion or when the next
+summary/tool/answer starts. They are not saved, and older saved summaries are hidden.
+Searches and actual source links remain visible and persisted. Private reasoning events are not
+forwarded. Models outside the supported GPT-5 family keep normal progress/search
+streaming without a summary request; simple responses may return no summary.
+Verified with one live API call, route fixtures and browser fixtures (not a fresh
+production conversation or database write). The live-only revision passes TypeScript,
+15 targeted tests and a real-route fixture proving summaries are streamed but only
+searches/sources are persisted. Browser fixtures verified live replacement, no
+finished summary/replay control, retained source links, and hidden old summaries
+on reload. The preceding full suite passed 920 tests.
 
-## The standing rule
+Chat is temporarily **United States only**. The country dropdown is commented
+out and replaced by a static label. Indonesia code/history is preserved; attempts
+to resume that mode are refused rather than relabelled as U.S. conversations.
 
-> **No new modules under `lib/` until someone has paid.**
+Chat is now explicitly **hosted API-only**, per the user's October 13 request.
+Ignore stale browser provider cookies/fields there; missing API configuration
+must fail visibly rather than launch a CLI. Other worker defaults are unchanged.
+The OpenAI chat adapter now streams real working/search events, incremental text,
+and returned source URLs to the existing favicon timeline. It does not expose
+private reasoning. Default answers target 40–60 words, customer impact and one
+next step; a feed snapshot/revision alone does not establish a changed obligation.
+The current mascot is the original tan-and-brown SVG profile from the centered-chat
+screenshot, restored at the user's request. Active artwork is in
+`components/chat/cante-beagle.tsx`; the later flat/full PNG assets remain inactive. The floppy PNG was replaced on
+October 17 with `public/cante-dog-floppy.svg`, the exported vector of this same icon.
+Gentle breathing, head glances and ear perks run automatically, with reduced-motion
+support. This visual restoration leaves API streaming and account-data fixes intact.
+Empty chat centers the input below the dog and greeting, with all three starter
+cards beneath it. The two rejected tagline/description lines have been removed.
+The composer docks at the bottom only once the conversation begins.
 
-Exceptions: `lib/llm/api.ts` (if rule 1 is resolved), anything in `scripts/`,
-and bug fixes to code a real customer is touching.
+The current focus is a simple U.S. tariff dashboard for one pilot customer: save products, check changes, understand affected items and next steps. No proprietary pilot customer customs ledger has been supplied. Public Prusa and LulzBot research is test evidence, not customer customs data.
 
-This exists because roughly 6,000 lines were written across catalogue, tariff,
-documents, substances, classification and delivery — all good, all tested, none
-of it ever holding real customer data. If a new session is asked to build a
-feature, check this rule first and say so.
+## Working constraints
 
----
+- Make code and documentation changes on `dev`; preserve existing uncommitted work.
+- The operator forbids Telegram, launchd, and new schedules. Older documents describing them are historical capabilities, not authorization.
+- Never implicitly enable paid model calls. `CANTE_LLM` defaults to the local CLI; `api` requires explicit configuration.
+- Failed checks, unavailable sources, incomplete legal coverage, and absent customer facts stay visible. Never invent rates, company products, exposure, or successful checks.
+- Keep privileged database secrets on the trusted worker, outside the hosted customer app.
+- **No new modules under `lib/` until someone has paid.** Exceptions: `lib/llm/api.ts` if provider rule 1 is resolved, scripts, and fixes to code a real customer is touching.
+- Preserve application features and legacy routes. Documentation cleanup does not authorize removing `/chat` or other code.
 
-## What the product is, in one paragraph
+## Where to read next
 
-A robot that reads government websites every morning and tells one factory owner
-whether any new rule affects their business. Its
-distinguishing property is that it reports what it *could not* check — failed
-feeds, unmonitored tracks — instead of showing green.
+- [Current product status](docs/product/status.md) for readiness limits and recent verification.
+- [Mission One](docs/plans/mission-one.md) for stacking-rule design and dated implementation evidence.
+- [Operations runbook](docs/operations/supabase-vercel.md) for setup and hosting constraints.
+- [Docs index](docs/README.md) for research, API contracts, fixtures, and audits.
 
----
+The [previous business handoff](docs/archive/business-handoff.md) is preserved. Its old launch, pricing, schedule, and deployment notes do not establish current authorization or live state.
 
-## The market, briefly
+Live reasoning presentation (October 15): one muted, clipped line of provider prose,
+without a heading, Markdown decoration, or replay button. A stable slot closes
+over 220ms before the next summary opens; generic working status also transitions
+its height. Reduced-motion preferences disable the animation. Summaries remain
+transient and unsaved; searches and sources are unchanged.
 
-> Full analysis — competitor evidence, differentiation, and TAM with
-> verified-vs-assumed labels — is in `market.md` (researched 20 Aug 2026).
-> That file supersedes the pricing and positioning notes below where they
-> disagree; the $500/month target in particular is revisited there.
-
-- **Big platforms** (Descartes, E2open, CargoWise) — customs filing for large
-  importers. Not competitors; losing there costs nothing.
-- **Specialists** (Assent = materials/BOM, Quickcode = classification) — sold to
-  companies that have a compliance manager.
-- **Monitors** (Onyx) — closest analogue.
-
-Published pricing where it exists: GingerControl ~$150/mo, ComplyAdvantage ~$99/mo,
-ImportGenius from $149/mo, Shipping Solutions $1,199–9,999, Descartes Visual
-Compliance $3,000/user/yr. Assent and E2open don't publish — enterprise quote.
-
-**The market is barbelled**: point tools at $99–250/mo, enterprise at $20k+/yr,
-nothing in between. That gap is the wedge. **Target price: $500/month.**
-
-**The positioning line:** "If you have a compliance manager, buy Assent. I'm for
-companies where it's nobody's job."
-
-**The honest limit that must be stated in every sales conversation:** Cante
-catches rules that *change*. It does not audit whether you are already
-non-compliant with a rule published years ago. Saying this first wins more
-meetings than any feature.
-
----
-
-## Next actions, in order
-
-1. Finish the scheduled-check setup (above)
-2. Domain + email on that domain + a one-page site — a gmail cold email about
-   compliance reads as a scam, and this is a ~$20, few-hours fix
-3. **Send one message to one company.** Not the list — one.
-4. 14-day pilot: deliver every alert by hand, including the quiet days
-5. Ask for money on day 15
-
----
-
-## Where the rest lives
-
-- **Market, competitors, TAM:** `market.md`
-- **Code, sources, verified-vs-assumed claims:** `CLAUDE.md`
-- **Scope and sequencing:** `plan.md`
-- **Source reliability:** `readme.md`
-
-## Latest UI direction
-
-User explicitly rejected a guided demo: simplify for the importer, preserve unused code
-by commenting it out. Navigation now has Products and Imports & results only.
-Legacy page URLs redirect, old API entry points are archived, Indonesian worker
-execution and Telegram schedule invocation are disabled. Shared schema/type
-code is retained. Actual public Aleph/LulzBot manifests were sourced; see the
-fixture README. Their missing customs fields cannot validate duty accuracy.
-Do not present synthetic data or all-error intake as a completed real duty audit.
+Verified the October 15 presentation with browser fixtures: single-line prose,
+heading removal, sequential closing/opening, no remaining summary at completion,
+working-status closure, and reduced-motion CSS. TypeScript and 15 targeted tests pass.

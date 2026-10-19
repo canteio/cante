@@ -1,3 +1,4 @@
+import { withStackingRulesCache } from "./stacking-rules";
 import { historicalPilotDuty, type ImpactRow } from "./business-impact";
 import pilot from "@/config/tariff-pilot.json";
 import {
@@ -183,6 +184,11 @@ function stackInput(row: ImpactRow, importDate?: string, signal?: AbortSignal): 
     value,
     quantity: row.quantity,
     unit: row.unit,
+    usmcaQualification: row.usmca_qualification ?? (row.stack_result?.usmcaQualification.status === "verified" ? {
+      verified: true,
+      decision: row.stack_result.usmcaQualification.decision,
+      details: row.stack_result.usmcaQualification.details,
+    } : undefined),
     claimedProgramme: row.special_program_claim,
     importDate,
     signal,
@@ -437,7 +443,7 @@ function boundedDutyComputer(
  * Recompute tenant-loaded portfolio rows on both sides of an authoritative,
  * effective-dated rule. Monitor matches select rows but never supply rates.
  */
-export async function buildMonitoredCompanyImpacts(
+async function buildMonitoredCompanyImpactsUncached(
   candidates: MonitorCompanyCandidate[],
   portfolioRows: ImpactRow[],
   computer: DutyComputer = computeStackedDuty,
@@ -567,4 +573,8 @@ export function reviewedHistoricalCandidates(rows: ImpactRow[]): MonitorCompanyC
     product: { sku: row.sku ?? productId, name: row.sku ?? productId },
     action: { name: "July 24, 2026: Section 122 expires; Section 301 forced-labor duties begin", sourceKind: "reviewed_reference", citations: [pilot.sources.forcedLabor, pilot.sources.cbp, pilot.sources.section122] },
   }));
+}
+
+export async function buildMonitoredCompanyImpacts(candidates: MonitorCompanyCandidate[], portfolioRows: ImpactRow[], computer: DutyComputer = computeStackedDuty, options: MonitorImpactBuildOptions = {}): Promise<MonitoredCompanyImpact[]> {
+  return withStackingRulesCache(() => buildMonitoredCompanyImpactsUncached(candidates, portfolioRows, computer, options));
 }
