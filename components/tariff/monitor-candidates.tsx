@@ -51,7 +51,7 @@ function RowEvidence({ row, effectiveDate }: { row: CompanyImpactRow; effectiveD
   );
 }
 
-export function MonitorCandidates({ runId }: { runId: string | null }) {
+export function MonitorCandidates({ runId, compact = false }: { runId: string | null; compact?: boolean }) {
   const [impacts, setImpacts] = useState<MonitoredCompanyImpact[] | null>(null);
   const [error, setError] = useState(false);
   useEffect(() => {
@@ -68,19 +68,24 @@ export function MonitorCandidates({ runId }: { runId: string | null }) {
     return () => controller.abort();
   }, [runId]);
 
+  // Compact mode sits directly under the "Check for updates" bar, which
+  // already states the quiet/loading/error outcome in one line — repeating
+  // an empty "Company impact" card under it would just be noise.
+  if (compact && (!runId || error || !impacts || !impacts.length)) return null;
+
   if (!runId) return <section className="card" aria-label="Company impact"><h2 className="card-title">Company impact</h2><p className="muted">Select or create an impact run to calculate monitored changes against catalogue-linked import rows.</p></section>;
   if (error) return <section className="card" aria-label="Company impact"><h2 className="card-title">Company impact</h2><p role="status">Company impact is unavailable. Review the workqueue.</p></section>;
   if (!impacts) return <section className="card" aria-label="Company impact"><h2 className="card-title">Company impact</h2><p role="status">Recomputing monitored trade actions before and after their effective dates…</p></section>;
   if (!impacts.length) return <section className="card" aria-label="Company impact"><h2 className="card-title">Company impact</h2><p className="muted">No monitored trade action matches a catalogue product linked to this impact run.</p></section>;
 
   return <section aria-labelledby="company-impact-heading">
-    <div className="page-head">
+    {!compact && <div className="page-head">
       <div>
         <h1 id="company-impact-heading">Company impact</h1>
         <p className="page-sub">Monitored trade actions joined to catalogue-linked import rows and recomputed server-side across the verified rule effective date.</p>
       </div>
-    </div>
-    {impacts.map(impact => <article className="card" key={impact.findingId}>
+    </div>}
+    {impacts.map(impact => <article className="card" key={impact.findingId} style={compact ? { marginBottom: 10 } : undefined}>
       <div className="card-head">
         <div>
           <div className="eyebrow">{impact.action.sourceKind === "reviewed_reference" ? "REVIEWED HISTORICAL CHANGE" : "WHAT CHANGED"}</div>
@@ -102,26 +107,29 @@ export function MonitorCandidates({ runId }: { runId: string | null }) {
         <p>{impact.basis.kind === "historical_basket" ? `${impact.basis.entryCount} entry lines · ${impact.basis.periodStart ?? "unknown"} to ${impact.basis.periodEnd ?? "unknown"} · ` : ""}{showMoney(impact.basis.valueUsd)} customs value</p>
         <p className="muted">{impact.basis.explanation}</p>
       </div>}
-      <p><strong>WHERE</strong> Products: {impact.products.length ? impact.products.join(", ") : "not identified"}; Suppliers: {impact.suppliers.length ? impact.suppliers.join(", ") : "not present in selected run"}; Business units: not present in company data.</p>
+      <p><strong>WHERE</strong> Products: {impact.products.length ? impact.products.join(", ") : "not identified"}; Suppliers: {impact.suppliers.length ? impact.suppliers.join(", ") : "not present in selected run"}.</p>
       {impact.reviewReason && <p className="pill pill-warn" style={{ whiteSpace: "normal" }}>{impact.reviewReason} A monitor match alone never establishes an old rate or dollar delta.</p>}
-      <div role="region" aria-label={`Affected rows for ${impact.action.name}`} tabIndex={0} style={{ overflowX: "auto" }}>
-        <table className="table">
-          <caption className="muted" style={{ textAlign: "left", marginBottom: 8 }}>Impact equals after-rule duty minus before-rule duty on the same import values and quantities. Unresolved rules withhold the total.</caption>
-          <thead><tr>{["SKU", "HTS", "Origin", "Previous Rate", "New Rate", "$ Impact", "Status"].map(label => <th scope="col" key={label}>{label}</th>)}</tr></thead>
-          <tbody>{impact.rows.map((row, index) => <Fragment key={`${row.productId}-${row.sku}-${index}`}>
-            <tr>
-              <th scope="row">{row.sku}</th>
-              <td className="mono">{row.hts ?? "not available"}</td>
-              <td>{row.origin ?? "not available"}</td>
-              <td>{showRate(row.previousRate)}</td>
-              <td>{showRate(row.newRate)}</td>
-              <td>{showMoney(row.impactUsd)}</td>
-              <td><span className={`pill ${row.status === "computed" ? "pill-ok" : "pill-warn"}`}>{row.status === "computed" ? "COMPUTED" : "NEEDS REVIEW"}</span></td>
-            </tr>
-            <tr><td colSpan={7}><RowEvidence row={row} effectiveDate={impact.action.effectiveDate} /></td></tr>
-          </Fragment>)}</tbody>
-        </table>
-      </div>
+      <details>
+        <summary>Show calculation ({impact.rows.length} row{impact.rows.length === 1 ? "" : "s"})</summary>
+        <div role="region" aria-label={`Affected rows for ${impact.action.name}`} tabIndex={0} style={{ overflowX: "auto" }}>
+          <table className="table">
+            <caption className="muted" style={{ textAlign: "left", marginBottom: 8 }}>Impact equals after-rule duty minus before-rule duty on the same import values and quantities. Unresolved rules withhold the total.</caption>
+            <thead><tr>{["SKU", "HTS", "Origin", "Previous Rate", "New Rate", "$ Impact", "Status"].map(label => <th scope="col" key={label}>{label}</th>)}</tr></thead>
+            <tbody>{impact.rows.map((row, index) => <Fragment key={`${row.productId}-${row.sku}-${index}`}>
+              <tr>
+                <th scope="row">{row.sku}</th>
+                <td className="mono">{row.hts ?? "not available"}</td>
+                <td>{row.origin ?? "not available"}</td>
+                <td>{showRate(row.previousRate)}</td>
+                <td>{showRate(row.newRate)}</td>
+                <td>{showMoney(row.impactUsd)}</td>
+                <td><span className={`pill ${row.status === "computed" ? "pill-ok" : "pill-warn"}`}>{row.status === "computed" ? "COMPUTED" : "NEEDS REVIEW"}</span></td>
+              </tr>
+              <tr><td colSpan={7}><RowEvidence row={row} effectiveDate={impact.action.effectiveDate} /></td></tr>
+            </Fragment>)}</tbody>
+          </table>
+        </div>
+      </details>
     </article>)}
   </section>;
 }
@@ -146,10 +154,11 @@ export function ScheduleMonitor({ runId }: { runId: string | null }) {
   }, [runId]);
   const health = data?.health;
   const fresh = health?.status === "complete" && Date.now() - Date.parse(health.checked_at) < 24 * 60 * 60 * 1000;
-  return <section className="card" aria-label="Official tariff source monitoring">
-    <div className="card-head"><h2 className="card-title">Official tariff source monitoring</h2><span className={`pill ${fresh ? "pill-ok" : "pill-warn"}`}>{fresh ? "Schedule synchronized" : failed ? "Status unavailable" : health ? "Coverage needs attention" : "Checking coverage"}</span></div>
+  return <section className="card" aria-label="Duty-rate schedule sync">
+    <div className="card-head"><h2 className="card-title">Duty-rate schedule sync</h2><span className={`pill ${fresh ? "pill-ok" : "pill-warn"}`}>{fresh ? "Up to date" : failed ? "Status unavailable" : health ? "Needs attention" : "Checking"}</span></div>
+    <p className="muted" style={{ marginTop: -4 }}>A separate background job, automatic — not what the "Check for updates" button above runs. This only re-syncs official duty rates; it does not check for new regulations.</p>
     {failed ? <p>Could not verify monitoring coverage. This is not an all-clear result.</p> : !data ? <p role="status">Loading source status…</p> : <>
-      <p>{health ? `${health.revision} · ${health.completed_chapters}/99 chapters published · Last checked ${new Date(health.checked_at).toLocaleString()}` : "No completed synchronization status has been recorded."}</p>
+      <p>{health ? `${health.revision} · ${health.completed_chapters}/99 chapters published · Last synced ${new Date(health.checked_at).toLocaleString()}` : "No completed synchronization status has been recorded."}</p>
       <p className="muted">Last complete synchronization: {health?.last_success_at ? new Date(health.last_success_at).toLocaleString() : "not established"}. {data.coverage}</p>
       {health && !fresh && <p className="pill pill-warn" style={{ whiteSpace: "normal" }}>{health.detail} {health.status === "complete" ? "The last check is more than 24 hours old." : ""}</p>}
       {!runId ? <p>Select an import run to see published changes that match its catalogue-linked HTS codes.</p> : data.changes.length === 0 ? <p>No recorded published-rate changes match this run. Change tracking starts when a prior schedule exists; this does not certify that no other trade regulation changed.</p> : data.changes.map(change => <details key={change.id} open>

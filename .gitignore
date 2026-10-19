@@ -35,3 +35,7 @@ supabase/.temp/
 # Local browser QA artifacts can include tenant data.
 .playwright-cli/
 output/playwright/
+output/lulzbot-public-research/
+output/prusa-public-research/
+/testsomething.csv
+/output/prusa-first-scan/

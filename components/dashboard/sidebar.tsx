@@ -6,6 +6,7 @@ import {
   ClipboardCheck,
   FileText,
   Inbox,
+  History,
   ListChecks,
   MessageSquare,
   Sparkles,
@@ -13,7 +14,7 @@ import {
 } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
 import { AccountMenu } from "@/components/dashboard/account-menu";
-// MVP: import { ChatNav } from "@/components/dashboard/chat-nav";
+import { ChatNav } from "@/components/dashboard/chat-nav";
 import { getAuthMode, hasSupabaseEnv } from "@/lib/auth/config";
 import { DEFAULT_JURISDICTION, type JurisdictionName } from "@/lib/countries";
 
@@ -60,6 +61,7 @@ export async function Sidebar({
     | "workqueue"
     | "suppliers"
     | "tariff"
+    | "tariff-history" | "tariff-audits"
     | "import-monitor";
   activeConversationId?: string | null;
   jurisdiction?: JurisdictionName;
@@ -79,7 +81,11 @@ export async function Sidebar({
 
       <div className="side-section" style={{ paddingTop: 0 }}>
         <nav className="nav" aria-label="Main navigation">
-          <Link href="/tariff" data-active={active === "tariff" || active === "catalogue"}><Calculator size={15} />Imports &amp; results</Link>
+          <Link href="/chat" data-active={active === "chat"}><MessageSquare size={15} />Ask Cante</Link>
+          {active === "chat" && <ChatNav activeId={activeConversationId} jurisdiction={jurisdiction} />}
+          <Link href="/tariff" data-active={active === "tariff" || active === "catalogue"}><Calculator size={15} />Tariff dashboard</Link>
+          <Link href="/tariff/history" data-active={active === "tariff-history"}><History size={15} />Check history</Link>
+          <Link href="/tariff/audits" data-active={active === "tariff-audits"}><ClipboardCheck size={15} />Historical audits</Link>
         </nav>
       </div>
       {/* MVP: broad compliance navigation retained below, disabled.

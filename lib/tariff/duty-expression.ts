@@ -156,7 +156,7 @@ export function computeDuty(
         ],
       };
     }
-    const part = input.value * rate.adValorem;
+    const part = rate.specificAmount === null ? computeAdValoremAmount(input.value, rate.adValorem) ?? Number.NaN : input.value * rate.adValorem;
     total += part;
     basis.push(
       `Ad valorem: ${(rate.adValorem * 100).toFixed(2)}% × USD ${input.value.toLocaleString()} = USD ${part.toFixed(2)}.`,
@@ -203,4 +203,13 @@ export function specialProgrammeCodes(special: string | null | undefined): strin
     .split(",")
     .map((code) => code.trim())
     .filter(Boolean);
+}
+
+/** Exact decimal multiplication with half-up rounding to cents, including tiny values. */
+export function computeAdValoremAmount(value:number,rate:number):number|null {
+  if(!Number.isFinite(value)||!Number.isFinite(rate)||value<0||rate<0)return null;
+  const decimal=(n:number)=>{const [coefficient,exponent="0"]=n.toString().toLowerCase().split("e");const [whole,fraction=""]=coefficient.split(".");const scale=fraction.length-Number(exponent);const numerator=BigInt(whole+fraction);return scale<0?{n:numerator*10n**BigInt(-scale),d:1n}:{n:numerator,d:10n**BigInt(scale)};};
+  const a=decimal(value),b=decimal(rate);const numerator=a.n*b.n*100n,denominator=a.d*b.d;
+  const rounded=(numerator*2n+denominator)/(denominator*2n);const cents=Number(rounded);
+  return Number.isSafeInteger(cents)?cents/100:null;
 }

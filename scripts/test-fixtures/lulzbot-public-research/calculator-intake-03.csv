@@ -1,0 +1,501 @@
+sku,name,hts_code,country_of_origin,import_date,source_url,evidence_kind
+KT-EL0013,"YZ Extension v1.0, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+KT-EL0014,"LCD Extension v1.0, TAZ",,,,https://download.lulzbot.com/TAZ/4.0/production_docs/TAZ-BOM-Guava.xlsx,public_archived_bom_part; unclassified
+KT-EL0015,"Y Switch v1.0, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+KT-EL0016,"X Switch v1.0, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+KT-EL0017,"Z Switch v1.0, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+KT-EL0018,"40mm Fan Assembly v1.0, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+KT-EL0019,"80mm Fan Assembly v1.0, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+KT-EL0020,"CB YZ Harness v2.1, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+KT-EL0021,"CB Xz Harness v2.1, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+KT-EL0022,"CB Power Harness v1.0, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+KT-EL0023,"CB LCD Harness v2.2, TAZ",,,,https://download.lulzbot.com/TAZ/4.0/production_docs/TAZ-BOM-Guava.xlsx,public_archived_bom_part; unclassified
+KT-EL0024,"CB Extruder 1 Harness v2.2, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+KT-EL0025,"CB Heat Bed Harness v2.0, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+KT-EL0026,"Wired Power plug from Power Supply, 24V, 16.66A, 400W, 4pin, Pengchu Ltd.",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+KT-EL0058,TAZ 6 Controller Box,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_6_Controller_Box_KT-EL0058/BoM_TAZ_6_Controller_Box_KT-EL0058_OCA.xlsx,public_archived_bom_part; unclassified
+KT-EL0060,TAZ v2c Tool Head Wiring Harness,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_v2c_tool_head_wiring_harness_KT-EL0060/TAZ_v2c_tool_head_wiring_harness_KT-EL0060_BoM.xlsx,public_archived_bom_part; unclassified
+KT-EL0066,5v_40mm_Pelonis_fan,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/5v_40mm_Pelonis_fan_KT-EL0066/BoM_5v_40mm_Pelonis_fan_KT-EL0066.xlsx,public_archived_bom_part; unclassified
+KT-HB0000,LulzBot TAZ PEI Sheet,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_PEI_Sheet_KT-HB0000/BoM_TAZ_PEI_Sheet_KT-HB0000.xlsx,public_archived_bom_part; unclassified
+KT-HB0001,TAZ Heat Bed Kit (For both 5 and 6),,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_5-6_Heat_Bed_Kit_KT-HB0001/BoM_TAZ_5-6_Heat_Bed_Kit_KT-HB0001.xlsx,public_archived_bom_part; unclassified
+KT-HB0005,"Silicon Heater, 24V ,360W, 298mm x 298mm, Self Adhesive, w/ connectors - Retail",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_Silicone_Heater_298mmx298mm_KT-HB0005/24v_Silicone_Heater_298mmx298mm_BoM_KT-HB0005.xlsx,public_archived_bom_part; unclassified
+KT-HD0004,10mm x 282mm Drive Rod (x2),,,,https://download.lulzbot.com/retail_parts/Completed_Parts/10mm-x-282mm_Drive_Rod_(x2)_KT-HD0004/10mm-x-282mm-Drive-Rod-(x2)_KT-HD0004_BoM_MO16-0063.xlsx,public_archived_bom_part; unclassified
+KT-HE0006,"TAZ Aerostruder Hot End Kit, 3mm filament, 0.5mm nozzle",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_Aerostruder_Hot_End_0.5_KT-HE0006/KT-HE0006_TAZ_Aerostruder_Hot_End_Kit_BoM.xlsx,public_archived_bom_part; unclassified
+KT-HR0002,TAZ 4/5 Control Box Bed Harness,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_4-5_Control_Box_Bed_Harness_KT-HR0002/KT-HR0002_BoM.xlsx,public_archived_bom_part; unclassified
+KT-HR0004,TAZ 6 External Bed Harness,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_6_External_Bed_Harness_KT-HR0005/BoM_TAZ_6_External_Bed_Harness_KT-HR0005.xlsx,public_archived_bom_part; unclassified
+KT-HR0007,Lulzbot TAZ 4-5 Complete Heat Bed Harness,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_4-5_Complete_Bed_Harness_KT-HR0007/TAZ_4-5_Complete_Heat_Bed_Harness_KT-HR0007_BoM.xlsx,public_archived_bom_part; unclassified
+KT-MS0008,108 Tooth Geared Hobb,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/108_Tooth_Geared_Hobb_KT-MS0008/108_Tooth_Geared_Hobb_KT-MS0008_BoM.xlsx,public_archived_bom_part; unclassified
+KT-PP0018,TAZ Flexystruder Mount with Inserts,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_Flexystruder_Mount_KT-PP0018/BoM_TAZ_Flexystruder_Mount_with_Inserts_KT-PP0018.xlsx,public_archived_bom_part; unclassified
+KT-PP0027,"TAZ 5 Bed Corner, (x4)",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_5_Bed_Corner_(x4)_KT-PP0027/BoM_TAZ_5_Bed_Corner_(x4)_KT-PP0027.xlsx,public_archived_bom_part; unclassified
+KT-PP0035,TAZ 6 Y Idler Assembly,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_6_Y_Idler_Assembly_KT-PP0035/BoM_TAZ_6_Y_Idler_Assembly_KT-PP0035.xlsx,public_archived_bom_part; unclassified
+KT-PP0037,LulzBot TAZ Dual Extruder Tool Head v2 Flexplate,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_Dual_Extruder_Tool_Head_v2_Flexplate_KT-PP0037/BoM_TAZ_Dual_Extruder_Tool_Head_V2_Flexplate_KT-pp0037.xlsx,public_archived_bom_part; unclassified
+KT-PR0017,"TAZ 3D Printer, v5.0",,,,https://download.lulzbot.com/TAZ/5.0.1/production_docs/TAZ-BOM-juniperbush_3000order.xlsx,public_archived_bom_part; unclassified
+KT-PR0035,"[KT-PR0035] Mini, Gladiola, Calibrated",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+KT-PR0035AU,"LulzBot Mini v1.0, Boxed for Retail, AU",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+KT-PR0035EU,"LulzBot Mini v1.0, Boxed for Retail, EU",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_EU.xlsx,public_archived_bom_part; unclassified
+KT-PR0035NA,"LulzBot Mini v1.0, Boxed for Retail, NA",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_NA.xlsx,public_archived_bom_part; unclassified
+KT-PR0041,"TAZ 3D Printer, v6.0",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+KT-PR0041AU,"LulzBot TAZ 3D Printer, v6.0 Boxed for Retail, AU",,,,https://download.lulzbot.com/TAZ/6.03/production_docs/BoM_KT-PR0041AU_OCA.xlsx,public_archived_bom_part; unclassified
+KT-PR0041EU,"LulzBot TAZ 3D Printer, v6.0 Boxed for Retail, EU",,,,https://download.lulzbot.com/TAZ/6.03/production_docs/BoM_KT-PR0041EU_OCA.xlsx,public_archived_bom_part; unclassified
+KT-PR0041NA,"LulzBot TAZ 3D Printer, v6.0 Boxed for Retail, NA",,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+KT-PR0047AU,"LulzBot Mini v2.0, Boxed for Retail, AU",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+KT-PR0047EU,"LulzBot Mini v2.0, Boxed for Retail, EU",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047EU_OCA.xlsx,public_archived_bom_part; unclassified
+KT-PR0047NA,"LulzBot Mini v2.0, Boxed for Retail, NA",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047NA_OCA.xlsx,public_archived_bom_part; unclassified
+KT-PR0050AU,"LulzBot TAZ 3D Printer, PRO Boxed for Retail, AU",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.6/production_docs/bom/BoM_TAZ_Pro_KT-PR0050AU_OCA.csv,public_archived_bom_part; unclassified
+KT-PR0050EU,"LulzBot TAZ 3D Printer, PRO Boxed for Retail, EU",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.6/production_docs/bom/BoM_TAZ_Pro_KT-PR0050EU_OCA.csv,public_archived_bom_part; unclassified
+KT-PR0050NA,"LulzBot TAZ 3D Printer, PRO Boxed for Retail, NA",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+KT-PR0051AU,"LulzBot TAZ 3D Printer, Workhorse Edition, Boxed for Retail, AU",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+KT-PR0051EU,"LulzBot TAZ 3D Printer, Workhorse Edition, Boxed for Retail, EU",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051EU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+KT-PR0051NA,"LulzBot TAZ 3D Printer, Workhorse Edition, Boxed for Retail, NA",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051NA_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+KT-PS0001,"24 Volt DC, 150 Watt Internal Power Supply",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_150w_Internal_PSU_KT-PS0001/BoM_24_Volt_DC_150_Watt_internal_power_supply_KT-PS0001.xlsx,public_archived_bom_part; unclassified
+KT—EL0065,24v 40mm Pelonis Fan,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_40mm_Pelonis_Low_Flow_Fan_KT-EL0065/BoM_24v_40mm_pelonis_fan_KT-EL0065.ods,public_archived_bom_part; unclassified
+MK-AP0018,Colorado Made Green Sticker,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+Need,Box,,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+Need P/N,Bottom Belt Mount,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+Need pn,"#260 White Reinforced Gummed Tape with LulzBot Printed Logo, 10 Pack",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+OF-CP0140,Penguin Wireless N USB Adapter for GNU / Linux (TPE-N150USB),,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+OF-MS0011,"1"" Circle Anti-Static Labels - RoHS Compliant""",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+OF-MS0461,Polyester wire labels for thermal transfer printers,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+PC-AS0017,"Assy, Rambo Controller w/Switches & Connectors",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PC-AS0019,Full Graphic Smart LCD Controller,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PC-AS0032,[PC-AS0032] Mini RAMBo Electronics v1.3a,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PC-AS0033,RAMBO Electronics v1.2gp,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PC-AS0041,Plastic Laser Cut LCD Cover,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PC-AS0054,[PC-AS0054] Einsy Retro Board,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PC-AS0056,[PC-AS0056] LCD LB_GLCD,,,,https://download.lulzbot.com/Mini/2.0.5/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PC-BD0006,"Heater, Silicone 300mmx300mm with Themostor, wires cut to 60mm",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PC-BD0027,"Silicon Heater, 24V ,360W, 298mm x 298mm, Self Adhesive, w/ connectors",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PC-BD0029,"Silicon Heater, 24V, 168mm x 168mm, Self Adhesive, w/ connectors",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PC-BD0045,RAMBO Electronics v1.3L,,,,https://download.lulzbot.com/TAZ/5.0.1/production_docs/TAZ-BOM-juniperbush_3000order.xlsx,public_archived_bom_part; unclassified
+PC-BD0051,"Mini RAMBo 1.1a, assembled board only",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PC-BD0052,"Mini RAMBo 1.1b, assembled board only",,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+PC-BD0094,[PC-BD0094] RAMBo Electronics v1.4L Assembled Board Only,,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+PC-BD0096,"[PC-BD0096] Z Brake, Assembled",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PC-BD0108,[PC-BD0108] Color_LCD_ Board CLCD2 Rev A (use PC-BD0117),,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PC-BD0109,[PC-BD0109] Filament Sensor PCBA Rev B,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PC-BD0111,[PC-BD0111] Dual_Interface Rev_ D  PCBA,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PC-BD0113,[PC-BD0113] Archim2.2b PCBA,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PC-BD0114,[PC-BD0114] USB_Reader_Rev_C PCBA,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PC-CN0001,2 pin female molex connector,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PC-CN0003,CONN Housing  3POS .100 W/Latch,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PC-CN0008,"4-POS, panel mount w. brass inserts",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PC-CN0010,"Conn Socket IDC, 10POS DUAL 30AU",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PC-CN0013,Term Block Plug 6POS STR 5.08MM,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PC-CN0032,Term Block Plug 2POS STR 5.08MM,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PC-CN0035,"4-POS, panel mount w. brass inserts",,,,https://download.lulzbot.com/TAZ/5.0.1/production_docs/TAZ-BOM-juniperbush_3000order.xlsx,public_archived_bom_part; unclassified
+PC-CN0036,Term Block Plug 6POS STR 5.08MM,,,,https://download.lulzbot.com/TAZ/5.0.1/production_docs/TAZ-BOM-juniperbush_3000order.xlsx,public_archived_bom_part; unclassified
+PC-CN0046,Term Block Plug 4POS STR 5.08MM,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PC-CN0050,[PC-CN0050] CONN HOUSING MALE 3POS .100,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PC-CN0053,Headers & Wire Housings HSG 12P W/O Ears Single Row,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PC-CN0054,Headers & Wire Housings HSG 12P Female SINGLE ROW POSITIVE LATCH,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PC-CN0055,Headers & Wire Housings Male 20Ckt,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PC-CN0056,Headers & Wire Housings 20 CKT CRIMP HOUSING Female,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PC-CN0057,Male 16 pin Molex Connector Housing,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PC-CN0058,"Connector housing, 16 pin femaleFemale 16 pin Molex connector housing",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PC-CN0059,Male 10 pin Molex Connector Housing,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PC-CN0060,Female 10 pin Molex Connector Housing,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PC-CN0061,Male 8 pin Molex Connector Housing,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PC-CN0062,Female 8 pin Molex Connector Housing,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PC-CN0099,[PC-CN0099] CONN RECEPT 20POS 3MM DUAL ROW,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PC-CN0100,[PC-CN0100] CONN PLUG 20POS 3MM DUAL ROW,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PC-CN0101,[PC-CN0101] CONN PLUG 20POS 3MM VERT DUAL,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PC-CN0118,[PC-CN0118] CONN HOUSING 6POS .100 W/LATCH,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PC-CN0119,[PC-CN0119] CONN HOUSING MALE 6POS .100,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PN – printed part,Bottom Clamp,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+PP-FP0006,"Sheet metal enclosure, black anodized",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-FP0007,"Relief shield, black anodized",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-FP0008,"LCD cover front, black anodized",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-FP0009,"LCD cover back, black anodized",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-FP0010,"Electronics cover metal, black anodized",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-FP0011,"TAZ name plate, laser cut",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-FP0012,frame_connector,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-FP0013,z_top_flat,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-FP0014,z_top_side_flat,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-FP0015,Y Axis End Idler,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-FP0016,Y Axis End Motor,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-FP0029,"Cover, Electronics, Guava",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-FP0030,"Enclosure, Sheet Metal, Guava",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-FP0031,X end Plate,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-FP0034,"KITTAZ name plate, laser cut",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-FP0051,"Top Plate,",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-FP0051_rC,Top Plate,,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+PP-FP0051_rD,Top Plate,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+PP-FP0052,"Right Plate,",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-FP0052_rC,Right Plate,,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+PP-FP0052rC,Right Plate,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+PP-FP0053,"Bottom Plate,",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-FP0053_rC,Bottom Plate,,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+PP-FP0054,"Bed Mount Plate,",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-FP0054_rB,Bed Mount Plate,,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+PP-FP0055,"Left Plate,",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-FP0055_rD,Left Plate,,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+PP-FP0056,"Electronics cover,",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-FP0056_rE,Electronics cover,,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+PP-FP0058,"Custom Laser Design, Inc.",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-FP0059,Laser Etching Serivces for the Mini Electronics Cover,,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+PP-FP0073,Silk Screened TAZ Electronics Chassis PP-MP0110,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-FP0074,Silk Screened TAZ Electronics Cover PP-MP0109,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-FP0075,Laser Etched TAZ 6 Electronics Chassis v0.3 PP-MP0110,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-FP0076,Laser Etched TAZ 6 Electronics Chassis v0.3 PP-MP0110,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-FP0078,Laser Etched TAZ 6 Interconnect Cover v0.5 PP-MP0107,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-FP0079,Laser Etched TAZ 6 3000 mm Bed Plate v4.5 PP-MP0097,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-FP0080,"Laser Etched TAZ 300mm Bed Plate, 6061, revB with Powder Coat PP-MP0145",,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+PP-FP0082_rA,Electronics cover,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+PP-FP0084,LulzBot Wiper Pad,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+PP-FP0087,LulzBot Wiper Pads,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-FP0135,[PP-FP0135] E3D Aero Idler Lever,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-FP0136,[PP-FP0136] E3D Mirrored Aero 2.85mm Filament Guide,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-FP0137,[PP-FP0137] E3D Aero Acetal Gear w/ Filament Drive Shaft,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-FP0138,"[PP-FP0138] Silk Screened Bed Mount Plate, Mini",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-FP0139,"[PP-FP0139] Silk Screened Electronics Case, Mini",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-FP0142,[PP-FP0142] Silk Screened TAZ Electronics Chassis,,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+PP-FP0143,[PP-FP0143] Silk Screened TAZ Electronics Cover,,,,https://download.lulzbot.com/TAZ/6.03/production_docs/BoM_KT-PR0041AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-FP0144,[PP-FP0144] Silk Screened TAZ Interconnect Cover,,,,https://download.lulzbot.com/TAZ/6.03/production_docs/BoM_KT-PR0041AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-FP0146,[PP-FP0146] Silk Screened TAZ Bed Plate,,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+PP-FP0147,"[PP-FP0147] Electronics Case, Mini (without back screening)",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-FP0149,"[PP-FP0149] TAZ Electronics Chassis, HD, Touchscreen, Quiver",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-FP0150,"[PP-FP0150] TAZ Electronics Cover, Quiver",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-FP0151,[PP-FP0151] Y Endplate,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-FP0152,[PP-FP0152] Corner Bracket,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-FP0153,"[PP-FP0153] TAZ Interconnect Cover, Quiver",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-FP0154,[PP-FP0154] Titan Extruder Hobb (Hardened Stainless Steel) - Frosted,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-FP0156,[PP-FP0156] Z Upper Top Plate,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-FP0157,"[PP-FP0157] LCD Ground Spacer, conductive foam",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-FP0158,[PP-FP0158] E3d Standard Aero 2.85mm filament guide,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-FP0162,[PP-FP0162] E3D Standard Aero Idler Lever,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-FP0172,"[PP-FP0172] TAZ Redgum, TAZ6 Electronics Chassis w/ Redgum Graphics",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-FP0173,"[PP-FP0173] TAZ Redgum, TAZ6 Electronics Chassis Cover w/ Redgum Graphics",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP,bed foot ninjaflex,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0058,Wade Reloaded Extruder Block,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0059,Wade Reloaded Idler Block,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0060,"Extruder Washer v3.0, Taz",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0061,herringbone_large_gear,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0062,herringbone_small_gear,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0074,feed_tube spinner,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0082,"Powerbox, power supply enclosure",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0083,bed_finger,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0084,double_bearing_holder,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0085,bearing_holder,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0086,"Belt clamp, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0087,"Enclosure strain relief, upper",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0089,LCD_spacer,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0090,feed_tube_holder,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0091,Extruder Latch v2.1,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0092,x_bearing_mount,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0093,"X carriage, TAZ",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0094,x_carriage_guide,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0095,x_motor_mount,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0096,"Extruder mount, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0097,"Y bearing mount v1.3, TAZ",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0098,y_belt_mount,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0099,y_mount_chassis,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0100,y_mount_table,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0101,"Y motor mount v1.1, TAZ",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0102,"Z motor mount, TAZ",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0103,"Z nut spring M6 v1.0, TAZ",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0104,Spool Holder - Inner,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0105,Spool Holder - Outer,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0106,bed_corner,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0107,shipping_clamp_a,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0108,shipping_clamp_b,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0109,"Spool Arm, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0110,"Enclosure strain relief, lower v2.0",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0111,"Enclosure lower strain relief v2.4, TAZ",,,,https://download.lulzbot.com/TAZ/3.0/production_docs/TAZ-BOM-version3.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0112,"Enclosure upper strain relief v2.2, TAZ",,,,https://download.lulzbot.com/TAZ/3.0/production_docs/TAZ-BOM-version3.0.xlsx,public_archived_bom_part; unclassified
+PP-GP0113,"Y Corner Left v1.2, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0114,"Y Corner Right v1.2, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0115,"Y Bearing Mount v2.6.b, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0116,"Y Motor Mount v2.4, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0117,"Bearing Holder v1.1b, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0118,Bed Corner v2.5,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0119,"Z nut spring M6 v2.0, TAZ",,,,https://download.lulzbot.com/TAZ/3.1/production_docs/TAZ-BOM-version3.1.xlsx,public_archived_bom_part; unclassified
+PP-GP0120,feed_tube_holder_v2.0,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0121,"Y Mount Chassis v2.1, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0122,y_mount_table-2.1,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0123,"Z Top Drive v1.2-Left, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0124,"Z Top Drive v1.2-Right, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0125,Z Motor Mount v2.1 nonswitch-Right,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0126,"Z Motor Mount v2.1 switch-Left , TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0127,"Z Nut Mount V 1.0 , TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0128,"X Carriage v2.0 ,TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0150,y_belt_mount,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0151,"X Idler v2.3 , TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0152,"X Motor Mount v2.1, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0153,"Extruder Fan Mount v1.0, TAZ",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0154,Electronics Case Mount v1.0,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0163,Long Shim,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-GP0167,"Fan Mount v1.3, Mini",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0168,"Wiper mount v1.0, Mini",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0169,"Handle bar v2.4, Mini",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0170,"Relief mount v1.3, Mini",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0171,3050,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0172,"Spool arm v1.0, Mini",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0173,"Spool hinge v1.3, Mini",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0174,"Y rod mount v1.1, Mini",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0175,"Y idler mount v1.3, Mini",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0176,"Bed corner v2.2, Mini",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0177,"Z lower left v1.1, Mini, Lulzbot green",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0178,"Z lower right v1.1, Mini, Lulzbot green",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0179,"Z upper left v1.2, Mini",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0180,"Z upper right v1.2, Mini",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0181,"Belt mount v1.0, Mini",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0182,"X end motor v1.6, Mini",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0183,"X carriage v1.0, Mini",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0184,"Extruder mount v2.4, Mini",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0185,"X end idler v2.4, Mini",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0186,Wade extruder body for Hex nozzle v1.0,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0187,"X carriage cover v2.3, Mini",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0188,"Upper bearing holder v1.1, Mini",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0189,Double bearing holder Gladiola v0.1,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0189???,Double bearing holder Gladiola v0.1,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0190,Lower relief v1.0 Mini,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0191,"Herringbone Large Gear v1.3, Lulzbot green",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0192,"Herringbone Small Gear v1.1, Lulzbot green",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0193,"Extruder Idler Block v1.4c, Taz & Mini",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-GP0194,"Extruder Mount for Hex v1.0, TAZ",,,,https://download.lulzbot.com/TAZ/5.0.1/production_docs/TAZ-BOM-juniperbush_3000order.xlsx,public_archived_bom_part; unclassified
+PP-GP0196,Y End Motor,,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0198,[PP-GP0198] javelin flex plate v1.2,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_Dual_Extruder_Tool_Head_v2_Flexplate_KT-PP0037/BoM_TAZ_Dual_Extruder_Tool_Head_V2_Flexplate_KT-pp0037.xlsx,public_archived_bom_part; unclassified
+PP-GP0202,"[PP-GP0202] Extruder Mount for Hex v1.0, TAZ, Lulzbot Green",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_Flexystruder_Mount_KT-PP0018/BoM_TAZ_Flexystruder_Mount_with_Inserts_KT-PP0018.xlsx,public_archived_bom_part; unclassified
+PP-GP0204,"Z lower left v1.2, Mini, Lulzbot green",,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0205,Z lower right complete,,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0206,X Carriage TAZ6 v0.3,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0207,X Carriage Guide v2.0,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0208,Dual fan hextruder mount v0.5,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0209,Double Bearing Holder for 12mm rod v0.3,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0210,Single Bearing Holder for 12mm rod v0.3,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0211,"Fan duct left v0.1, TAZ",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0212,"Fan duct right v0.1, TAZ",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0213,Z Carriage Motor,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0214,Z Carriage Idler,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0215,Z Lower Left v2.3,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0216,Switch mount,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0217,Spool Arm v0.2,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0218,Feed Tube Holder v2.5,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0219,Feed Tube Spinner v2.5,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0220,"Interconnect housing v0.1, TAZ",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0221,Bed corner TAZ6 v2.0,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0222,Y belt mount v.75,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0223,Bed Mount Chassis v3.3,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0224,Bed mount table v3.1,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0225,"Y Bearing Mount v3.0, TAZ",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0226,"Y Motor Mount v3.0, TAZ",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0227,"Z Lower Right, v2.3",,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0228,"UV-Resistant Cable Tie Holder, Adhesive Back/Screw Mount, 4-Way, for .18"" Maximum Tie, Black",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0229,"Metric Zinc-Plated Steel Nylon-Insert Locknut, Class 8, M3 Screw sz, .5MM pitch, 5.5MM W, 4MM H  pk 100",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0230,LCD_bezel,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0231,"Wiper Mount, v1.1",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-GP0232,"Heatsink Fan Duct, TAZ 6, v1.0",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0233,"Bearing Holder Printing, V1.0",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0234,LCD Knob V1.0,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0235,SD Card bezel,,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+PP-GP0236,"Z Upper v2.0, TAZ6",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0237,Flexy Washer v0.1,,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+PP-GP0238,Flexy Bed Foot v0.1,,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+PP-GP0241,"Beefy Extruder Idler, v0.3",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0245,Beefy Idler Latch_v2.2,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0247,[PP-GP0247] USB support mini v1.0,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-GP0248,"[PP-GP0248] bed corners, mini v2.5",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0249,Bed clip v3,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0251,"Extruder mount v3.0, Mini",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0252,"Extruder Fan Mount v2.0, Mini",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0253,[PP-GP0253] spool-arm-bracket_black_v1.0,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-GP0255,[PP-GP0255] spool-arm_black_v1.4,,,,https://download.lulzbot.com/Mini/2.0.5/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0255_v1.4,[PP-GP0255_v1.4] spool-arm_black_v1.4,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-GP0259,[PP-GP0259] handle-bar_black_v2.5,,,,https://download.lulzbot.com/Mini/2.0.5/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0259_v2.5,[PP-GP0259_v2.5] handle-bar_black_v2.5,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-GP0263,[PP-GP0263] y-motor-mount_black_v1.4,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-GP0264,[PP-GP0264] y-idler-mini_black_v1.4,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-GP0265,[PP-GP0265] strain-relief-lower_black_1.2,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-GP0266,[PP-GP0266] strain-relief-upper_black_v3.0,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-GP0269,[PP-GP0269] lower-z-left-mini_lulz-green_v1.6,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-GP0270,[PP-GP0270] lower-z-right-mini_lulz-green_v1.6,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-GP0271,[PP-GP0271] z-upper-mini-left_black_v2.0,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-GP0272,[PP-GP0272] z-upper-mini-right_black_v2.0,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-GP0276,[PP-GP0276] Beefy Extruder Idler v0.4,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-GP0277,[PP-GP0277] Belt-clamp Black v1.2,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-GP0278,[PP-GP0278] belt-mount black v1.2,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-GP0280,[PP-GP0280] x-carriage-cap_black_v2.5,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-GP0304,[PP-GP0304] Y-Belt Clamp,,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+PP-GP0307,[PP-GP0307] Belt Tensioning Collar,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0308,[PP-GP0308] Z Belt Clamp,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0309,"[PP-GP0309] Z Upper Left, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0310,"[PP-GP0310] Z Lower Left, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0312,"[PP-GP0312] Z Upper Right, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0313,"[PP-GP0313] Z Lower Right, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0317,"[PP-GP0317] X Belt Tensioner, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0318,[PP-GP0318] Spool Mount B,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-GP0319,[PP-GP0319] Spool Mount A,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-GP0320,"[PP-GP0320] X Carriage Cap, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0324,[PP-GP0324] Mini LCD Bezel,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0325,[PP-GP0325] LCD Bracket Right V1,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0326,[PP-GP0326] Top Cable Bracket,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0327,[PP-GP0327] Side Cable Bracket,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0329,[PP-GP0329] Mini LCD Bezel Spacer,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0330,[PP-GP0330] Mini LCD Case,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0331,[PP-GP0331] Mini LCD Knob,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0332,[PP-GP0332] Bump Stop,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0333,[PP-GP0333] X Belt Tensioner Post,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0334,[PP-GP0334] Retaining Ring,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0335,[PP-GP0335] Flexy Bed Corner Mini 1.04+ 2pc Bed v2,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0337,"[PP-GP0337] Z brake board mount, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0338,"[PP-GP0338] Heatsink frame, einsy",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0339,[PP-GP0339] LCD cover spacer,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0341,"[PP-GP0341] Extruder Mount, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0342,[PP-GP0342] Universal Blower Duct,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0348,[PP-GP0348] Printed Threaded Spacer,,,,https://download.lulzbot.com/Mini/2.0.4/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0356,[PP-GP0356] TAZ 4-5 Bed Harness Strain Relief v2.1,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_4-5_Complete_Bed_Harness_KT-HR0007/TAZ_4-5_Complete_Heat_Bed_Harness_KT-HR0007_BoM.xlsx,public_archived_bom_part; unclassified
+PP-GP0357,[PP-GP0357] Z Upper Right,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0358,[PP-GP0358] Z Upper Left,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0359,[PP-GP0359] Z Lower Right,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0360,[PP-GP0360] Z Lower Left,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0361,[PP-GP0361] Z Chain Bracket,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0362,[PP-GP0362] Y Motor Mount,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0363,[PP-GP0363] Y Idler Housing,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0364,[PP-GP0364] Y Corner Right,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0365,[PP-GP0365] Y Corner Left,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0366,[PP-GP0366] Y Chain to Bed Mount,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0367,[PP-GP0367] Y Chain Pivot Mount,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0368,[PP-GP0368] Y Bump Stop,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0369,[PP-GP0369] Y Belt Mount,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0370,[PP-GP0370] Y Belt Clamp,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0372,[PP-GP0372] X Motor Chain Mount,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0377,[PP-GP0377] X Bump Stop,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0378,[PP-GP0378] X Belt Tensioner,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0379,[PP-GP0379] X Tensioner Clamp,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0380,[PP-GP0380] X Belt Clamp,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0381,[PP-GP0381] Wiper Mount,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0382,[PP-GP0382] USB Bezel,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0383,[PP-GP0383] USB Mount,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0384,[PP-GP0384] LCD Bezel,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0385,[PP-GP0385] LCD Center,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0386,[PP-GP0386] LCD Back,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0387,[PP-GP0387] Interface Board Mount,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0388,[PP-GP0388] Interface Board Cover,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0389,[PP-GP0389] Heatsink Mount,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0390,[PP-GP0390] Cable Clip,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0391,[PP-GP0391] Y Cable Cover,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0392,[PP-GP0392] 12mm Retaining Ring,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0393,[PP-GP0393] 10mm Retaining Ring,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0394,[PP-GP0394] Belt Anchor,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0395,[PP-GP0395] Bed Mount Table,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0396,[PP-GP0396] Bed Corner,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0405,[PP-GP0405] Z Endstop Cable Cover,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0406,[PP-GP0406] Dual Spool Arm,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0407,[PP-GP0407] Interconnect Housing,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0408,[PP-GP0408] Extruder Cap,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0409,[PP-GP0409] Frame Foot,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0410,[PP-GP0410] Electronic Chassis Mount-Front,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0411,[PP-GP0411] Electronic Chassis Mount-Back,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0412,[PP-GP0412] Filament Sensor Mount,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0413,[PP-GP0413] Sensor Idler,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0414,[PP-GP0414] Filament Wheel,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0415,[PP-GP0415] Dual Tube Clamp,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0416,[PP-GP0416] Sensor Cover 2,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0417,[PP-GP0417] Sensor Cover 1,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0418,[PP-GP0418] Bearing Mount,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0419,[PP-GP0419] Blower Shroud,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0420,[PP-GP0420] Actuator Cover,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0422,[PP-GP0422] Actuator Mount,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0425,[PP-GP0425] Y Chain Pivot,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0426,[PP-GP0426] Sensor Cable Cover,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0427,[PP-GP0427] Idler Tube Clamp Left,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0428,[PP-GP0428] Idler Tube Clamp Right,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0429,[PP-GP0429] Cable Channel,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0430,[PP-GP0430] Tube Collar 1,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0431,[PP-GP0431] Tube Collar 2,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0432,[PP-GP0432] Bed Mount Chassis,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0435,[PP-GP0435] Flexy LCD Knob,,,,https://download.lulzbot.com/Mini/2.0.5/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-GP0437,[PP-GP0437] Toolhead Cable Retainer,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.6/production_docs/bom/BoM_TAZ_Pro_KT-PR0050AU_OCA.csv,public_archived_bom_part; unclassified
+PP-GP0438,"[PP-GP0438] Interconnect Housing, Black, Workhorse",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0439,"[PP-GP0439] Y Motor Mount, Black, Workhorse",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0440,"[PP-GP0440] Y Cable Mount, Black, Workhorse",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0443,"[PP-GP0443] X Carriage Cover, Black, Workhorse",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0445,"[PP-GP0445] Extruder Cap, Black, Workhorse",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0446,[PP-GP0446] Heater bed stand off,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0447,"[PP-GP0447] Interconnect Strain Relief, Black",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0448,"[PP-GP0448] Thumbscrew Leash, LulzBot Green, Flexible",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0449,"[PP-GP0449] Auxiliary Bed Mount Cover, Black",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0463,"[PP-GP0463] 5A Fuse Sleeve, LulzBot Green, Flexible",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0464,"[PP-GP0464] 5A Fuse Mount, Black",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0465,"[PP-GP0465] Extruder Harness Cable Guide, Black",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0466,"[PP-GP0466] LulzBot Plaque, Printed, Workhorse",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.2/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-GP0470,"[PP-GP0470] Cable Channel Left, Black",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.6/production_docs/bom/BoM_TAZ_Pro_KT-PR0050AU_OCA.csv,public_archived_bom_part; unclassified
+PP-GP0471,"[PP-GP0471] Cable Channel Right, Black",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.6/production_docs/bom/BoM_TAZ_Pro_KT-PR0050AU_OCA.csv,public_archived_bom_part; unclassified
+PP-GP0???,KITTAZ plug cover,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-IS0033,[PP-IS0033] TAZ 5 Bed Corner with inserts,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_5_Bed_Corner_(x4)_KT-PP0027/BoM_TAZ_5_Bed_Corner_(x4)_KT-PP0027.xlsx,public_archived_bom_part; unclassified
+PP-IS0043,[PP-IS0043] Mini LCD Bracket Right V1 with inserts,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-IS0044,[PP-IS0044] Spool mount A with inserts,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-IS0045,[PP-IS0045] Spool Mount B with inserts,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-IS0046,"[PP-IS0046] X Belt Tensioner, Mini 2 with Inserts",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-IS0047,"[PP-IS0047] Z-Lower Right w/ inserts, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-IS0048,"[PP-IS0048] Z Upper Right With Inserts, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-IS0049,"[PP-IS0049] Z Lower Left With Inserts, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-IS0050,"[PP-IS0050] Z Upper Left with Inserts, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-IS0053,"[PP-IS0053] Extruder Mount With Inserts, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-IS0054,[PP-IS0054] Top Cable Bracket with inserts,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-IS0055,[PP-IS0055] Side Cable Bracket with inserts,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-IS0056,[PP-IS0056] Mini LCD Case with inserts,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-IS0057,"[PP-IS0057] Blower shroud w/ inserts, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-IS0058,[PP-IS0058] Z-Brake Mount w/ Inserts,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-IS0059,"[PP-IS0059] X-Bearing Holder with inserts, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-IS0060,"[PP-IS0060] X-Carriage with inserts, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-IS0061,"[PP-IS0061] Handle, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-IS0062,"[PP-IS0062] Upper Relief Mount Assembly, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-IS0063,"[PP-IS0063] Printed belt clamp assembly, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-IS0064,"[PP-IS0064] Y Axis Rod Mount, Motor side, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-IS0065,[PP-IS0065] Mini 2 Double Bearing Holder Switch-Side Insert Assembly,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-IS0066,"[PP-IS0066] Double Bearing Holder Non-Switch Side Insert Assembly, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-IS0067,"[PP-IS0067] Mini 2, Spool Hinge",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-IS0073,[PP-IS0073] Mini 2 Single Bearing Holder with Inserts,,,,https://download.lulzbot.com/Mini/2.0.4/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-IS0081,[PP-IS0081] Actuator Cover with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0082,[PP-IS0082] Idler Clamp Left with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0083,[PP-IS0083] Idler Clamp Right with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0084,[PP-IS0084] Actuator Mount with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0085,[PP-IS0085] Blower Shroud with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0086,[PP-IS0086] TouchScreen Back with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0087,[PP-IS0087] USB Mount with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0088,[PP-IS0088] Y-Belt Clamp with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0089,[PP-IS0089] Y-Corner Left with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0090,[PP-IS0090] Y-Corner Right with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0091,[PP-IS0091] Y-Idler Housing with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0093,[PP-IS0093] Z-Upper Right with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0094,[PP-IS0094] Z-Upper Left with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0096,[PP-IS0096] Y Chain Pivot w/ Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0097,[PP-IS0097] Z-Chain Mount with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0098,[PP-IS0098] Bed Mount Chassis with Insert,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0099,[PP-IS0099] Interface Board Mount with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0100,[PP-IS0100] X-Belt Clamp with Insert,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0101,[PP-IS0101] Interface Board Cover with Insert,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0102,[PP-IS0102] X-Belt Tensioner with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0103,[PP-IS0103] Y Chain to Bed Mount with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0108,[PP-IS0108] Dual Tube Clamp with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0109,[PP-IS0109] Sensor Idler with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0111,[PP-IS0111] X Motor Chain Mount with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0112,[PP-IS0112] Extruder Cap with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0114,[PP-IS0114] Bearing Mount with Inserts,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0115,"[PP-IS0115] Y Motor Mount with Inserts, TAZ",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0116,"[PP-IS0116] Y Cable Mount with Inserts, Workhorse",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0117,"[PP-IS0117] X Carriage Cover with Inserts, Workhorse",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-IS0118,"[PP-IS0118] Extruder Cap with Inserts, Workhorse",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-MP0028,"AC Power Entry Modules SC MT FUSED .25"" TAB",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-MP0045,"Bed Mount Plate, Aluminum",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-MP0049,Cosmos ® mini Aluminum Chips VGA RAM Cooling Heatsinks 6(L)x6(W)x3.5(H)mm Industrial Packaging,,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+PP-MP0059,"Bed Mount Plate, Aluminum",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-MP0066,"Metric Brass Heat-Set Insert for Plastics, Tapered, M2-.4 Internal Thread, 2.9MM Length",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+PP-MP0082,"Bed Leveling Washer, 303 SST",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+PP-MP0096 – PP-MP0104,"Upper PS case, RSP",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_500w_PSU_KT-EL0063/24v_500w_PSU_BoM_KT-EL0063.xlsx,public_archived_bom_part; unclassified
+PP-MP0097 – PP-MP0103,"Lower PS case, RSP",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_500w_PSU_KT-EL0063/24v_500w_PSU_BoM_KT-EL0063.xlsx,public_archived_bom_part; unclassified
+PP-MP0106,Corner Bracket V2.0,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-MP0107,Interconnect Cover v0.5,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-MP0108,300mm Bed Plate v4.5,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-MP0109,"TAZ Electronics Cover, V0.4 with Powder Coat",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-MP0110,TAZ Electronics Chassis v0.3 with Powder Coat,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-MP0111,Y End Plate,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+PP-MP0133,Hexagon Heatsink for 3mm Filament,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-MP0134,Hexagon Heater Block with Holes for Retention Plate and Hexagon Logo Laser Etched on Front,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-MP0135,0.5mm Nozzle for 3mm Filament,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-MP0136,Thermistor Retention Plate,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-MP0137,Standard Hexagon Mount Plate,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+PP-MP0145,"300mm Bed Plate v4.5300mm Bed Plate, 6061, revB with Powder Coat",,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+PP-MP0146_rA,Bed Mount Plate,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+PP-MP0149,[PP-MP0149] Bottom-Plate-Mini_PP-MP0149,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified

@@ -1,0 +1,18 @@
+{
+  "source": "https://help.prusa3d.com/article/vat-value-added-tax-customs-fees_1505",
+  "retrievedAt": "2026-10-12T01:41:56.521Z",
+  "sha256": "948c049725435d9a9ade89cc09e6571ec568e06400ecbb0eaf300779f6ac2a2f",
+  "publishedCategories": 10,
+  "successfulUsScheduleLookups": 10,
+  "exactPublishedTenDigitUsMatches": 0,
+  "incompleteRowsRejected": 10,
+  "tariffAccuracyVerified": false,
+  "tenantWrites": 0,
+  "llmCalls": 0,
+  "limitations": [
+    "Category codes, not SKU-level company import entries",
+    "USITC candidates are not approved product classifications",
+    "Origin, legal entry date, customs value and paid duty were not supplied",
+    "No company-level historical audit can be validated from this source"
+  ]
+}

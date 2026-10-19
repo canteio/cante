@@ -1,0 +1,1250 @@
+[
+  {
+    "source_url": "https://download.lulzbot.com/AO-100/hardware/AO-100-kit-bom.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/ab5f689f4b2f87a52a499dde1a344bb167caaacec2e56c42fba14cd4050bcfe9.bin",
+    "sha256": "d66892207aaba87636b2282362342cba67256fab3b18ae04c411e4e27f442c85",
+    "nonempty_rows": 72
+  },
+  {
+    "source_url": "https://download.lulzbot.com/AO-100/hardware/AO-100_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/ebc710484b419c62f93e09c45313d023bc821587ef0f1c6c12081c89bf4ba818.bin",
+    "sha256": "c94600f714c129870092b3039255d97d67429528e71ccb4937cd52c4ebf59215",
+    "nonempty_rows": 221
+  },
+  {
+    "source_url": "https://download.lulzbot.com/AO-101/hardware/AO-101_bom_cm_rev-d.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/c6ef30efa34168fa4f9088aef31e776c4870a4ee6b637395127246c094853463.bin",
+    "sha256": "96504d0d5dd6e4f403cbf2eea66a5efa5ab3dc4969ab0ffc3e804869210a2f71",
+    "nonempty_rows": 153
+  },
+  {
+    "source_url": "https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/5f36a5ebbe086dd6f5e6aba7190cad3c3e4065a5707cde6016bab782c1a6c9b0.bin",
+    "sha256": "f456e31521049870675e1d41aab8c2802c031daa8750afab5fc2691e44704541",
+    "nonempty_rows": 287
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/93295a8e7ee5a9dd2278508f312f9ede6f85d7d874cafe77241071b8d19ae139.bin",
+    "sha256": "16f51cec495f55d1fcb6efec7bdaa463140cd587f0097c92743193e2bb7f3465",
+    "nonempty_rows": 240
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/f9b036308363bf5d5b125a9e89ca095b6d287e7b3d8a3a9589ce979086d27ee7.bin",
+    "sha256": "d99c868397903b1b1135f5a359a13bca684b4ea36b8ae916c2572a952c2c0c61",
+    "nonempty_rows": 210
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/1.02/production_docs/foxglove_BOM_revA.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/3b827984bcc1a17c3cae8ef69c18aa16c9f48e586d343a5a6dbd0c412533f5b8.bin",
+    "sha256": "3094d524e5ac2480c4f789f98ad3e3ac9d7532b200d298dd641cc614b8494955",
+    "nonempty_rows": 212
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/1.03/production_docs/Mini-BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/953139eeb5266b467d440b4de1baffb7418bc9ea9d2ebc3f585cca612ddb93b9.bin",
+    "sha256": "6f5e157124f1fd1b0263560c98483692d6d00f98e3f99bfacc790860b29e03d7",
+    "nonempty_rows": 212
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/db25a6c241bd65aa0f806e21836cb3fc126cc34c144edcba5bb45eee855a04b5.bin",
+    "sha256": "2c49775c5be354c8c2af21104a3b3332ba384f01d291b588ade1137d64c1f27d",
+    "nonempty_rows": 1217
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/1.04/production_docs/Mini_1.04_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/831dd79d6b018faea0475577b8eb97019f22a6957d5cc70a597173060552cc7a.bin",
+    "sha256": "45f9af42ca9bb21e9d562be7cf163f4bec6bd77508fe9263a3ef778394bd7c4c",
+    "nonempty_rows": 7883
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/ebf4e71e5852130256ea6b35b17408c91bee859dbcedea376d8e55fcb573ccee.bin",
+    "sha256": "417a2d689340d028ed63f362adeff535122a12a3b6859f97d55f8af5a61a5540",
+    "nonempty_rows": 438
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_EU.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/8987483cc2c837e818820c4bdd5d5535dadffed73e65d9aeb929791f5d4744e3.bin",
+    "sha256": "a3858c6718408615603f1a11248b8044d65eea29df6ae25a8a0a3c642ce5ef13",
+    "nonempty_rows": 439
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_NA.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/02c099f05c027540df895c10726502a3cec17c3b7e8f0ef44959e4296fdf3ad2.bin",
+    "sha256": "c615dd0175070c1702d45529fe1dd6d8ade171fcd020856d796bf0c40a0d8393",
+    "nonempty_rows": 438
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/78224fbaaeb5b78a28c1c4ecf0a739cc1664fef21a33d03e56c119344387f7c8.bin",
+    "sha256": "9aa55dbe3dc39c54d6caba5c2b42839e131190061703ba1cdd484961276268e3",
+    "nonempty_rows": 511
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047EU_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/f03ece06665107d36daca93d9ea8ff79c436f6bf7b4099405573867297dfbbad.bin",
+    "sha256": "f73a094682db24ec4e6040c3955e204b1bb843a4c06ced6752811f7d53aa9a45",
+    "nonempty_rows": 511
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047NA_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/31ffde6903e52cc797d7fa3db9ad18f4bbdfd54780ed6cb77e4d15ce3863c00d.bin",
+    "sha256": "0eacf96dc3ebc8c0b051857f262848ccd268046c9a654d1dfd278c7ddbaab22f",
+    "nonempty_rows": 507
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.0/production_docs/Mini_2_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/771c864b6fdf5a9300cbe0a91a1ea6bf7a5cb486b6dda9a435471611468577d7.bin",
+    "sha256": "12f602f66d6cfa35107384ab240e51b91eade73f07818822a559f0f9df5ec8c5",
+    "nonempty_rows": 6282
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.0/production_docs/Mini_2_MBOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/f4cbab230930084f15c75c83e0e2bf085f67ffa7192cb25827472b9c8eee9d4e.bin",
+    "sha256": "d38a9c1fc4ddfc992550f35534242615f63e6611e216ab16ccae99d5d7f71143",
+    "nonempty_rows": 11664
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.1/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/7d6679bb4523fa49c1312ff419772aaae3298a396f29a56677aec31d9ed16711.bin",
+    "sha256": "db44bc16eafe5a4c03a1a4884a53b484f86316157a6eeb8ed4286c93191a0aef",
+    "nonempty_rows": 511
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.1/production_docs/BoM_Mini_2_KT-PR0047EU_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/1f5ef8f47212a516ce2271ab48a2242e3b19d7afcb6365d4f289fbe499ff6051.bin",
+    "sha256": "e3d3e4dd09ea15141c63f330c634f8654bece7bb1aa57acd9c075066fd8eea02",
+    "nonempty_rows": 511
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.1/production_docs/BoM_Mini_2_KT-PR0047NA_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/b0b108a3447cf7bedee3462749dd5ec822048a439480b636694edf62fa3abaef.bin",
+    "sha256": "1f6f7c6005664299fdc4a6bf3f9f908256fc933b4b38cc00504ec22d0ca7d58a",
+    "nonempty_rows": 507
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.1/production_docs/Mini_2_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/a2cd429c830746ea550b5bd3b844383ab0c87c72550bc7681a05b5c877980294.bin",
+    "sha256": "59c51c9e66e4372441dffae6b8770eb49e6594f478fa889347d371e96b930e74",
+    "nonempty_rows": 6282
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.1/production_docs/Mini_2_MBOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/0257b9c79e1bd059e51c9571e2c425a3b9a31db375e973eb8b31b98971296dba.bin",
+    "sha256": "a710de1f5759ebf6ad3b9966f4f9cb6b4852aa894baaf78c13f7937677bb2af2",
+    "nonempty_rows": 11664
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.2/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/466e77cc5d5d4e129ea944ccb9823f61d3d6dfce77b11679728815cd35ce6efa.bin",
+    "sha256": "2b48b65614580f065bee6f256e1eb41252e8c6093913b6243f91cf776dae148a",
+    "nonempty_rows": 511
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.2/production_docs/BoM_Mini_2_KT-PR0047EU_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/23569f2f702e9ee31b2d2a983bbc02611d9e10ab297cfc8509600b9b8b77ea98.bin",
+    "sha256": "15c2c448b90ce8153856e06e3a78a3e74f5c4e2fa7d929a0c3ac965439be579a",
+    "nonempty_rows": 511
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.2/production_docs/BoM_Mini_2_KT-PR0047NA_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/6364298a8952d7e1183082cfa3d9142cee6473dd28dcb917d94d45fc1b2b3b6b.bin",
+    "sha256": "cb61731baed6e2252edddf9405baf7c615b56c130bae1571926cff1b8a006139",
+    "nonempty_rows": 507
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.2/production_docs/Mini_2_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/53ad7bee497894028720bb672831b8d655243fd3fb0d738c299a77ae5e825f59.bin",
+    "sha256": "e5a090c22af7217307f53a62f592cb3e59465cd58b6ce8fa0b8af93cba4cde57",
+    "nonempty_rows": 6282
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.2/production_docs/Mini_2_MBOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/5a5beb08ef36a26e8430b5b1442de7eccbc64d87d6b81b66c837bd29e9accee4.bin",
+    "sha256": "822dd2cb14cce83b1bc9556fbdf23833a98e8ee795d42dba0df46ca6f9505ab4",
+    "nonempty_rows": 11664
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.3/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/f6b7e9d4e51d2d57ab1b7ff9e432b42b2c9352b50d4337d7d034d67a7e9d9447.bin",
+    "sha256": "5e4e5968557616b711c3dff1fb95f7e65a7655458dba4da35c069551a151f2f4",
+    "nonempty_rows": 511
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.3/production_docs/BoM_Mini_2_KT-PR0047EU_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/b6ea1502c2d1042e06d13cdab0df370d80a3f41c8e853c1db8501a5f1a7b9d02.bin",
+    "sha256": "6fd24df30b87b476ef71907b3a103980fdf85380d867b6fa14faba14c464da24",
+    "nonempty_rows": 511
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.3/production_docs/BoM_Mini_2_KT-PR0047NA_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/503c27b0a01a51f2245a16c02cfd7e7198e9794775c751177a53e224f30edaeb.bin",
+    "sha256": "1b3bfbd39253a1567834d7525982572c4a89d8b0aa664806e9b0074a69eb0ddb",
+    "nonempty_rows": 507
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.3/production_docs/Mini_2_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/099e59ee63e51d9416a494e4c427f8219ca5c9137bb288ef359434e4122bdc42.bin",
+    "sha256": "ebdbdba01cf369e874a750d288356b7a972d29a969528aa18785af94e0857986",
+    "nonempty_rows": 6282
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.3/production_docs/Mini_2_MBOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/53d47977d4afde4506836cdd5df64cbf8c8607ca85234048924d3f98030f2e90.bin",
+    "sha256": "44453bc889e2d60043804665c33bb13501367832865f365524f5fbefe5af61e9",
+    "nonempty_rows": 11664
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.4/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/dffb9fed13830233d8aa1dbd0a1286fde441e12df422a7067f4a85461f8baf8f.bin",
+    "sha256": "3c33b29facbc52c0799e2f8db15cc11670141132a3088591f1cd8af80a93d6bb",
+    "nonempty_rows": 504
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.4/production_docs/BoM_Mini_2_KT-PR0047EU_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/d587a712ac4997700ab9fffa7f179ba4e5968e4ef172a0efe54e533b62c6d29a.bin",
+    "sha256": "bd314eafcf582f3b1b872547ef2ce62c56d5a7d24db82fff809abf15e3c2ed78",
+    "nonempty_rows": 505
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.4/production_docs/BoM_Mini_2_KT-PR0047NA_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/474027eb6c72b345fc9762b72339b8c34cac5b7cb7cbeef2ff74987c98e9d14d.bin",
+    "sha256": "47daeec3e7519e6917bd1b11fcb06fba2a74d286461e7484ce7b5a52f5e9563d",
+    "nonempty_rows": 501
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.4/production_docs/Mini_2_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/820a2d74ee1805738124fb5c9efba0f7413c8ae95c576ed685d5378851f9f27c.bin",
+    "sha256": "3390e77a1590d6965d459a2f65ba6023c1f4a50933527bdc5bfb6c59aede7f29",
+    "nonempty_rows": 6282
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.4/production_docs/Mini_2_MBOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/903d978023b242e328082128007fc050bbfeea9b8c6f6fbeea66786500ce20d0.bin",
+    "sha256": "fd868870be682c57d5dcb6592215da0e5c153cd76639284119f2ba257503c026",
+    "nonempty_rows": 11664
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.5/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/8f9cef2b034ae3b68880523d95df8d623ab6dc12ea2324287d9ce9eb7da21932.bin",
+    "sha256": "f0ef7c1f16cfc7f31387ae4f0fc67539791701863c39ba43e34c3ac1fc79d294",
+    "nonempty_rows": 507
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.5/production_docs/BoM_Mini_2_KT-PR0047EU_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/d7f7b9ad6d256572772c5cbede8bbce404879032469dcae7efa2660710aca8cf.bin",
+    "sha256": "95c0b81248b15ded217d2425d6d8ec8057a37498e078e17f972d984f8e98c585",
+    "nonempty_rows": 508
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.5/production_docs/BoM_Mini_2_KT-PR0047NA_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/e8777fbe098e325ec78a2861ccc2ee14c605292a9981cdc50e706a9ef609e6ee.bin",
+    "sha256": "b0e7593288d724f13fe4b18c0a0c59821ddaf972a4c94e55b83765af2c5ce77b",
+    "nonempty_rows": 509
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.6/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/b58b03dfcbe86934a80daad467c9d3d7a392eb209395c3ec12c319302ce65a90.bin",
+    "sha256": "d4cbbbbd9a044aa2a19c81b4cbbdb9f3888b0e0a53c0aeb35f0d2bfc722e8f22",
+    "nonempty_rows": 507
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.6/production_docs/BoM_Mini_2_KT-PR0047EU_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/55dd3c61b026041d915477b9d41f41678721f2791600d45e9ab31d47f66847b4.bin",
+    "sha256": "e147402e030633cf5bb0eaa298e967f7489ede3b8c030977e314bfd619152660",
+    "nonempty_rows": 508
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.6/production_docs/BoM_Mini_2_KT-PR0047NA_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/50c8b5620228117bab4f957fc666d8a2adf16535a26900464b20a86577f63711.bin",
+    "sha256": "cd5261aa8ffbaa70d7ed1c38ac40e7e6560c23fd37632c1845a48405be423721",
+    "nonempty_rows": 509
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.7/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.ods",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/a81d72ac3c3e70063cf2adcc313c2a729c7e5d6f494b4b37ec0e2c46ae72264f.bin",
+    "sha256": "162338c06a63b3f30e3a3538242de97cff3c3789ef2c842024da82a7c46a409c",
+    "nonempty_rows": 508
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.7/production_docs/BoM_Mini_2_KT-PR0047EU_OCA.ods",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/65f70615af3736c7aef20414580e39dd6c5d590690173fc8b2f336da576c9786.bin",
+    "sha256": "bd4b2284de5ee9b334af81d7d984859ab115c0477421d41fc81ec65d82577abf",
+    "nonempty_rows": 509
+  },
+  {
+    "source_url": "https://download.lulzbot.com/Mini/2.0.7/production_docs/BoM_Mini_2_KT-PR0047NA_OCA.ods",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/31101ea4245b3a88e0a4b1f2935f6df63da70329045956156b661598661d6f27.bin",
+    "sha256": "88c39671efb7df731c6781ff12c7d007e27a2b869658c810b4d62e73099944bc",
+    "nonempty_rows": 510
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/1.0/hardware/TAZ-BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/09e7ac677b7d8d8f2d9c39b54eda69f356ca2fac3fb33848f42f87f017cab25e.bin",
+    "sha256": "8198dea2fb329617b73b716b2126a542bf6f5c5a4d66d8f78d7ba27f44b3cbcc",
+    "nonempty_rows": 154
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/db1d10b12b632892922eb84b4c910c0eca821afcf356d48ae3a2fd7a2a640324.bin",
+    "sha256": "170fa0131fd0013aabc91c179426e7a4aaccfb5fdc517e09217ad030d3ae12dd",
+    "nonempty_rows": 279
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/2.1/production_docs/TAZ-BOM-version2.1.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/9a39d994074e4df2a9bfadc2abaff0298d1f869aa1c31444038fd397a441d667.bin",
+    "sha256": "185468dd36ec2ba79167ee47d2c880020f403bc530e18f4119902598d2b952fc",
+    "nonempty_rows": 277
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/3.0/production_docs/TAZ-BOM-version3.0.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/8ecff3b675c4f985d27d94e56e7cca703d60a0c4a7f1be1d77e028172a534e4d.bin",
+    "sha256": "46b60c5d1bf9e57b3c21f711203f03b882ce703d10b18cfc08fda0d3d9973e01",
+    "nonempty_rows": 257
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/3.1/production_docs/TAZ-BOM-version3.1.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/d6ab52664baef5cbc140422c169658830bdd0890566d98da8bc39ae4d61a748b.bin",
+    "sha256": "ebf826efa2f0740b24e06d930a17d8c67f80dbb4022fd8df3979f3c22c7f4537",
+    "nonempty_rows": 258
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/4.0/production_docs/TAZ-BOM-Guava.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/c06fead8194b8c2b44b18d3c06c4d57ec0ad8cdbe65dd048ba7d63c6d545af30.bin",
+    "sha256": "674dbb888d7cc3fefc9ba39845dc76644310310716e76edd89b48c66cfadd483",
+    "nonempty_rows": 556
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/5.0.1/production_docs/TAZ-BOM-juniperbush_3000order.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/9e6e1c44cf83d7364270fbd325b9adb539de6bff5aec8f9e3926fb0701bbbff6.bin",
+    "sha256": "1398c1bb7691c2fcdccb4e8432f640d0bf5665bb05dd52f68f27484458ecb50b",
+    "nonempty_rows": 235
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/5.0/production_docs/TAZ-BOM-Juniper_1500order.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/34cfcb127259e87f228126ff93175e1c49f3401be471afb20f9d32fae5a092bf.bin",
+    "sha256": "9840a3401626697607a72b286f54223570900e785370cbd11a61b2fb745b2cd6",
+    "nonempty_rows": 241
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/5.0_0.5noz/production_docs/TAZ-BOM-juniperberry_1500order.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/9b4f797d10682bedbc23ae5c9ed0cd9bba50df5a0574031dc3e612a1cc7a77f2.bin",
+    "sha256": "32a3391bb2c41453b4f92cc1e47dd26aec9a20a4981411f4ac84a51aed2b819a",
+    "nonempty_rows": 232
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/5e2fe8d2a43e4b82f323e256fb1358f1651bad45bbfe9327570e01a921ffe36f.bin",
+    "sha256": "b4c6222e3e67b09bf361fc91ac0e382dba15310ca6a1d4545e7eca723af79f98",
+    "nonempty_rows": 677
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/4179f2e925016b077624162018ab8139e4e568edd0f3c73e91d5d165d31b80bb.bin",
+    "sha256": "37570c45f4711b3ec09684e4aec283fddfb31992fa20d5926008c4975653757c",
+    "nonempty_rows": 1006
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/6.02/production_docs/OliveOil_TAZ-BOM_3000.Ordering.ods",
+    "retrieved_at": "2026-10-12T01:11:30.215800+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/82c504734160bc883a554463fb8132ccdee467b3b796813209b37ccf421ad885.bin",
+    "sha256": "a3bcc8f0f4cc7ec0a00fd4b18b2d2e9729a1e43f1d2f1ec515438be7385b0bc8",
+    "extraction_error": "Nonempty repeated cells exceed bounds"
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/4cc9eb0a69e103036b188d03f1279f75cb8a73642ce6340c11cd3b34b2652ba6.bin",
+    "sha256": "21a7f708492ca14922345a942012bdf662bb5395a887bf07603f5639440d8f1a",
+    "nonempty_rows": 535
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/6.03/production_docs/BoM_KT-PR0041AU_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/13087c43c24362df1f0116de9e1de809d804ab0ed0d4ad4cb14816ee579f22c6.bin",
+    "sha256": "e22f426f65a0ab2a4b7b062cb1ff741d8dcbab8d787cf6fcf53309403d5cde4e",
+    "nonempty_rows": 532
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/6.03/production_docs/BoM_KT-PR0041EU_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/51b6a259708ece52279a79347f61b69b2f05445b77fdc69393e51f88f870d314.bin",
+    "sha256": "a17999b98aae1c3bcbccd2abcc7e4f9ef630893dde3cd6fb543f871d790a0be4",
+    "nonempty_rows": 533
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/6.03/production_docs/BoM_KT-PR0041NA_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/2dbb88bfb8e02b113c57dd95cb1ea7c5395d68720d09abf7171d44c57a0c155f.bin",
+    "sha256": "1ef6f0890132123ce6a9f268aaa3a1bac9e0812ef65deb0bc8adb103f010525d",
+    "nonempty_rows": 530
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/6.03/production_docs/OliveOil_TAZ-BOM_3000.Ordering.ods",
+    "retrieved_at": "2026-10-12T01:11:30.215800+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/09120a1117d5913e3338c523b25f9a9263b325738b53aff0937a4038685e938f.bin",
+    "sha256": "5954e310cb75cf02aad8b4f9138fce26c6a3879d908e246ebdb08fc1e3bbbaaa",
+    "extraction_error": "Nonempty repeated cells exceed bounds"
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/6.03/production_docs/TAZ_6.02_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/fddcf198dc11514fad11ef77b5466a385e29c6b7e2e104346b315dfa33c5baa2.bin",
+    "sha256": "53e8a50fc21c1c11b18eba51f1c6a92c4e5e514ee4892148cdd79c54f0336312",
+    "nonempty_rows": 7700
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/a25a684b68963166b0e321ae429d115e59f0420db18ee13f47299a43f543da4c.bin",
+    "sha256": "507b4e557e17002625ee909dd03469fc62e470b47c6ca52aa70f9ac497b4b2cc",
+    "nonempty_rows": 754
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/845ae8eae9924e821bd8223776685fd394f9142023c642ca6c450f45654a8f76.bin",
+    "sha256": "2ec32bae488aaa4b18737ded3d82f898031af1d9af1d951eaa67c2aa80bb2bb6",
+    "nonempty_rows": 753
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.1/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/352cf6c562f1ed74fd7dbc873abd2b281bb2b6564e77633fcea5de75cc42912e.bin",
+    "sha256": "8e19cbb36c5eb5ef58c328a3a09100954981e8995a2569ce6acf29ebc5e358d5",
+    "nonempty_rows": 747
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.1/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/e6edcc1c1e3e46eb123834615b8bacd68f22a8301b5c8594c67c99c277cef1c5.bin",
+    "sha256": "a4213db0ad5bbc3f18a56b3775aa22cc5eacf91946c80e61a0ad9f4138e05baf",
+    "nonempty_rows": 746
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.2/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/75ed45e0dfd07ce136a4c2f2ed62df983c8abe5739c21c0850fbcdcd018454b6.bin",
+    "sha256": "8e19cbb36c5eb5ef58c328a3a09100954981e8995a2569ce6acf29ebc5e358d5",
+    "identical_to": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.1/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv"
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.2/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/cc281247d741ba9687850be5be36c71b04feaf8c58f51da75e308aae879041e4.bin",
+    "sha256": "98dfed290afa595ff146f0be9465811ad8f2fbf8a18d54df11923f1ab4c03a4f",
+    "nonempty_rows": 746
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.3/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/68a71cc323b3d8728c1146c4ff5bc7b0b9bfa7823342c17b9b1b77761f51bd1f.bin",
+    "sha256": "d16e11a3c9a564b8756e5ade701ee9b22cb542c3e2bdd324b56357faaaddd9d9",
+    "nonempty_rows": 755
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.3/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/7ff5adc18ac00035d6775d2b48e72e18fcccbc01003995f82ce9b26f8c72e7dc.bin",
+    "sha256": "eed8ea5eb488720c3264d84af799dcfd9fe0012dc244bcb448fb26ae7ff15e76",
+    "nonempty_rows": 754
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.4/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/57e98724c92c6a905e870460948d36a04a0e872653f57c13034fd3b235f55f88.bin",
+    "sha256": "d16e11a3c9a564b8756e5ade701ee9b22cb542c3e2bdd324b56357faaaddd9d9",
+    "identical_to": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.3/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv"
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.4/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/0e235af124bd9a1fd7249dfb9e87d8c947cbd05218986b564cf5f74203dece2a.bin",
+    "sha256": "3ace45f5220f4cae9ff86954b0cee525b39ec36aa4b457a168ab9541d056e9fa",
+    "nonempty_rows": 755
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.5/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/4d0683a8935748a524a264da6c1b2ac827be85a170b6ffe49c95efc5a9ffea2a.bin",
+    "sha256": "d16e11a3c9a564b8756e5ade701ee9b22cb542c3e2bdd324b56357faaaddd9d9",
+    "identical_to": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.3/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv"
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.5/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/2c721d744b3955aea31778b6c6cee5d24f26e27027f2b6dfe97a20384bd3ad55.bin",
+    "sha256": "2b230af05dd2859c87616cb80befbb1870bc7354c997f382f2ae3659c0e8ea89",
+    "nonempty_rows": 754
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.6/production_docs/bom/BoM_TAZ_Pro_KT-PR0050AU_OCA.csv",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/58f53eebe9b832530e85229ced2c128589c46fdacab0786136d4c0a3eddfcae3.bin",
+    "sha256": "deb1d0b1b72fc9166207b956a7da3413d4936919da640c75cbd66937e42275a7",
+    "nonempty_rows": 747
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.6/production_docs/bom/BoM_TAZ_Pro_KT-PR0050AU_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/91f1dbe734b3e0fc12083c82e012ca2b900ce230ab4000593c644836083138e5.bin",
+    "sha256": "7575d0f1fdfe1944cc78a8f0cbeeacb7fe55c20d5d82572b5ccf01614e831450",
+    "nonempty_rows": 746
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.6/production_docs/bom/BoM_TAZ_Pro_KT-PR0050EU_OCA.csv",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/b47552805d4428b4468dcad4a557cebcb42fcb77cf0c09728be749bf78ea6e1a.bin",
+    "sha256": "8fb18cdac97edb5b4cd3945d28a427c89b40318fb70323fc7bf346eece6a5080",
+    "nonempty_rows": 748
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.6/production_docs/bom/BoM_TAZ_Pro_KT-PR0050EU_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/f61a6f599c72ba4e0d10619eba6fc9b8e698a8eef0c7533c2b9d0e140c7b1340.bin",
+    "sha256": "bdb964d6ca6046d3f1807107722eb7172957cc2402df745ce890b2a78ea9d76d",
+    "nonempty_rows": 747
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.6/production_docs/bom/BoM_TAZ_Pro_KT-PR0050NA_OCA.csv",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/b24c180163e32cdeca49c247ff4a2e329bdfed97a9f04f7e2640051a4ba0a300.bin",
+    "sha256": "6db3b942a4b17e3e0f1cd2098f35b005aef710380fad1671beb6f714cfac600c",
+    "nonempty_rows": 746
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.6/production_docs/bom/BoM_TAZ_Pro_KT-PR0050NA_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/a3f2ee205a792ed77a08992c8f1dca6638a1a300f6e79a2e5bc9481f1f456997.bin",
+    "sha256": "5972d7e125a5d2927b7ab20890c684b7ab048fa4e7d0c019ffe2e17f667a59e1",
+    "nonempty_rows": 745
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.7/production_docs/bom/BoM_TAZ_Pro_KT-PR0050AU_OCA.csv",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/0d2f76686713a0ba0463e74917217a9bd285598a2b96c7a760d55768d7a98f55.bin",
+    "sha256": "deb1d0b1b72fc9166207b956a7da3413d4936919da640c75cbd66937e42275a7",
+    "identical_to": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.6/production_docs/bom/BoM_TAZ_Pro_KT-PR0050AU_OCA.csv"
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.7/production_docs/bom/BoM_TAZ_Pro_KT-PR0050AU_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/42aa14b552c696f66c174acb8bce1ae03c8c3ef5512b7542c66a68f0695bb92c.bin",
+    "sha256": "ccc760c3132a7fae8c6fc082bdd3a31acd747786947be37f355c56961a4d4b1c",
+    "nonempty_rows": 746
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.7/production_docs/bom/BoM_TAZ_Pro_KT-PR0050EU_OCA.csv",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/24231d2ef9e459a84ce7d61ca00ea2c7abe7c177d3b24073a3fd2404e5d701fd.bin",
+    "sha256": "8fb18cdac97edb5b4cd3945d28a427c89b40318fb70323fc7bf346eece6a5080",
+    "identical_to": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.6/production_docs/bom/BoM_TAZ_Pro_KT-PR0050EU_OCA.csv"
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.7/production_docs/bom/BoM_TAZ_Pro_KT-PR0050EU_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/1196091adf3fb1400ae00209cfe86dc02cee178504adda216aaa112f9ebc33ef.bin",
+    "sha256": "ea24e1e928ac5199eb878517716a8909eab7221732d7d66aeda114fdd9552ab6",
+    "nonempty_rows": 747
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.7/production_docs/bom/BoM_TAZ_Pro_KT-PR0050NA_OCA.csv",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/bd4b2583bde2e9a0f19027c167fe5b188b086a916c1d59fb078eaac72ab46f79.bin",
+    "sha256": "6db3b942a4b17e3e0f1cd2098f35b005aef710380fad1671beb6f714cfac600c",
+    "identical_to": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.6/production_docs/bom/BoM_TAZ_Pro_KT-PR0050NA_OCA.csv"
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.7/production_docs/bom/BoM_TAZ_Pro_KT-PR0050NA_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/69c44e4e2777e8308bcf60faecc51330c97fc0a1e440621be3280b494f331c69.bin",
+    "sha256": "a3afea6e140ad78ab85fcc38caa04ae95663fa45908a187e68f135bc78b1f6c3",
+    "nonempty_rows": 745
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/b9f3fd9dbfd0d849073d024d91e9d37bebedd6d5f2b41210b7fb4f5589ba9caa.bin",
+    "sha256": "e74daf77bdf165a66574963f2a9320e25ef2042d85a843ebe3c2b4bcfaf8ccd6",
+    "nonempty_rows": 665
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/4398920e5a01e8c0ff641714f1546d48f952a7ae1b2cd8ab30e1a030b79820ff.bin",
+    "sha256": "f39deb533a6b58636438f9f900aef03db0ff0852f5f3ce638a99f80b0bb9ee51",
+    "nonempty_rows": 664
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051EU_TAZ_Workhorse_OCA_BOM.csv",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/3754a24d7a7133d592605e1752a99cf7d6cc503f557440dd56bcb8c36638f81c.bin",
+    "sha256": "b4126b222863d6f861928b7ab368eefc7b47bccb1cbca2df3d23f18fce7c34cf",
+    "nonempty_rows": 666
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051EU_TAZ_Workhorse_OCA_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/d7ffbf830900536229a8be5875c41dd51bd26efbe0b0f2ad5c8e05d6505311cd.bin",
+    "sha256": "9dfb3c200567a844f2c523964476cf8b1f5bf0c288c0f99f5e247bf6c85b5ebb",
+    "nonempty_rows": 665
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051NA_TAZ_Workhorse_OCA_BOM.csv",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/6485a524d1edf92e5002da4691bf3a46742ad730d03fae3054b2d99eed43d6ea.bin",
+    "sha256": "b1f7e5b4369f1e05483ac5e5c1a049b2accf2e346af02fa7cc9d1932755873f7",
+    "nonempty_rows": 665
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051NA_TAZ_Workhorse_OCA_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/1307bee58afcd26cc6b32bea7a11e22848745d878fce6025a1944da37ff081b4.bin",
+    "sha256": "7d789035860581901667d3fb92610ab8bad1114df040fa1748139a2091caa0ae",
+    "nonempty_rows": 664
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.2/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/f83d57dbbc941d83ae747e23506cc1812dc7a976ab43088eb88f2092b5e865bc.bin",
+    "sha256": "650abce88f4bee60ecbd5d4e46356808bfc6be9157a035623b83902dc96193a1",
+    "nonempty_rows": 668
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.2/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/70574bdd0034e62e605e65074bd71de2ac7d751185b966f83ca19f1876e2e1a1.bin",
+    "sha256": "60691907528543624b736d5e93d6ae4694a0d61adcb27186f7d3d793e794bdfb",
+    "nonempty_rows": 667
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.2/production_docs/bom/KT-PR0051EU_TAZ_Workhorse_OCA_BOM.csv",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/c132bc6083d00a27b48ecc87fa7ec429973e40bb3e5e473643aed4703c76c1bf.bin",
+    "sha256": "c915b0cb666a3a8360e56e456f1721d83b40f45d79df111263cf37db244db3b8",
+    "nonempty_rows": 669
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.2/production_docs/bom/KT-PR0051EU_TAZ_Workhorse_OCA_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/ac425e729db809860224f5e9331ae8b068823e22467444e90ae5c7f5557f0080.bin",
+    "sha256": "8a4ebc7cade08258ee82a0ad69a2b46c4a6777df1d90fce731345471b64265d4",
+    "nonempty_rows": 668
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.2/production_docs/bom/KT-PR0051NA_TAZ_Workhorse_OCA_BOM.csv",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/fab992c8d309ae1eec756cdd62f8a3e3ac6eb9ba74813772da29e95ec18063c6.bin",
+    "sha256": "1124ed53deacfa27543bfcd399ebd870948946e2d032fad4cee77e9145da6805",
+    "nonempty_rows": 668
+  },
+  {
+    "source_url": "https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.2/production_docs/bom/KT-PR0051NA_TAZ_Workhorse_OCA_BOM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/a3cae5fc63d5e11ab380d373e0f1886010a0dae9620615f9e4abd13197b3d515.bin",
+    "sha256": "b7b5bbf926f62621de1541e4cf7a326320143cb49780973eee54b2c43127a897",
+    "nonempty_rows": 667
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/100k_Semitec_NTC_Thermistor_235mm_KT-CP0110/BoM_100k_Semitec_NTC_Thermistor_235mm_KT-CP0110.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/0cb1b593da7332a5e9680dc18b8de9dd2b057459b08caf5d03a1317ea7abcec7.bin",
+    "sha256": "9d69d23c5d56395adba574f1f1a1981f6e1dcf1ddd6268d652fe83e2fa2c3403",
+    "nonempty_rows": 11
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/108_Tooth_Geared_Hobb_KT-MS0008/108_Tooth_Geared_Hobb_KT-MS0008_BoM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/4f61319c6a9d834af984ae66fb5e3e6959563fba0e5ae7d5ac5dfdf6fdc365a3.bin",
+    "sha256": "3703ae1578ca48dc33f9414711ba094ff26c939bbf3b6e8e55c1ecf0982fe1ae",
+    "nonempty_rows": 6
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/10mm-x-282mm_Drive_Rod_(x2)_KT-HD0004/10mm-x-282mm-Drive-Rod-(x2)_KT-HD0004_BoM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/74326aa1a37d088d0225d72de952bc87b006d39fd1c3f75855108097fa15ca70.bin",
+    "sha256": "8840bf8e8de28be6a8c3befea25f5c69af27aaba5b34c2fd6e73a88075e7c490",
+    "nonempty_rows": 8
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/10mm-x-282mm_Drive_Rod_(x2)_KT-HD0004/10mm-x-282mm-Drive-Rod-(x2)_KT-HD0004_BoM_MO16-0063.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/0713e7c9d2906230a54327ca963e0447e8b75e118797b267adb3e9bd004ca374.bin",
+    "sha256": "3400e1b96539ac5a3fb88af61756875bf36b5ea57ee701be97316cfd70f4dad3",
+    "nonempty_rows": 8
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/10mm_smooth_rods_500mm_(x2)_KT-HD0018/BoM_10mm_Smooth_Rods_500mm_(x2)_KT-HD0018.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/5b739dd38f7106b5f80a9992bb7210e01ba038bb112ca52bf4f386e7ce6ee103.bin",
+    "sha256": "313884f94420254dccbba985d72acfcfb24b79e5683173b35c53bb1c85003a82",
+    "nonempty_rows": 6
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/12mm_Igus_High_Precision_Bearings_KT-CP0097/12mm_High_Precision_Bearings_BoM_KT-CP0097.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/628b6647cf97f41e4619cd89f3116ef5f66e3595e89c551c4c32b0b6331e5c9e.bin",
+    "sha256": "f113b97ced55468af8a5e0b2158e60c227ae1000d1c683469e2d3460598877e7",
+    "nonempty_rows": 6
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/12mm_Igus_High_Precision_Bearings_KT-CP0097/12mm_High_Precision_Bearings_BoM_KT-CP0097_MO16-0031_150_Units.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/db07d1f38e192202ff84373cd16df0cae1b994015f15f8314ba77e5ee73b96d2.bin",
+    "sha256": "6f5bdf8b40a08626672154c5faffbfbaaeda1e47582e179444f4ab41411df17b",
+    "nonempty_rows": 6
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/12mm_Igus_High_Precision_Bearings_KT-CP0097/12mm_High_Precision_Bearings_BoM_KT-CP0097_MO16-0100x100.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/4485642559322b9988c4ae6949fa6178da879a499d0c9333e880800bd6547b9b.bin",
+    "sha256": "a284ca8ce45e8436544bbb492e4b6cfb74b60932d6f643adcbaf520ea4a3b2c3",
+    "nonempty_rows": 6
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/24v_150w_Internal_PSU_KT-PS0001/BoM_24_Volt_DC_150_Watt_internal_power_supply_KT-PS0001.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/af7e7d7651ac753bbf30c7a21a398f916021b03456f3e2b9cd139dddfff0001f.bin",
+    "sha256": "cc43809cbd7d0ab266d65053ddc990e8e9d66ff2aa7079a769b50e168821dd10",
+    "nonempty_rows": 4
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/24v_30w_Heater_Cartridge_225mm_KT-CP0101/24v_30w_Heater_Cartridge_225mm_KT-CP0101_BoM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/cac964e135f49666b99163fa4487ab23617b85c2072890499bfc77b5884f69ed.bin",
+    "sha256": "b0706f7ffa7ea1fe277aaff16728a683614e37b39c73503a6203b1527042af11",
+    "nonempty_rows": 7
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/24v_30w_Heater_Cartridge_225mm_KT-CP0101/24v_30w_Heater_Cartridge_225mm_KT-CP0101_BoM_MO16-0094x300.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/a26fb16a89de4c4b4b3f9a8492e87936d891f7fe9c442fa76e7491ba1fa8cd00.bin",
+    "sha256": "fdb002b6c01593150d9cd3ee24c4baf3e1c7dbeb7f049996c84ef133ed0601cd",
+    "nonempty_rows": 7
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/24v_40mm_Pelonis_Low_Flow_Fan_KT-EL0065/BoM_24v_40mm_pelonis_fan_KT-EL0065.ods",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/83058ea61c4a70a9b60079356cd1b4ec4e116ef3149c3907185e02099ba60fdd.bin",
+    "sha256": "2bd6bd6edf8dc515e4118a47f10344c82d781e3739cd084df690d04083383b01",
+    "nonempty_rows": 7
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/24v_40mm_Pelonis_Low_Flow_Fan_KT-EL0065/BoM_24v_40mm_pelonis_fan_KT-EL0065_MO16-032_150_Units.ods",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/f0c6aba8c9de42bfca9e639b74a6253308ddb93f9e3e72d9f2755a1832e3d6e6.bin",
+    "sha256": "d370119d6e0c24ab1492b95d25293af50246af13ee5192836302415b5fad2c28",
+    "nonempty_rows": 7
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/24v_40w_Heater_Cartridge_KT-CP0111/BoM_24v_40w_Heater_Cartridge_KT-CP0111.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/3becfc3ede30a82b36e37e44a6841c29a9fa22aad372dc7b3950fd8e66d8fb58.bin",
+    "sha256": "d6d076d5dc7601b2b97d2c3eb42e7285db34b0787f3221cd6c006062b14cdfe6",
+    "nonempty_rows": 7
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/24v_500w_PSU_KT-EL0063/24v_500w_PSU_BoM_KT-EL0063.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/661085831237008b172f5231d5fceb311d501451df1f114cff234bef3861d996.bin",
+    "sha256": "382b76acfc45dbcd56a973a068613b45b01797d0d85931a728541cc089a4898a",
+    "nonempty_rows": 33
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/24v_Silicone_Heater_298mmx298mm_KT-HB0005/24v_Silicone_Heater_298mmx298mm_BoM_KT-HB0005.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/136c0eaaa8c426862f775c3e2b19422c4e0c4e500ceef03b2c88feaa15392a14.bin",
+    "sha256": "07daf494e86145fc3c31da5c300ab99b8974f4f5c4e2c34182e733763a8cadb4",
+    "nonempty_rows": 7
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/24v_Silicone_Heater_298mmx298mm_KT-HB0005/24v_Silicone_Heater_298mmx298mm_BoM_KT-HB0005_MO16-0068.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/d040dc9b7a7a330dc7decb7634cf1a12ea98d9c8acddc9d9a9809979ea4dbac0.bin",
+    "sha256": "6cdbb2a30bc4bc06b69483325967d771541e07f5aa5f4cb2f91a067e2ea7ace1",
+    "nonempty_rows": 7
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/5_Amp_Nano_Polyfuse_(x3)_KT-CP0117/5_Amp_Nano_Polyfuse_(x3)_BoM_KT-CP0117.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/993e1b715f26fdc60f2249b2bd335f0452f29f905c5dd3eb2286d8d92c0bd275.bin",
+    "sha256": "8183b17a792ed1f3c62b01c25ed02fe1a03fe10af7b5bd1bbc26ba8a680f2d08",
+    "nonempty_rows": 5
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/5v_40mm_Pelonis_fan_KT-EL0066/BoM_5v_40mm_Pelonis_fan_KT-EL0066.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/fc0de476caaf1be4d9559f216d2230032b6b047f3ed932dd9ac5bdc33dd0c16a.bin",
+    "sha256": "2b61943a0701aa9f3badd1dc058400be59dd192986aedaa43d5293806df6d3de",
+    "nonempty_rows": 7
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/5v_40mm_Pelonis_fan_KT-EL0066/BoM_5v_40mm_Pelonis_fan_KT-EL0066_MO16-0033.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/7376eb9505a63fb3cdfdc75f6d0bcfa9aaf71397f8eacd1155a1b84c8a3046f9.bin",
+    "sha256": "9e55d4408beed0ef8573a1c92d0a5217c8a65843cb03037156d400ace0154450",
+    "nonempty_rows": 8
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/7_Piece_Hex_Driver_Set_KT-HD0020/BoM_7_Piece_Hex_Driver_Set_KT-HD0020.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/37d3106d6d0a3b74ce9788f342420eafcd1c3db66bd028289a033f8d1821ab05.bin",
+    "sha256": "2690a5ffa8c630beca9ee1932659c0faea1ccb768a51dc2a1dfc98321ed52e1f",
+    "nonempty_rows": 5
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/8mm_smooth_rods_315mm_(x2)_KT-HD0019/BoM_8mm-Smooth_Rods_315mm_(x2)_KT-HD0019.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/8278b137f2cc97faaa5505d5a1fd03829024a8c7153962b9845e2b95462f3104.bin",
+    "sha256": "d6bf7546a3487ef1e48292a93da17ab8dd0bf896ce331f1a268e404d095879f9",
+    "nonempty_rows": 6
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_4-5_Complete_Bed_Harness_KT-HR0007/TAZ_4-5_Complete_Heat_Bed_Harness_KT-HR0007_BoM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/5d27ee80dd0131f9415c104aa052c626782054684735bfd1d5df6a2d21c1e33f.bin",
+    "sha256": "bc3fd75a984cb65b4d7055b833b343182f394512979b145dc0a4f0f4b194395b",
+    "nonempty_rows": 18
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_4-5_Control_Box_Bed_Harness_KT-HR0002/KT-HR0002_BoM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/b1c3f6db9ba3c3705aaf9519812d8a21de3aaca22dcc768435d08cbd37747d45.bin",
+    "sha256": "e327d599ea12aff75acd17348528745aaeda74e2ddd313987a08bae4c1357094",
+    "nonempty_rows": 13
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_4-5_External_Bed_Harness_KT-HR0003/KT-HR0003_BoM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/066fb6f047fb8fb76643df0bb19ecf4eeaf5a2919da49502aadfe4b28ade7c0d.bin",
+    "sha256": "f74abf116f0756c88f4b4f0eec2cdd8bd4b5d94c7e37ef84f99c2c7e8732e90a",
+    "nonempty_rows": 14
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_5-6_Heat_Bed_Kit_KT-HB0001/BoM_TAZ_5-6_Heat_Bed_Kit_KT-HB0001.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/1b2cc46c75acec883d12ea9828a99cf25c40cf99fd50f2b3cb93a30f80e83726.bin",
+    "sha256": "5e46f3a43542d6c3923c9bef8fd296da04c88bb327508ed2833420a91c262aad",
+    "nonempty_rows": 12
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_5-6_Heat_Bed_Kit_KT-HB0001/BoM_TAZ_5-6_Heat_Bed_Kit_KT-HB0001_150_Units_MO16-0026_150_Units.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/942e95dedc2715aa21be757b1705f184f2e5795bcec4023c55b04f7857af4dcb.bin",
+    "sha256": "92f6a3e2a3a814fbbd502272c03aec0da9b665df232d36c063f15658f6e836d3",
+    "nonempty_rows": 12
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_5-6_Heat_Bed_Kit_KT-HB0001/BoM_TAZ_5-6_Heat_Bed_Kit_KT-HB0001_150_Units_MO16-0049_150_Units.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/cd0ae18adc541dc078d69968309a33fd3401680463014fe42f872097adab2c81.bin",
+    "sha256": "3ac89e7831e98f9b1888c7a5049727cbfea7a0430c02a07bc0c541f929911e56",
+    "nonempty_rows": 11
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_5-6_Heat_Bed_Kit_KT-HB0001/BoM_TAZ_5-6_Heat_Bed_Kit_KT-HB0001_MO16-0058_300_Units.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/f69d9ffd3e4b6c43e372f5079cd8120ba6061e7d18fc170594f42403eed143c9.bin",
+    "sha256": "543623f29e1c74625dfa27c9fa65249fcd27bc61ff1c52b71e74c7b8aa028920",
+    "nonempty_rows": 12
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_5-6_Heat_Bed_Kit_KT-HB0001/BoM_TAZ_5-6_Heat_Bed_Kit_KT-HB0001_MO16-0109x250.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/ec0b9442d2cdb765384a2bba96fbd96fa81c8fea7b87a58d675785c347507fbf.bin",
+    "sha256": "8c907d93c81195e00f2f1f9035b45cd446b9c05193cfee4b14f711ede61a7feb",
+    "nonempty_rows": 12
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_5_Bed_Corner_(x4)_KT-PP0027/BoM_TAZ_5_Bed_Corner_(x4)_KT-PP0027.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/a21d4225325fd638c94c20639fcf5e7cecd8bc386e8e6ef41dd55bcb57251612.bin",
+    "sha256": "216a296b12fa7bdbb4d99d86490d69f661f1f1e46085e7e3a768ea98a88e9f49",
+    "nonempty_rows": 8
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_5_Extruder_Fan_Mount_with_Inserts_KT-PP0029/BoM_TAZ_5_Extruder_Fan_Mount_with_Inserts_KT-PP0029.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/85af8cc0756bd8f07ce67a83ae080a4836f59045982847ba58f902e4d13956a4.bin",
+    "sha256": "5f88308f8cc8d00f6048aa6190efe0fea16ce48b7f9693e2722e0b2f7dee8017",
+    "nonempty_rows": 8
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_5_Extruder_Mount_KT-PP0036/BoM_Taz_5_Extruder_Mount_KT-PP0036.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/f5232a4bc0682d1d16b1ac4612ea40581f0b5aad1a29b27acb101e913147f59a.bin",
+    "sha256": "4e8a092bfdc960ee86c7b6cd610b8953c25a2ce96182b8c76ab0c79ea0a6877e",
+    "nonempty_rows": 10
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_5_Y_Idler_Assembly_KT-PP0020/BoM_TAZ_5_Y_Idler_Assembly_KT-PP0020.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/745c7972fc5559de1ab9bff2a72f0311177af55a29d2fbb3ffc306a0a8fdf610.bin",
+    "sha256": "218785a30773c2a5d535f477d7c999274cdc8647ff5b5a56ffd0ed59328106d2",
+    "nonempty_rows": 11
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_6_Controller_Box_KT-EL0058/BoM_TAZ_6_Controller_Box_KT-EL0058_OCA.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/072899b4975e424a2f551b2fc9aa9be2f0de57ebd112e710d29b3e868932063d.bin",
+    "sha256": "63095a1b100532dcfd0a0cd921c039bd151adffed65315e20f055017ce5f39ea",
+    "nonempty_rows": 112
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_6_Controller_Box_KT-EL0058/Electronics_chassis_bom.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/485e75ed54e6ac5e226766f8b926600e2b305d79d1c8a816fa2920c456349540.bin",
+    "sha256": "4e29429e8f40e66d5088ee4dceee37821f596bbfa197231deae53da6e7db96c7",
+    "nonempty_rows": 845
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_6_External_Bed_Harness_KT-HR0005/BoM_TAZ_6_External_Bed_Harness_KT-HR0005.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/7d5860ab3200bbf4fd0762cf678bfbe1b0bf95b7152ebf62e411c3ee27915711.bin",
+    "sha256": "db6025e9d019b627cfe85b63f8a42ef155dd6cd1d21b7791c50395443ca4ccd7",
+    "nonempty_rows": 21
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_6_Extruder_Mount_with_Inserts_KT-PP0023/BoM_TAZ_6_Extruder_Mount_with_Inserts_KT-PP0023.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/d5a327e84af7a9439d45a1b6f6eb60050c9f19265fd41583c89463c025e91c14.bin",
+    "sha256": "86c05fb50781d4d5cd988551182155b6fdba83a4edaa1da60fdb744692110e30",
+    "nonempty_rows": 8
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_6_Fan_Duct_Left_KT-PP0025/BoM_TAZ_6_Fan_Duct_Left_KT-PP0025.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/86031774aec1e1faa472ca32dc28cd73bb42e5aad6be3b74663f62da86bda1dd.bin",
+    "sha256": "e067d272a6d322c796f3b1642ec791728227d0524e6f9320ad37418561d67c8b",
+    "nonempty_rows": 8
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_6_Fan_Duct_Right_KT-PP0026/BoM_TAZ_6_Fan_Duct_Right_KT-PP0026.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/2bf1630e07139f7f53bc94c31a9cc14cef8318a346f39f3883a9e047db8ac51b.bin",
+    "sha256": "615858c935df2787c071b945e873da2d71690f1e9f5f3e51dc486d219b39ab03",
+    "nonempty_rows": 10
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_6_Packaging_KT-PA0000/TAZ_6_Packaging_KT-PA0000_BoM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/443a786a067ce66b741c2477ba280c6daeffa84679ef0eb84fd09076042861e9.bin",
+    "sha256": "89aa23f9be6033a61361a03daf5eb6a48ad11e06e7947e7ff6fa2b55085fa9d7",
+    "nonempty_rows": 11
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_6_RAMBo_Kit_1.4_KT-CP0131/BoM_TAZ_6_RAMBo_Kit_1.4_KT-CP0131.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/c24df8c046431741912c0046f017b5fefca37d62576f44f6c8e8b5acfeec3a15.bin",
+    "sha256": "aabd145f99a1e1bb5032156378bbe2a227efa67f1581f5d1217d90b7c4552c72",
+    "nonempty_rows": 9
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_6_Tool_Head_KT-CP0096/TAZ_6_Tool_Head_BoM_KT-CP0096.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/f326d90db3ab16004836d8fc273592ac4622412f591724481b41afd15123263d.bin",
+    "sha256": "2b9c7dfb217e48b8d0f9b42f7374b36cebab353a35ec5f897a1cd074c7a274f8",
+    "nonempty_rows": 64
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_6_Y_Idler_Assembly_KT-PP0035/BoM_TAZ_6_Y_Idler_Assembly_KT-PP0035.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/a690934ae6c172202e301a2b5c299efb3534df56e81c4b623dfeaad2be841266.bin",
+    "sha256": "de22cc4b447de3bf5a56ea2c881add172bc57f79f2fbd56b47315825413f42d1",
+    "nonempty_rows": 12
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_Aerostruder_Hot_End_0.5_KT-HE0006/KT-HE0006_TAZ_Aerostruder_Hot_End_Kit_BoM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/64def04b256eebb005ce513ed1f2c35b9d9429f558c5ad87e4b6c6b118b94241.bin",
+    "sha256": "a437e2187ad74205976242e2083694f6a33dd24960cc95e6c46bd206302dd5b3",
+    "nonempty_rows": 15
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_Dual_Extruder_Tool_Head_v2_Flexplate_KT-PP0037/BoM_TAZ_Dual_Extruder_Tool_Head_V2_Flexplate_KT-pp0037.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/f400dd4fa471346bc3277c4a1484099d98b9df67fee2a84c120e6a6f3b08ed31.bin",
+    "sha256": "0c6fd046b0a7285193e36bfd5f1582d34c9ac0aabea8258d72cb3b9fb4f60c21",
+    "nonempty_rows": 8
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_Flexystruder_Mount_KT-PP0018/BoM_TAZ_Flexystruder_Mount_with_Inserts_KT-PP0018.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/5b29c8f4978f3860e8305b7724c7d45aaa2456c8d08914350c3e15af28e9b07a.bin",
+    "sha256": "09811093ff0a6c80cbe6ee02aef66828f830e7e0e730e6c19b9daaa4ea7a13e9",
+    "nonempty_rows": 10
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_PEI_Sheet_KT-HB0000/BoM_TAZ_PEI_Sheet_KT-HB0000.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/67e77a34cc4427b889b5b9cabb36b769b665b0b7d96820a1bdae85ed07f54a16.bin",
+    "sha256": "dfd180843734b04a50b1c8df740d43a921e9c6698455d118a04314547a24a03e",
+    "nonempty_rows": 9
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_PEI_Sheet_KT-HB0000/BoM_TAZ_PEI_Sheet_KT-HB0000_MO16-0054.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/ca00ae53e0f35dc94964fd3b0f567c29e24e29fd0cc939568e76fb7b99416974.bin",
+    "sha256": "f09e57325cac8d4070af37bfcd96ed9705c7bb23faf0c500e98df9a9de88868a",
+    "nonempty_rows": 7
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_PEI_Sheet_KT-HB0000/BoM_TAZ_PEI_Sheet_KT-HB0000_MO16-0084x1500.xlsx",
+    "retrieved_at": "2026-10-12T01:03:15.386805+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/45b90a3a303dda90c1d753b12517aa52929d07ca087726f3be038ca409eede8a.bin",
+    "sha256": "03c9e1f4a78e27d1cdad06c9180824471b1cf967203f49ea0f591c807bcb0781",
+    "nonempty_rows": 7
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_RAMBo_Assembled_KT-CP0103/assembled_rambo_bom_KT-CP0103.ods",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/517e4f7e42236c83c76ef92b450c009f6cf564428d7bac157efc264bef35b65c.bin",
+    "sha256": "917c8b0b66006350a9a662f579ab1ec70195fb5fac448178780f4cd16f4c4e65",
+    "nonempty_rows": 9
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_RAMBo_Assembled_KT-CP0103/assembled_rambo_bom_KT-CP0103_MO16.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/b6ed43de3e0a038e572a96ef61df13179db38e65cdf3dec23595b47ca0b6811f.bin",
+    "sha256": "ae861cdca9e2d08c1116d16d4b6400569e57a208149a3d617cb7ddd01f594054",
+    "nonempty_rows": 9
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_v2c_tool_head_wiring_harness_KT-EL0060/TAZ_v2c_tool_head_wiring_harness_KT-EL0060_BoM.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/31c62f4bd60fbbd8ac1f6e9244d9a2d5074a82ca1648d45334427e390633569f.bin",
+    "sha256": "13981694b226b736a95ac75cf2dab1a93b3c627df4e9150c5edaa8e463014142",
+    "nonempty_rows": 9
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_v2c_tool_head_wiring_harness_KT-EL0060/TAZ_v2c_tool_head_wiring_harness_KT-EL0060_BoM_200_Units_MO16-0019.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/33e3a9b8cc12c31d62e2afb6bbeeabe33decb8b651ab664f68548c08861ae6d6.bin",
+    "sha256": "4d3c6dfc07c141c27f82c912bf1f09fbb351279ebcf418000228a25af549bd89",
+    "nonempty_rows": 19
+  },
+  {
+    "source_url": "https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_v2c_tool_head_wiring_harness_KT-EL0060/TAZ_v2c_tool_head_wiring_harness_KT-EL0060_BoM_MO16-0077x250.xlsx",
+    "retrieved_at": "2026-10-12T01:05:47.790421+00:00",
+    "status": 200,
+    "raw_file": "raw/lulzbot-public-research/c2ab0da23fb2507f57d8cdbcdc97461758fca3f5816da8cd85e2454b53ecae44.bin",
+    "sha256": "7487c7210421dfa60b706e32e37a00b5d4ceb798e9e7b1714964abeee6507db2",
+    "nonempty_rows": 9
+  }
+]

@@ -1,0 +1,178 @@
+sku,name,hts_code,country_of_origin,import_date,source_url,evidence_kind
+PP-MP0149_IR,Bottom Plate,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+PP-MP0173,"[PP-MP0173] Knurled Gear Shaft for Dual v3, Rev E",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/108_Tooth_Geared_Hobb_KT-MS0008/108_Tooth_Geared_Hobb_KT-MS0008_BoM.xlsx,public_archived_bom_part; unclassified
+PP-MP0183,[PP-MP0183] 108 Tooth 20pa 0.5 Mod Delrin Gear,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/108_Tooth_Geared_Hobb_KT-MS0008/108_Tooth_Geared_Hobb_KT-MS0008_BoM.xlsx,public_archived_bom_part; unclassified
+PP-MP0204,[PP-MP0204] Aero Mirrored Body w/ Threaded Insert,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-MP0205,[PP-MP0205] E3D Aero Steel Pinion Gear w/ set screw,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-MP0210,[PP-MP0210] Heatsink Einsy,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-MP0215,"[PP-MP0215] LCD Cover, HIPS, Mini 2",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+PP-MP0216,"[PP-MP0216] Bed Plate, 6061",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-MP0225,[PP-MP0225] YZ Idler,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-MP0227,[PP-MP0227] XY Calibration Cube,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-MP0228,[PP-MP0228] Top Rod Mount,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-MP0229,[PP-MP0229] Back Plate,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-MP0230,[PP-MP0230] Actuator Connector,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-MP0231,[PP-MP0231] Bottom Plate,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-MP0232,"[PP-MP0232] Motor Mount Ambidextrous, Machined",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-MP0233,[PP-MP0233] Aero Standard Body w/ Threaded Insert,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PP-MP0234,[PP-MP0234] Archim Board Heatsink,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+PPGP0060,Wade Reloaded Bearing Washer,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+Pp-GP0227,Z Lower Right v 2.3,,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+RM-AB0079,"ABS 3mm, 1m filament sample, LulzBot green",,,,https://download.lulzbot.com/TAZ/4.0/production_docs/TAZ-BOM-Guava.xlsx,public_archived_bom_part; unclassified
+RM-AB0082,"Black ABS 3mm Filament, 5lb Reel Village Plastics",,,,https://download.lulzbot.com/TAZ/6.03/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+RM-AB0096,"LulzBot Green ABS 3mm Filament, 5lb Reel Village Plastic",,,,https://download.lulzbot.com/TAZ/6.03/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+RM-AB0103,"Black ABS 3mm Filament, 5lb Reel, Esun",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+RM-AB0104,"[RM-AB0104] Chroma Strand ABS Filament, Lulzbot Green 2.85mm, 5 lb reel",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+RM-AB0105,"[RM-AB0105] Chroma Strand ABS Filament, Black 2.85mm, 5 lb reel",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+RM-HI0024,"HIPS, 1 meter Sample, Random Color",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+RM-HI0025,"HIPS, 1 meter Sample, Lulzbot Green",,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+RM-MS0034,"[RM-MS0034] nGen Amphora (colorFabb) 2.85 mm filament, 5lb Reel, AM3300 Polymer, LulzBot Green",,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+RM-MS0035,"[RM-MS0035] nGen Amphora (colorFabb) Sample Pack, AM3300 Polymer, LulzBot Green",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+RM-PL0091,"High Temp PLA 2.85mm, 5 Meter Sample Coil, Proto-Pasta",,,,https://download.lulzbot.com/TAZ/6.03/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+RM-PL0118,"[RM-PL0118] PolyLite PLA LulzBot Green,  2.85mm 1kg Reel - Polymaker",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.2/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+RM-PL0121,"[RM-PL0121] PolyLite PLA True Black,  2.85mm 1kg Reel - Polymaker",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.3/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+RM-PL0134,"[RM-PL0134] PolyLite PLA LulzBot Green,  2.85mm 3kg Reel â€“ Polymaker",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+RM-PL0137,[RM-PL0137] PolyLite PLA True Black  2.85mm 3kg Reel â€“ Polymaker,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+RM-PL0149,"Verbatim PLA 2.85mm, 5m Sample Coil",,,,https://download.lulzbot.com/TAZ/6.03/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+RM-TE0002,"Midnight NinjaFlex™ TPE Filament, 3mm, 0.75kg",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+RM-TE0027,"LulzBot Green NinjaFlex TPE Filament, 3mm. 0.75kg Fenner Drives",,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+SH-BA0003,"9 x 12"" 4 Mil Reclosable Bags",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+SH-BX0002,"13 x 13"" 150# Corrugated Pads",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_Silicone_Heater_298mmx298mm_KT-HB0005/24v_Silicone_Heater_298mmx298mm_BoM_KT-HB0005.xlsx,public_archived_bom_part; unclassified
+SH-BX0006,"13x13x2"" Corrugated Boxes 25/Bundle",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_5-6_Heat_Bed_Kit_KT-HB0001/BoM_TAZ_5-6_Heat_Bed_Kit_KT-HB0001.xlsx,public_archived_bom_part; unclassified
+SH-BX0025,"10x8x2-1/2 32 Ect B Brown Roll End Tuck Mailer, Custom Box",,,,https://download.lulzbot.com/TAZ/4.0/production_docs/TAZ-BOM-Guava.xlsx,public_archived_bom_part; unclassified
+SH-BX0032,30x24x13 CUSTOM BOX,,,,https://download.lulzbot.com/TAZ/4.0/production_docs/TAZ-BOM-Guava.xlsx,public_archived_bom_part; unclassified
+SH-BX0035,21 x 14 x 10 Box 20/240,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+SH-BX0039,"7 x 5 x 5"" Corrugated Boxes",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_RAMBo_Assembled_KT-CP0103/assembled_rambo_bom_KT-CP0103.ods,public_archived_bom_part; unclassified
+SH-BX0051,"TAZ 6 Box White: 34-1/2 x 11-3/16 x 25 RSC, 51ECT, Double Wall, White, 2 Colors, Glue Joint",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+SH-BX0052,"TAZ 6 Bed Insert: 19-5/8 x 17-1/8 Die Cut, 44 ECT, C Flute, Kraft, Plain",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+SH-BX0053,"TAZ 6 Scored Pad: 10-3/8 x 28-3/4 Scored Pad, 44 ECT, C Flute, Kraft, Plain",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+SH-BX0054,"TAZ 6 U-Pad: 25 x 19-7/16 Scored Pad, 51 ECT, Double Wall, Kraft, Plain",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+SH-BX0055,"TAZ 6 Tool Head and Accessory Box: 9-1/2 x 7 x 3-7/8 Die Cut, 32 ECT, B Flute, Kraft, Plain",,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+SH-BX0066,TAZ 6 Electronics Chassis Box 23 x 10 3/4 x 8 3/16  - 44 ECT C Brown,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_6_Controller_Box_KT-EL0058/BoM_TAZ_6_Controller_Box_KT-EL0058_OCA.xlsx,public_archived_bom_part; unclassified
+SH-BX0067,"Korrvu Retention Pack for a 18.5"" x 2"" X 1.5"" Box, 200#E Brown",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/10mm-x-282mm_Drive_Rod_(x2)_KT-HD0004/10mm-x-282mm-Drive-Rod-(x2)_KT-HD0004_BoM.xlsx,public_archived_bom_part; unclassified
+SH-BX0068,"18.5"" X 2"" x 1.5"" 200#E Brown Die Cut Carton for the Korrvu Retention Pack",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/10mm-x-282mm_Drive_Rod_(x2)_KT-HD0004/10mm-x-282mm-Drive-Rod-(x2)_KT-HD0004_BoM.xlsx,public_archived_bom_part; unclassified
+SH-BX0070,"14 x 8 x 4"" Corrugated Boxes",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_500w_PSU_KT-EL0063/24v_500w_PSU_BoM_KT-EL0063.xlsx,public_archived_bom_part; unclassified
+SH-BX0073,"[SH-BX0073] 23 x 2 x 1.5"" 200# E Brown Die Cut Carton for Korrvu Retention Pack",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/10mm_smooth_rods_500mm_(x2)_KT-HD0018/BoM_10mm_Smooth_Rods_500mm_(x2)_KT-HD0018.xlsx,public_archived_bom_part; unclassified
+SH-BX0496,[SH-BX0496] Mini 2 Carton 22x17x19 275# 51 ECT White Doublewall RSC Printed,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+SH-BX0498,[SH-BX0498] TAZ - Product Box,,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+SH-MS0056,TAZ 6 Hand Hole Liners: Allenfield 350010 Clean Lift Handle Inserts,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+SH-MS0057,Label nGen Sample (for Olive),,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+SH-PA0017,"Bubble 1/2""x48""x250' perf 12"" slit 2-24"" rolls (Shipping)",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_5-6_Heat_Bed_Kit_KT-HB0001/BoM_TAZ_5-6_Heat_Bed_Kit_KT-HB0001.xlsx,public_archived_bom_part; unclassified
+SH-PA0018,"Bubble 1/8RPB210P; 1/8""x6""X500'PERF@12",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+SH-PA0022,"13X13"" PAD",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+SH-PA0023,"1⁄16"" Perforated UPSable Foam Roll - 24"" x 900'",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+SH-PA0025,CUSTOM PAD 4-1/2X9-38,,,,https://download.lulzbot.com/TAZ/5.0.1/production_docs/TAZ-BOM-juniperbush_3000order.xlsx,public_archived_bom_part; unclassified
+SH-PA0030,"Fabricated Foam Insert: 2 End Caps, Tray w/Plastic Corrugated & Plain Pad, v4",,,,https://download.lulzbot.com/TAZ/5.0/production_docs/TAZ-BOM-Juniper_1500order.xlsx,public_archived_bom_part; unclassified
+SH-PA0035,"Bubble Mask® Roll - 24"" x 300', 3⁄16"", Perforated Sticks to Product",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_RAMBo_Assembled_KT-CP0103/assembled_rambo_bom_KT-CP0103.ods,public_archived_bom_part; unclassified
+SH-PA0040,"Fabricated Foam Insert: 2 End Caps, Tray w/Plastic Corrugated & Plain Pad, v5",,,,https://download.lulzbot.com/TAZ/5.0.1/production_docs/TAZ-BOM-juniperbush_3000order.xlsx,public_archived_bom_part; unclassified
+SH-PA0042,"6 Mil Heavy Duty Poly Tubing Roll - 14"" x 500'",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_Silicone_Heater_298mmx298mm_KT-HB0005/24v_Silicone_Heater_298mmx298mm_BoM_KT-HB0005_MO16-0068.xlsx,public_archived_bom_part; unclassified
+SH-PA0044,"[SH-PA0044] Korrvu Retention Pack for 23 x 2 x 1.5"" 200# E Brown Die Cut Carton",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/10mm_smooth_rods_500mm_(x2)_KT-HD0018/BoM_10mm_Smooth_Rods_500mm_(x2)_KT-HD0018.xlsx,public_archived_bom_part; unclassified
+SH-PA0052,"[SH-PA0052] 6 Mil Heavy Duty Poly Tubing Roll - 14"" x 500'",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_Silicone_Heater_298mmx298mm_KT-HB0005/24v_Silicone_Heater_298mmx298mm_BoM_KT-HB0005.xlsx,public_archived_bom_part; unclassified
+SH-PA0054,"[SH-PA0054] 1/4 x 4"" x 225' Polyethylene Foam perforated at 12""",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_Aerostruder_Hot_End_0.5_KT-HE0006/KT-HE0006_TAZ_Aerostruder_Hot_End_Kit_BoM.xlsx,public_archived_bom_part; unclassified
+SH-PA0060,"[SH-PA0060] TazPro, Top Endcap Foam, 1.7 lb. Density Polyethylene Foam, Black",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+SH-PA0061,"[SH-PA0061] TazPro, Bottom Endcap Foam, 1.7# Density Polyethylene Foam, Black",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+SH-PA0062,"[SH-PA0062] TazPro, Print Head Stabilizer Foam, 1.7# Density Polyethylene Foam, Black - Part A",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+SH-PA0063,"[SH-PA0063] TazPro, Corrugated Sleeve",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+SH-PA0064,"[SH-PA0064] TazPro, Print Head Stabilizer Foam, 1.7# Density Polyethylene Foam, Black - Part B",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+SH-PA0067,"[SH-PA0067] Workhorse, Print Head Stabilizer Foam, 1.7# Density Polyethylene, Top, Black",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+SH-PA0068,"[SH-PA0068] Workhorse, Print Head Stabilizer Foam, 1.7# Density Polyethylene, Bottom, Black",,,,https://download.lulzbot.com/TAZ/TAZ_WE/v1.0.0/production_docs/bom/KT-PR0051AU_TAZ_Workhorse_OCA_BOM.csv,public_archived_bom_part; unclassified
+SH-PA00??,Foam Kit,,,,https://download.lulzbot.com/TAZ/3.0/production_docs/TAZ-BOM-version3.0.xlsx,public_archived_bom_part; unclassified
+SH-PG,White Security Kraft Tape,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+SH-PG0001,"2 x 3"" 2 Mil Reclosable Polypropylene Bags, 1,000/CTN",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+SH-PG0002,"3 x 4"" 2 Mil Reclosable Polypropylene Bags",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+SH-PG0003,"4 x 6"" 2 Mil Reclosable Polypropylene Bags 1,000/carton",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_4-5_Control_Box_Bed_Harness_KT-HR0002/KT-HR0002_BoM.xlsx,public_archived_bom_part; unclassified
+SH-PG0005,"3 x 5"" 2 Mil Reclosable Polypropylene Bags",,,,https://download.lulzbot.com/TAZ/TAZ_Pro/v1.0.0/production_docs/bom/KT-PR0050_Quiver_OCA_BOM.csv,public_archived_bom_part; unclassified
+SH-PG0006,"6 x 9"" 2 Mil Reclosable Bags",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_4-5_External_Bed_Harness_KT-HR0003/KT-HR0003_BoM.xlsx,public_archived_bom_part; unclassified
+SH-PG0019,"Avery® White Shipping Labels for Laser Printers with TrueBlock Technology, 2 Inches x 4 Inches, Box of 2500 (5963)",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+SH-PG0022,"[SH-PG0022] 4 x 3 x 3"" Indestructo Mailers",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_Aerostruder_Hot_End_0.5_KT-HE0006/KT-HE0006_TAZ_Aerostruder_Hot_End_Kit_BoM.xlsx,public_archived_bom_part; unclassified
+SH-PG0025,"[SH-PG0025] 5 x 8"" 2 Mil Reclosable Bags, 1000/carton",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_4-5_Complete_Bed_Harness_KT-HR0007/TAZ_4-5_Complete_Heat_Bed_Harness_KT-HR0007_BoM.xlsx,public_archived_bom_part; unclassified
+SH-PG0028,6X9 2MIL RECLOSABLE BAG,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+SH-PG0030,[SH-PG0030] 8X10 2MIL RECLOSABLE BAG 1M/CT,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+SH-PG0031,"2 x 3"" No Print Reclosable Static Shielding Bags",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+SH-PG0056,"Kraft packing tape, tan, 3x450', gummed",,,,https://download.lulzbot.com/TAZ/5.0.1/production_docs/TAZ-BOM-juniperbush_3000order.xlsx,public_archived_bom_part; unclassified
+SH-PG0059,"Mailers, Indestructo, 7 x 5 x 4",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+SH-PG0064,"Mailers, Indestructo, 9 x 7 x 4, 100/bundle",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+SH-PG0065,"10 x 8 x 5"" Indestructo Mailers 100/800",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+SH-PG0067,5X7 2MIL RECLOSABLE BAG 1M/CT,,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+SH-PG0069,"3M 8898 Economy Strapping Tape - 1⁄2"" x 60 yards",,,,https://download.lulzbot.com/TAZ/5.0.1/production_docs/TAZ-BOM-juniperbush_3000order.xlsx,public_archived_bom_part; unclassified
+SH-PG0072,"3M 8898 Economy Strapping Tape - 2"" x 60 yards",,,,https://download.lulzbot.com/TAZ/5.0.1/production_docs/TAZ-BOM-juniperbush_3000order.xlsx,public_archived_bom_part; unclassified
+SH-PG0074,"Mailers, Indestructo, 7 x 5 x 2",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+SH-PG0075,1.5# RECY & 2# CROSSLINK W/ 10030 CH URETHANE,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+SH-PG0076,22x17x19 275# dw white/ OUTSIDE PRINT 2 COLOR,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+SH-PG0083,"9 x 12"" 8 Mil Reclosable Bags",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+SH-PG0084,"6 x 10"" 6 Mil Reclosable Bags",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+SH-PG0085,"3"" x 55 yards 3.1 Mil Uline Clear Carton Sealing Tape 24  rolls/case",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+SH-PG0099,"Disposable Desiccant Bag, Silica Gel, for 24 Cubic Inches, 400 Bags/Pack, packs of 400",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_5-6_Heat_Bed_Kit_KT-HB0001/BoM_TAZ_5-6_Heat_Bed_Kit_KT-HB0001.xlsx,public_archived_bom_part; unclassified
+SH-PG0103,"Uline Carton Sealing Tape - 2.6 Mil, 3"" x 110 yds, Clear",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/10mm-x-282mm_Drive_Rod_(x2)_KT-HD0004/10mm-x-282mm-Drive-Rod-(x2)_KT-HD0004_BoM.xlsx,public_archived_bom_part; unclassified
+SH-PG0105,"Economy Bubble Roll - 24"" x 250', 1⁄2"", Perforated",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_500w_PSU_KT-EL0063/24v_500w_PSU_BoM_KT-EL0063.xlsx,public_archived_bom_part; unclassified
+SH-PG0113,"[SH-PG0113] Mini Small Foam Insert, 11 x 7 x 6, 1.25# 55 ILD Grey Urethane Foam pad",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+SH-PG0114,"[SH-PG0114] Mini Larger Foam Insert, 11 x 7 x 8, 1.25# ILD Grey Urethane Foam pad",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+SH-PG0122,"TAZ 6 Foam: End Cap and Corner Set, 1.5 lb. Density Expanded Polyethylene Foam, Black",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+SH-PG0123,"TAZ 6: Tool Head Foam Insert: 1.2 lb. Density Extruded Polyethylene Foam, Gray",,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+SH-PG0129,"Laser Labels - White, 1 1⁄2 x 1 1⁄2""",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/100k_Semitec_NTC_Thermistor_235mm_KT-CP0110/BoM_100k_Semitec_NTC_Thermistor_235mm_KT-CP0110.xlsx,public_archived_bom_part; unclassified
+SH-PG0130,"Laser Labels -White, 2 1⁄2 x 1 1⁄2""",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/10mm-x-282mm_Drive_Rod_(x2)_KT-HD0004/10mm-x-282mm-Drive-Rod-(x2)_KT-HD0004_BoM.xlsx,public_archived_bom_part; unclassified
+SH-PG0131,#260 White Reinforced Gummed Tape with LulzBot Printed Logo,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+SH-PG0133,TAZ 6 Electronics Chassis Foam End-caps – Expanded Polyethylene,,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_6_Controller_Box_KT-EL0058/BoM_TAZ_6_Controller_Box_KT-EL0058_OCA.xlsx,public_archived_bom_part; unclassified
+SH-PG0134,"Avery® 8167 White Easy Peel Retun Address Labels; Inkjet, 1/2 x 1-3/4"", 2000/Pack",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/10mm-x-282mm_Drive_Rod_(x2)_KT-HD0004/10mm-x-282mm-Drive-Rod-(x2)_KT-HD0004_BoM_MO16-0063.xlsx,public_archived_bom_part; unclassified
+SH-PG0139,"Laser Labels - White, 4 x 2""",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_500w_PSU_KT-EL0063/24v_500w_PSU_BoM_KT-EL0063.xlsx,public_archived_bom_part; unclassified
+SH-PG0141,"TAZ 6: Set of 4 Foam Corners, 1.5 lb. Density Expanded Polyethylene Foam, Black",,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+SH-PG0142,"TAZ 6: Top Endcap Foam, 1.5 lb. Density Expanded Polyethylene Foam, Black",,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+SH-PG0143,"TAZ 6: Bottom Endcap Foam, 1.5 lb. Density Expanded Polyethylene Foam, Black",,,,https://download.lulzbot.com/TAZ/6.01/production_docs/TAZ-6.01-BOM_3000.Ordering.xlsx,public_archived_bom_part; unclassified
+SH-PG0144,"6 x 6"" Reclosable Static Shielding Bags 100/carton",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_RAMBo_Assembled_KT-CP0103/assembled_rambo_bom_KT-CP0103.ods,public_archived_bom_part; unclassified
+SH-PG0149,"[SH-PG0149] Mini, Small Smooth Rod Foam Block v2, Medium, Grey 2.0# Polyethylene 2 1/4"" x 1 1/4""",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+SH-PG0150,"[SH-PG0150] Mini, Long Smooth Rod Foam Block v2, Medium, Grey 2.0# Polyethylene 5"" x 1 1/4""",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+SH-PG0160,"[SH-PG0160] Bubble Roll - 24"" x 250', 1⁄2"", Perforated",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_6_RAMBo_Kit_1.4_KT-CP0131/BoM_TAZ_6_RAMBo_Kit_1.4_KT-CP0131.xlsx,public_archived_bom_part; unclassified
+SH-PG0163,"[SH-PG0163]  Mailers, Indestructo, 7 x 5 x 4, 100/bundle",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_6_RAMBo_Kit_1.4_KT-CP0131/BoM_TAZ_6_RAMBo_Kit_1.4_KT-CP0131.xlsx,public_archived_bom_part; unclassified
+SH-PG0168,"[SH-PG0168] TAZ 6: Foam Corner Large,  Expanded Polyethylene Foam, Black",,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+SH-PG0169,"[SH-PG0169] TAZ 6: Foam Corner Small,  Expanded Polyethylene Foam, Black",,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+SH-PG0170,"[SH-PG0170] Mini Foam, Polyethylene Foam, Top 22 1/8"" x 17 1/8 x 4, Foam Die Cut Fram Assembled",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+SH-PG0171,"[SH-PG0171] Mini Foam, Polyethylene Foam, Bottom 22 1/8"" x 17 1/8 x 4, Foam Die Cut Fram Assembled",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+SH-PG0173,"[SH-PG0173] Mini 2 Print Head Stabilizer, 1.7# Black Polyethylene Foam",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+SH-PG0176,"[SH-PG0176] Mini 2 Top Foam, 1.7# Black Polyethylene",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+SH-PG0177,"[SH-PG0177] Mini 2 Bottom Foam, 1.7# Black Polyethylene",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+SH_PG0003,"4 x 6"" 2 Mil Reclosable Polypropylene Bags",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+SR-MN0001,Laser Etching Service for PP-FP0075,,,,https://download.lulzbot.com/TAZ/6.03/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+SR-MN0002,Laser Etching Service for PP-FP0076,,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+SR-MN0003,Laser Etching Service for PP-FP0078,,,,https://download.lulzbot.com/TAZ/6.02/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+SR-MN0004,Laser Etching Service for PP-FP0080,,,,https://download.lulzbot.com/TAZ/6.03/production_docs/TAZ_6.02_BOM.xlsx,public_archived_bom_part; unclassified
+SR-MN0007,[SR-MN0007] Service for Cutting Wiper Pad AS-PR0023,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+SR-MN0010,"[SR-MN0010] Laser Etching Service for Clam Knive, TL-HD0009",,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini_Gladiola_BOM_OCA_AU.xlsx,public_archived_bom_part; unclassified
+Sh-PG0006,"6 x 9"" 2 Mil Reclosable Bags",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/TAZ_v2c_tool_head_wiring_harness_KT-EL0060/TAZ_v2c_tool_head_wiring_harness_KT-EL0060_BoM.xlsx,public_archived_bom_part; unclassified
+TL-CS0003,ArmsKeeper Glues: Maxi-Cure Extra Thick,,,,https://download.lulzbot.com/TAZ/4.0/production_docs/TAZ-BOM-Guava.xlsx,public_archived_bom_part; unclassified
+TL-CS0010,Lithium Grease,,,,https://download.lulzbot.com/TAZ/4.0/production_docs/TAZ-BOM-Guava.xlsx,public_archived_bom_part; unclassified
+TL-CS0010/TL-CS0114,Lithium Grease,,,,https://download.lulzbot.com/TAZ/5.0.1/production_docs/TAZ-BOM-juniperbush_3000order.xlsx,public_archived_bom_part; unclassified
+TL-CS0011,Super Lube Oil with PTFE Teflon 51004 4oz Bottle,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+TL-CS0012,"Loctite RTV Gasket Maker/Sealant 598 Black, 49 Pound Pail",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+TL-CS0040,"Extreme-Temperature Pipe Sealant & Threadlocker, 4 oz bottle, blue",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+TL-CS0083,"EMI/RFI-Shield Heat-Shrink Tubing 3/16"" ID Before, 3/32"" ID After, 48"" L, Black",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+TL-CS0099,Hot Glue,,,,https://download.lulzbot.com/TAZ/4.0/production_docs/TAZ-BOM-Guava.xlsx,public_archived_bom_part; unclassified
+TL-CS0115,5 Gallon DYKEM[REG] Metal Can Acetone,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified
+TL-CS0117,"[TL-CS0117] Elmer's Glue Sticks, .77oz",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+TL-CS0129,"Interference-Shielding Heat-Shrink Tubing, 3/8"" ID Before, 3/16"" ID After, 48"" Long, Black",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+TL-CS0136,"Flame-Retardant Heat-Shrink Tubing, 0.21"" ID Before Shrinking, 25' Long",,,,https://download.lulzbot.com/retail_parts/Completed_Parts/24v_500w_PSU_KT-EL0063/24v_500w_PSU_BoM_KT-EL0063.xlsx,public_archived_bom_part; unclassified
+TL-CS0140,"Loctite® 290 Threadlocker, 1.69 oz.",,,,https://download.lulzbot.com/TAZ/5.0.1/production_docs/TAZ-BOM-juniperbush_3000order.xlsx,public_archived_bom_part; unclassified
+TL-CS0169,"Loctite® Threadlocker 220, 0.34 oz. Bottle",,,,https://download.lulzbot.com/Mini/1.02/production_docs/foxglove_BOM_revA.xlsx,public_archived_bom_part; unclassified
+TL-CS0255,"[TL-CS0255] Scotch Brite Maroon Pad, 2""X 3""",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+TL-HD0008,"Stainless Steel Pocket Rule Semiflexible, Metric Grads, 150 mm Length",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+TL-HD0009,"7 1/2"" Nylon Handle Clam Knife",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+TL-HD0014,"Standard-Head Open-End Wrench Black Finish, 13mm Sz, 4-7/8"" Length, 15 Deg Angle",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+TL-HD0046,PRO DENTAL PICK (PROBE) (DP-19) M S V - in a protective sleeve or with a safety cap,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+TL-HD0047,Tekton  13-pc. Long Arm Ball Hex Key Wrench Set (Metric),,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+TL-HD0048,Elmer's X-Acto No. 1 Precision Knife - Aluminum,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+TL-HD0049,"6"" Deluxe Bent Stainless Steel Tweezers with Serrated Teeth and Safety Cap",,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+TL-HD0050,"6"" Professional Long Nose Pliers",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+TL-HD0178,"MOLEX 19069-0117 TERMINAL, RING TONGUE, #10, CRIMP",,,,https://download.lulzbot.com/KITTAZ/production_docs/TAZ-BOM-KITTAZ-Guava.xlsx,public_archived_bom_part; unclassified
+TL-HD0223,2mm Allen Wrench,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+TL-HD0253,"13mm Combination End Wrenches - Crome Finish,  13mm Sz, 15 Deg Angle",,,,https://download.lulzbot.com/TAZ/5.0/production_docs/TAZ-BOM-Juniper_1500order.xlsx,public_archived_bom_part; unclassified
+TL-HD0280,Tekton  13-pc. Long Arm Ball Hex Key Wrench Set (Metric),,,,https://download.lulzbot.com/TAZ/5.0.1/production_docs/TAZ-BOM-juniperbush_3000order.xlsx,public_archived_bom_part; unclassified
+TL-HD0359,"7 1/2"" Nylon Handle Clam Knife - Laser Etched with ""Sharp"" Icon",,,,https://download.lulzbot.com/Mini/1.01/production_docs/foxglove_BOM.xlsx,public_archived_bom_part; unclassified
+TL-HD0468,[TL-HD0468] 7 pc Long Arm Ball Hex Key Wrench Set (Metric) - Red,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+TL-MS0001,Tool Kit Bag w/ LulzBot logo,,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+TL-MS0002,"HDPE, 8 oz. Natural Large Round Wide-Mouth Jars",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+TL-MS0019,"Tool Kit, TAZ",,,,https://download.lulzbot.com/TAZ/2.0/production_docs/TAZ-BOM-2.0.xlsx,public_archived_bom_part; unclassified
+TL-MS0020,.003 Stainless Steel/Straight Instrument Cleaner Brush,,,,https://download.lulzbot.com/Mini/1.0/production_docs/daffodil_bom.xlsx,public_archived_bom_part; unclassified
+TL-MS0343,Bright Travels Hanging Utility Kit - TAZ Tool Bag with LulzBot Green Logo,,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+TL-MS0568,"[TL-MS0568] Abrasive Roll, 2"" W x 30 ft. L Roll - Maroon",,,,https://download.lulzbot.com/Mini/2.0.0/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+TL-MS0572,[TL-MS0572] Tool bag / Travel Organizer Case,,,,https://download.lulzbot.com/Mini/2.0.5/production_docs/BoM_Mini_2_KT-PR0047AU_OCA.xlsx,public_archived_bom_part; unclassified
+need assy #,X max switch wiring,,,,https://download.lulzbot.com/Mini/1.04/production_docs/Mini-Subassembly-BOM.xlsx,public_archived_bom_part; unclassified
+received,Kim please purchase,,,,https://download.lulzbot.com/TAZ/6.0/production_docs/TAZ6-BOM.xlsx,public_archived_bom_part; unclassified

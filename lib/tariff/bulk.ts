@@ -24,6 +24,7 @@ export interface StackRequestRow {
   steelContentValue: number | null;
   aluminumContentValue: number | null;
   usmcaQualification: UsmcaQualificationInput | null;
+  remedyFacts?: import("./section232-live").RemedyFacts;
 }
 
 export interface StackRequestRowError {
@@ -66,9 +67,9 @@ const ALUMINUM_CONTENT_VALUE_ALIASES = [
   "aluminum_value",
   "aluminium_value",
 ];
-const USMCA_VERIFIED_ALIASES = ["usmca_verified", "usmcaverified", "usmca_qualification_verified"];
-const USMCA_DECISION_ALIASES = ["usmca_decision", "usmcadecision", "usmca_qualification_decision"];
-const USMCA_DETAILS_ALIASES = ["usmca_details", "usmcadetails", "usmca_qualification_details"];
+export const USMCA_VERIFIED_ALIASES = ["usmca_verified", "usmcaverified", "usmca_qualification_verified"];
+export const USMCA_DECISION_ALIASES = ["usmca_decision", "usmcadecision", "usmca_qualification_decision"];
+export const USMCA_DETAILS_ALIASES = ["usmca_details", "usmcadetails", "usmca_qualification_details"];
 
 export const COUNTRY_NAME_TO_CODE: Record<string, string> = {
   china: "CN", prc: "CN", chn: "CN",
@@ -355,7 +356,10 @@ export function parseStackRequestRows(input: string): ParsedStackRequest {
       return;
     }
 
+    let remedyFacts;
+    try { remedyFacts = parseRemedyFacts(raw); } catch(error) { errors.push({ rowNumber, raw, reason:error instanceof Error?error.message:"Invalid remedy facts." }); return; }
     rows.push({
+      ...(remedyFacts?{remedyFacts}:{}),
       rowNumber,
       htsCode,
       countryOfOrigin,
@@ -382,6 +386,9 @@ export function parseStackRequestRows(input: string): ParsedStackRequest {
 }
 
 export const impactFieldAliases = {
+  usmca_verified: USMCA_VERIFIED_ALIASES,
+  usmca_decision: USMCA_DECISION_ALIASES,
+  usmca_details: USMCA_DETAILS_ALIASES,
   qualification_verified: ["qualification_verified", "qualified", "verified"],
   qualification_basis: ["qualification_basis", "basis", "qualification_notes"],
   entry_id: ["entry_id", "entry_number", "entry_no", "entry", "customs_entry", "declaration_no"],
@@ -400,3 +407,17 @@ export const impactFieldAliases = {
   exclusion_id: ["exclusion_id", "exclusion", "exclusion_number"],
   special_program_claim: ["special_program_claim", "special_program", "program_claim", "fta", "preference_claim"],
 };
+
+/** Explicit importer facts only; missing values remain unknown. Client-safe. */
+export function parseRemedyFacts(values: Record<string,string|null|undefined>): import("./section232-live").RemedyFacts | undefined {
+  const result:import("./section232-live").RemedyFacts={};
+  const fields={standard_commercial:"standardCommercial",us_metal_qualification:"usMetalQualification",uk_metal_qualification:"ukMetalQualification",special_232_claim:"special232Claim",equipment_use:"equipmentUse",motorcycle_use:"motorcycleUse"} as const;
+  for(const [header,key]of Object.entries(fields))if(values[header]?.trim()) {
+    const value=values[header]!.trim();if(!/^(true|false|yes|no)$/i.test(value))throw Error(`${header} must be true or false.`);
+    (result as Record<string,unknown>)[key]=/^(true|yes)$/i.test(value);
+  }
+  if(values.metal_weight_percent?.trim()){const value=values.metal_weight_percent.trim();const number=Number(value);if(!/^\d+(?:\.\d+)?$/.test(value)||!Number.isFinite(number)||number<0||number>100)throw Error("metal_weight_percent must be between 0 and 100.");result.metalWeightPercent=number;}
+  if(values.other_232_heading?.trim()){const heading=values.other_232_heading.trim();if(heading!=="none"&&!/^9903\.\d{2}\.\d{2}$/.test(heading))throw Error("other_232_heading must be none or an exact Chapter 99 heading.");result.other232Heading=heading;}
+  if(result.usMetalQualification&&result.ukMetalQualification)throw Error("U.S. and UK metal qualification declarations conflict.");
+  return Object.keys(result).length?result:undefined;
+}

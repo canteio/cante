@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MessageSquarePlus, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { JurisdictionName } from "@/lib/countries";
 
@@ -46,9 +46,12 @@ export function ChatNav({ activeId, jurisdiction }: { activeId: string | null; j
   }
 
   return (
-    <div className="nav-subtree">
-      <Link href={`/chat?country=${encodeURIComponent(jurisdiction)}`} className="nav-new-chat" onClick={() => setCurrentId(null)}>
-        <MessageSquarePlus size={13} />
+    <div className="nav-subtree" role="group" aria-label="Cante conversations">
+      <Link href={`/chat?country=${encodeURIComponent(jurisdiction)}`} className="nav-new-chat" onClick={() => {
+        setCurrentId(null);
+        window.dispatchEvent(new CustomEvent("cante:chat-new"));
+      }}>
+        <Plus size={13} />
         New chat
       </Link>
 
@@ -57,23 +60,26 @@ export function ChatNav({ activeId, jurisdiction }: { activeId: string | null; j
       ) : conversations.length === 0 ? (
         <div className="nav-empty">No saved chats yet.</div>
       ) : (
-        conversations.map((conversation) => (
+        <div className="nav-chat-list">{conversations.map((conversation) => (
+          <div key={conversation.id} className="nav-chat-row" data-active={conversation.id === currentId}>
           <Link
-            key={conversation.id}
             href={`/chat?country=${encodeURIComponent(jurisdiction)}&conversationId=${conversation.id}`}
             className="nav-chat-item"
             data-active={conversation.id === currentId}
+            title={conversation.title}
           >
             <span>{conversation.title}</span>
+          </Link>
             <button
               type="button"
-              aria-label="Delete conversation"
+              className="nav-chat-delete"
+              aria-label={`Delete ${conversation.title}`}
               onClick={(event) => removeConversation(conversation.id, event)}
             >
               <X size={11} />
             </button>
-          </Link>
-        ))
+          </div>
+        ))}</div>
       )}
     </div>
   );

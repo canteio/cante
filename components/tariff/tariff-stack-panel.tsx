@@ -1,467 +1,197 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
-import { Calculator, Upload, FileSpreadsheet, AlertTriangle } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Upload, Download, ArrowRight, AlertTriangle, FileSpreadsheet, ChevronDown } from "lucide-react";
+import type { StackedDutyResult } from "@/lib/tariff/stack";
+import type { StackRequestRow } from "@/lib/tariff/bulk";
+import { normalizeCountryCode } from "@/lib/tariff/bulk";
+import { easternIsoDate } from "@/lib/tariff/date";
+import type { SelectedProduct } from "@/components/tariff/product-setup";
+import { adviceFor } from "@/components/tariff/product-setup";
 
-/**
- * Tariff Stack Calculator — built directly from customer-discovery
- * interviews (2026-10-01). The exact ask:
- * "Maybe it's just a SaaS that we can go out and use... upload some HTS
- * codes and countries of origin and it spits out the tariff rate and how
- * you got there." This panel is that tool: a single-row quick quote plus a
- * bulk CSV upload, both backed by lib/tariff/stack.ts, which is explicit
- * about which stacking layers it does and does not compute yet.
- */
+type Input = Omit<StackRequestRow, "rowNumber">;
+type Row = { rowNumber: number; input: Input; result: StackedDutyResult | null; error: string | null };
+type RowError = { rowNumber: number; reason: string };
+const percentage = (n: number | null) => n === null ? "—" : new Intl.NumberFormat("en-US", { style: "percent", maximumFractionDigits: 4 }).format(n);
+const dollars = (n: number | null) => n === null ? "—" : new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n);
+const emptyInput = (): Input => ({ htsCode: "", countryOfOrigin: "", importDate: easternIsoDate(), value: null, quantity: null, unit: null, claimedProgramme: null, steelContentValue: null, aluminumContentValue: null, usmcaQualification: null });
 
-interface StackedDutyComponent {
-  type: "base" | "section301" | "section232";
-  label: string;
-  ratePercent: number | null;
-  contentRatePercent?: number;
-  contentValue?: number;
-  contentCategory?: "steel" | "aluminum";
-  amount: number | null;
-  citation: string[];
-  explanation: string;
+function needsReview(result: StackedDutyResult) {
+  return result.unresolvedMeasures.length > 0 || result.adCvdAdvisories.length > 0 || result.uflpaAdvisories.length > 0 || result.totalRatePercent === null;
 }
-
-interface AdCvdAdvisory {
-  caseNumbers: string[];
-  title: string;
-  country: string;
-  allOthersRatePercent: number;
-  asOfDeterminationCitation: string;
-  scopeNote: string;
+function status(result: StackedDutyResult) {
+  if (result.unresolvedMeasures.length) return "Needs review";
+  if (result.adCvdAdvisories.length) return "AD/CVD review";
+  if (result.uflpaAdvisories.length) return "Supply-chain review";
+  return result.totalRatePercent === null ? "Quantity / value based" : "Calculated";
 }
-
-interface UflpaAdvisory {
-  sector: string;
-  citation: string;
-  note: string;
-  listedEntityExamples: string[];
-}
-
-interface StackedDutyResult {
-  htsCode: string;
-  countryOfOrigin: string;
-  totalRatePercent: number | null;
-  totalAmount: number | null;
-  currency: "USD";
-  components: StackedDutyComponent[];
-  stackingExplanation: string[];
-  notEvaluated: string[];
-  unresolvedMeasures: string[];
-  usmcaQualification:
-    | { status: "not_applicable" | "not_provided"; specialRateRequested: false; explanation: string }
-    | { status: "incomplete"; specialRateRequested: false; decision: string | null; details: string | null; explanation: string }
-    | { status: "verified"; specialRateRequested: boolean; decision: string; details: string; explanation: string };
-  adCvdAdvisories: AdCvdAdvisory[];
-  uflpaAdvisories: UflpaAdvisory[];
-}
-
-interface BulkRowResult {
-  rowNumber: number;
-  input: { htsCode: string; countryOfOrigin: string };
-  result: StackedDutyResult | null;
-  error: string | null;
-}
-
-function pct(value: number | null): string {
-  return value === null ? "—" : `${(value * 100).toFixed(2)}%`;
-}
-
-function componentRate(component: StackedDutyComponent): string {
-  if (component.contentRatePercent !== undefined && component.contentCategory) {
-    return `${pct(component.contentRatePercent)} of ${component.contentCategory} content`;
+function params(input: Input) {
+  const q = new URLSearchParams({ code: input.htsCode.trim(), country: normalizeCountryCode(input.countryOfOrigin) });
+  for (const key of ["importDate", "value", "quantity", "unit", "steelContentValue", "aluminumContentValue"] as const) {
+    if (input[key] !== null && input[key] !== "") q.set(key, String(input[key]));
   }
-  return pct(component.ratePercent);
+  if (input.claimedProgramme) q.set("programme", input.claimedProgramme);
+  if (input.usmcaQualification) {
+    q.set("usmcaVerified", String(input.usmcaQualification.verified));
+    if (input.usmcaQualification.decision) q.set("usmcaDecision", input.usmcaQualification.decision);
+    if (input.usmcaQualification.details) q.set("usmcaDetails", input.usmcaQualification.details);
+  }
+  return q;
+}
+function csvCell(value: unknown) {
+  let s = value === null || value === undefined ? "" : String(value);
+  if (/^[=+@\-\t\r]/.test(s)) s = "'" + s;
+  return `"${s.replace(/"/g, '""')}"`;
+}
+function download(name: string, csv: string) {
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+  const link = document.createElement("a"); link.href = url; link.download = name; link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+function Sources({ citations }: { citations: string[] }) {
+  return <>{citations.map((citation, i) => /^https:\/\//.test(citation)
+    ? <a key={i} href={citation} target="_blank" rel="noreferrer">Official source {i + 1}</a>
+    : <span key={i}>{citation}</span>)}</>;
 }
 
-function usd(value: number | null): string {
-  return value === null ? "—" : value.toLocaleString("en-US", { style: "currency", currency: "USD" });
+function Facts({ input, onChange, additional = false }: { input: Input; onChange: (value: Input) => void; additional?: boolean }) {
+  const usmca = input.usmcaQualification ?? { verified: false, decision: null, details: null };
+  const country = normalizeCountryCode(input.countryOfOrigin);
+  const numberField = (key: "value" | "quantity" | "steelContentValue" | "aluminumContentValue", label: string) => <label>{label}<input className="input" type="number" min="0" step="any" value={input[key] ?? ""} onChange={e => onChange({ ...input, [key]: e.target.value === "" ? null : Number(e.target.value) })} /></label>;
+  return <div className="tariff-facts">
+    {!additional && <>
+      <label>HTS code<input className="input" required placeholder="10-digit code" value={input.htsCode} onChange={e => onChange({ ...input, htsCode: e.target.value })} /></label>
+      <label>Country of origin<input className="input" required placeholder="Country name or code" value={input.countryOfOrigin} onChange={e => onChange({ ...input, countryOfOrigin: e.target.value })} /></label>
+      <label>Import date<input className="input" type="date" required value={input.importDate ?? ""} onChange={e => onChange({ ...input, importDate: e.target.value })} /></label>
+      {numberField("value", "Shipment customs value · USD (optional)")}
+    </>}
+    {additional && <>
+      {numberField("quantity", "Quantity")}
+      <label>Quantity unit<input className="input" maxLength={32} placeholder="e.g. kg" value={input.unit ?? ""} onChange={e => onChange({ ...input, unit: e.target.value || null })} /></label>
+      {numberField("steelContentValue", "Steel content value (USD)")}
+      {numberField("aluminumContentValue", "Aluminum content value (USD)")}
+      {(country === "MX" || country === "CA") && <fieldset className="tariff-qualification">
+        <legend>USMCA qualification</legend>
+        <p className="muted">Use your team's reviewed decision. Origin alone does not establish qualification.</p>
+        <label>Decision<select className="input" value={usmca.decision ?? ""} onChange={e => onChange({ ...input, usmcaQualification: { ...usmca, decision: e.target.value === "qualifies" ? "qualifies" : e.target.value === "does_not_qualify" ? "does_not_qualify" : null } })}><option value="">Not supplied</option><option value="qualifies">Qualifies</option><option value="does_not_qualify">Does not qualify</option></select></label>
+        <label>Supporting evidence<input className="input" maxLength={2000} placeholder="Certificate or decision reference" value={usmca.details ?? ""} onChange={e => onChange({ ...input, usmcaQualification: { ...usmca, details: e.target.value || null } })} /></label>
+        <label className="tariff-checkbox"><input type="checkbox" checked={usmca.verified} onChange={e => onChange({ ...input, usmcaQualification: { ...usmca, verified: e.target.checked } })} /> My team verified this decision</label>
+      </fieldset>}
+    </>}
+  </div>;
 }
 
-function totalRateLabel(result: StackedDutyResult): string {
-  if (result.unresolvedMeasures.length > 0) return "Total withheld";
-  if (result.totalRatePercent !== null) return `Total: ${pct(result.totalRatePercent)}`;
-  const hasContentComponent = result.components.some((c) => c.contentRatePercent !== undefined);
-  return hasContentComponent
-    ? "Total rate: content-value based"
-    : "Total rate: not a single ad valorem percentage (specific or unparsed duty component)";
-}
-
-function ResultCard({ result }: { result: StackedDutyResult }) {
-  return (
-    <div className="card" style={{ marginTop: "1rem" }}>
-      <div className="card-head">
-        <div>
-          <span className="card-title">
-            {result.htsCode} <span className="muted">from</span> {result.countryOfOrigin}
-          </span>
-        </div>
-        <div className="row">
-          <span className="pill pill-blue">{totalRateLabel(result)}</span>
-          {result.totalAmount !== null && <span className="pill pill-muted">{usd(result.totalAmount)}</span>}
-        </div>
-      </div>
-
-      {result.unresolvedMeasures.length > 0 && (
-        <div className="pill pill-warn" role="alert" style={{ marginBottom: "0.75rem" }}>
-          <AlertTriangle size={12} /> Total withheld — unresolved measure(s): {result.unresolvedMeasures.join(", ")}
-        </div>
-      )}
-
-      <table className="table" style={{ marginBottom: "0.75rem" }}>
-        <thead>
-          <tr>
-            <th>Component</th>
-            <th>Rate</th>
-            <th>Amount</th>
-            <th>Citation</th>
-          </tr>
-        </thead>
-        <tbody>
-          {result.components.map((c, i) => (
-            <tr key={i}>
-              <td>{c.label}</td>
-              <td>{componentRate(c)}</td>
-              <td>{usd(c.amount)}</td>
-              <td className="muted" style={{ fontSize: "0.75rem" }}>{c.citation.join("; ")}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <div style={{ marginBottom: "0.5rem" }}>
-        <strong style={{ fontSize: "0.8125rem" }}>How this was calculated</strong>
-        <ul style={{ margin: "0.35rem 0 0", paddingLeft: "1.1rem", fontSize: "0.8125rem", color: "var(--text-secondary)" }}>
-          {result.stackingExplanation.map((line, i) => (
-            <li key={i} style={{ marginBottom: "0.25rem" }}>{line}</li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="pill pill-muted" style={{ display: "block", whiteSpace: "normal", lineHeight: 1.5, marginBottom: "0.5rem" }}>
-        USMCA decision: {result.usmcaQualification.explanation}
-      </div>
-
-      <div className="pill pill-muted" style={{ display: "block", whiteSpace: "normal", lineHeight: 1.5 }}>
-        Not evaluated yet: {result.notEvaluated.join(" · ")}
-      </div>
-
-      {result.adCvdAdvisories.length > 0 && (
-        <div style={{ marginTop: "0.75rem" }}>
-          <strong style={{ fontSize: "0.8125rem" }}>AD/CVD leads to verify (not computed)</strong>
-          {result.adCvdAdvisories.map((advisory, i) => (
-            <div key={i} className="pill pill-warn" role="alert" style={{ display: "block", whiteSpace: "normal", lineHeight: 1.5, marginTop: "0.35rem" }}>
-              <AlertTriangle size={12} /> {advisory.title} ({advisory.caseNumbers.join(" / ")}) — all-others rate ~{advisory.allOthersRatePercent.toFixed(2)}% as of {advisory.asOfDeterminationCitation}. {advisory.scopeNote} Verify exact scope and exporter-specific rate at access.trade.gov.
-            </div>
-          ))}
-        </div>
-      )}
-
-      {result.uflpaAdvisories.length > 0 && (
-        <div style={{ marginTop: "0.75rem" }}>
-          <strong style={{ fontSize: "0.8125rem" }}>UFLPA forced-labor leads (not a duty, not computed)</strong>
-          {result.uflpaAdvisories.map((advisory, i) => (
-            <div key={i} className="pill pill-warn" role="alert" style={{ display: "block", whiteSpace: "normal", lineHeight: 1.5, marginTop: "0.35rem" }}>
-              <AlertTriangle size={12} /> {advisory.sector} ({advisory.citation}). {advisory.note} This is NOT a determination of Xinjiang production or UFLPA Entity List membership for this shipment — verify actual supply-chain evidence.
-              {advisory.listedEntityExamples.length > 0 && (
-                <> Examples of real listed entities in this sector: {advisory.listedEntityExamples.join("; ")}.</>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-export function TariffStackPanel({ embedded = false }: { embedded?: boolean }) {
-  const [htsCode, setHtsCode] = useState("");
-  const [country, setCountry] = useState("");
-  const [value, setValue] = useState("");
-  const [steelContentValue, setSteelContentValue] = useState("");
-  const [aluminumContentValue, setAluminumContentValue] = useState("");
-  const [importDate, setImportDate] = useState("");
-  const [usmcaVerified, setUsmcaVerified] = useState(false);
-  const [usmcaDecision, setUsmcaDecision] = useState<"" | "qualifies" | "does_not_qualify">("");
-  const [usmcaDetails, setUsmcaDetails] = useState("");
-  const [quoting, setQuoting] = useState(false);
-  const [quoteError, setQuoteError] = useState<string | null>(null);
-  const [quoteResult, setQuoteResult] = useState<StackedDutyResult | null>(null);
-
-  const [bulkRows, setBulkRows] = useState<BulkRowResult[] | null>(null);
-  const [bulkRowErrors, setBulkRowErrors] = useState<Array<{ rowNumber: number; reason: string }>>([]);
-  const [bulkBusy, setBulkBusy] = useState(false);
-  const [bulkError, setBulkError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const runQuote = useCallback(async () => {
-    if (!htsCode.trim() || !country.trim()) return;
-    setQuoting(true);
-    setQuoteError(null);
-    setQuoteResult(null);
+function ResultRow({ row, onUpdate, editShipment = false }: { row: Row; onUpdate: (row: Row) => void; editShipment?: boolean }) {
+  const [input, setInput] = useState(row.input);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [editing, setEditing] = useState(editShipment);
+  const detailRef = useRef<HTMLDetailsElement>(null);
+  useEffect(() => setInput(row.input), [row.input]);
+  const result = row.result;
+  async function recalculate(e: React.FormEvent) {
+    e.preventDefault(); setBusy(true); setError(null);
     try {
-      const params = new URLSearchParams({ code: htsCode.trim(), country: country.trim().toUpperCase() });
-      if (value.trim()) params.set("value", value.trim());
-      if (steelContentValue.trim()) params.set("steelContentValue", steelContentValue.trim());
-      if (aluminumContentValue.trim()) params.set("aluminumContentValue", aluminumContentValue.trim());
-      if (importDate.trim()) params.set("importDate", importDate.trim());
-      if (usmcaVerified || usmcaDecision || usmcaDetails.trim()) {
-        params.set("usmcaVerified", String(usmcaVerified));
-        if (usmcaDecision) params.set("usmcaDecision", usmcaDecision);
-        if (usmcaDetails.trim()) params.set("usmcaDetails", usmcaDetails.trim());
-      }
-      const res = await fetch(`/api/tariff/stack?${params.toString()}`);
-      const data = await res.json();
-      if (!res.ok) {
-        setQuoteError(data.error ?? "Lookup failed.");
-        return;
-      }
-      setQuoteResult(data.result);
-    } catch {
-      setQuoteError("Could not reach the tariff service. Check your connection and try again.");
-    } finally {
-      setQuoting(false);
-    }
-  }, [htsCode, country, value, steelContentValue, aluminumContentValue, importDate, usmcaVerified, usmcaDecision, usmcaDetails]);
-
-  const runBulkUpload = useCallback(async (file: File) => {
-    setBulkBusy(true);
-    setBulkError(null);
-    setBulkRows(null);
-    setBulkRowErrors([]);
-    try {
-      const text = await file.text();
-      const res = await fetch("/api/tariff/stack/bulk", {
-        method: "POST",
-        headers: { "Content-Type": "text/csv" },
-        body: text,
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setBulkError(data.error ?? "Bulk lookup failed.");
-        setBulkRowErrors(data.rowErrors ?? []);
-        return;
-      }
-      setBulkRows(data.rows ?? []);
-      setBulkRowErrors(data.rowErrors ?? []);
-    } catch {
-      setBulkError("Could not upload the file. Check your connection and try again.");
-    } finally {
-      setBulkBusy(false);
-    }
-  }, []);
-
-  return (
-    <div className={embedded ? undefined : "main-scroll"}>
-      {!embedded && <div className="page-head">
-        <div>
-          <h1>Tariff Stack Calculator</h1>
-          <p className="page-sub">
-            Upload HTS codes and countries of origin — get the exact stacked rate, broken down
-            component by component, with an audit trail for every figure.
-          </p>
-        </div>
-      </div>}
-
-      <div className="card">
-        <div className="card-head">
-          <Calculator size={16} />
-          <h2 className="card-title">Quick quote</h2>
-        </div>
-        <div className="row" style={{ gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.75rem" }}>
-          <div>
-            <label htmlFor="stack-hts" className="side-label" style={{ padding: 0 }}>HTS code *</label>
-            <input
-              id="stack-hts"
-              className="input mono"
-              placeholder="e.g. 8544.42.90.00"
-              value={htsCode}
-              onChange={(e) => setHtsCode(e.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="stack-country" className="side-label" style={{ padding: 0 }}>Country of origin *</label>
-            <input
-              id="stack-country"
-              className="input mono"
-              placeholder="e.g. CN"
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-              maxLength={2}
-            />
-          </div>
-          <div>
-            <label htmlFor="stack-value" className="side-label" style={{ padding: 0 }}>Shipment value (USD)</label>
-            <input
-              id="stack-value"
-              className="input mono"
-              placeholder="optional"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="stack-steel-content" className="side-label" style={{ padding: 0 }}>Dutiable steel content value (USD)</label>
-            <input
-              id="stack-steel-content"
-              type="number"
-              min="0"
-              className="input mono"
-              placeholder="optional"
-              value={steelContentValue}
-              onChange={(e) => setSteelContentValue(e.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="stack-aluminum-content" className="side-label" style={{ padding: 0 }}>Aluminum content value (USD)</label>
-            <input
-              id="stack-aluminum-content"
-              type="number"
-              min="0"
-              className="input mono"
-              placeholder="optional"
-              value={aluminumContentValue}
-              onChange={(e) => setAluminumContentValue(e.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="stack-import-date" className="side-label" style={{ padding: 0 }}>Import date</label>
-            <input
-              id="stack-import-date"
-              type="date"
-              className="input mono"
-              value={importDate}
-              onChange={(e) => setImportDate(e.target.value)}
-            />
-          </div>
-          <div>
-            <label htmlFor="stack-usmca-decision" className="side-label" style={{ padding: 0 }}>USMCA decision</label>
-            <select
-              id="stack-usmca-decision"
-              className="input"
-              value={usmcaDecision}
-              onChange={(e) => {
-                const decision = e.target.value;
-                if (decision === "" || decision === "qualifies" || decision === "does_not_qualify") {
-                  setUsmcaDecision(decision);
-                }
-              }}
-            >
-              <option value="">Not supplied</option>
-              <option value="qualifies">Qualifies</option>
-              <option value="does_not_qualify">Does not qualify</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="stack-usmca-details" className="side-label" style={{ padding: 0 }}>USMCA supporting details</label>
-            <input
-              id="stack-usmca-details"
-              className="input"
-              placeholder="decision reference or basis"
-              value={usmcaDetails}
-              onChange={(e) => setUsmcaDetails(e.target.value)}
-            />
-          </div>
-          <label className="row" style={{ alignSelf: "flex-end", gap: "0.35rem", minHeight: "2.25rem" }}>
-            <input
-              type="checkbox"
-              checked={usmcaVerified}
-              onChange={(e) => setUsmcaVerified(e.target.checked)}
-            />
-            Qualification verified
-          </label>
-          <button
-            className="btn btn-primary"
-            disabled={quoting || !htsCode.trim() || !country.trim()}
-            onClick={runQuote}
-            style={{ alignSelf: "flex-end" }}
-          >
-            {quoting ? "Calculating…" : "Calculate"}
-          </button>
-        </div>
-
-        {quoteError && <div className="pill pill-bad" role="alert">{quoteError}</div>}
-        {quoteResult && <ResultCard result={quoteResult} />}
-      </div>
-
-      <div className="card">
-        <div className="card-head">
-          <FileSpreadsheet size={16} />
-          <h2 className="card-title">Bulk upload</h2>
-        </div>
-        <p className="muted" style={{ marginTop: 0 }}>
-          CSV with <code className="mono">hts_code</code> and <code className="mono">country_of_origin</code> columns
-          (common aliases like <code className="mono">hts</code>, <code className="mono">origin</code>, and{" "}
-          <code className="mono">coo</code> are also recognised). Optional columns:{" "}
-          <code className="mono">value</code>, <code className="mono">quantity</code>, <code className="mono">unit</code>,{" "}
-          <code className="mono">programme</code>, <code className="mono">import_date</code> (YYYY-MM-DD),{" "}
-          <code className="mono">steel_content_value</code>, <code className="mono">aluminum_content_value</code>,{" "}
-          <code className="mono">usmca_verified</code>, <code className="mono">usmca_decision</code>, and{" "}
-          <code className="mono">usmca_details</code>.
-        </p>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".csv,text/csv,text/plain"
-          style={{ display: "none" }}
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) void runBulkUpload(file);
-            e.target.value = "";
-          }}
-        />
-        <button className="btn btn-primary" disabled={bulkBusy} onClick={() => fileInputRef.current?.click()}>
-          <Upload size={14} /> {bulkBusy ? "Processing…" : "Upload CSV"}
-        </button>
-
-        {bulkError && <div className="pill pill-bad" role="alert" style={{ marginTop: "0.75rem" }}>{bulkError}</div>}
-
-        {bulkRowErrors.length > 0 && (
-          <div className="pill pill-warn" role="alert" style={{ marginTop: "0.75rem", display: "block", whiteSpace: "normal" }}>
-            {bulkRowErrors.length} row(s) could not be read: {bulkRowErrors.map((e) => `row ${e.rowNumber}: ${e.reason}`).join("; ")}
-          </div>
-        )}
-
-        {bulkRows && bulkRows.length > 0 && (
-          <table className="table" style={{ marginTop: "0.75rem" }}>
-            <thead>
-              <tr>
-                <th>Row</th>
-                <th>HTS code</th>
-                <th>Origin</th>
-                <th>Total rate</th>
-                <th>Amount</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bulkRows.map((row) => (
-                <tr key={row.rowNumber}>
-                  <td>{row.rowNumber}</td>
-                  <td className="mono">{row.input.htsCode}</td>
-                  <td className="mono">{row.input.countryOfOrigin}</td>
-                  <td>
-                    {row.result ? totalRateLabel(row.result) : "—"}
-                  </td>
-                  <td>{usd(row.result?.totalAmount ?? null)}</td>
-                  <td>
-                    {row.error ? (
-                      <span className="pill pill-bad">{row.error}</span>
-                    ) : row.result && row.result.unresolvedMeasures.length > 0 ? (
-                      <span className="pill pill-warn">Unresolved measure</span>
-                    ) : (
-                      <span className="pill pill-ok">Computed</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+      const response = await fetch(`/api/tariff/stack?${params(input)}`, { cache: "no-store" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error ?? "Could not calculate this row.");
+      onUpdate({ ...row, input: { ...input, htsCode: data.result.htsCode, countryOfOrigin: data.result.countryOfOrigin }, result: data.result, error: null });
+    } catch (e) { setError(e instanceof Error ? e.message : "Could not calculate this row."); }
+    finally { setBusy(false); }
+  }
+  return <div className="tariff-result-item"><details ref={detailRef} className="tariff-result-row" open={editShipment || undefined}>
+    <summary>
+      <span className="tariff-row-identity"><strong>{row.input.htsCode}</strong><span className="muted">{row.input.countryOfOrigin} · {row.input.importDate} · Row {row.rowNumber}</span><span className="tariff-row-hint">View breakdown <ChevronDown size={12} /></span></span>
+      <span className="tariff-row-rate">{result?.unresolvedMeasures.length ? "Total withheld" : result ? percentage(result.totalRatePercent) : "Unavailable"}{result?.totalAmount !== null && result?.totalAmount !== undefined && <small>{dollars(result.totalAmount)}</small>}</span>
+      <span className={`pill ${row.error ? "pill-bad" : result && needsReview(result) ? "pill-warn" : "pill-muted"}`}>{row.error ? "Lookup failed" : result ? status(result) : "Unavailable"}</span>
+    </summary>
+    <div className="tariff-row-detail">
+      {row.error && <p role="alert">{row.error}</p>}
+      {result && <>
+        {result.unresolvedMeasures.length > 0 && <div className="tariff-attention"><strong><AlertTriangle size={15} /> What needs attention</strong><ul>{result.unresolvedMeasures.map((message, i) => <li key={i}>{message}</li>)}</ul></div>}
+        {(row.input.countryOfOrigin === "MX" || row.input.countryOfOrigin === "CA") && result.usmcaQualification.status !== "verified" && <p className="tariff-attention">USMCA decision missing. The displayed base component uses the general rate. Add a reviewed decision below to check preference.</p>}
+        <h3>How we got here</h3>
+        <div className="tariff-component-list">{result.components.map((part, i) => <div key={i} className="tariff-component"><div><strong>{part.label}</strong><p>{part.explanation}</p><div className="tariff-citations"><Sources citations={part.citation} /></div></div><strong>{part.contentRatePercent !== undefined ? `${percentage(part.contentRatePercent)} of ${part.contentCategory} value` : percentage(part.ratePercent)}</strong></div>)}</div>
+        <details className="tariff-explanation"><summary>Stacking and exclusions</summary><ul>{result.stackingExplanation.map((line, i) => <li key={i}>{line}</li>)}</ul></details>
+        {result.adCvdAdvisories.length > 0 && <div className="tariff-attention"><strong>AD/CVD is not included</strong>{result.adCvdAdvisories.map((lead, i) => <p key={i}>{lead.title} — {lead.scopeNote}</p>)}</div>}
+        {result.uflpaAdvisories.length > 0 && <div className="tariff-attention"><strong>Supply-chain review</strong>{result.uflpaAdvisories.map((lead, i) => <p key={i}>{lead.sector}: {lead.note}</p>)}</div>}
+        <details className="tariff-explanation"><summary>Coverage limits</summary><ul>{result.notEvaluated.map((line, i) => <li key={i}>{line}</li>)}</ul></details>
+      </>}
+      <div className="tariff-explanation"><button className="tariff-text-button" onClick={() => setEditing(v => !v)}>{editing ? "Close shipment editor" : "Edit shipment facts"}</button>{editing && <form onSubmit={recalculate}><Facts input={input} onChange={setInput} /><Facts input={input} onChange={setInput} additional />{error && <p role="alert">{error}</p>}<button className="btn btn-primary" disabled={busy}>{busy ? "Recalculating…" : "Recalculate row"}</button></form>}</div>
     </div>
-  );
+  </details>{result && adviceFor(result) && <div className="tariff-row-next"><p>{adviceFor(result)!.message}</p>{adviceFor(result)!.shipment && <button className="tariff-text-button" onClick={() => { if (detailRef.current) detailRef.current.open = true; setEditing(true); }}>Add shipment facts</button>}</div>}{row.error && <p className="tariff-row-next">Lookup failed. Retry with the shipment facts above; this row has no confirmed rate.</p>}</div>;
+}
+
+export function TariffStackPanel({ embedded = false, selectedProduct = null }: { embedded?: boolean; selectedProduct?: SelectedProduct | null }) {
+  const [input, setInput] = useState<Input>(emptyInput);
+  const [rows, setRows] = useState<Row[]>([]);
+  const [rowErrors, setRowErrors] = useState<RowError[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [filename, setFilename] = useState<string | null>(null);
+  const [filter, setFilter] = useState("all");
+  const fileRef = useRef<HTMLInputElement>(null);
+  const resultRef = useRef<HTMLElement>(null);
+  const controller = useRef<AbortController | null>(null);
+  const previousSelection = useRef<SelectedProduct | null>(null);
+  useEffect(() => {
+    if (!selectedProduct) {
+      if (previousSelection.current) { controller.current?.abort(); setInput(emptyInput()); setRows([]); setRowErrors([]); setError(null); }
+      previousSelection.current = null;
+      return;
+    }
+    previousSelection.current = selectedProduct;
+    controller.current?.abort();
+    const next = { ...emptyInput(), htsCode: selectedProduct.htsCode, countryOfOrigin: selectedProduct.countryOfOrigin, importDate: selectedProduct.importDate };
+    setInput(next); setFilename(selectedProduct.name);
+    setRows(selectedProduct.dutyResult ? [{ rowNumber: 1, input: next, result: selectedProduct.dutyResult, error: null }] : []); setRowErrors([]); setError(null);
+  }, [selectedProduct]);
+  useEffect(() => () => controller.current?.abort(), []);
+  async function calculate(file?: File) {
+    if (busy) return;
+    if (file && file.size > 2 * 1024 * 1024) { setError("File exceeds 2 MiB. Split it into smaller CSV files."); return; }
+    if (!input.importDate) { setError("Choose the import date first."); return; }
+    setBusy(true); setError(null); setRowErrors([]); setRows([]); setFilename(file?.name ?? "Single product");
+    controller.current = new AbortController();
+    try {
+      const response = file ? await fetch(`/api/tariff/stack/bulk?importDate=${input.importDate}`, { method: "POST", headers: { "Content-Type": "text/csv" }, body: file, signal: controller.current.signal })
+        : await fetch(`/api/tariff/stack?${params(input)}`, { cache: "no-store", signal: controller.current.signal });
+      const data = await response.json();
+      setRowErrors(data.rowErrors ?? []);
+      if (!response.ok) throw new Error(data.error ?? "Could not calculate tariffs.");
+      setRows(file ? data.rows : [{ rowNumber: 1, input: { ...input, countryOfOrigin: normalizeCountryCode(input.countryOfOrigin), htsCode: data.result.htsCode }, result: data.result, error: null }]);
+      setFilter("all");
+      requestAnimationFrame(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    } catch (e) { if (!(e instanceof Error && e.name === "AbortError")) setError(e instanceof Error ? e.message : "Could not reach the tariff service."); }
+    finally { setBusy(false); }
+  }
+  function exportResults() {
+    const header = ["row", "hts_code", "country_of_origin", "import_date", "status", "supported_rate_percent", "supported_duty_usd", "usmca_decision", "usmca_verified", "usmca_details", "customs_value_usd", "quantity", "unit", "steel_content_value", "aluminum_content_value", "programme", "components", "stacking", "citations", "needs_review", "coverage_limits"];
+    const data = rows.map(row => [row.rowNumber, row.input.htsCode, row.input.countryOfOrigin, row.input.importDate, row.error ?? (row.result ? status(row.result) : "Unavailable"), row.result?.totalRatePercent === null || !row.result ? null : row.result.totalRatePercent * 100, row.result?.totalAmount, row.input.usmcaQualification?.decision, row.input.usmcaQualification?.verified, row.input.usmcaQualification?.details, row.input.value, row.input.quantity, row.input.unit, row.input.steelContentValue, row.input.aluminumContentValue, row.input.claimedProgramme, row.result ? JSON.stringify(row.result.components) : null, row.result?.stackingExplanation.join("; "), row.result?.components.flatMap(c => c.citation).join("; "), row.result?.unresolvedMeasures.concat(row.result.adCvdAdvisories.map(a => `AD/CVD not computed: ${a.title}`)).join("; "), row.result?.notEvaluated.join("; ")]);
+    for (const row of rowErrors) { const cells: (string | number | null | undefined | boolean)[] = Array(header.length).fill(null); cells[0] = row.rowNumber; cells[4] = `Input error: ${row.reason}`; data.push(cells); }
+    download("tariff-results.csv", [header, ...data].map(row => row.map(csvCell).join(",")).join("\r\n"));
+  }
+  const reviewCount = rows.filter(row => row.error || !row.result || needsReview(row.result)).length + rowErrors.length;
+  const shown = filter === "review" ? rows.filter(row => row.error || !row.result || needsReview(row.result)) : rows;
+  return <div className={embedded ? "tariff-calculator" : "main-scroll tariff-calculator"}>
+    <section className="tariff-upload" aria-labelledby="tariff-upload-heading">
+      <div className="tariff-section-heading"><div><span className="tariff-eyebrow">Duty check</span><h2 id="tariff-upload-heading">See duties</h2><p className="muted">{selectedProduct ? `${selectedProduct.name} · Confirm shipment facts below.` : "Choose a saved product above, or enter a code here."}</p></div></div>
+      {selectedProduct?.codeConfirmed === false && <p className="tariff-attention">HTS unconfirmed. Ask your broker to confirm this code before relying on the rate.</p>}
+      <form onSubmit={e => { e.preventDefault(); void calculate(); }}>
+        <Facts input={input} onChange={setInput} />
+        <details className="tariff-explanation"><summary>Quantity, metal content &amp; trade preferences</summary><Facts input={input} onChange={setInput} additional /></details>
+        <div className="tariff-upload-actions"><button type="submit" className="btn btn-primary" disabled={busy || !input.htsCode.trim() || !input.countryOfOrigin.trim()}>{busy ? "Calculating…" : "Calculate duties"}<ArrowRight size={15} /></button><button type="button" className="btn" disabled={busy} onClick={() => fileRef.current?.click()}><Upload size={15} />Check duties CSV</button><button type="button" className="tariff-text-button" onClick={() => download("tariff-template.csv", "hts_code,country_of_origin,import_date,value,quantity,unit,steel_content_value,aluminum_content_value,usmca_verified,usmca_decision,usmca_details\r\n")}><FileSpreadsheet size={14} />CSV template</button></div>
+        <p className="tariff-scope-note">Value is optional for percentage duties. CSV: up to 500 rows; each row needs HTS and origin.</p>
+      </form>
+      <input ref={fileRef} type="file" accept=".csv,text/csv" hidden onChange={e => { const file = e.target.files?.[0]; if (file) void calculate(file); e.target.value = ""; }} />
+      {busy && <p role="status">Checking published rates and reviewed stacking rules… <button className="tariff-text-button" onClick={() => controller.current?.abort()}>Cancel</button></p>}
+      {error && <p className="tariff-attention" role="alert">{error}</p>}
+    </section>
+    {(rows.length > 0 || rowErrors.length > 0) && <section ref={resultRef} className="tariff-results" aria-labelledby="tariff-results-heading" aria-live="polite">
+      <div className="tariff-section-heading"><div><h2 id="tariff-results-heading">Your tariff breakdown</h2><p className="muted">{rows.length ? `${filename} · ${rows.length} evaluated · ${reviewCount} ${reviewCount === 1 ? "needs" : "need"} attention` : "Calculate above to see your duties."}</p></div>{rows.length > 0 && <button className="btn" onClick={exportResults}><Download size={14} />Export CSV</button>}</div>
+      {rows.length > 0 && <><p className="tariff-scope-note">Rates cover the supported duty components. AD/CVD, fees and other coverage limits remain separate; a calculated rate is not a complete landed cost.</p><div className="tariff-filters"><button aria-pressed={filter === "all"} onClick={() => setFilter("all")}>All ({rows.length})</button><button aria-pressed={filter === "review"} onClick={() => setFilter("review")}>Needs attention ({reviewCount})</button></div></>}
+      {shown.map(row => <ResultRow key={`${filename}-${row.rowNumber}`} row={row} editShipment={!!selectedProduct?.editShipment && rows.length === 1} onUpdate={updated => setRows(current => current.map(item => item.rowNumber === updated.rowNumber ? updated : item))} />)}
+      {rowErrors.length > 0 && <div className="tariff-attention" role="alert"><strong>Rows not calculated</strong><ul>{rowErrors.map((row, i) => <li key={i}>Row {row.rowNumber}: {row.reason}</li>)}</ul><p>Correct these rows in your file and upload again.</p>{rows.length === 0 && <button className="btn" onClick={exportResults}>Export errors</button>}</div>}
+    </section>}
+  </div>;
 }

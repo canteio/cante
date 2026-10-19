@@ -1,13 +1,16 @@
+import { withStackingRulesCache } from "./stacking-rules";
 import { computeDuty, parseDutyRate } from "./duty-expression";
 import pilot from "@/config/tariff-pilot.json";
 import { parseCsv, type CsvTable } from "@/lib/catalogue/csv";
 import { impactFieldAliases, firstPresent, conflictingAlias, duplicateHeaders, COUNTRY_NAME_TO_CODE, normalizeHtsCode, normalizeCountryCode } from "./bulk";
 import { isStrictIsoDate } from "./date";
-import { computeStackedDuty, type StackedDutyResult } from "./stack";
+import { withOfficialRemedyCache } from "./section232-live";
+import { computeStackedDuty, type StackedDutyResult, type UsmcaQualificationInput } from "./stack";
 
 export class ImpactInputError extends Error {}
 
 export interface ImpactRow {
+  usmca_qualification?: UsmcaQualificationInput | null;
   qualification_verified?: boolean; qualification_basis?: string | null;
   review_reason?: string | null;
   analysis_kind?: "annual_portfolio" | "historical_entries";
@@ -80,12 +83,21 @@ function parseImpactRows(rows: Record<string, string>[], canonical = false, orig
     }
     for (const [key, group] of Object.entries(impactFieldAliases)) {
       if (!canonical && conflictingAlias(raw, group)) errors.push(`Conflicting ${key} columns.`);
-      const optional = ["qualification_verified", "qualification_basis", "evaluation_date", "quantity", "unit", "chapter99_codes", "exclusion_id", "special_program_claim",
+      const optional = ["usmca_verified", "usmca_decision", "usmca_details", "qualification_verified", "qualification_basis", "evaluation_date", "quantity", "unit", "chapter99_codes", "exclusion_id", "special_program_claim",
         ...(historical ? ["annual_import_value_usd", "current_duty_rate", "supplier"] : ["entry_id", "line_number", "customs_value_usd", "paid_duty_usd"])];
       if (!optional.includes(key) && !values[key as keyof typeof impactFieldAliases]) errors.push(`Missing ${key}.`);
     }
     if (values.qualification_verified && !["true", "false"].includes(values.qualification_verified.toLowerCase())) errors.push("qualification_verified must be true or false.");
     if ((values.qualification_basis?.length ?? 0) > 2000) errors.push("Qualification basis exceeds 2000 characters.");
+    const verified = values.usmca_verified?.toLowerCase() ?? null;
+    const decision = values.usmca_decision?.toLowerCase().replace(/[ -]+/g, "_") ?? null;
+    if (verified !== null && !["true", "false", "yes", "no"].includes(verified)) errors.push("USMCA verified must be true/false or yes/no.");
+    if (decision !== null && !["qualifies", "does_not_qualify"].includes(decision)) errors.push("USMCA decision must be qualifies or does_not_qualify.");
+    const usmcaQualification: UsmcaQualificationInput | null = verified === null && decision === null && values.usmca_details === null ? null : {
+      verified: verified === "true" || verified === "yes",
+      decision: decision === "qualifies" || decision === "does_not_qualify" ? decision : null,
+      details: values.usmca_details,
+    };
     const quantity = decimal(values.quantity);
     if (values.quantity !== null && quantity === null) errors.push("Quantity must be a non-negative decimal.");
     for (const key of ["chapter99_codes", "exclusion_id", "special_program_claim"] as const) {
@@ -109,6 +121,7 @@ function parseImpactRows(rows: Record<string, string>[], canonical = false, orig
     if (values.origin && !/^[a-z]{2}$/i.test(values.origin)) errors.push("Origin must be a two-letter code.");
     if (values.evaluation_date && !isStrictIsoDate(values.evaluation_date)) errors.push("Invalid import date.");
     return {
+      usmca_qualification: usmcaQualification,
       qualification_verified: values.qualification_verified?.toLowerCase() === "true", qualification_basis: values.qualification_basis,
       analysis_kind: historical ? "historical_entries" : "annual_portfolio", entry_id: values.entry_id, line_number: values.line_number, customs_value_usd: historical ? value : null, paid_duty_usd: paid,
       input_valid: !errors.length, row_number: i + 1, sku: values.sku, hts: values.hts, origin: values.origin?.toUpperCase() ?? null, supplier: values.supplier,
@@ -123,7 +136,7 @@ function parseImpactRows(rows: Record<string, string>[], canonical = false, orig
   });
   const identities = new Map<string, ImpactRow[]>();
   for (const row of parsed) {
-    const key = historical ? JSON.stringify([row.entry_id, row.line_number]) : JSON.stringify([row.sku, row.hts, row.origin, row.supplier, row.annual_import_value_usd, row.current_duty_rate, row.evaluation_date, row.quantity, row.unit, row.chapter99_codes, row.exclusion_id, row.special_program_claim]);
+    const key = historical ? JSON.stringify([row.entry_id, row.line_number]) : JSON.stringify([row.sku, row.hts, row.origin, row.supplier, row.annual_import_value_usd, row.current_duty_rate, row.evaluation_date, row.quantity, row.unit, row.chapter99_codes, row.exclusion_id, row.special_program_claim, row.usmca_qualification]);
     const group = identities.get(key) ?? [];
     group.push(row); identities.set(key, group);
   }
@@ -154,7 +167,7 @@ export function historicalPilotDuty(row: ImpactRow, date = row.evaluation_date):
     adCvdAdvisories: [], uflpaAdvisories: [], usmcaQualification: { status: "not_applicable", specialRateRequested: false, explanation: "The supported origins are China and Vietnam." } };
 }
 
-export async function evaluateBusinessImpact(rows: ImpactRow[], compute = computeStackedDuty, signal?: AbortSignal): Promise<ImpactRow[]> {
+async function evaluateBusinessImpactUncached(rows: ImpactRow[], compute = computeStackedDuty, signal?: AbortSignal): Promise<ImpactRow[]> {
   const output = rows.map(row => ({ ...row }));
   let next = 0;
   await Promise.all(Array.from({ length: Math.min(5, rows.length) }, async () => {
@@ -171,11 +184,14 @@ export async function evaluateBusinessImpact(rows: ImpactRow[], compute = comput
           }
         } else {
           result = await compute({ htsCode: row.hts!, countryOfOrigin: row.origin!, value: row.annual_import_value_usd,
-            quantity: row.quantity, unit: row.unit, importDate: row.evaluation_date, signal });
+            quantity: row.quantity, unit: row.unit, importDate: row.evaluation_date, signal,
+            ...(row.usmca_qualification ? { usmcaQualification: row.usmca_qualification } : {}) });
         }
         row.stack_result = result;
         if (!result) { row.status = "error"; row.error = "No published HTS row matched."; continue; }
-        if (row.chapter99_codes || row.exclusion_id || row.special_program_claim) {
+        const verifiedUsmcaClaim = /^(?:S|S\+|USMCA)$/i.test(row.special_program_claim ?? "")
+          && result.usmcaQualification.status === "verified" && result.usmcaQualification.decision === "qualifies";
+        if (row.chapter99_codes || row.exclusion_id || (row.special_program_claim && !verifiedUsmcaClaim)) {
           row.review_reason = "Chapter 99, exclusion, or programme claims require verified applicability review; no duty delta is reported.";
           result.unresolvedMeasures = [...result.unresolvedMeasures, row.review_reason];
           result.totalAmount = null; result.totalRatePercent = null;
@@ -268,4 +284,8 @@ export function comparePublishedBaseRates(rows: ImpactRow[], before: { general?:
   return { rows: results, baseDutyDeltaUsd: results.length && results.every(row => row.deltaUsd !== null)
       ? Number(results.reduce((sum, row) => sum + row.deltaUsd!, 0).toFixed(2)) : null,
     explanation: "Base-duty component only, holding uploaded values and quantities constant. Additional tariffs, exceptions and the legal effective date have not been established by this schedule comparison. This is not a total-duty estimate, annual forecast or refund claim." };
+}
+
+export async function evaluateBusinessImpact(rows: ImpactRow[], compute = computeStackedDuty, signal?: AbortSignal): Promise<ImpactRow[]> {
+  return withOfficialRemedyCache(() => withStackingRulesCache(() => evaluateBusinessImpactUncached(rows, compute, signal)));
 }

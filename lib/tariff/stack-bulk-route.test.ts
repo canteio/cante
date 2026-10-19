@@ -5,11 +5,7 @@ import { POST } from "@/app/api/tariff/stack/bulk/route";
 
 function stubFetch(rows: unknown[], status = 200) {
   const original = global.fetch;
-  global.fetch = (async () => ({
-    ok: status >= 200 && status < 300,
-    status,
-    json: async () => rows,
-  })) as unknown as typeof global.fetch;
+  global.fetch = (async () => Response.json(rows, { status })) as typeof global.fetch;
   return () => {
     global.fetch = original;
   };
@@ -148,4 +144,20 @@ test("bulk API uses programme S only with verified qualification details", async
   } finally {
     restore();
   }
+});
+
+test("bulk calculator forwards a default date and exposes row facts for correction", async () => {
+  const invalid = await POST(new Request("https://cante.test/api/tariff/stack/bulk?importDate=2026-02-30", { method: "POST", body: "hts,origin\n0101,MX" }));
+  assert.equal(invalid.status, 400);
+  const restore = stubFetch([{ htsno: "0101.21.00.10", general: "2%", special: "Free (S)" }]);
+  try {
+    const response = await POST(new Request("https://cante.test/api/tariff/stack/bulk?importDate=2025-01-15", { method: "POST", body: "hts,origin,usmca_verified,usmca_decision,usmca_details\n0101.21.00.10,Mexico,true,qualifies,Reviewed certificate" }));
+    const data = await response.json();
+    assert.equal(response.status, 200);
+    assert.equal(data.rows[0].input.importDate, "2025-01-15");
+    assert.equal(data.rows[0].input.countryOfOrigin, "MX");
+    assert.equal(data.rows[0].input.usmcaQualification.details, "Reviewed certificate");
+    assert.equal(data.rows[0].result.usmcaQualification.status, "verified");
+    assert.equal(data.rows[0].result.components[0].ratePercent, 0);
+  } finally { restore(); }
 });

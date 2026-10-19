@@ -1,9 +1,11 @@
 "use client";
 
+import { calculateDemo, DEMO_QUESTION, DEMO_STORAGE_KEY, demoMoney, type DemoInput } from "@/components/tariff/demo-scenario";
 import { ArrowRight, ChevronDown, Globe, Paperclip, Square, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Markdown } from "@/components/chat/markdown";
+import { CanteBeagle } from "@/components/chat/cante-beagle";
 import {
   SUPPORTED_JURISDICTIONS,
   normalizeJurisdiction,
@@ -24,14 +26,12 @@ type Attachment = {
  * One entry in the message timeline, in the order it actually happened.
  *
  * Everything here is reported by the provider. There is deliberately no
- * "phase" field and no summary text the client made up: the previous version
- * showed invented labels ("Preparing", "Searching web") and a preflight model
- * call that wrote reasoning prose before the real answer had begun. Both were
- * theatre. What the CLI genuinely reports is: a thinking block is open and how
- * many tokens it has spent, which tool is running with which input, what that
- * tool returned, and the answer text token by token.
+ * "phase" field or client-invented reasoning. Working states, tools and sources
+ * come from actual events. Reasoning summaries are a separate provider event,
+ * never private reasoning text or a second call to invent an explanation.
  */
 type TimelineItem =
+  | { kind: "summary"; id: string; text: string; done: boolean }
   | {
       kind: "thinking";
       id: string;
@@ -69,18 +69,25 @@ export function ChatPanel({
   customerId,
   initialConversationId,
   initialCountry,
+  initialDemo = false,
 }: {
   customerId: string | null;
   initialConversationId: string | null;
   initialCountry: JurisdictionName;
+  initialDemo?: boolean;
 }) {
   const router = useRouter();
+  const [demoInput, setDemoInput] = useState<DemoInput | null>(null);
+  const demoResult = useMemo(() => {
+    if (!demoInput) return null;
+    try { return calculateDemo(demoInput); } catch { return null; }
+  }, [demoInput]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [conversationId, setConversationId] = useState<string | null>(null);
-  const [country, setCountry] = useState<JurisdictionName>(initialCountry);
+  const [country, setCountry] = useState<JurisdictionName>("United States");
   const [countryMenuOpen, setCountryMenuOpen] = useState(false);
 
   // UI/UX friction fix: the jurisdiction picker menu (role="menu") had no
@@ -131,7 +138,11 @@ export function ChatPanel({
       return;
     }
     const data = await res.json();
-    setCountry(normalizeJurisdiction(data.conversation?.jurisdiction));
+    if (normalizeJurisdiction(data.conversation?.jurisdiction) !== "United States") {
+      setError("Indonesia chat is temporarily unavailable. Start a new United States chat.");
+      return;
+    }
+    setCountry("United States");
     setConversationId(id);
     setMessages(
       (data.messages ?? []).map((m: any) =>
@@ -140,7 +151,7 @@ export function ChatPanel({
           : {
               role: "agent",
               text: m.content,
-              timeline: (m.activity ?? []).map(
+              timeline: (m.activity ?? []).filter((a: { name: string }) => a.name !== "ReasoningSummary").map(
                 (a: Omit<Extract<TimelineItem, { kind: "tool" }>, "kind" | "done">, i: number) => ({
                   kind: "tool" as const,
                   id: a.id ?? `${m.id}-${i}`,
@@ -160,10 +171,13 @@ export function ChatPanel({
   }
 
   function newChat() {
+    abortRef.current?.abort();
+    setBusy(false);
     setConversationId(null);
     setMessages([]);
     setError(null);
     setInput("");
+    setAttachments([]);
   }
 
   function chooseCountry(next: JurisdictionName) {
@@ -183,8 +197,8 @@ export function ChatPanel({
   const [now, setNow] = useState(() => Date.now());
 
   // Files dropped on the composer, already turned into text server-side. They
-  // are attached to the next message only — nothing is filed or stored as
-  // evidence by asking a question about it.
+  // are attached to the next message. Sending files invokes the existing
+  // workspace filing path; selecting a file alone does not save it.
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [dragging, setDragging] = useState(false);
   const [reading, setReading] = useState(false);
@@ -195,6 +209,7 @@ export function ChatPanel({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function attachFiles(files: File[]) {
+    if (initialDemo) { setError("Edit the fictional scenario at /tariff/demo to change its files."); return; }
     if (files.length === 0) return;
     setReading(true);
     setError(null);
@@ -240,12 +255,25 @@ export function ChatPanel({
 
   useEffect(() => {
     setCountry(initialCountry);
+    if (initialDemo) {
+      newChat();
+      try {
+        const stored = sessionStorage.getItem(DEMO_STORAGE_KEY);
+        if (!stored) throw new Error("Calculate a fictional scenario first, then choose Ask Cante.");
+        const scenario = JSON.parse(stored) as DemoInput;
+        calculateDemo(scenario);
+        setDemoInput(scenario);
+        setInput(DEMO_QUESTION);
+      } catch (error) { setDemoInput(null); setError((error as Error).message); }
+      return;
+    }
+    setDemoInput(null);
     if (initialConversationId) {
       void openConversation(initialConversationId);
     } else {
       newChat();
     }
-  }, [initialConversationId, initialCountry]);
+  }, [initialConversationId, initialCountry, initialDemo]);
 
   useEffect(() => {
     const onNew = () => newChat();
@@ -267,10 +295,10 @@ export function ChatPanel({
   }
 
   function closeOpenItems(m: Extract<Message, { role: "agent" }>) {
-    m.timeline = m.timeline.map((item) =>
+    m.timeline = m.timeline.filter((item) => item.kind !== "summary").map((item) =>
       item.kind === "thinking" && item.endedAt === null
         ? { ...item, endedAt: Date.now() }
-        : item.kind === "tool" && !item.done
+        : item.kind !== "thinking" && !item.done
           ? { ...item, done: true }
           : item,
     );
@@ -288,6 +316,8 @@ export function ChatPanel({
 
   async function send() {
     const question = input.trim();
+    if (initialDemo && !demoInput) { setError("Calculate a fictional scenario first at /tariff/demo."); return; }
+    if (initialDemo && attachments.length) { setError("Demo chat uses the scenario report only. Leave demo mode to upload workspace files."); return; }
     // A dropped file with no typed question is a valid ask on its own.
     if ((!question && attachments.length === 0) || busy || reading) return;
 
@@ -315,6 +345,7 @@ export function ChatPanel({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           question,
+          ...(initialDemo && demoInput ? { demoScenario: demoInput, demoMessages: messages.map(m => ({ role: m.role, text: m.text })) } : {}),
           attachments: sending,
           customerId,
           conversationId,
@@ -388,6 +419,19 @@ export function ChatPanel({
                   : i,
               );
             });
+          } else if (ev.type === "reasoning_summary") {
+            patchLast((m) => {
+              // Keep only the current live summary; never leave a replay control.
+              m.timeline = m.timeline.filter((i) => i.kind !== "summary" || (!ev.done && i.id === ev.id));
+              if (ev.done) return;
+              const existing = m.timeline.find((i) => i.kind === "summary" && i.id === ev.id);
+              if (existing && existing.kind === "summary") {
+                m.timeline = m.timeline.map((i) => i === existing
+                  ? { ...existing, text: (existing.text + ev.text).slice(0, 16_000) } : i);
+              } else {
+                m.timeline.push({ kind: "summary", id: ev.id, text: ev.text.slice(0, 16_000), done: false });
+              }
+            });
           } else if (ev.type === "tool_start") {
             patchLast((m) => {
               closeOpenItems(m);
@@ -405,7 +449,7 @@ export function ChatPanel({
             patchLast((m) => {
               m.timeline = m.timeline.map((i) =>
                 i.kind === "tool" && i.id === ev.id
-                  ? { ...i, done: true, results: ev.results ?? i.results }
+                  ? { ...i, done: true, results: ev.results ?? i.results, detail: ev.detail ?? i.detail, name: ev.name ?? i.name, url: ev.url ?? i.url, hostname: ev.hostname ?? i.hostname }
                   : i,
               );
             });
@@ -448,9 +492,12 @@ export function ChatPanel({
   }
 
   const isEmpty = messages.length === 0 && !busy;
+  function suggest(text: string) { setInput(text); textareaRef.current?.focus(); }
 
   return (
-    <div className={`chat-page${isEmpty ? " is-empty" : ""}`}>
+    <div className={`chat-page cante-chat${isEmpty ? " is-empty" : ""}`}>
+      {initialDemo && <div className="chat-demo-banner"><span><strong>Fictional scenario</strong>{demoResult ? ` · ${demoResult.affectedCount}/${demoResult.productCount} products · ${demoMoney(demoResult.totalExtraCents)} extra/year. Not saved to your workspace.` : " · Calculate a demo first."}</span><a href="/tariff/demo">Edit scenario</a><a href="/chat">Leave demo</a></div>}
+      {!isEmpty && <div className="cante-chat-mobile-actions"><button className="btn" disabled={busy} onClick={() => { newChat(); router.push(`/chat?country=${encodeURIComponent(country)}`); }}>New chat</button></div>}
       <div className="chat-scroll">
         <div className="chat-inner">
           {messages.map((m, i) =>
@@ -470,6 +517,7 @@ export function ChatPanel({
               </div>
             ) : (
               <div key={i} className="msg-agent">
+                <div className="cante-message-name">Cante</div>
                 {(m.timeline.length > 0 || (m.streaming && !m.text)) && (
                   <div className="timeline">
                     {m.timeline.map((item, index) =>
@@ -480,7 +528,7 @@ export function ChatPanel({
                           now={now}
                           connected={index < m.timeline.length - 1}
                         />
-                      ) : (
+                      ) : item.kind === "summary" ? null : (
                         <ToolBlock
                           key={item.id}
                           item={item}
@@ -488,12 +536,16 @@ export function ChatPanel({
                         />
                       ),
                     )}
-                    {m.streaming && !m.text && m.timeline.every(isSettled) && (
-                      <TimelineRow streaming>
-                        <span className="tl-verb">Working</span>
-                        <span className="tl-elapsed">{seconds(m.startedAt, now)}</span>
-                      </TimelineRow>
-                    )}
+                    <ReasoningSummary item={m.timeline.find((item): item is Extract<TimelineItem, { kind: "summary" }> => item.kind === "summary") ?? null} />
+                    <div className={`tl-working-slot${m.streaming && !m.text && m.timeline.every(isSettled) ? " is-open" : ""}`}
+                      aria-hidden={!(m.streaming && !m.text && m.timeline.every(isSettled))}>
+                      <div className="tl-summary-clip">
+                        <TimelineRow streaming>
+                          <span className="tl-verb">Working</span>
+                          <span className="tl-elapsed">{seconds(m.startedAt, now)}</span>
+                        </TimelineRow>
+                      </div>
+                    </div>
                   </div>
                 )}
 
@@ -507,21 +559,19 @@ export function ChatPanel({
             ),
           )}
 
-          {error && <div className="callout callout-bad">{error}</div>}
+          {error && <div className="callout callout-bad" role="alert">{error}</div>}
           <div ref={bottomRef} />
         </div>
       </div>
 
       <div className="composer-dock">
         <div className="composer-shell">
-          <div className="greeting">
-            <h2>What would you like to know?</h2>
-            <p>
-              {country === "United States"
-                ? "Domestic, distribution, and export compliance grounded in your U.S. profile."
-                : "Indonesian rules grounded in stored runs, KBLI, HS codes, and customer memory."}
-            </p>
-          </div>
+          {isEmpty && <section className="cante-welcome" aria-labelledby="cante-welcome-heading">
+            <CanteBeagle />
+            <h1 id="cante-welcome-heading">Hi, I’m Cante.</h1>
+          </section>}
+          {isEmpty && error && <div className="callout callout-bad" role="alert">{error}</div>}
+
 
           <div
             className="composer"
@@ -581,13 +631,14 @@ export function ChatPanel({
             )}
             <div className="composer-field">
               <textarea
+                aria-label="Message Cante"
                 ref={textareaRef}
                 rows={1}
                 value={input}
                 placeholder={
-                  attachments.length
+                  initialDemo ? "Ask about this fictional tariff scenario…" : attachments.length
                     ? "Ask about the attached file, or just send…"
-                    : "Ask about the checks, or drop a file in…"
+                    : "Ask Cante anything, or drop a file here…"
                 }
                 onChange={(e) => setInput(e.target.value)}
                 onPaste={(e) => {
@@ -608,6 +659,8 @@ export function ChatPanel({
               />
             </div>
             <div className="composer-bar">
+              <span className="country-picker-current country-fixed" aria-label="Chat jurisdiction: United States"><span className="country-code">US</span>United States</span>
+              {/* Country switching is temporarily disabled; preserve the selector for later.
               <div className="country-picker">
                 <button
                   ref={countryTriggerRef}
@@ -645,6 +698,7 @@ export function ChatPanel({
                   </div>
                 )}
               </div>
+              */}
               <input
                 ref={fileInputRef}
                 type="file"
@@ -662,7 +716,7 @@ export function ChatPanel({
                 className="icon-btn composer-attach"
                 aria-label="Attach a file"
                 title="Attach a file"
-                disabled={busy || reading}
+                disabled={busy || reading || initialDemo}
                 onClick={() => fileInputRef.current?.click()}
               >
                 <Paperclip size={14} />
@@ -672,7 +726,7 @@ export function ChatPanel({
                   <>Reading file…</>
                 ) : (
                   <>
-                    <Globe size={11} /> Can search the web
+                    <Globe size={11} /> {initialDemo ? "Uses this fictional report" : "Can search the web"}
                   </>
                 )}
               </span>
@@ -691,6 +745,19 @@ export function ChatPanel({
               </button>
             </div>
           </div>
+          {isEmpty && initialDemo && <div className="cante-starters">
+            <button onClick={() => suggest("Why are these products affected by this simulated regulation?")}><ArrowRight size={16} /><strong>Why these products?</strong><span>See the origin and HTS match</span></button>
+            <button onClick={() => suggest("Which five SKUs are hit hardest?")}><ArrowRight size={16} /><strong>Biggest impacts</strong><span>Review the top five SKUs</span></button>
+            <button onClick={() => suggest("What did we import in September?")}><ArrowRight size={16} /><strong>Import history</strong><span>Explore the fictional ledger</span></button>
+          </div>}
+          {isEmpty && !initialDemo && (
+            <div className="cante-starters">
+              <button disabled={reading} onClick={() => fileInputRef.current?.click()}><Paperclip size={16} /><strong>Start with a file</strong><span>CSV, spreadsheet or document</span></button>
+              <button onClick={() => suggest("Show me my saved products. What information is missing, and what should I do first?")}><ArrowRight size={16} /><strong>Help with my products</strong><span>See what’s in your workspace</span></button>
+              <button onClick={() => suggest("Help me find official government guidance for my products. Ask me what you need to know first.")}><Globe size={16} /><strong>Find official guidance</strong><span>Go straight to the source</span></button>
+            </div>
+          )}
+          <p className="cante-chat-note">{initialDemo ? "Fictional scenario. Amounts calculated by code; this conversation is not saved." : attachments.length ? "Files you send are saved to this workspace. Remove any sensitive columns first." : "Cante can make mistakes. Check sources before making trade decisions."}</p>
         </div>
       </div>
     </div>
@@ -750,13 +817,61 @@ function ThinkingBlock({
   return (
     <TimelineRow streaming={running} connected={connected}>
       <span className={`tl-verb${running ? " is-live" : ""}`}>
-        {running ? "Thinking" : "Thought"}
+        {running ? "Working" : "Finished"}
       </span>
       <span className="tl-elapsed">
         {elapsed}
         {item.tokens > 0 && <span className="tl-tokens"> · {item.tokens} tokens</span>}
       </span>
     </TimelineRow>
+  );
+}
+
+/** A stable, single-line slot: finish closing before showing the next summary. */
+function ReasoningSummary({ item }: {
+  item: Extract<TimelineItem, { kind: "summary" }> | null;
+}) {
+  const [shown, setShown] = useState(item);
+  const [open, setOpen] = useState(false);
+  const latest = useRef(item);
+  latest.current = item;
+
+  // Keep the last streamed text available while its line closes.
+  useEffect(() => {
+    if (item && shown?.id === item.id) setShown(item);
+  }, [item]);
+
+  useEffect(() => {
+    let frame: number | undefined;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    if (item && (!shown || shown.id === item.id)) {
+      setShown(item);
+      frame = requestAnimationFrame(() => setOpen(true));
+    } else {
+      setOpen(false);
+      timer = setTimeout(() => {
+        setShown(latest.current);
+        if (latest.current) frame = requestAnimationFrame(() => setOpen(true));
+      }, 220);
+    }
+    return () => {
+      if (frame !== undefined) cancelAnimationFrame(frame);
+      if (timer !== undefined) clearTimeout(timer);
+    };
+  }, [item?.id]);
+
+  const raw = (shown?.id === item?.id ? item?.text : shown?.text) ?? "";
+  // Provider summaries often start with a bold/Markdown heading. Wait for the
+  // actual prose rather than flashing a partial heading or inventing a label.
+  const withoutHeading = raw.startsWith("**") && raw.indexOf("**", 2) < 0 ? ""
+    : raw.replace(/^\s*\*\*[^*]+\*\*\s*/, "").replace(/^\s*#{1,6}[^\n]*(?:\n|$)/, "");
+  const text = withoutHeading.replace(/[*_`]/g, "").replace(/\s+/g, " ").trim();
+  return (
+    <div className={`tl-summary-slot${open && text ? " is-open" : ""}`} aria-hidden={!open || !text}>
+      <div className="tl-summary-clip">
+        <div className="tl-summary-line">{text}</div>
+      </div>
+    </div>
   );
 }
 

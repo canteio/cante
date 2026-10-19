@@ -1,16 +1,19 @@
-import { quoteDuty, type DutyQuote } from "@/lib/tariff/rates";
+import { computeAdValoremAmount } from "./duty-expression";
+import { lookupTariff, quoteDuty, type DutyQuote, type TariffRow } from "@/lib/tariff/rates";
 import {
   extractChapter99Refs,
   lookupSection301Measure,
   lookupSection301Coverage,
   SECTION_301_COVERAGE_CITATION,
   type Section301Measure,
+  resolveCurrentSection301,
+  resolveCurrentChina301,
 } from "@/lib/tariff/section301";
 import {
   lookupSection232BasicArticle,
   lookupSection232Derivative,
 } from "@/lib/tariff/section232";
-import { lookupSection232Live } from "@/lib/tariff/section232-live";
+import { lookupSection232Live, fetchOfficialRemedySnapshot, resolveCurrentMetal232, type OfficialRemedySnapshot, type RemedyFacts, type RemedyResolution } from "@/lib/tariff/section232-live";
 import {
   lookupSection338,
   SECTION_338_EFFECTIVE_DATE,
@@ -18,6 +21,7 @@ import {
   isAlcoholSection232StackUnresolved,
 } from "@/lib/tariff/section338";
 import { lookupAdCvdAdvisories, type AdCvdAdvisory } from "@/lib/tariff/adcvd";
+import { applyStackingRules, loadStackingFlags, type StackingRulesLookupFn } from "@/lib/tariff/stacking-rules";
 import { lookupUflpaAdvisories, UFLPA_SCOPE_CAVEAT, type UflpaAdvisory } from "@/lib/tariff/uflpa";
 import { easternIsoDate, isStrictIsoDate } from "@/lib/tariff/date";
 
@@ -52,6 +56,8 @@ import { easternIsoDate, isStrictIsoDate } from "@/lib/tariff/date";
  */
 
 export interface StackedDutyComponent {
+  /** Stable identifier for confirmed stacking-rule application. */
+  measureId?: string;
   type: "base" | "section301" | "section232" | "section338" | "section122";
   label: string;
   /** Structured version metadata is present only when the rule source verified it. */
@@ -95,6 +101,7 @@ export type UsmcaQualificationAudit =
     };
 
 export interface StackedDutyResult {
+  remedyRefresh?: { revision: string | null; checkedAt: string; status: string; issues: string[]; missingFacts: string[]; section232?: RemedyResolution; section301?: RemedyResolution; sources: { url:string; sha256:string; checkedAt:string }[] };
   htsCode: string;
   countryOfOrigin: string;
   /** Sum of every resolved component's ad valorem rate, as a fraction. Null if any component is unresolved. */
@@ -154,6 +161,7 @@ export interface StackDutyInput {
    */
   importDate?: string | null;
   signal?: AbortSignal;
+  remedyFacts?: RemedyFacts;
 }
 
 function resolveUsmcaQualification(
@@ -202,6 +210,10 @@ function resolveUsmcaQualification(
 export async function computeStackedDuty(
   input: StackDutyInput,
   section232LiveLookupFn: typeof lookupSection232Live = lookupSection232Live,
+  stackingRulesLookupFn: StackingRulesLookupFn = applyStackingRules,
+  flaggedMeasuresFn: () => Promise<Set<string>> = loadStackingFlags,
+  publishedRow?: TariffRow,
+  suppliedRemedySnapshot?: OfficialRemedySnapshot | null,
 ): Promise<StackedDutyResult | null> {
   const country = input.countryOfOrigin.trim().toUpperCase();
   const usmcaQualification = resolveUsmcaQualification(country, input.usmcaQualification);
@@ -215,6 +227,16 @@ export async function computeStackedDuty(
       ? null
       : null;
 
+  let remedySnapshot = suppliedRemedySnapshot ?? null;
+  let remedyRefreshError: string | null = null;
+  const usesCurrentRules = (input.importDate ?? easternIsoDate()) === easternIsoDate() && section232LiveLookupFn === lookupSection232Live;
+  if(usesCurrentRules && suppliedRemedySnapshot===null)remedyRefreshError="Current consolidated rule snapshot is unavailable.";
+  if (usesCurrentRules && suppliedRemedySnapshot === undefined) {
+    try { remedySnapshot = await fetchOfficialRemedySnapshot(input.signal); }
+    catch (error) { remedyRefreshError = error instanceof Error ? error.message : "Current remedy refresh failed."; }
+  }
+  let currentMetal: RemedyResolution | undefined;
+  let currentForced: RemedyResolution | undefined;
   const base: DutyQuote | null = await quoteDuty({
     htsCode: input.htsCode,
     value: input.value,
@@ -223,12 +245,19 @@ export async function computeStackedDuty(
     claimedProgramme,
     countryOfOrigin: country,
     signal: input.signal,
-  });
+  }, publishedRow ?? (usesCurrentRules ? await lookupTariff(input.htsCode,{signal:input.signal,fresh:true}) ?? undefined : undefined));
   if (!base) return null;
 
+  const currentAmount=(resolution:RemedyResolution)=>{
+    if(input.value===null||resolution.rate===null)return null;
+    if(resolution.combinedRate!==undefined){const target=computeAdValoremAmount(input.value,resolution.combinedRate);return target===null||base.computation.amount===null?null:Math.max(0,Math.round((target-base.computation.amount)*100)/100);}
+    return computeAdValoremAmount(input.value,resolution.rate);
+  };
   const components: StackedDutyComponent[] = [];
   const stackingExplanation: string[] = [];
   const unresolvedMeasures: string[] = [];
+
+  if (remedyRefreshError) unresolvedMeasures.push(`Official remedy refresh failed: ${remedyRefreshError}. No stale rule was substituted as current coverage.`);
 
   if (legacyProgramme && !isUsmcaProgramme) unresolvedMeasures.push("Claimed preference programme has no verified qualification evidence; preferential duty and aggregate totals are withheld.");
 
@@ -236,8 +265,9 @@ export async function computeStackedDuty(
   // the EU member states. Exemption and combined-rate rules are not yet
   // implemented by this general calculator; omission must withhold totals.
   const forcedLaborOrigins = new Set("DZ AO AR AU BS BH BD BR KH CA CL CN CO CR DO EG SV GT GY HN HK IN ID IQ IL JP JO KZ KW LY MY MX MA NZ NI NG NO OM PK PE PH QA RU SA SG ZA KR LK CH TW TH TT TR AE GB UY VE VN AT BE BG HR CY CZ DK EE FI FR DE GR HU IE IT LV LT LU MT NL PL PT RO SK SI ES SE".split(" "));
+  const forcedLaborUnresolved = "Section 301 forced-labor action effective July 24, 2026 requires exemption and applicable-rate review (CBP CSMS 69326983); this measure is not included, so aggregate totals are withheld.";
   if ((input.importDate && isStrictIsoDate(input.importDate) ? input.importDate : easternIsoDate()) >= "2026-07-24" && forcedLaborOrigins.has(country)) {
-    unresolvedMeasures.push("Section 301 forced-labor action effective July 24, 2026 requires exemption and applicable-rate review (CBP CSMS 69326983); this measure is not included, so aggregate totals are withheld.");
+    unresolvedMeasures.push(forcedLaborUnresolved);
   }
 
   let importDate: string | null = null;
@@ -275,7 +305,7 @@ export async function computeStackedDuty(
     label: `Column 1 ${base.column === "special" ? "special (FTA/preference)" : base.column === "column2" ? "column 2" : "general (NTR)"} duty`,
     ratePercent: base.rate.parsed && base.rate.specificAmount === null ? (base.rate.adValorem ?? (base.rate.free ? 0 : null)) : null,
     amount: base.computation.amount,
-    citation: ["19 U.S.C. § 1202, HTSUS Column 1/2 as published by USITC"],
+    citation: ["19 U.S.C. § 1202, HTSUS Column 1/2 as published by USITC", `https://hts.usitc.gov/search?query=${encodeURIComponent(base.htsCode)}`],
     explanation: base.caveats.join(" "),
   });
 
@@ -294,9 +324,13 @@ export async function computeStackedDuty(
       );
     } else {
       stackingExplanation.push(
-        `No Chapter 99 cross-reference was published on this HTS row, and country of origin "${country}" is not China, so no Section 301 measure applies.`,
+        `No Chapter 99 cross-reference was published on this HTS row, and country of origin "${country}" is not China, so no China-list Section 301 measure applies.`,
       );
     }
+  } else if (remedySnapshot) {
+    const current = resolveCurrentChina301(remedySnapshot,input.htsCode);
+    if(current.status!=="resolved")unresolvedMeasures.push(current.reason);
+    else components.push({type:"section301",measureId:current.heading??undefined,label:`China Section 301 · ${current.heading}`,ratePercent:current.rate,amount:currentAmount(current),citation:current.citation,explanation:current.reason});
   } else {
     const coverage = !base.additionalDutiesNote?.trim()
       ? lookupSection301Coverage(input.htsCode)
@@ -338,6 +372,7 @@ export async function computeStackedDuty(
           : null;
       components.push({
         type: "section301",
+        measureId: measure.chapter99Code,
         label: measure.list,
         ratePercent: measure.ratePercent,
         amount,
@@ -366,7 +401,15 @@ export async function computeStackedDuty(
   const wantsLiveSection232 = !importDate || importDate >= LIVE_SECTION232_REGIME_START;
   let liveSection232Match: Awaited<ReturnType<typeof lookupSection232Live>> = null;
   let liveSection232Failed: string | null = null;
-  if (wantsLiveSection232) {
+  if (wantsLiveSection232 && remedySnapshot) {
+    const equivalent=base.computation.amount!==null&&input.value!==null&&input.value>0?base.computation.amount/input.value:base.rate.free?0:base.rate.adValorem;
+    currentMetal=resolveCurrentMetal232(remedySnapshot,{hts:input.htsCode,country,baseRate:equivalent,facts:input.remedyFacts});
+    if(currentMetal.status==="needs_facts"||currentMetal.status==="pending_verification")unresolvedMeasures.push(currentMetal.reason);
+    if(currentMetal.status==="resolved")components.push({type:"section232",measureId:currentMetal.heading??undefined,label:`Section 232 · ${currentMetal.heading}`,ratePercent:currentMetal.rate,amount:currentAmount(currentMetal),citation:currentMetal.citation,explanation:currentMetal.reason});
+    stackingExplanation.push(currentMetal.reason);
+  } else if (wantsLiveSection232 && remedyRefreshError) {
+    liveSection232Failed=remedyRefreshError;
+  } else if (wantsLiveSection232) {
     try {
       liveSection232Match = await section232LiveLookupFn(base.htsCode, input.signal, input.importDate ?? undefined);
     } catch (error) {
@@ -395,6 +438,7 @@ export async function computeStackedDuty(
     components.push({
       type: "section232",
       label: `Section 232 — ${match.annex}`,
+      measureId: "section_232_live",
       effectiveDate: match.effectiveDate,
       sourceDocumentNumber: match.sourceDocumentNumber,
       ratePercent: rate,
@@ -407,7 +451,7 @@ export async function computeStackedDuty(
     stackingExplanation.push(components[components.length - 1].explanation);
   }
 
-  if (wantsLiveSection232 && !liveSection232Match && !liveSection232Failed
+  if (wantsLiveSection232 && !remedySnapshot && !liveSection232Match && !liveSection232Failed
       && (lookupSection232BasicArticle(base.htsCode, country) || lookupSection232Derivative(base.htsCode, country))) {
     const explanation = "Historical coverage exists but no current accepted rule resolved this code; entry-date Section 232 treatment requires review.";
     unresolvedMeasures.push(explanation);
@@ -435,6 +479,7 @@ export async function computeStackedDuty(
     components.push({
       type: "section232",
       label: section232Match.label,
+      measureId: section232Match.chapter99Code,
       ratePercent: rate,
       amount: rate !== null && input.value !== null ? Number((input.value * rate).toFixed(2)) : null,
       citation: section232Match.federalRegisterCitations,
@@ -466,6 +511,7 @@ export async function computeStackedDuty(
         components.push({
           type: "section232",
           label: measure.label,
+          measureId: measure.chapter99Code,
           ratePercent: null,
           contentCategory: measure.category,
           amount: null,
@@ -481,6 +527,7 @@ export async function computeStackedDuty(
         components.push({
           type: "section232",
           label: measure.label,
+          measureId: measure.chapter99Code,
           ratePercent: null,
           contentCategory: measure.category,
           amount: null,
@@ -512,6 +559,7 @@ export async function computeStackedDuty(
         components.push({
           type: "section232",
           label: measure.label,
+          measureId: measure.chapter99Code,
           ratePercent: null,
           contentRatePercent: applicableRate,
           contentCategory: measure.category,
@@ -531,6 +579,7 @@ export async function computeStackedDuty(
       components.push({
         type: "section232",
         label: measure.label,
+          measureId: measure.chapter99Code,
         ratePercent: null,
         contentRatePercent: applicableRate,
         contentValue,
@@ -566,17 +615,64 @@ export async function computeStackedDuty(
       ? lookupSection338(base.htsCode, country, importDate)
       : null;
   if (isAlcoholSection232StackUnresolved(section338AlcoholOnlyMatch, importDate)) {
-    unresolvedMeasures.push(
-      `${section338AlcoholOnlyMatch!.chapter99Code}: Section 338 alcohol basket may stack with Section 232 per the Sept 15, 2026 amendment — this engine does not hold a verified computation for that stack`,
-    );
-    components.push({
-      type: "section338",
-      label: section338AlcoholOnlyMatch!.note.split(":")[0] ?? "Section 338 — Canada alcoholic beverages basket",
-      ratePercent: null,
-      amount: null,
-      citation: section338AlcoholOnlyMatch!.federalRegisterCitations,
-      explanation: `The Sept 15, 2026 amendment (FR doc 2026-18838) permits this alcohol-basket Section 338 duty to stack with the already-matched Section 232 measure on this code, instead of being excluded by it. This engine does not hold a verified computation for how the two measures combine, so this component and the aggregate total are withheld rather than guessed.`,
-    });
+    // Project Mission One, phase 1 (MISSION_ONE_PLAN.md): this used to be
+    // unconditionally withheld -- both rates were already known (Section
+    // 232's component is already in `components`; the alcohol basket's is
+    // the verified 50% from lookupSection338), the only open question was
+    // whether they combine. That question is now answered by a confirmed,
+    // citable rule in tariff_stacking_rules rather than a guess, and a
+    // database failure or a measure nobody has reviewed still withholds
+    // exactly as before -- this is strictly additive honesty, never a new
+    // way to fabricate a total.
+    let resolution;
+    try {
+      resolution = await stackingRulesLookupFn("9903.03.12", {
+        section_232_matched: true, section_338_matched: true,
+        section_301_matched: components.some(c => c.type === "section301"),
+        usmca_duty_free: usmcaQualification.status !== "verified" ? undefined
+        : usmcaQualification.decision === "does_not_qualify" ? false
+        : base.column === "special" && base.rate.parsed ? base.rate.free : undefined,
+      usmca_qualified: usmcaQualification.status === "verified" ? usmcaQualification.decision === "qualifies" : undefined,
+        country_of_origin: country, hts_prefix: base.htsCode.replace(/\D/g, ""),
+        section232_source_document: liveSection232Match?.sourceDocumentNumber,
+      }, importDate);
+    } catch (error) {
+      resolution = { status: "needs_review" as const, reason: error instanceof Error ? error.message : "Stacking-rules lookup failed." };
+    }
+    if (resolution.status === "resolved" && (resolution.match.action === "include" || resolution.match.action === "cap_at")) {
+      const rate = resolution.match.action === "cap_at" && resolution.match.capRatePercent !== null
+        ? Math.min(section338AlcoholOnlyMatch!.ratePercent, resolution.match.capRatePercent)
+        : section338AlcoholOnlyMatch!.ratePercent;
+      const amount = input.value !== null ? Number((input.value * rate).toFixed(2)) : null;
+      components.push({
+        type: "section338",
+        measureId: "9903.03.12",
+        label: section338AlcoholOnlyMatch!.note.split(":")[0] ?? "Section 338 — Canada alcoholic beverages basket",
+        ratePercent: rate,
+        amount,
+        citation: [...section338AlcoholOnlyMatch!.federalRegisterCitations, resolution.match.citation],
+        explanation: `${resolution.match.explanation} Confirmed stacking rule ${resolution.match.ruleId}.`,
+      });
+      stackingExplanation.push(resolution.match.explanation);
+    } else if (resolution.status === "resolved" && resolution.match.action === "exclude") {
+      stackingExplanation.push(
+        `${section338AlcoholOnlyMatch!.chapter99Code}: excluded by confirmed rule ${resolution.match.ruleId} — ${resolution.match.explanation}`,
+      );
+    } else {
+      const reason = resolution.status === "needs_review" ? resolution.reason : "no confirmed stacking rule resolves this combination yet";
+      unresolvedMeasures.push(
+        `${section338AlcoholOnlyMatch!.chapter99Code}: Section 338 alcohol basket may stack with Section 232 per the Sept 15, 2026 amendment — ${reason}`,
+      );
+      components.push({
+        type: "section338",
+        measureId: "9903.03.12",
+        label: section338AlcoholOnlyMatch!.note.split(":")[0] ?? "Section 338 — Canada alcoholic beverages basket",
+        ratePercent: null,
+        amount: null,
+        citation: section338AlcoholOnlyMatch!.federalRegisterCitations,
+        explanation: `The Sept 15, 2026 amendment (FR doc 2026-18838) permits this alcohol-basket Section 338 duty to stack with the already-matched Section 232 measure on this code, instead of being excluded by it. ${reason}, so this component and the aggregate total are withheld rather than guessed.`,
+      });
+    }
   } else if (!liveSection232Match && !section232Match && !section232Derivative) {
     const section338Match = lookupSection338(base.htsCode, country, importDate);
     if (section338Match) {
@@ -585,6 +681,7 @@ export async function computeStackedDuty(
         unresolvedMeasures.push(`${section338Match.chapter99Code}: import date before Section 338 effective date ${SECTION_338_EFFECTIVE_DATE}`);
         components.push({
           type: "section338",
+        measureId: section338Match.chapter99Code,
           label: section338Match.chapter99Code,
           ratePercent: null,
           amount: null,
@@ -604,6 +701,7 @@ export async function computeStackedDuty(
         unresolvedMeasures.push(`${section338Match.chapter99Code}: import date on/after the Sept 29, 2026 Section 338 ban-conversion date, basket-specific Annex not held`);
         components.push({
           type: "section338",
+        measureId: section338Match.chapter99Code,
           label: section338Match.note.split(":")[0] ?? "Section 338 — Canada additional duty",
           ratePercent: null,
           amount: null,
@@ -620,6 +718,7 @@ export async function computeStackedDuty(
             : null;
         components.push({
           type: "section338",
+        measureId: section338Match.chapter99Code,
           label: section338Match.note.split(":")[0] ?? "Section 338 — Canada additional duty",
           ratePercent: section338Match.ratePercent,
           amount,
@@ -631,6 +730,69 @@ export async function computeStackedDuty(
         );
       }
     }
+  }
+  if(remedySnapshot && currentMetal && usesCurrentRules) {
+    const equivalent=base.computation.amount!==null&&input.value!==null&&input.value>0?base.computation.amount/input.value:base.rate.free?0:base.rate.adValorem;
+    currentForced=resolveCurrentSection301(remedySnapshot,{hts:input.htsCode,country,baseRate:equivalent,section232:currentMetal,facts:input.remedyFacts,usmcaDutyFree:usmcaQualification.status==="verified"&&usmcaQualification.specialRateRequested&&base.rate.free});
+    if(unresolvedMeasures.includes(forcedLaborUnresolved))unresolvedMeasures.splice(unresolvedMeasures.indexOf(forcedLaborUnresolved),1);
+    if(currentForced.status==="resolved"||currentForced.status==="not_applicable") {
+      if(currentForced.heading)components.push({type:"section301",measureId:currentForced.heading,label:`Section 301 current action · ${currentForced.heading}`,ratePercent:currentForced.rate,amount:currentAmount(currentForced),citation:currentForced.citation,explanation:currentForced.reason});
+      stackingExplanation.push(currentForced.reason);
+    } else unresolvedMeasures.push(currentForced.reason);
+  }
+  // Even a non-metal product can fall under another Section 232 sector.
+  if(remedySnapshot && input.remedyFacts?.other232Heading!=="none")unresolvedMeasures.push(input.remedyFacts?.other232Heading ? "A non-metal Section 232 heading was declared; its sector-specific calculation requires supported scope and qualification rules." : "Other Section 232 sector treatment must be confirmed: supply other_232_heading=none only when no automotive, truck, wood, semiconductor or pharmaceutical Section 232 treatment applies.");
+  // Only flagged, already-computed measures reach a rule lookup. New rules
+  // select components; they never invent rates or qualification evidence.
+  try {
+    const flagged = await flaggedMeasuresFn();
+    const facts = {
+      section_232_matched: liveSection232Failed ? undefined : components.some(c => c.type === "section232"),
+      section_301_matched: components.some(c => c.type === "section301") ? true : country === "CN" && unresolvedMeasures.length > 0 ? undefined : false,
+      section_338_matched: components.some(c => c.type === "section338"),
+      usmca_duty_free: usmcaQualification.status !== "verified" ? undefined
+        : usmcaQualification.decision === "does_not_qualify" ? false
+        : base.column === "special" && base.rate.parsed ? base.rate.free : undefined,
+      usmca_qualified: usmcaQualification.status === "verified" ? usmcaQualification.decision === "qualifies" : undefined,
+      country_of_origin: country,
+      hts_prefix: base.htsCode.replace(/\D/g, ""),
+      section232_source_document: liveSection232Match?.sourceDocumentNumber,
+    };
+    if (unresolvedMeasures.includes(forcedLaborUnresolved)) {
+      const result = await stackingRulesLookupFn("section_301_forced_labor", facts, importDate);
+      if (result.status === "resolved" && result.match.action === "exclude") {
+        unresolvedMeasures.splice(unresolvedMeasures.indexOf(forcedLaborUnresolved), 1);
+        stackingExplanation.push(`${result.match.explanation} Confirmed rule ${result.match.ruleId}: ${result.match.citation}`);
+      }
+      // include/cap cannot calculate this measure's still-unmodeled rate.
+    }
+    for (const component of components) {
+      if (!component.measureId || !flagged.has(component.measureId)) continue;
+      if (component.measureId === "9903.03.12" && components.some(c => c.type === "section232")) continue;
+      const result = await stackingRulesLookupFn(component.measureId, facts, importDate);
+      if (result.status !== "resolved") {
+        unresolvedMeasures.push(`${component.measureId}: ${result.status === "needs_review" ? result.reason : "Flagged measure has no confirmed rule"}`);
+        continue;
+      }
+      const reason = `${result.match.explanation} Confirmed rule ${result.match.ruleId}: ${result.match.citation}`;
+      component.citation = [...component.citation, result.match.citation];
+      component.explanation += ` ${reason}`;
+      stackingExplanation.push(reason);
+      if (result.match.action === "exclude") {
+        component.ratePercent = 0;
+        component.amount = 0;
+        if (component.contentRatePercent !== undefined) component.contentRatePercent = 0;
+      } else if (result.match.action === "cap_at") {
+        if (component.ratePercent === null || result.match.capRatePercent === null || component.contentRatePercent !== undefined) {
+          unresolvedMeasures.push(`${component.measureId}: component cap needs an established shipment-value ad valorem rate`);
+        } else {
+          component.ratePercent = Math.min(component.ratePercent, result.match.capRatePercent);
+          component.amount = input.value === null ? null : Number((input.value * component.ratePercent).toFixed(2));
+        }
+      }
+    }
+  } catch (error) {
+    unresolvedMeasures.push(`Stacking exclusions could not be checked: ${error instanceof Error ? error.message : "lookup failed"}`);
   }
   for (const component of components) {
     if (component.amount !== null && !Number.isFinite(component.amount)) {
@@ -674,6 +836,7 @@ export async function computeStackedDuty(
     countryOfOrigin: country,
     totalRatePercent,
     totalAmount,
+    ...(usesCurrentRules ? {remedyRefresh:{revision:remedySnapshot?.revision??null,checkedAt:remedySnapshot?.checkedAt??new Date().toISOString(),status:remedyRefreshError?"failed":remedySnapshot?.status??"unavailable",issues:remedyRefreshError?[remedyRefreshError]:remedySnapshot?.issues??[],missingFacts:[...new Set([...(currentMetal?.missingFacts??[]),...(currentForced?.missingFacts??[]),...(remedySnapshot&&input.remedyFacts?.other232Heading===undefined?["other_232_heading"]:[])])],section232:currentMetal,section301:currentForced,sources:remedySnapshot?.evidence.map(({url,sha256,checkedAt})=>({url,sha256,checkedAt}))??[]}} : {}),
     currency: "USD",
     components,
     stackingExplanation,

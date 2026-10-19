@@ -1,4 +1,4 @@
-import { getAuthenticatedWorkspace } from "@/lib/supabase/server";
+import { createRequestClient, getAuthenticatedWorkspace } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { runCheck } from "@/lib/checks/run";
 import { recalculateForCustomer } from "@/lib/tariff/recalculate-customer-impacts";
@@ -33,13 +33,17 @@ export async function POST(request: Request) {
   if (!workspace) return Response.json({ error: "Authentication required." }, { status: 401 });
   if (workspace.role === "viewer") return Response.json({ error: "Write access required." }, { status: 403 });
 
+  if (!process.env.SUPABASE_SECRET_KEY && !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return Response.json({ error: "Official-source checking requires the trusted worker, which is not connected to this deployment. No check was run." }, { status: 503 });
+  }
+
   const encoder = new TextEncoder();
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       const send = (line: Record<string, unknown>) => controller.enqueue(encoder.encode(`${JSON.stringify(line)}\n`));
       try {
         send({ type: "progress", message: "Checking official U.S. sources (Federal Register, CBP, USITC, USTR)…" });
-        const { runId } = await runCheck(workspace.customerId, undefined, "United States");
+        const { runId, coverageCaveats } = await runCheck(workspace.customerId, undefined, "United States");
         if (request.signal.aborted) { send({ type: "error", error: "Check cancelled." }); controller.close(); return; }
         send({ type: "progress", message: "Matching results against your products…" });
         const recalc = await recalculateForCustomer(createServiceClient(), workspace.customerId, { signal: request.signal });
@@ -47,6 +51,7 @@ export async function POST(request: Request) {
           type: "done",
           checkedAt: new Date().toISOString(),
           runId,
+          coverageCaveats,
           findingsEvaluated: recalc.findingsEvaluated,
           eventsCreated: recalc.eventsCreated,
           notifyDetail: recalc.notifyDetail,
@@ -59,4 +64,37 @@ export async function POST(request: Request) {
     },
   });
   return new Response(stream, { headers: { "content-type": "application/x-ndjson; charset=utf-8" } });
+}
+
+
+/** Last real check, its findings and coverage evidence, scoped to this workspace. */
+export async function GET() {
+  const workspace = await getAuthenticatedWorkspace();
+  if (!workspace) return Response.json({ error: "Authentication required." }, { status: 401 });
+  const db = await createRequestClient();
+  const { data: run, error } = await db.from("check_runs").select("id,status,started_at,completed_at")
+    .eq("customer_id", workspace.customerId).eq("jurisdiction", "United States")
+    .order("started_at", { ascending: false }).limit(1).maybeSingle();
+  if (error) return Response.json({ error: "Could not read the latest check." }, { status: 502 });
+  const checkingAvailable = Boolean(process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY) && workspace.role !== "viewer";
+  if (!run) return Response.json({ run: null, findings: [], coverageNotes: null, checkingAvailable });
+  const [findings, alerts, sources] = await Promise.all([
+    db.from("findings").select("id,title,url,summary_en,relevance,reasoning")
+      .eq("customer_id", workspace.customerId).eq("check_run_id", run.id).in("relevance", ["flagged", "noted"])
+      .order("id").limit(51),
+    db.from("alerts").select("body").eq("customer_id", workspace.customerId).eq("check_run_id", run.id).limit(1).maybeSingle(),
+    db.from("source_results").select("success,error_message,entries_parsed,parse_warning")
+      .eq("check_run_id", run.id).limit(1000),
+  ]);
+  if (findings.error || alerts.error || sources.error) return Response.json({ error: "Could not read check evidence." }, { status: 502 });
+  const body: string = alerts.data?.body ?? "";
+  const marker = "Coverage notes:\n";
+  const start = body.lastIndexOf(marker);
+  return Response.json({
+    checkingAvailable, run, findings: findings.data?.slice(0, 50) ?? [], moreFindings: (findings.data?.length ?? 0) > 50,
+    coverageNotes: start < 0 ? null : body.slice(start + marker.length),
+    failedSources: sources.data?.filter(row => !row.success).length ?? 0,
+    emptySources: sources.data?.filter(row => row.success && row.entries_parsed === 0).length ?? 0,
+    sourceCount: sources.data?.length ?? 0,
+  });
 }

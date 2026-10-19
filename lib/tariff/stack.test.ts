@@ -6,7 +6,7 @@ import { computeStackedDuty as realComputeStackedDuty } from "@/lib/tariff/stack
 // Existing component fixtures predate the July 24 action. Current-date behavior
 // has an explicit regression below rather than inheriting the wall clock.
 const computeStackedDuty: typeof realComputeStackedDuty = (input, lookup) =>
-  realComputeStackedDuty({ importDate: "2026-07-23", ...input }, lookup);
+  realComputeStackedDuty({ importDate: "2026-07-23", ...input }, lookup, async () => ({ status: "needs_review", reason: "No confirmed fixture rule" }), async () => new Set());
 
 /**
  * Stubs the USITC fetch the same way rates.test.ts does — stack.ts calls
@@ -989,4 +989,76 @@ test("July forced-labor measure cannot be omitted from a complete total", async 
     assert.equal(result!.totalAmount, null);
     assert.ok(result!.unresolvedMeasures.some(x => x.includes("69326983")));
   } finally { restore(); }
+});
+
+test("ordinary measures make zero stacking-rule lookups", async () => {
+  const restore = stubFetch([{ htsno: "8544.42.90.00", general: "2.6%", other: "35%", additionalDuties: "See 9903.88.03" }]);
+  let lookups = 0;
+  try {
+    const result = await realComputeStackedDuty({ htsCode: "8544.42.90.00", countryOfOrigin: "CN", value: 10000, importDate: "2026-07-23" }, noLiveSection232,
+      async () => { lookups++; throw new Error("must not be called"); }, async () => new Set());
+    assert.equal(lookups, 0); assert.equal(result?.totalAmount, 2760);
+  } finally { restore(); }
+});
+
+test("newly flagged computed measure obeys a confirmed exclusion with its citation", async () => {
+  const restore = stubFetch([{ htsno: "8544.42.90.00", general: "2.6%", other: "35%", additionalDuties: "See 9903.88.03" }]);
+  try {
+    const result = await realComputeStackedDuty({ htsCode: "8544.42.90.00", countryOfOrigin: "CN", value: 10000, importDate: "2026-07-23" }, noLiveSection232,
+      async (target, facts) => {
+        assert.equal(target, "9903.88.03"); assert.equal(facts.country_of_origin, "CN");
+        return { status: "resolved", match: { ruleId: "fixture-rule", action: "exclude", capRatePercent: null, citation: "Fixture source", explanation: "Verified fixture exclusion" } };
+      }, async () => new Set(["9903.88.03"]));
+    assert.equal(result?.totalAmount, 260);
+    assert.equal(result?.components[1].amount, 0);
+    assert.ok(result?.components[1].citation.includes("Fixture source"));
+  } finally { restore(); }
+});
+
+test("confirmed component cap changes only the existing ad valorem component", async () => {
+  const restore = stubFetch([{ htsno: "8544.42.90.00", general: "2.6%", other: "35%", additionalDuties: "See 9903.88.03" }]);
+  try {
+    const result = await realComputeStackedDuty({ htsCode: "8544.42.90.00", countryOfOrigin: "CN", value: 10000, importDate: "2026-07-23" }, noLiveSection232,
+      async () => ({ status: "resolved", match: { ruleId: "fixture", action: "cap_at", capRatePercent: 0.1, citation: "Fixture source", explanation: "Fixture component cap" } }), async () => new Set(["9903.88.03"]));
+    assert.equal(result?.totalAmount, 1260); assert.equal(result?.components[0].amount, 260);
+  } finally { restore(); }
+});
+
+test("flagged measure with no confirmed rule and registry failure both withhold totals", async () => {
+  const restore = stubFetch([{ htsno: "8544.42.90.00", general: "2.6%", other: "35%", additionalDuties: "See 9903.88.03" }]);
+  try {
+    for (const flags of [async () => new Set(["9903.88.03"]), async (): Promise<Set<string>> => { throw new Error("registry unavailable"); }]) {
+      const result = await realComputeStackedDuty({ htsCode: "8544.42.90.00", countryOfOrigin: "CN", value: 10000, importDate: "2026-07-23" }, noLiveSection232,
+        async () => ({ status: "needs_review", reason: "No confirmed rule" }), flags);
+      assert.equal(result?.totalAmount, null); assert.ok(result?.unresolvedMeasures.length);
+    }
+  } finally { restore(); }
+});
+
+test("confirmed forced-labor inclusion cannot invent that measure's missing rate", async () => {
+  const restore = stubFetch([{ htsno: "8544.42.90.00", general: "2.6%", other: "35%" }]);
+  try {
+    const result = await realComputeStackedDuty({ htsCode: "8544.42.90.00", countryOfOrigin: "VN", value: 10000, importDate: "2026-09-20" }, noLiveSection232,
+      async () => ({ status: "resolved", match: { ruleId: "fixture", action: "include", capRatePercent: null, citation: "Fixture source", explanation: "Fixture inclusion" } }), async () => new Set(["section_301_forced_labor"]));
+    assert.equal(result?.totalAmount, null);
+    assert.ok(result?.unresolvedMeasures.some(reason => reason.includes("forced-labor")));
+  } finally { restore(); }
+});
+
+test("duty-free USMCA exclusions require verified qualification and an actual free special rate", async () => {
+  for (const [special, evidence, expected] of [
+    ["Free (S)", { verified: true, decision: "qualifies" as const, details: "Reviewed certificate" }, true],
+    ["1% (S)", { verified: true, decision: "qualifies" as const, details: "Reviewed certificate" }, false],
+    ["Free (S)", null, undefined],
+  ] as const) {
+    const restore = stubFetch([{ htsno: "0101.21.00.10", general: "2%", special }]);
+    try {
+      const result = await realComputeStackedDuty({ htsCode: "0101.21.00.10", countryOfOrigin: "MX", value: 1000, importDate: "2026-08-01", usmcaQualification: evidence }, noLiveSection232,
+        async (target, facts) => {
+          assert.equal(target, "section_301_forced_labor"); assert.equal(facts.usmca_duty_free, expected);
+          return facts.usmca_duty_free === true ? { status: "resolved", match: { ruleId: "fixture-reviewed", action: "exclude", capRatePercent: null, citation: "Fixture source", explanation: "Fixture duty-free exemption" } } : { status: "needs_review", reason: "No confirmed exclusion" };
+        }, async () => new Set(["section_301_forced_labor"]));
+      assert.equal(result!.unresolvedMeasures.some(reason => reason.includes("forced-labor")), expected !== true);
+    } finally { restore(); }
+  }
 });
