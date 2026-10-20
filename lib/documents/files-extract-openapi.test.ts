@@ -16,7 +16,7 @@ test("file extraction discovery serves the exact cacheable OpenAPI 3.1 contract"
   assert.equal(response.status, 200);
   assert.equal(response.headers.get("Cache-Control"), "public, max-age=3600");
   assert.deepEqual(await response.json(), buildFilesExtractOpenApiSpec());
-  assert.deepEqual(Object.keys(operation.responses).sort(), ["200", "400", "500"]);
+  assert.deepEqual(Object.keys(operation.responses).sort(), ["200", "400", "413", "500"]);
 });
 
 test("discovery imports without customer storage or document parsers", () => {

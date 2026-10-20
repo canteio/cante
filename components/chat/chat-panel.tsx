@@ -19,6 +19,7 @@ type Attachment = {
   filename: string;
   format: string;
   text: string;
+  originalCsv?: string;
   warnings?: string[];
 };
 
@@ -444,6 +445,10 @@ export function ChatPanel({
                 hostname: ev.hostname,
                 done: false,
               });
+            });
+          } else if (ev.type === "tool_progress") {
+            patchLast((m) => {
+              m.timeline = m.timeline.map(i => i.kind === "tool" && i.id === ev.id ? { ...i, detail: ev.detail } : i);
             });
           } else if (ev.type === "tool_end") {
             patchLast((m) => {
@@ -884,8 +889,9 @@ function ToolBlock({
 }) {
   const [open, setOpen] = useState(false);
   const isSearch = item.name === "WebSearch";
+  const isTariffCheck = item.name === "TariffCheck";
   const results = item.results ?? [];
-  const verb = isSearch
+  const verb = isTariffCheck ? (item.done ? "Finished" : "Checking") : isSearch
     ? item.done
       ? "Searched"
       : "Searching"

@@ -1,7 +1,7 @@
 # GitHub readiness review — October 19, 2026
 
 **Verdict: do not publish the entire working tree yet.** No credentials were
-found by the scans below, but the full test suite has one failure, dependencies need security updates and the proposed
+found by the scans below, but dependencies need security updates and the proposed
 public source still includes competitor strategy notes the operator previously
 wanted removed. The interview-name cleanup below has since been completed.
 Publishing source and approving a
@@ -129,23 +129,28 @@ absent, and unreachable Git objects were not scanned.
 
 ## Release correctness
 
-### 5. RELEASE-TEST-001: full suite is not green
+### 5. RELEASE-TEST-001: stale label assertion — resolved
 
 Location: `lib/tariff/section301-live.test.ts:48`.
 
-Fresh `npm test`: **921 passed, 1 failed, 922 total**. The live filament-stack
-test expects a Section 301 component name matching `/List 2/`, but the current
-component is named `China Section 301 · 9903.88.02`. This observed failure is a
-label/assertion mismatch, not proof of incorrect duty arithmetic. Resolve the
-intended label contract and rerun the affected test and full suite before claiming
-release verification; do not silently drop the assertion to make the suite green.
+Initial `npm test`: **921 passed, 1 failed, 922 total**. The live filament-stack
+test expected a Section 301 component name matching `/List 2/`, but the current
+component is named `China Section 301 · 9903.88.02`.
+
+Follow-up: the test now checks the exact `measureId` and heading in the label.
+The 25% rate, $250 amount on $1,000, unresolved total and applicability assertions
+remain. No production rate or calculation changed. Fresh affected-file tests:
+**4 passed**. Fresh full suite: **922 passed, 0 failed**. These fixed expected
+numbers validate a known example; production current rates come from fetched
+government headings. A genuine future law change may require reviewing this live
+test's expected values.
 
 ## Verification
 
 - Fresh `git diff --check`: passed.
 - Fresh `npx tsc --noEmit`: passed.
 - Fresh focused tariff/history/archive tests: **36 passed, 0 failed**.
-- Fresh full `npm test`: **921 passed, 1 failed**; see finding 5.
+- Follow-up full `npm test`: **922 passed, 0 failed**; see finding 5.
 - The previous implementation session completed a production build and isolated
   authenticated browser/export checks; no new production build was run for this
   read-only review. Neither those checks nor this report guarantees complete legal

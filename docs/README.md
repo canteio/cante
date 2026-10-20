@@ -49,6 +49,9 @@ Keep these separate: each records different code and verification conditions. La
 | [October 7 review](audits/2026-10-07-review.md) | Original implementation audit |
 | [October 8 follow-up](audits/2026-10-08-followup.md) | Scheduling and trusted-worker findings |
 | [October 9 fixes](audits/2026-10-09-fixes.md) | Scoped fixes and release verification |
+| [October 19 chat CSV checks](audits/2026-10-19-chat-csv-checks.md) | Complete CSV preservation, automatic checks, saved chat context and verification boundaries |
+| [October 20 chat news refresh](audits/2026-10-20-chat-news-refresh.md) | Explicit chat-triggered rechecks, unchanged-input duty comparisons and dated tariff headlines |
+| [October 20 security review](audits/2026-10-20-security-review.md) | Global reviewer authorization, archive provenance, dependencies and resource limits; unresolved findings |
 | [October 18 historical comparison](audits/2026-10-18-historical-rule-comparison.md) | Real adjacent HTS versions, original legal text, amendment dates, product review leads and evidence hashes |
 | [October 18 check history](audits/2026-10-18-check-history.md) | Automatic archival, captured source versions, append-only reviews and authenticated persistence tests |
 | [October 18 current remedy refresh](audits/2026-10-18-current-remedy-refresh.md) | Fresh Section 232/301 compilation, importer facts, authenticated HTTP/browser verification and remaining scope |

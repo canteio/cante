@@ -1,8 +1,26 @@
 # Current product status
 
-Working-tree summary, October 18, 2026. This collects the latest recorded implementation notes; it is not a fresh production or legal audit.
+Working-tree summary, October 20, 2026. This collects the latest recorded implementation notes; it is not a fresh production or legal audit.
 
 ## Built
+
+- “Any news today?”, “Any updates?” and explicit tariff-refresh requests now
+  trigger a new saved official-source check against the latest workspace CSV.
+  Deterministic comparisons require matching inputs and qualification facts;
+  incomplete totals stay unresolved. Today's captured tariff publications are
+  labelled unconfirmed for product applicability. Other chat questions continue
+  to read saved context; explanatory, unrelated and fictional-demo requests do
+  not trigger a workspace recheck. No model routing/completion or schedule is
+  required. [Verification](../audits/2026-10-20-chat-news-refresh.md).
+
+- Chat CSV intake is connected to the existing live checker (October 19): original
+  UTF-8 CSV retained intact, parsed products/history checked against supported
+  official tariff sources, progress streamed and evidence/results/failures archived.
+  Missing fields produce corrective guidance and a saved original. Report links open
+  the exact record. Later conversations read the latest three workspace checks,
+  all parsed product groups and bounded original fields; prompt limits are explicit.
+  This is on-demand checking, not scheduled monitoring or universal legal coverage.
+  [Verification](../audits/2026-10-19-chat-csv-checks.md).
 
 - Live checks now compare the current and immediately previous official HTS
   revision, retaining original previous JSON, both Chapter 99 subchapter III PDFs
@@ -63,6 +81,13 @@ Working-tree summary, October 18, 2026. This collects the latest recorded implem
 
 ## Still blocking a complete MVP
 
+- The [October 20 security review](../audits/2026-10-20-security-review.md) found
+  unresolved shared-rule reviewer authorization and computed-report provenance
+  gaps, plus resource quota and early upload-limit findings. Dependency updates
+  subsequently cleared all four npm audit findings (Next.js 16.3.8, sharp 0.35.5,
+  source-map-js 1.2.2, undici 6.29.1); running services still require restart or
+  redeployment. Passing calculation tests is not
+  clearance for a secure multi-customer release.
 - The hosted checking worker is not connected. A disabled button is not a completed source check.
 - Catalogue matching exists, but the dashboard still needs a clear affected-products and next-action flow after a check. Dollar-impact recalculation depends on a saved import-impact run.
 - Current metal Section 232 and supported Section 301 rules refresh automatically on calculation. Other Section 232 sectors, conditional exclusions, newer unsupported China headings, Column 2 combinations, AD/CVD and missing qualification facts can still withhold totals.

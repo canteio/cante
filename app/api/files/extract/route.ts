@@ -32,9 +32,23 @@ export async function POST(request: Request) {
   }
 
   try {
+    const isCsv = /\.csv$/i.test(file.name);
+    if (isCsv && file.size > 1_000_000) {
+      return Response.json({ error: "Chat tariff checks accept CSVs under 1 MB. Split larger files before uploading." }, { status: 413 });
+    }
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    let originalCsv: string | undefined;
+    if (isCsv) {
+      try {
+        // Preserve BOM, line endings and every row, independently of the text preview.
+        originalCsv = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(bytes);
+      } catch {
+        return Response.json({ error: "Save this CSV as UTF-8 and upload it again." }, { status: 400 });
+      }
+    }
     const extracted = await extractTextFromFile(
       file.name,
-      new Uint8Array(await file.arrayBuffer()),
+      bytes,
     );
 
     const warnings = [...extracted.warnings];
@@ -45,7 +59,9 @@ export async function POST(request: Request) {
       // source that silently parsed only its first page.
       text = text.slice(0, MAX_EXTRACTED_TEXT_CHARS);
       warnings.push(
-        `Only the first ${MAX_EXTRACTED_TEXT_CHARS.toLocaleString()} characters were attached; this file is longer, so anything past that point was not read.`,
+        originalCsv !== undefined
+          ? `The chat preview shows only ${MAX_EXTRACTED_TEXT_CHARS.toLocaleString()} characters. The complete original CSV is included separately for saving and checking when you send it.`
+          : `Only the first ${MAX_EXTRACTED_TEXT_CHARS.toLocaleString()} characters were attached; this file is longer, so anything past that point was not read.`,
       );
     }
 
@@ -54,6 +70,7 @@ export async function POST(request: Request) {
       format: extracted.format,
       text,
       warnings,
+      ...(originalCsv !== undefined ? { originalCsv } : {}),
     });
   } catch (error) {
     if (error instanceof FileExtractionError) {

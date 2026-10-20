@@ -24,6 +24,20 @@ Chat explicitly uses the hosted API and requires a configured API key. Other wor
 
 ## Live checks and history
 
+In [Ask Cante](http://localhost:3000/chat), attach a UTF-8 CSV under 1 MB and send
+it to preserve the complete original and automatically run the live tariff check.
+The chat shows real progress, results or missing fields, and a saved-check link.
+Use the [CSV template](public/examples/live-check-template.csv) for the supported
+columns. Later chats retrieve the latest three workspace checks with explicit
+context limits. Upload-only checks do not need an LLM response. This does not
+enable scheduled monitoring or establish full legal coverage.
+
+After saving a CSV, ask **“Any news today?”**, **“Any updates?”** or
+**“Have tariffs changed?”** to run a fresh official-source tariff check against
+the latest saved workspace CSV. Cante saves a new report, compares duties only
+when inputs/facts match, and separates today's tariff headlines from confirmed
+product impacts. No saved CSV means it asks for one instead of substituting data.
+
 [Live check](http://localhost:3000/tariff/demo) fetches current official tariff
 sources and calculates supported duties. Accepted checks automatically save the
 original CSV, confirmations, source evidence and result. [Check history](http://localhost:3000/tariff/history)

@@ -1,6 +1,34 @@
 # Handoff
 
-Updated October 18, 2026. Read this first, then [current status](docs/product/status.md). Current agent rules are in [CLAUDE.md](CLAUDE.md); dated implementation records are in the [engineering archive](docs/archive/engineering-history-2026-10-17.md).
+Security review, October 20: unresolved release blockers include tenant owner/admin
+authority over shared global tariff drafts and member-writable completed reports
+which chat currently trusts as prior computed baselines. Hashes/append-only rows
+do not attest to execution provenance. Resource quotas and preallocation upload
+limits also need work. The subsequent dependency fix updates Next.js to 16.3.8,
+sharp to 0.35.5, source-map-js to 1.2.2 and undici to 6.29.1; npm audit now reports
+zero vulnerabilities. Existing running servers require a restart to load the new
+packages; no server was stopped or deployment performed. The review made no
+permission changes. Read the [security report](docs/audits/2026-10-20-security-review.md)
+before describing the app as a secure multi-customer release.
+
+October 20: update requests such as “Any news today?” now rerun the latest saved
+workspace CSV through the real live checker. A new immutable record links to its
+baseline, preserves explicit declarations and stores a deterministic same-input
+duty comparison plus date-filtered tariff headlines. No model completion is
+needed for this response. Missing inputs, failed sources and partial totals stay
+visible; this does not activate schedules or establish universal legal coverage.
+[Verification](docs/audits/2026-10-20-chat-news-refresh.md).
+
+Updated October 20, 2026. Read this first, then [current status](docs/product/status.md). Current agent rules are in [CLAUDE.md](CLAUDE.md); dated implementation records are in the [engineering archive](docs/archive/engineering-history-2026-10-17.md).
+
+October 19: chat CSV uploads now preserve complete UTF-8 originals separately from
+the 20,000-character preview, automatically invoke the existing deterministic
+live checker, archive evidence/results/failures, and stream progress plus a saved
+report link. New conversations read the latest three workspace checks, all parsed
+product groups and bounded original-field excerpts (matched by mentioned SKU/entry
+IDs where available). Upload-only reports do not call the model. Missing fields
+remain saved failures, not guessed facts. No schema migration, schedule or worker
+connection was added. [Verification](docs/audits/2026-10-19-chat-csv-checks.md).
 
 Historical before/after comparison is implemented for live checks (October 18).
 Each check discovers the immediately preceding published USITC revision, retains

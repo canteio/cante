@@ -36,7 +36,7 @@ for (const code of ["6404.11", "8518.22.0000", "8517.13.0000"]) {
 import { computeStackedDuty } from "./stack";
 import { resetTariffCacheForTests } from "./rates";
 
-test("live USITC filament stack includes List 2 duty", { timeout: 35_000 }, async () => {
+test("live USITC filament stack includes Chapter 99 duty 9903.88.02", { timeout: 35_000 }, async () => {
   resetTariffCacheForTests();
   const result = await computeStackedDuty({
     htsCode: "3916.90.30.00", countryOfOrigin: "CN", value: 1000,
@@ -45,7 +45,8 @@ test("live USITC filament stack includes List 2 duty", { timeout: 35_000 }, asyn
   assert.ok(result);
   const measure = result.components.find(c => c.type === "section301");
   assert.ok(measure);
-  assert.match(measure.label, /List 2/);
+  assert.equal(measure.measureId, "9903.88.02");
+  assert.match(measure.label, /9903\.88\.02/);
   assert.equal(measure.ratePercent, 0.25);
   assert.equal(measure.amount, 250);
   assert.equal(result.totalAmount, null);

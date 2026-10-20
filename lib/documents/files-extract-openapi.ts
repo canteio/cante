@@ -26,7 +26,7 @@ export function buildFilesExtractOpenApiSpec() {
           summary: "Extract prompt-ready text from one uploaded file.",
           description:
             `Accepts PDF files with a text layer, XLSX/XLSM, DOCX, CSV, TXT, Markdown, and .text files up to ${MAX_EXTRACTED_FILE_BYTES / 1024 / 1024}MB. ` +
-            `The response includes at most ${MAX_EXTRACTED_TEXT_CHARS.toLocaleString("en-US")} characters and reports truncation in warnings.`,
+            `The text preview includes at most ${MAX_EXTRACTED_TEXT_CHARS.toLocaleString("en-US")} characters and reports truncation in warnings. UTF-8 CSV uploads are limited to 1 MB and additionally return originalCsv with all original text for chat archival/checking on send.`,
           requestBody: {
             required: true,
             content: {
@@ -56,6 +56,7 @@ export function buildFilesExtractOpenApiSpec() {
                       filename: { type: "string" },
                       format: { type: "string", enum: EXTRACTED_FILE_FORMATS },
                       text: { type: "string", maxLength: MAX_EXTRACTED_TEXT_CHARS },
+                      originalCsv: { type: "string", description: "Complete UTF-8 CSV, preserving BOM and line endings. Present only for CSV uploads up to 1 MB." },
                       warnings: { type: "array", items: { type: "string" } },
                     },
                     required: ["filename", "format", "text", "warnings"],
@@ -69,6 +70,10 @@ export function buildFilesExtractOpenApiSpec() {
             },
             "500": {
               description: "An unexpected extraction failure occurred.",
+              content: { "application/json": { schema: errorSchema } },
+            },
+            "413": {
+              description: "The CSV exceeds the 1 MB chat-check limit.",
               content: { "application/json": { schema: errorSchema } },
             },
           },
