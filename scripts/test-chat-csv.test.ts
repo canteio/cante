@@ -1,3 +1,5 @@
+import "./test-support/limit-loader";
+import * as limitsFixture from "./test-support/request-limits-fixture";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -15,7 +17,7 @@ function moduleAt(path: string, deps: Record<string, unknown>) {
   const code = ts.transpileModule(readFileSync(path, "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   const exports: any = {};
   const exposeIntent = path === "app/api/chat/route.ts" ? "\nexports.isTariffUpdateRequest = isTariffUpdateRequest;" : "";
-  runInThisContext(`(function(require,exports){${code}${exposeIntent}\n})`)((key: string) => { if (!(key in deps)) throw Error(`Unexpected dependency: ${key}`); return deps[key]; }, exports);
+  runInThisContext(`(function(require,exports){${code}${exposeIntent}\n})`)((key: string) => { if (key === "@/app/api/request-limits") return limitsFixture; if (!(key in deps)) throw Error(`Unexpected dependency: ${key}`); return deps[key]; }, exports);
   return exports;
 }
 function report() {
@@ -24,7 +26,7 @@ function report() {
     historicalComparison: { status: "compared", issues: [], candidateSkus: ["QA-CSV"], scope: ["fixture"], legalChanges: [], modifyingDocuments: [] },
     coverageNotes: ["Partial legal coverage"], notices: [], sources: [{ url: "https://hts.usitc.gov/", status: "fetched", error: null, body: "private source body" }] };
 }
-function helper(options: { role?: string; denied?: boolean; beginFail?: boolean; runFail?: boolean; finishFail?: boolean; failFail?: boolean; readFail?: boolean; storedCsv?: string; noRecords?: boolean; archiveReadFail?: boolean; confirmations?: Record<string, boolean>; previous?: any } = {}) {
+function helper(options: { role?: string; denied?: boolean; beginFail?: boolean; runFail?: boolean; finishFail?: boolean; failFail?: boolean; readFail?: boolean; storedCsv?: string; noRecords?: boolean; archiveReadFail?: boolean; confirmations?: Record<string, boolean>; previous?: any; unverified?: boolean } = {}) {
   const calls: any[] = []; const result = report();
   const db = { from(table: string) { calls.push(["from", table]); const chain: any = { select: () => chain, eq: (key: string, value: string) => { calls.push(["eq", key, value]); return chain; }, order: () => chain, limit: () => chain, then: (resolve: Function) => resolve(options.readFail ? { error: "unavailable" } : { data: options.noRecords ? [] : [{ id, filename: "products.csv" }] }) }; return chain; } };
   const api = moduleAt("app/api/chat/csv-check.ts", {
@@ -37,7 +39,7 @@ function helper(options: { role?: string; denied?: boolean; beginFail?: boolean;
       beginLiveCheckArchive: async (...args: any[]) => { calls.push(["begin", args]); if (options.beginFail) throw Error("database unavailable"); return id; },
       finishLiveCheckArchive: async (...args: any[]) => { calls.push(["finish", args]); if (options.finishFail) throw Error("Could not archive result"); },
       failLiveCheckArchive: async (...args: any[]) => { calls.push(["fail", args]); if (options.failFail) throw Error("Cannot save failure"); },
-      readLiveCheckArchive: async (_db: any, customerId: string, checkId: string) => { calls.push(["read", customerId, checkId]); if (options.archiveReadFail) throw Error("Archive integrity failed"); return { result: options.previous === undefined ? result : options.previous, events: [], record: { id, filename: "products.csv", confirmations: options.confirmations ?? {}, input_csv: options.storedCsv ?? csv } }; },
+      readLiveCheckArchive: async (_db: any, customerId: string, checkId: string) => { calls.push(["read", customerId, checkId]); if (options.archiveReadFail) throw Error("Archive integrity failed"); return { result: options.previous === undefined ? result : options.previous, verifiedResult: options.unverified ? null : options.previous === undefined ? result : options.previous, events: [], record: { id, filename: "products.csv", confirmations: options.confirmations ?? {}, input_csv: options.storedCsv ?? csv } }; },
     },
   });
   return { api, calls, result, file: { filename: "products.csv", format: "csv", text: "truncated preview", originalCsv: csv } };
@@ -52,7 +54,7 @@ for (const [label, content] of [["BOM/CRLF/Unicode", "\ufeffsku,name\r\nA,café\
   });
 }
 test("oversized and non-UTF8 CSVs fail explicitly before a truncated preview can be checked", async () => {
-  for (const [bytes, status] of [[new Uint8Array(1_000_001), 413], [new Uint8Array([255, 254, 255]), 400]] as const) {
+  for (const [bytes, status] of [[new Uint8Array(15*1024*1024+1), 413], [new Uint8Array([255, 254, 255]), 400]] as const) {
     const form = new FormData(); form.set("file", new File([bytes], "products.csv"));
     const response = await extract(new Request("https://cante.test/api/files/extract", { method: "POST", body: form })); assert.equal(response.status, status);
   }
@@ -113,7 +115,7 @@ test("oversized rule context keeps every product group while disclosing omitted 
   assert(JSON.stringify(out).length < 80_000);
 });
 
-function chat(h: ReturnType<typeof helper>, available = true) {
+function chat(h: ReturnType<typeof helper>, available = true, prepareUpload?: Function) {
   const messages: any[] = []; const prompts: string[] = []; let modelCalls = 0;
   const deps = {
     "@/components/tariff/demo-scenario": demoScenario,
@@ -124,6 +126,7 @@ function chat(h: ReturnType<typeof helper>, available = true) {
     "@/lib/supabase/server": { createClient: async () => { throw Error("catalogue unavailable fixture"); }, retrieveCustomerContext: async () => [] },
     "@/lib/llm": { getProvider: () => ({ name: "api", available: async () => ({ ok: available, detail: "offline" }), async *stream(options: any) { modelCalls++; prompts.push(options.prompt); yield { type: "text", text: "Explanation from saved fixture." }; yield { type: "done" }; } }) },
     "./csv-check": h.api,
+    "@/app/api/files/prepare-chat-upload": {prepareChatUpload:prepareUpload,readChatUploadContext:async()=>({status:"loaded",files:[]})},
   };
   return { route: moduleAt("app/api/chat/route.ts", deps), messages, prompts, modelCalls: () => modelCalls };
 }
@@ -249,4 +252,37 @@ test("fictional uploaded facts stay visibly fictional during a government rechec
   const h = helper(); h.result.rows[0].product.fictional = true;
   const out = await h.api.recheckLatestChatCsv("owned", new AbortController().signal, () => {});
   assert.match(out.markdown, /Fictional\/demo inputs/); assert.match(out.markdown, /test assumptions/);
+});
+
+test("unattested saved totals, source claims and failure text never enter chat context or a duty baseline", async () => {
+  const { before, after } = completePair(); before.totalDuty = 987654321;
+  const h = helper({ previous: before, unverified: true }); Object.assign(h.result, after);
+  const context = await h.api.readChatCsvContext("owned");
+  assert.equal(context.checks[0].data.status, "unverified");
+  assert(!JSON.stringify(context).includes("987654321"));
+  const refresh = await h.api.recheckLatestChatCsv("owned", new AbortController().signal, () => {});
+  assert.equal(refresh.context.chatRecheck.fullDutyDifference, null);
+  assert.equal(refresh.context.chatRecheck.status, "unavailable");
+});
+
+test("oversized CSV and document files are rejected before file.arrayBuffer allocation", async () => {
+ const original=File.prototype.arrayBuffer;let reads=0;
+ File.prototype.arrayBuffer=async function(){reads++;return original.call(this);};
+ try {
+  for(const [name,size] of [["oversized.csv",15*1024*1024+1],["oversized.pdf",15*1024*1024+1]] as const){
+   const form=new FormData();form.set("file",new File([new Uint8Array(size)],name));
+   const response=await extract(new Request("https://cante.test/api/files/extract",{method:"POST",body:form}));
+   assert.equal(response.status,413);assert.equal(reads,0);
+  }
+ }finally{File.prototype.arrayBuffer=original;}
+});
+
+test("saved non-CSV originals invoke preparation and preserve source identity before any government fetch",async()=>{
+ const h=helper();const source={id,sha256:"a".repeat(64),size:1234,format:"xlsx",tableIndex:0,mapping:{sku:0,hts_code:1,origin_country:2,annual_customs_value_usd:3},basis:"annual"};
+ let prepared=0;const c=chat(h,false,async(customer:string,file:any)=>{assert.equal(customer,"owned");assert.equal(file.uploadId,id);prepared++;return {csv:{...h.file,filename:"products.xlsx",sourceUpload:source},preview:"Server-extracted original rows"};});
+ const response=await c.route.POST(request({attachments:[{filename:"products.xlsx",format:"xlsx",text:"untrusted preview",uploadId:id}]}));const output=await response.text();assert.equal(prepared,1);assert.equal(c.modelCalls(),0);assert.match(output,/Saved CSV and check/);assert.equal(h.calls.find(c=>c[0]==="begin")[1][5].uploadId,id);assert(h.calls.some(c=>c[0]==="run"));
+});
+test("ambiguous original-file columns stay saved but never fetch rates or invent product values",async()=>{
+ const h=helper();const c=chat(h,false,async()=>({csv:null,markdown:"Original saved. Review columns before checking. No rates fetched.",preview:"Original price column"}));
+ const response=await c.route.POST(request({attachments:[{filename:"prices.pdf",format:"pdf",text:"preview",uploadId:id}]}));const output=await response.text();assert.match(output,/Review columns/);assert(!h.calls.some(c=>c[0]==="run"));assert.equal(c.modelCalls(),0);
 });

@@ -1,3 +1,4 @@
+import { withRequestLimit } from "@/app/api/request-limits";
 import { createRequestClient, getAuthenticatedWorkspace } from "@/lib/supabase/server";
 import { LIVE_MAX_BYTES, parseLiveProducts, runLiveCheck } from "./check";
 import { beginLiveCheckArchive, finishLiveCheckArchive, failLiveCheckArchive } from "@/lib/tariff/business-impact-store";
@@ -6,6 +7,9 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 export async function POST(request: Request) {
+  return withRequestLimit(request, "check", 1000000, handlePOST);
+}
+async function handlePOST(request: Request) {
   const workspace=await getAuthenticatedWorkspace();
   if (!workspace) return Response.json({ error: "Authentication required." }, { status: 401 });
   if (workspace.role === "viewer") return Response.json({ error: "Write access required to run and archive checks." }, { status: 403 });

@@ -16,7 +16,7 @@ test("file extraction discovery serves the exact cacheable OpenAPI 3.1 contract"
   assert.equal(response.status, 200);
   assert.equal(response.headers.get("Cache-Control"), "public, max-age=3600");
   assert.deepEqual(await response.json(), buildFilesExtractOpenApiSpec());
-  assert.deepEqual(Object.keys(operation.responses).sort(), ["200", "400", "413", "500"]);
+  assert.deepEqual(Object.keys(operation.responses).sort(), ["200", "400", "401", "413", "429", "500", "503"]);
 });
 
 test("discovery imports without customer storage or document parsers", () => {
@@ -61,7 +61,7 @@ test("the real route returns corrective JSON for malformed uploads", async () =>
     body: "{}",
   }));
   assert.equal(wrongType.status, 400);
-  assert.match((await wrongType.json()).error, /multipart\/form-data/);
+  assert.match((await wrongType.json()).error, /uploadId/);
 
   const emptyForm = await extract(new Request("http://localhost/api/files/extract", {
     method: "POST",

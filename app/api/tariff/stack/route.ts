@@ -1,3 +1,4 @@
+import { withRequestLimit } from "@/app/api/request-limits";
 import { normalizeCountryCode, normalizeHtsCode, parseRemedyFacts } from "@/lib/tariff/bulk";
 import { isStrictIsoDate } from "@/lib/tariff/date";
 import {
@@ -25,6 +26,9 @@ export const dynamic = "force-dynamic";
  * qualifying decision with supporting details.
  */
 export async function GET(request: Request) {
+  return withRequestLimit(request, "calculate", 0, handleGET);
+}
+async function handleGET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.has("code") ? normalizeHtsCode(url.searchParams.get("code")!) : null;
   const country = url.searchParams.has("country") ? normalizeCountryCode(url.searchParams.get("country")!) : null;

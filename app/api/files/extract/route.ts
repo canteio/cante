@@ -1,20 +1,36 @@
+import { withRequestLimit } from "@/app/api/request-limits";
 import { extractTextFromFile, FileExtractionError } from "@/lib/documents/extract-file";
+import { getAuthenticatedWorkspace } from "@/lib/supabase/server";
+import { isArchiveId } from "@/lib/tariff/business-impact-store";
+import { readOriginalUpload } from "../upload-store";
+import { fileTables,tablePreviews } from "../tabular";
 import { MAX_EXTRACTED_TEXT_CHARS } from "@/lib/documents/files-extract-contract";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 60;
 
-/**
- * Turn an uploaded file into text for the chat composer.
- *
- * Deliberately does **not** store anything. Dropping a file into a conversation
- * is asking a question about it, not filing it — a PEB becomes evidence only
- * through `/api/documents`, where the audit and the document-tier rules apply.
- * Keeping those separate is what stops "I asked the model about this invoice"
- * from turning into "this invoice is on file as verified".
- */
+/** Read-only extraction. The chat upload endpoint retains the immutable original;
+ * this route returns a bounded preview and table metadata, without approving law,
+ * classifications, missing customs facts or computation provenance. */
 
 export async function POST(request: Request) {
+  return withRequestLimit(request, "upload", 15794176, handlePOST);
+}
+async function handlePOST(request: Request) {
+  if(request.headers.get("content-type")?.includes("application/json")) {
+    const body=await request.json().catch(()=>null);
+    if(!isArchiveId(body?.uploadId))return Response.json({error:"Provide a saved uploadId, or send the file as multipart/form-data."},{status:400});
+    const workspace=await getAuthenticatedWorkspace();if(!workspace)return Response.json({error:"Authentication required."},{status:401});
+    try {
+      const {file,bytes}=await readOriginalUpload(workspace.customerId,body?.uploadId);
+      const extracted=await extractTextFromFile(file.filename,new Uint8Array(bytes));
+      let originalCsv:string|undefined;
+      if(extracted.format==="csv")try{originalCsv=new TextDecoder("utf-8",{fatal:true,ignoreBOM:true}).decode(bytes);}catch{throw Error("Save this CSV as UTF-8 and attach it again.");}
+      const tables=tablePreviews(fileTables(extracted,originalCsv));
+      return Response.json({uploadId:file.id,filename:file.filename,format:extracted.format,text:extracted.text.slice(0,MAX_EXTRACTED_TEXT_CHARS),tables,warnings:[...extracted.warnings,...(extracted.text.length>MAX_EXTRACTED_TEXT_CHARS?["Chat uses bounded excerpts. The complete original remains saved; all detected table rows are available to the live checker."]:[])]});
+    }catch(error){return Response.json({error:error instanceof Error?error.message:"Could not extract this original file."},{status:400});}
+  }
   if (!request.headers.get("content-type")?.includes("multipart/form-data")) {
     return Response.json({ error: "Send the file as multipart/form-data." }, { status: 400 });
   }
@@ -31,11 +47,11 @@ export async function POST(request: Request) {
     return Response.json({ error: "No file was attached." }, { status: 400 });
   }
 
+  if (form.getAll("file").length !== 1 || [...form.keys()].some(key => key !== "file")) return Response.json({ error: "Upload one file at a time." }, { status: 400 });
+  if (file.size > 15 * 1024 * 1024) return Response.json({ error: "Files must be under 15 MiB." }, { status: 413 });
+
   try {
     const isCsv = /\.csv$/i.test(file.name);
-    if (isCsv && file.size > 1_000_000) {
-      return Response.json({ error: "Chat tariff checks accept CSVs under 1 MB. Split larger files before uploading." }, { status: 413 });
-    }
     const bytes = new Uint8Array(await file.arrayBuffer());
     let originalCsv: string | undefined;
     if (isCsv) {

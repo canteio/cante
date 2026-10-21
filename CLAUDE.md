@@ -1,6 +1,6 @@
 # Cante — agent instructions
 
-Updated October 18, 2026. Keep this file concise and current.
+Updated October 20, 2026. Keep this file concise and current.
 `AGENTS.md` is a symlink to this file; edit this file rather than replacing that link.
 
 ## Read first
@@ -20,6 +20,8 @@ Cante is a U.S. trade-compliance workspace: save products, review duties, resear
 official guidance, and identify relevant regulatory changes.
 
 - `/chat`: Ask Cante, guided file intake, workspace context and saved conversations.
+  Chat originals: 15 MiB, chunked server storage; references and bounded excerpts
+  in prompts. Ambiguous table mappings require confirmation; no guessed values.
 - `/tariff`: product setup, duty calculation and manual change-check interface.
 - `/tariff/audits`: historical import audits; `/tariff/rules`: authorized rule review.
 - `/tariff/history`: append-only live-check records, source versions and review notes.
@@ -77,8 +79,18 @@ customer check, accurate full coverage or a working production deployment.
   compilers apply current rules; changed wording and unsupported scope remain
   pending. A compiler-contract match is not independent legal approval. Historical
   dates retain the existing reviewed-data path. Never infer shipment qualifications.
+- Shared stacking-rule approval/rejection/retry requires explicit appointment in
+  `private.platform_tariff_reviewers`, managed only by database administrators.
+  Tenant owner/admin roles and JWT metadata never confer global review authority.
 - Stacking uses reviewed rules, effective dates and explicit conflict handling.
   Do not restore disabled demo monitors, invented flat rates or fallback catalogues.
+- Hashes establish content integrity, not engine/government-fetch provenance.
+  Only protected worker-attested `verifiedResult` data may supply saved numerical
+  baselines or computed chat context. Never auto-trust legacy/member-authored rows.
+  Keep original CSVs available and clearly label unverified archives.
+- User-facing expensive routes require shared database admission quotas; never
+  fall back to an unbounded in-memory limiter when the database is unavailable.
+  Bound incoming bytes before multipart/JSON parsing and file arrayBuffer reads.
 - Live checks save original inputs before fetching and archive source versions plus
   terminal results atomically. Save failures stay visible; interrupted checks are
   incomplete, never successful. Reviews append decisions without altering old ones.

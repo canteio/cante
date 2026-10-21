@@ -1,3 +1,4 @@
+import { withRequestLimit } from "@/app/api/request-limits";
 import { parseStackRequestRows, MAX_BULK_ROWS, type StackRequestRow } from "@/lib/tariff/bulk";
 import { computeStackedDuty, type StackedDutyResult } from "@/lib/tariff/stack";
 import { withStackingRulesCache } from "@/lib/tariff/stacking-rules";
@@ -81,6 +82,9 @@ async function runBounded<T, R>(items: T[], limit: number, fn: (item: T) => Prom
 }
 
 export async function POST(request: Request) {
+  return withRequestLimit(request, "calculate", 2097152, handlePOST);
+}
+async function handlePOST(request: Request) {
   const fallbackDate = new URL(request.url).searchParams.get("importDate");
   if (fallbackDate !== null && !isStrictIsoDate(fallbackDate)) return Response.json({ error: "Import date must be a real YYYY-MM-DD date." }, { status: 400 });
   const contentLength = Number(request.headers.get("content-length"));

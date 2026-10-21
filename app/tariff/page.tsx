@@ -1,4 +1,4 @@
-import { getAuthenticatedWorkspace } from "@/lib/supabase/server";
+import { getAuthenticatedWorkspace, isPlatformTariffReviewer } from "@/lib/supabase/server";
 import { getAuthMode } from "@/lib/auth/config";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { ImportReviewHome } from "@/components/tariff/import-review-home";
@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 
 export default async function Page() {
   const workspace = getAuthMode() === "supabase" ? await getAuthenticatedWorkspace() : null;
-  const canReviewRules = workspace?.role === "owner" || workspace?.role === "admin";
+  const canReviewRules = Boolean(workspace) && await isPlatformTariffReviewer();
   return (
     <div className="shell">
       <Sidebar active="tariff" />

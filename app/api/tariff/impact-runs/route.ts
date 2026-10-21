@@ -1,3 +1,4 @@
+import { withRequestLimit } from "@/app/api/request-limits";
 import { applyColumnMapping, columnMappingSchema, proposeColumnMapping } from "@/lib/tariff/column-mapping";
 import { getAuthenticatedWorkspace } from "@/lib/supabase/server";
 import { parseBusinessImpact, parseImpactTable, parseMappedBusinessImpact, evaluateBusinessImpact, ImpactInputError, ImpactBodyTooLarge, readImpactBody } from "@/lib/tariff/business-impact";
@@ -6,6 +7,9 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 export async function POST(request: Request) {
+  return withRequestLimit(request, "check", 2097152, handlePOST);
+}
+async function handlePOST(request: Request) {
   try {
     const workspace = await getAuthenticatedWorkspace();
     if (!workspace) return Response.json({ error: "Authentication required." }, { status: 401 });

@@ -4,6 +4,13 @@ Working-tree summary, October 20, 2026. This collects the latest recorded implem
 
 ## Built
 
+Chat file intake (October 20): 15 MiB originals upload in 1 MiB chunks and are
+saved privately on attachment. CSV, text PDF, DOCX and XLSX/XLSM tables enter the
+same deterministic checker; ambiguous columns require confirmation. Original
+references and bounded excerpts replace full-file chat payloads. Existing 100-group /
+6,000-entry limits remain. Migration `20261021023704_chat_original_file_uploads.sql`
+is applied; app changes are not deployed. [Details and verification](../audits/2026-10-20-chat-file-intake.md).
+
 - “Any news today?”, “Any updates?” and explicit tariff-refresh requests now
   trigger a new saved official-source check against the latest workspace CSV.
   Deterministic comparisons require matching inputs and qualification facts;
@@ -77,13 +84,21 @@ Working-tree summary, October 20, 2026. This collects the latest recorded implem
 - **Check for changes** is the prominent action. The duty calculator is optional and opens when a product breakdown is selected.
 - Deterministic calculations show components, citations, missing facts, and unresolved coverage. Shipment customs value is separate from catalogue reference price.
 - Historical CSV audits retain entry identities, paid duty, immutable snapshots, duplicate-upload reuse, and exports. They have a separate dashboard link.
-- Mission One includes stacking-rule application, AI drafting and verification at authoring time, and owner/admin review. Drafts are not approved legal rules.
+- Mission One includes stacking-rule application, AI drafting and verification at authoring time, and explicitly appointed platform-reviewer approval. Drafts are not approved legal rules.
 
 ## Still blocking a complete MVP
 
 - The [October 20 security review](../audits/2026-10-20-security-review.md) found
-  unresolved shared-rule reviewer authorization and computed-report provenance
-  gaps, plus resource quota and early upload-limit findings. Dependency updates
+  shared-rule reviewer and report-provenance risks. Shared-rule reviewer
+  authorization is fixed in the applied database migration and working-tree API;
+  the reviewer list is empty until administrator appointment.
+  [Verification](../audits/2026-10-20-platform-rule-authorization.md).
+  Saved numerical comparisons now fail closed without a protected trusted-worker
+  attestation; no report is grandfathered, and the verifier worker is still not
+  connected. Distributed operation budgets, archive storage caps and early bounded
+  upload intake are implemented with applied migrations. Deploy the reader/HTTP
+  guard changes before treating these as hosted-app protections.
+  [Verification](../audits/2026-10-20-resource-and-report-security.md). Dependency updates
   subsequently cleared all four npm audit findings (Next.js 16.3.8, sharp 0.35.5,
   source-map-js 1.2.2, undici 6.29.1); running services still require restart or
   redeployment. Passing calculation tests is not

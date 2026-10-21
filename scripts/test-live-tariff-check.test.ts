@@ -46,6 +46,7 @@ function route(auth=true, fail=false, archiveFailure: "start"|"finish"|null=null
   const source=ts.transpileModule(readFileSync("app/api/tariff/live-check/route.ts","utf8"),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
   const exports:{POST?:(request:Request)=>Promise<Response>}={};
   runInThisContext(`(function(require,exports){${source}\n})`)((id:string)=> {
+    if(id==="@/app/api/request-limits")return {withRequestLimit:async(request:Request,_op:string,_max:number,handler:Function)=>handler(request)};
     if(id==="@/lib/supabase/server")return {getAuthenticatedWorkspace:async()=>auth?{customerId:"fixture",role}:null,createRequestClient:async()=>({})};
     if(id==="@/config/tariff-remedy-contract.json")return {version:1};
     if(id==="@/lib/tariff/business-impact-store")return {beginLiveCheckArchive:async()=>{if(archiveFailure==="start")throw Error();return "archive-fixture";},finishLiveCheckArchive:async()=>{if(archiveFailure==="finish")throw Error("The calculation could not be archived.");},failLiveCheckArchive:async()=>{}};

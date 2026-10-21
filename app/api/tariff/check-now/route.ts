@@ -1,3 +1,4 @@
+import { withRequestLimit } from "@/app/api/request-limits";
 import { createRequestClient, getAuthenticatedWorkspace } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { runCheck } from "@/lib/checks/run";
@@ -29,6 +30,9 @@ export const maxDuration = 300;
  * code), so this is coarse — two real stages, not per-source granularity.
  */
 export async function POST(request: Request) {
+  return withRequestLimit(request, "check", 10000, handlePOST);
+}
+async function handlePOST(request: Request) {
   const workspace = await getAuthenticatedWorkspace();
   if (!workspace) return Response.json({ error: "Authentication required." }, { status: 401 });
   if (workspace.role === "viewer") return Response.json({ error: "Write access required." }, { status: 403 });

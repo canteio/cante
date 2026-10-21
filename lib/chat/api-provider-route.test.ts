@@ -18,6 +18,7 @@ for (const locked of ["true", "false"]) {
     process.env.CANTE_LLM_LOCKED = locked;
     const selected: unknown[] = [];
     const dependencies: Record<string, unknown> = {
+      "@/app/api/request-limits": {withRequestLimit:async(request:Request,_op:string,_max:number,handler:Function)=>handler(request)},
       "@/components/tariff/demo-scenario": demoScenario,
       "@/lib/db/queries": { resolveCustomerId: async () => "owned-workspace" },
       "@/lib/llm": {
@@ -58,6 +59,7 @@ test("temporarily rejects Indonesia chat before starting a provider or database 
   const route: { POST?: (request: Request) => Promise<Response> } = {};
   const load = runInThisContext(`(function(require, exports) { ${compiled}\n })`);
   load((id: string) => {
+    if (id === "@/app/api/request-limits") return {withRequestLimit:async(r:Request,_op:string,_max:number,h:Function)=>h(r)};
     if (id === "@/lib/countries") return { normalizeJurisdiction: () => "Indonesia" };
     return new Proxy({}, { get() { throw Error("Indonesia request reached a disabled operation"); } });
   }, route);
@@ -74,6 +76,7 @@ for (const invalid of [false, true]) {
     let calls = 0, prompt = "";
     const forbidden = new Proxy({}, { get() { throw Error("Demo touched customer data or memory"); } });
     const deps: Record<string, unknown> = {
+      "@/app/api/request-limits": {withRequestLimit:async(r:Request,_op:string,_max:number,h:Function)=>h(r)},
       "@/components/tariff/demo-scenario": demoScenario,
       "@/lib/db/queries": new Proxy({}, { get(_target, name) { return name === "resolveCustomerId" ? async () => "demo-test" : () => { throw Error(`Demo called ${String(name)}`); }; } }),
       "@/lib/llm": { getProvider: () => ({ name: "api", available: async () => ({ ok: true }), async *stream(options: any) { calls++; prompt = options.prompt; assert.deepEqual(options.tools, []); yield { type: "text", text: "Fixture explanation" }; yield { type: "done" }; } }) },

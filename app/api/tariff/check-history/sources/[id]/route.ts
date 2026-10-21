@@ -15,5 +15,5 @@ export async function GET(_request:Request,{params}:{params:Promise<{id:string}>
  if(data.compression==="gzip"){
   try{const original=gunzipSync(Buffer.from(data.body,"base64"),{maxOutputLength:32*1024*1024});if(createHash("sha256").update(original).digest("hex")!==data.original_sha256)throw Error();}catch{return Response.json({error:"Original source integrity check failed."},{status:502,headers});}
  }
- return Response.json(data,{headers:{...headers,"content-disposition":`attachment; filename="cante-source-${id}.json"`}});
+ return Response.json({...data,provenance:{status:"workspace_supplied",reason:"Content integrity verified. A URL/hash does not independently attest to a government fetch."}},{headers:{...headers,"content-disposition":`attachment; filename="cante-source-${id}.json"`}});
 }

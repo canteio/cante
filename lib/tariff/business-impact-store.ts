@@ -128,7 +128,18 @@ export async function readLiveCheckArchive(client: Awaited<ReturnType<typeof cre
   }
   for(const e of events??[])if(createHash("sha256").update(e.payload_text).digest("hex")!==e.payload_sha256)throw new Error("Archived event integrity check failed.");
   if(createHash("sha256").update(record.input_csv).digest("hex")!==record.input_sha256)throw new Error("Archived input integrity check failed.");
-  return { record: record as CheckArchiveRecord, events: events as CheckArchiveEvent[], ...(terminal?.kind==="failed"?{sourceEvidence:sources}:{}), result: payload && terminal?.kind === "completed" ? {...payload.report,sources} as import("@/app/api/tariff/live-check/check").LiveCheckResult : null };
+  // Members can submit report text and hashes directly. Only a separately protected
+  // worker attestation can make that payload an authoritative computed baseline.
+  let attested = false;
+  if (terminal?.kind === "completed") {
+    try {
+      const { data: proof, error: proofError } = await client.from("tariff_check_attestations").select("check_id,customer_id,terminal_event_id,input_sha256,event_sha256,verifier_version").eq("customer_id",customerId).eq("check_id",id).maybeSingle();
+      attested = !proofError && proof?.check_id === id && proof?.customer_id === customerId && proof?.terminal_event_id === terminal.id && proof?.input_sha256 === record.input_sha256 && proof?.event_sha256 === terminal.payload_sha256 && typeof proof?.verifier_version === "string" && proof.verifier_version.length > 0;
+    } catch { /* Missing attestation/configuration fails closed without losing raw history. */ }
+  }
+  const result = payload && terminal?.kind === "completed" ? {...payload.report,sources} as import("@/app/api/tariff/live-check/check").LiveCheckResult : null;
+  const provenance = { status: attested ? "verified" as const : "unverified" as const, reason: attested ? "Trusted-worker attestation matches the original input and terminal payload." : "Workspace-supplied record. Hashes verify retained bytes, not calculation or government-fetch provenance. No trusted duty comparison is available." };
+  return { provenance, verifiedResult: attested ? result : null, record: record as CheckArchiveRecord, events: events as CheckArchiveEvent[], ...(terminal?.kind==="failed"?{sourceEvidence:sources}:{}), result: payload && terminal?.kind === "completed" ? {...payload.report,sources} as import("@/app/api/tariff/live-check/check").LiveCheckResult : null };
 }
 
 export function isArchiveId(value:unknown):value is string { return typeof value==="string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value); }

@@ -26,7 +26,10 @@
     "verify:history": "node --import tsx scripts/verify-historical-rules.ts",
     "test:archive": "node --import tsx --test scripts/test-check-archive.test.ts scripts/test-live-tariff-check.test.ts",
     "test:remedies": "node --import tsx --test scripts/test-remedy-refresh.test.ts",
-    "verify:remedies": "node --import tsx scripts/verify-remedy-refresh.ts"
+    "verify:remedies": "node --import tsx scripts/verify-remedy-refresh.ts",
+    "test:rule-authorization": "node --import tsx --test scripts/test-platform-tariff-reviewers.test.ts",
+    "test:resource-security": "node --import tsx --test scripts/test-request-limits.test.ts scripts/test-chat-csv.test.ts scripts/test-check-archive.test.ts",
+    "test:chat-files": "node --import tsx --test scripts/test-chat-file-intake.test.ts scripts/test-chat-csv.test.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",

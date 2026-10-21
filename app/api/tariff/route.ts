@@ -1,3 +1,4 @@
+import { withRequestLimit } from "@/app/api/request-limits";
 import { compareDuty, lookupTariff, quoteDuty, TariffLookupError } from "@/lib/tariff/rates";
 
 export const runtime = "nodejs";
@@ -14,6 +15,9 @@ export const dynamic = "force-dynamic";
  * a US rate must never be presented as applying to an Indonesian movement.
  */
 export async function GET(request: Request) {
+  return withRequestLimit(request, "calculate", 0, handleGET);
+}
+async function handleGET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
   const declared = url.searchParams.get("declared");

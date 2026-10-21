@@ -1,15 +1,29 @@
 # Handoff
 
-Security review, October 20: unresolved release blockers include tenant owner/admin
-authority over shared global tariff drafts and member-writable completed reports
-which chat currently trusts as prior computed baselines. Hashes/append-only rows
-do not attest to execution provenance. Resource quotas and preallocation upload
-limits also need work. The subsequent dependency fix updates Next.js to 16.3.8,
-sharp to 0.35.5, source-map-js to 1.2.2 and undici to 6.29.1; npm audit now reports
-zero vulnerabilities. Existing running servers require a restart to load the new
-packages; no server was stopped or deployment performed. The review made no
-permission changes. Read the [security report](docs/audits/2026-10-20-security-review.md)
-before describing the app as a secure multi-customer release.
+Chat file intake (October 20): 15 MiB originals upload in 1 MiB chunks and are
+saved privately on attachment. CSV, text PDF, DOCX and XLSX/XLSM tables enter the
+same deterministic checker; ambiguous columns require confirmation. Original
+references and bounded excerpts replace full-file chat payloads. Existing 100-group /
+6,000-entry limits remain. Migration `20261021023704_chat_original_file_uploads.sql`
+is applied; app changes are not deployed. [Details and verification](docs/audits/2026-10-20-chat-file-intake.md).
+
+Security follow-up, October 20: shared tariff-rule review is now restricted to
+explicitly appointed platform reviewers, enforced in the API, authenticated RPCs,
+worker promotion and retry entry points. Migration
+`20261021015446_platform_tariff_reviewers.sql` is applied; the private reviewer
+list starts empty. Tenant owners/admins cannot appoint themselves. No real account
+was granted reviewer access. [Fix and verification](docs/audits/2026-10-20-platform-rule-authorization.md).
+The follow-up saved-report/resource fix is implemented: only protected worker-
+attested results enter chat/calculation baselines; unverified totals are withheld,
+with original inputs retained for rechecking. The attestation registry starts empty
+and the independent trusted-worker verifier is still not connected. Shared DB
+admission budgets, live-archive storage caps and byte limits before multipart/JSON
+parsing are added. Both migrations are applied. Request/reader guards are local
+code until app deployment; old hosted code does not automatically gain them.
+[Verification and limits](docs/audits/2026-10-20-resource-and-report-security.md).
+Dependency updates cleared the four npm audit findings. No app deployment was made.
+Read the [security report](docs/audits/2026-10-20-security-review.md) before
+presenting this as a secure multi-customer release.
 
 October 20: update requests such as “Any news today?” now rerun the latest saved
 workspace CSV through the real live checker. A new immutable record links to its

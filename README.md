@@ -24,24 +24,36 @@ Chat explicitly uses the hosted API and requires a configured API key. Other wor
 
 ## Live checks and history
 
-In [Ask Cante](http://localhost:3000/chat), attach a UTF-8 CSV under 1 MB and send
-it to preserve the complete original and automatically run the live tariff check.
-The chat shows real progress, results or missing fields, and a saved-check link.
-Use the [CSV template](public/examples/live-check-template.csv) for the supported
-columns. Later chats retrieve the latest three workspace checks with explicit
-context limits. Upload-only checks do not need an LLM response. This does not
-enable scheduled monitoring or establish full legal coverage.
+In [Ask Cante](http://localhost:3000/chat), attach files up to **15 MiB each**:
+CSV, text-based PDF, Word (`.docx`) or Excel (`.xlsx`, `.xlsm`). Originals are saved
+privately when attached; removing a message attachment does not delete that original.
+Clear product tables can run the deterministic live check immediately. Confirm
+unclear columns first, or choose **Ask about this file instead**. Customs values
+must be USD; retail prices are not assumed to be customs values.
+
+Files upload in 1 MiB chunks. Chat receives a reference and bounded excerpts,
+rather than sending the entire file to the model. Checks support 100 product groups
+or 6,000 historical entry rows. Scanned PDFs need OCR elsewhere; old `.doc`/`.xls`
+files need conversion. The separate legacy live-check page still limits CSVs to
+1 MB. [Intake and verification](docs/audits/2026-10-20-chat-file-intake.md).
+
+Use the [CSV template](public/examples/live-check-template.csv) for supported
+columns. File-only checks do not require an LLM response. This does not enable
+scheduled monitoring or establish full legal coverage.
 
 After saving a CSV, ask **“Any news today?”**, **“Any updates?”** or
 **“Have tariffs changed?”** to run a fresh official-source tariff check against
 the latest saved workspace CSV. Cante saves a new report, compares duties only
-when inputs/facts match, and separates today's tariff headlines from confirmed
+when inputs/facts match and a protected worker attestation verifies the saved
+baseline, and separates today's tariff headlines from confirmed
 product impacts. No saved CSV means it asks for one instead of substituting data.
 
 [Live check](http://localhost:3000/tariff/demo) fetches current official tariff
 sources and calculates supported duties. Accepted checks automatically save the
 original CSV, confirmations, source evidence and result. [Check history](http://localhost:3000/tariff/history)
-reopens original results and retains appended review decisions. Checks also retain and compare the immediately previous published tariff version,
+retains original results and appended review decisions. Unattested saved totals
+are withheld from chat/comparisons and metric displays; original CSVs remain
+available for fresh checks. A trusted verifier worker is not connected yet. Checks also retain and compare the immediately previous published tariff version,
 including bounded legal-note changes and linked amendments. This is not a complete
 backfill of historical laws or automatic historical liability determination.
 

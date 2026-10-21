@@ -1,3 +1,4 @@
+import { withRequestLimit } from "@/app/api/request-limits";
 import { cookies } from "next/headers";
 import { resolveCustomerId } from "@/lib/db/queries";
 import { getProvider, normalizeProviderChoice, PROVIDER_COOKIE } from "@/lib/llm";
@@ -49,6 +50,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  return withRequestLimit(request, "chat", 20000, handlePOST);
+}
+async function handlePOST(request: Request) {
   if (!classificationSuggestEnabled()) {
     return Response.json(
       { error: "Classification suggestion is disabled. Set CANTE_CLASSIFICATION_SUGGEST_ENABLED=true to enable for testing." },

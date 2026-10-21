@@ -1,3 +1,4 @@
+import { posix } from "node:path";
 import { unzipSync, strFromU8 } from "fflate";
 import { load } from "cheerio";
 import {
@@ -42,7 +43,10 @@ export class FileExtractionError extends Error {
 
 export type { ExtractedFormat } from "./files-extract-contract";
 
+export interface ExtractedTable { label: string; rows: string[][]; requiresReview: boolean; issues: string[] }
+const csvCell = (value: string) => /[",\r\n]/.test(value) ? `"${value.replaceAll('"', '""')}"` : value;
 export interface ExtractedFile {
+  tables?: ExtractedTable[];
   text: string;
   format: ExtractedFormat;
   /** Real limits of what was read — surfaced to the user, never swallowed. */
@@ -94,9 +98,15 @@ function extractXlsx(bytes: Uint8Array): ExtractedFile {
     });
   }
 
+  const sheetLabels=new Map<string,{name:string;hidden:boolean}>();
+  if(files["xl/workbook.xml"]&&files["xl/_rels/workbook.xml.rels"]){
+    const rels=load(strFromU8(files["xl/_rels/workbook.xml.rels"]),{xmlMode:true});const targets=new Map<string,string>();
+    rels("Relationship").each((_,element)=>{const item=rels(element);const target=item.attr("Target")??"";targets.set(item.attr("Id")??"",target.startsWith("/")?target.slice(1):posix.normalize("xl/"+target));});
+    const book=load(strFromU8(files["xl/workbook.xml"]),{xmlMode:true});book("sheet").each((_,element)=>{const item=book(element);const target=targets.get(item.attr("r:id")??"");if(target)sheetLabels.set(target,{name:item.attr("name")??target,hidden:["hidden","veryHidden"].includes(item.attr("state")??"")});});
+  }
   const sheetNames = Object.keys(files)
     .filter((name) => /^xl\/worksheets\/sheet\d+\.xml$/.test(name))
-    .sort();
+    .sort((a,b)=>{const keys=[...sheetLabels.keys()];return keys.length?(keys.includes(a)?keys.indexOf(a):999)-(keys.includes(b)?keys.indexOf(b):999):a.localeCompare(b,undefined,{numeric:true});});
   if (sheetNames.length === 0) {
     throw new FileExtractionError("This .xlsx contains no worksheets.");
   }
@@ -109,27 +119,37 @@ function extractXlsx(bytes: Uint8Array): ExtractedFile {
   }
 
   const lines: string[] = [];
+  const tables: ExtractedTable[] = []; let cellCount=0;
   for (const name of sheetNames) {
     const $ = load(strFromU8(files[name]), { xmlMode: true });
+    const rows: string[][] = []; const issues: string[] = sheetLabels.get(name)?.hidden?["This worksheet is hidden in the workbook. Confirm it is the intended table."]:[];
     $("row").each((_, row) => {
       const cells: string[] = [];
       $(row)
         .find("c")
         .each((_i, cell) => {
           const $cell = $(cell);
+          if(++cellCount>250000)throw new FileExtractionError("Spreadsheet exceeds the 250,000-cell extraction limit. Split the workbook.");
+          const ref=$cell.attr("r")?.match(/^([A-Z]+)\d+$/)?.[1];
+          const column=ref ? [...ref].reduce((n,c)=>n*26+c.charCodeAt(0)-64,0)-1 : cells.length;
+          if(column<0||column>=100)throw new FileExtractionError("Spreadsheet exceeds the 100-column extraction limit.");
+          while(cells.length<=column)cells.push("");
+          if($cell.find("f").length&&!issues.length)issues.push("Formula cells use saved cached values; formulas are not recalculated. Verify them before checking.");
           const type = $cell.attr("t");
           if (type === "s") {
             // Shared string: <v> holds an index into the table.
             const index = Number($cell.find("v").text());
-            cells.push(sharedStrings[index] ?? "");
+            cells[column]=sharedStrings[index] ?? "";
           } else if (type === "inlineStr") {
-            cells.push($cell.find("t").text());
+            cells[column]=$cell.find("t").text();
           } else {
-            cells.push($cell.find("v").text());
+            cells[column]=$cell.find("v").text();
           }
         });
-      if (cells.some((cell) => cell.trim())) lines.push(cells.join(","));
+      if (cells.some((cell) => cell.trim())) { rows.push(cells); lines.push(cells.map(csvCell).join(",")); }
+      if(rows.length>20000)throw new FileExtractionError("A worksheet exceeds the 20,000-row extraction limit. Split it before checking.");
     });
+    if(rows.length)tables.push({label:sheetLabels.get(name)?.name??name.replace("xl/worksheets/", "Worksheet "),rows,requiresReview:issues.length>0,issues});
   }
 
   if (lines.length === 0) {
@@ -137,7 +157,7 @@ function extractXlsx(bytes: Uint8Array): ExtractedFile {
       "This spreadsheet opened but every cell was empty. Nothing was imported.",
     );
   }
-  return { text: lines.join("\n"), format: "xlsx", warnings };
+  return { text: lines.join("\n"), format: "xlsx", warnings, tables };
 }
 
 /** Word stores paragraphs as <w:p>; without that split every line runs together. */
@@ -175,7 +195,19 @@ function extractDocx(bytes: Uint8Array): ExtractedFile {
       "This Word file opened but contained no text. If it is a scanned image pasted into Word, it cannot be read — OCR is not supported.",
     );
   }
-  return { text: paragraphs.join("\n"), format: "docx", warnings: [] };
+  const tables: ExtractedTable[] = [];
+  $("w\\:tbl, tbl").each((index,table)=>{
+    const rows:string[][]=[];let cells=0;
+    $(table).children("w\\:tr, tr").each((_,row)=>{
+      const values:string[]=[];
+      $(row).children("w\\:tc, tc").each((_,cell)=>{if(++cells>250000)throw new FileExtractionError("Word table exceeds the cell limit.");values.push($(cell).find("w\\:p, p").map((_i,p)=>$(p).find("w\\:t, t").map((_j,t)=>$(t).text()).get().join("")).get().join("\n"));});
+      if(values.some(v=>v.trim()))rows.push(values);
+    });
+    if(rows.length>20000)throw new FileExtractionError("Word table exceeds the row limit.");
+    const merged=$(table).find("w\\:gridSpan, gridSpan, w\\:vMerge, vMerge").length>0;
+    if(rows.length)tables.push({label:`Word table ${index+1}`,rows,requiresReview:merged,issues:merged?["Merged Word cells require column review."]:[]});
+  });
+  return { text: paragraphs.join("\n"), format: "docx", warnings: [], tables };
 }
 
 /**
@@ -186,11 +218,26 @@ function extractDocx(bytes: Uint8Array): ExtractedFile {
 async function extractPdf(bytes: Uint8Array): Promise<ExtractedFile> {
   let text: string;
   try {
-    const { extractText, getDocumentProxy } = await import("unpdf");
+    const { getDocumentProxy } = await import("unpdf");
     const pdf = await getDocumentProxy(bytes);
-    const result = await extractText(pdf, { mergePages: true });
-    text = Array.isArray(result.text) ? result.text.join("\n") : result.text;
-  } catch {
+    if(pdf.numPages>500)throw new FileExtractionError("PDF exceeds the 500-page extraction limit.");
+    const lines:string[]=[];
+    try {
+      for(let pageNumber=1;pageNumber<=pdf.numPages;pageNumber++){
+        const page=await pdf.getPage(pageNumber);const content=await page.getTextContent();
+        const items=content.items.filter((v:any)=>typeof v.str==="string"&&v.str.trim()) as Array<{str:string;transform:number[];width:number}>;
+        items.sort((a,b)=>Math.abs(a.transform[5]-b.transform[5])>3?b.transform[5]-a.transform[5]:a.transform[4]-b.transform[4]);
+        let y:number|undefined;let end=0;let cells:string[]=[];
+        const flush=()=>{if(cells.length)lines.push(cells.join("\t"));cells=[];};
+        for(const item of items){const x=item.transform[4];if(y===undefined||Math.abs(y-item.transform[5])>3){flush();y=item.transform[5];end=x;}
+          if(cells.length&&x-end<10)cells[cells.length-1]+=" "+item.str;else cells.push(item.str);end=x+item.width;
+        }flush();page.cleanup();
+        if(lines.length>30000||lines.reduce((n,line)=>n+line.length,0)>16*1024*1024)throw new FileExtractionError("PDF exceeds the extracted-text limit. Split it into smaller documents.");
+      }
+      text=lines.join("\n");
+    }finally{await pdf.loadingTask.destroy();}
+  } catch(error) {
+    if(error instanceof FileExtractionError)throw error;
     throw new FileExtractionError(
       "This PDF could not be opened. It may be corrupt or password-protected.",
     );

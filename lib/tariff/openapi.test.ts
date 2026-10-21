@@ -35,7 +35,7 @@ test("tariff discovery declares every query and status emitted by the route", ()
   assert.deepEqual(contract.parameters.map((parameter: any) => parameter.name), [
     "code", "declared", "expected", "value", "quantity", "unit", "programme",
   ]);
-  assert.deepEqual(Object.keys(contract.responses).sort(), ["200", "400", "404", "500", "502"]);
+  assert.deepEqual(Object.keys(contract.responses).sort(), ["200", "400", "401", "404", "429", "500", "502", "503"]);
   assert.equal(contract.responses["200"].content["application/json"].schema.oneOf.length, 3);
 });
 

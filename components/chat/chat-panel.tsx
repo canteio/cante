@@ -1,4 +1,6 @@
 "use client";
+import { uploadChatFile,type FileAttachment } from "./upload-file";
+import { FileColumnReview } from "./file-column-review";
 
 import { calculateDemo, DEMO_QUESTION, DEMO_STORAGE_KEY, demoMoney, type DemoInput } from "@/components/tariff/demo-scenario";
 import { ArrowRight, ChevronDown, Globe, Paperclip, Square, X } from "lucide-react";
@@ -15,13 +17,7 @@ import {
 type SearchResult = { title: string; url: string; hostname: string };
 
 /** An uploaded file after `/api/files/extract` turned it into text. */
-type Attachment = {
-  filename: string;
-  format: string;
-  text: string;
-  originalCsv?: string;
-  warnings?: string[];
-};
+type Attachment = FileAttachment;
 
 /**
  * One entry in the message timeline, in the order it actually happened.
@@ -197,10 +193,12 @@ export function ChatPanel({
   const abortRef = useRef<AbortController | null>(null);
   const [now, setNow] = useState(() => Date.now());
 
-  // Files dropped on the composer, already turned into text server-side. They
-  // are attached to the next message. Sending files invokes the existing
-  // workspace filing path; selecting a file alone does not save it.
+  // Originals are saved privately during chunked upload; only bounded previews
+  // and references are attached to the message. Removing a chip removes that
+  // message attachment, not the immutable workspace original.
   const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [uploadProgress,setUploadProgress]=useState("");
+  const needsColumnReview=attachments.some(file=>!file.skipCheck&&file.tables?.length&&!file.mappingConfirmed&&(!file.tables[file.tableIndex??0]?.ready||Boolean(file.mapping)));
   const [dragging, setDragging] = useState(false);
   const [reading, setReading] = useState(false);
   // dragenter/dragleave fire for every child element, so a plain boolean
@@ -216,24 +214,16 @@ export function ChatPanel({
     setError(null);
     for (const file of files) {
       try {
-        const form = new FormData();
-        form.append("file", file);
-        const res = await fetch("/api/files/extract", { method: "POST", body: form });
-        const data = await res.json();
-        if (!res.ok) {
-          // A refusal is the useful answer here — say which file and why.
-          setError(`${file.name}: ${data.error ?? "could not be read."}`);
-          continue;
-        }
+        const data=await uploadChatFile(file,setUploadProgress);
         setAttachments((current) => [
           ...current.filter((a) => a.filename !== data.filename),
           data as Attachment,
         ]);
-      } catch {
-        setError(`${file.name} could not be uploaded.`);
+      } catch(error) {
+        setError(`${file.name}: ${error instanceof Error?error.message:"could not be uploaded."}`);
       }
     }
-    setReading(false);
+    setReading(false);setUploadProgress("");
   }
 
   useEffect(() => {
@@ -320,6 +310,7 @@ export function ChatPanel({
     if (initialDemo && !demoInput) { setError("Calculate a fictional scenario first at /tariff/demo."); return; }
     if (initialDemo && attachments.length) { setError("Demo chat uses the scenario report only. Leave demo mode to upload workspace files."); return; }
     // A dropped file with no typed question is a valid ask on its own.
+    if(needsColumnReview){setError("Review the attachment columns, or choose Ask about this file instead.");return;}
     if ((!question && attachments.length === 0) || busy || reading) return;
 
     const abortController = new AbortController();
@@ -621,7 +612,8 @@ export function ChatPanel({
                     ) : null}
                     <button
                       type="button"
-                      aria-label={`Remove ${attachment.filename}`}
+                      aria-label={`Remove ${attachment.filename} from this message`}
+                      title="Remove from this message. The saved original remains in the workspace."
                       onClick={() =>
                         setAttachments((current) =>
                           current.filter((a) => a.filename !== attachment.filename),
@@ -634,6 +626,8 @@ export function ChatPanel({
                 ))}
               </div>
             )}
+            {reading&&uploadProgress&&<p className="chat-upload-progress" role="status">{uploadProgress}</p>}
+            {attachments.filter(a=>a.uploadId&&a.tables?.length).map(file=><FileColumnReview key={file.uploadId} file={file} onChange={next=>setAttachments(current=>current.map(item=>item.uploadId===file.uploadId?next:item))}/>)}
             <div className="composer-field">
               <textarea
                 aria-label="Message Cante"
@@ -740,7 +734,7 @@ export function ChatPanel({
                 className="icon-btn"
                 aria-label={busy ? "Stop response" : "Send message"}
                 onClick={busy ? stop : send}
-                disabled={!busy && !input.trim() && attachments.length === 0}
+                disabled={reading||needsColumnReview||(!busy && !input.trim() && attachments.length === 0)}
               >
                 {busy ? (
                   <Square size={14} fill="currentColor" strokeWidth={0} />
@@ -762,7 +756,7 @@ export function ChatPanel({
               <button onClick={() => suggest("Help me find official government guidance for my products. Ask me what you need to know first.")}><Globe size={16} /><strong>Find official guidance</strong><span>Go straight to the source</span></button>
             </div>
           )}
-          <p className="cante-chat-note">{initialDemo ? "Fictional scenario. Amounts calculated by code; this conversation is not saved." : attachments.length ? "Files you send are saved to this workspace. Remove any sensitive columns first." : "Cante can make mistakes. Check sources before making trade decisions."}</p>
+          <p className="cante-chat-note">{initialDemo ? "Fictional scenario. Amounts calculated by code; this conversation is not saved." : attachments.length ? "Original files are saved privately to this workspace when attached. Up to 15 MiB · CSV, PDF, Word or Excel." : "Cante can make mistakes. Check sources before making trade decisions."}</p>
         </div>
       </div>
     </div>

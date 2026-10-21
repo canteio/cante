@@ -12,13 +12,13 @@ import { withStackingRulesCache } from "@/lib/tariff/stacking-rules";
 
 export type LiveProduct = { sku: string; hts: string; origin: string; customsValue: number; quantity: number | null; unit: string | null; fictional: boolean; remedyFacts?: RemedyFacts; history?: { entries: Record<string, string>[]; startDate: string; endDate: string; paidDuty: number | null } };
 export type LiveSource = { name: string; url: string; fetchedAt: string; status: "fetched" | "failed"; sha256: string | null; error: string | null; body: string | null; bodyEncoding?: "utf8" | "base64"; compression?: "gzip"; originalSha256?: string };
-export const LIVE_MAX_BYTES = 1_000_000;
+export const LIVE_MAX_BYTES = 15 * 1024 * 1024;
 const cents = (raw: string, name: string) => {
   if (!/^\d{1,10}(?:\.\d{1,2})?$/.test(raw)) throw Error(`${name}: use a non-negative USD amount with at most two decimal places.`);
   const [a, b = ""] = raw.split("."); return BigInt(a) * 100n + BigInt(b.padEnd(2, "0"));
 };
 export function parseLiveProducts(csv: string): LiveProduct[] {
-  if (Buffer.byteLength(csv) > LIVE_MAX_BYTES) throw Error("CSV must be under 1 MB.");
+  if (Buffer.byteLength(csv) > LIVE_MAX_BYTES) throw Error("Check inputs must be under 15 MiB.");
   let table;
   try { table = parseCsv(csv, { columns: 30, rawRows: 6002, cellCharacters: 500 }, true); }
   catch (error) { if (error instanceof Error && /limit/.test(error.message)) throw Error("CSV exceeds the upload limits: 6,000 import rows, 30 columns, or 500 characters per cell."); throw error; }

@@ -122,7 +122,7 @@ export async function processNextStackingSource(): Promise<string | null> {
   const result = await runClaimedAuthoringJob(db, claim.data);
   const remaining = await db.from("tariff_stacking_authoring_jobs").select("id", { count: "exact", head: true }).eq("status", "queued");
   if (remaining.error) throw new Error(remaining.error.message);
-  return [result, remaining.count ? `${remaining.count} stacking source(s) remain queued. The next check processes one, or an owner can start authoring from Tariff rule reviews.` : null].filter(Boolean).join(" ") || null;
+  return [result, remaining.count ? `${remaining.count} stacking source(s) remain queued. The next check processes one, or a platform tariff reviewer can start authoring from Tariff rule reviews.` : null].filter(Boolean).join(" ") || null;
 }
 
 async function completeAuthoringJob(db: ReturnType<typeof createServiceClient>, jobId: string, findingId: string | null, source: { citation: string; text: string }, signal: AbortSignal) {

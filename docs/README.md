@@ -41,7 +41,11 @@ Start with [current status](product/status.md). Plans describe intended work; re
 
 ## Audits
 
+- [Report trust, resource quotas and early uploads](audits/2026-10-20-resource-and-report-security.md): applied DB boundaries, local API guards and verification.
+
 Keep these separate: each records different code and verification conditions. Later fixes may resolve earlier findings.
+
+- [Platform rule-review authorization fix](audits/2026-10-20-platform-rule-authorization.md): explicit reviewer appointments, database enforcement and regression evidence.
 
 | Document | Record |
 |---|---|
@@ -50,6 +54,7 @@ Keep these separate: each records different code and verification conditions. La
 | [October 8 follow-up](audits/2026-10-08-followup.md) | Scheduling and trusted-worker findings |
 | [October 9 fixes](audits/2026-10-09-fixes.md) | Scoped fixes and release verification |
 | [October 19 chat CSV checks](audits/2026-10-19-chat-csv-checks.md) | Complete CSV preservation, automatic checks, saved chat context and verification boundaries |
+| [October 20 chat file intake](audits/2026-10-20-chat-file-intake.md) | 15 MiB originals, chunked uploads, table confirmation and deterministic checks |
 | [October 20 chat news refresh](audits/2026-10-20-chat-news-refresh.md) | Explicit chat-triggered rechecks, unchanged-input duty comparisons and dated tariff headlines |
 | [October 20 security review](audits/2026-10-20-security-review.md) | Global reviewer authorization, archive provenance, dependencies and resource limits; unresolved findings |
 | [October 18 historical comparison](audits/2026-10-18-historical-rule-comparison.md) | Real adjacent HTS versions, original legal text, amendment dates, product review leads and evidence hashes |

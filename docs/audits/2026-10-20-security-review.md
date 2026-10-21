@@ -1,11 +1,12 @@
 # Security review — October 20, 2026
 
-**Verdict: address the authorization and report-authenticity findings before
-presenting this as a secure multi-customer release.** No critical exploit or
-exposed credential was confirmed, but two high-severity application integrity
-issues remain. The subsequent dependency fix below cleared the four dependency
-findings; resource quota and upload-limit findings remain open. Passing calculation tests does not
-establish who is authorized to publish trusted results.
+**Follow-up status:** finding 1 (global rule authority) is fixed in the applied
+database and local API. Finding 2 is contained by withholding unverified saved
+results from trusted chat/baselines; independent worker attestation is still not
+connected. Findings 3–5 have dependency, distributed admission/storage and early
+upload-intake fixes. The application changes are not deployed. Do not describe an
+older hosted build as protected by these local reader/HTTP guards, or describe
+this as a full security clearance. [Implementation and verification](2026-10-20-resource-and-report-security.md).
 
 Scope: current chat upload/refresh, tariff archives and review permissions,
 authentication middleware, upload processing, rendering, repository secrets and
@@ -15,7 +16,7 @@ changed. No commit, push, deployment or paid model request was made.
 
 ## High
 
-### 1. Tenant owner/admin grants global tariff-review authority
+### 1. Tenant owner/admin grants global tariff-review authority — fixed
 
 Rule: NEXT-AUTH-001 / tenant authorization boundary.
 
@@ -55,7 +56,17 @@ user-editable JWT metadata or fix this by exposing a service key.
 the boundary is implemented. A one-workspace/internal pilot reduces exposure but
 does not make the multi-tenant policy correct. This predates the news flow.
 
-### 2. Members can author completed reports that chat treats as computed baselines
+**October 20 follow-up:** applied `20261021015446_platform_tariff_reviewers.sql`.
+All shared review/promotion/retry gates now consult an explicit private reviewer
+list; tenant roles and JWT metadata confer no authority. The list is empty and
+customer/worker accounts cannot insert appointments. API/page gates match the
+caller-bound database capability, failing closed on missing permission/config.
+Transactional tests cover two tenants, appointment, promotion/rejection, metadata
+spoofing and revocation; synthetic writes roll back. No real reviewer was enrolled.
+See [implementation and verification](2026-10-20-platform-rule-authorization.md).
+Existing shared rules were not retrospectively re-approved by this change.
+
+### 2. Members can author completed reports that chat treats as computed baselines — trust path contained
 
 Rule: trusted-computation integrity / NEXT-AUTH-001.
 
@@ -104,6 +115,15 @@ trusted baseline comparisons unless provenance can be established. The current
 fresh engine computation remains deterministic; the vulnerability is trusting a
 caller-writable previous result, not arithmetic inside the engine.
 
+**October 20 follow-up:** a protected, append-only trusted-worker attestation must
+match check/tenant/input/terminal hashes before the archive reader returns a
+`verifiedResult`. Chat uses only that field for saved computed context and duty
+baselines. Unverified totals are hidden in saved-result UI; originals/raw exports
+remain labelled workspace records. Members cannot self-attest. No existing record
+is auto-trusted, and no verifier worker was silently connected. This contains the
+forged-baseline path by withholding it; it does not manufacture provenance for old
+reports. Hosted protection requires deploying the changed reader.
+
 ### 3. Four installed packages had high-severity dependency findings — fixed locally
 
 Rule: NEXT-SUPPLY-001 / REACT-SUPPLY-001.
@@ -146,7 +166,7 @@ finding 3 for the updated checkout, not findings 1, 2, 4 or 5.
 
 ## Medium
 
-### 4. Expensive authenticated operations lack application quotas
+### 4. Expensive authenticated operations lack application quotas — admission/storage budgets added
 
 Locations: `app/api/chat/route.ts:394–428`; `app/api/tariff/live-check/route.ts`;
 `lib/llm/api.ts:95–114`; `middleware.ts`.
@@ -166,7 +186,16 @@ through the Data API. Authentication and timeouts alone do not cap aggregate cos
 model budgets, with 429/Retry-After handling. Verify edge/WAF protections too.
 External protections may exist; they were not visible or verified in this review.
 
-### 5. File size rejection occurs after multipart/body allocation
+**October 20 follow-up:** private, transactional counters and leases enforce shared
+per-account/workspace hour/day/concurrency budgets across paid/expensive endpoints.
+429 includes Retry-After; missing quota storage fails closed. Direct live-archive
+inserts are capped at 256 MiB/5,000 rows daily and 1 GiB retained logical bytes.
+These operation budgets bound admitted work, not a dollar-denominated provider
+invoice; operator worker/CLI workloads and provider billing settings remain
+separate. Applied DB migration plus actual-helper/database regressions are recorded
+in the follow-up audit. HTTP enforcement awaits application deployment.
+
+### 5. File size rejection occurs after multipart/body allocation — early byte caps added
 
 Rule: NEXT-FILES-001.
 
@@ -186,6 +215,14 @@ evidence of a remote file-read or upload-execution vulnerability.
 **Fix:** bound incoming multipart bytes while reading, enforce a matching upstream
 limit, and reject known oversized files before `arrayBuffer()` as defense in depth.
 Do not rely solely on Content-Length, filename extension or a client-side check.
+
+**October 20 follow-up:** actual bytes are counted before concatenation or
+multipart/JSON parsing, regardless of Content-Length. Multipart intake has a
+15 MiB + 64 KiB envelope; per-file limits are checked before arrayBuffer().
+Requests are admitted before buffering and aborted intake cancels its reader.
+This is bounded buffering rather than a streaming per-part parser; upstream
+platform limits were not reconfigured. Tests cover missing/forged lengths and
+oversized files with zero arrayBuffer calls. HTTP changes are not deployed.
 
 ## Deployment and account notes
 
@@ -224,6 +261,6 @@ Do not rely solely on Content-Length, filename extension or a client-side check.
 - Reproduction probe and logs remain local/ignored. No application security fix
   was silently applied during this requested review.
 
-Recommended order: restrict global rule authority; establish trusted report
-provenance/baselines; enforce resource budgets and upload
-limits. Keep this unresolved report local until the corresponding fixes are ready.
+Remaining: deploy the reviewed application fixes, connect an independently verified
+trusted-worker attestation path before restoring saved numerical comparisons, and
+verify production billing/WAF/Auth configuration. Preserve the dated evidence above.

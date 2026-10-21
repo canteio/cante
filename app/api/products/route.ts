@@ -1,3 +1,4 @@
+import { withRequestLimit } from "@/app/api/request-limits";
 import { resolveCustomerId } from "@/lib/db/queries";
 import {
   deleteProduct,
@@ -33,6 +34,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  return withRequestLimit(request, "upload", 15794176, handlePOST);
+}
+async function handlePOST(request: Request) {
   // An .xlsx of SKUs and HS codes is the realistic way a catalogue arrives.
   // It is converted to CSV text and handed to the same importer, so the tier
   // rule still holds: a spreadsheet can only ever produce `lead` codes.
@@ -57,6 +61,7 @@ export async function POST(request: Request) {
       );
     }
 
+    if (file.size > 15 * 1024 * 1024) return Response.json({error:"Files must be under 15 MiB."},{status:413});
     try {
       const extracted = await extractTextFromFile(
         file.name,

@@ -1,6 +1,7 @@
+import { withRequestLimit } from "@/app/api/request-limits";
 import { retryStackingAuthoringJob } from "@/lib/tariff/stacking-authoring";
 import { z } from "zod";
-import { createRequestClient, getAuthenticatedWorkspace } from "@/lib/supabase/server";
+import { createRequestClient, getAuthenticatedWorkspace, isPlatformTariffReviewer } from "@/lib/supabase/server";
 import { stackingConditions } from "@/lib/tariff/stacking-authoring-contract";
 
 export const runtime = "nodejs";
@@ -17,11 +18,12 @@ const review = z.object({
 export async function GET(request: Request) {
   const workspace = await getAuthenticatedWorkspace();
   if (!workspace) return Response.json({ error: "Authentication required." }, { status: 401 });
-  if (!["owner", "admin"].includes(workspace.role)) return Response.json({ error: "Owner or admin access required to review shared tariff rules." }, { status: 403 });
+  if (!await isPlatformTariffReviewer()) return Response.json({ error: "Platform tariff reviewer access required." }, { status: 403 });
   try {
     const offset = z.coerce.number().int().min(0).max(1000000).safeParse(new URL(request.url).searchParams.get("offset") ?? 0);
     if (!offset.success) return Response.json({ error: "Invalid review offset." }, { status: 400 });
     const { data, error } = await (await createRequestClient()).rpc("read_tariff_stacking_reviews", { review_offset: offset.data });
+    if (error?.code === "42501") return Response.json({ error: "Platform tariff reviewer access required." }, { status: 403 });
     if (error) throw error;
     return Response.json(data);
   } catch {
@@ -30,9 +32,12 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  return withRequestLimit(request, "chat", 20000, handlePOST);
+}
+async function handlePOST(request: Request) {
   const workspace = await getAuthenticatedWorkspace();
   if (!workspace) return Response.json({ error: "Authentication required." }, { status: 401 });
-  if (!["owner", "admin"].includes(workspace.role)) return Response.json({ error: "Owner or admin review required." }, { status: 403 });
+  if (!await isPlatformTariffReviewer()) return Response.json({ error: "Platform tariff reviewer access required." }, { status: 403 });
   const parsed = review.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return Response.json({ error: "Invalid review. Supply a draft ID, decision, and supported conditions." }, { status: 400 });
   const body = parsed.data;
@@ -50,6 +55,7 @@ export async function POST(request: Request) {
       narrowed_conditions: body.conditions ?? null, precedence_id: body.precedenceId ?? null,
       precedence_basis: body.precedenceReason ?? null, reviewer_note: body.note?.trim() ?? null,
     });
+    if (error?.code === "42501") return Response.json({ error: "Platform tariff reviewer access required." }, { status: 403 });
     if (error) return Response.json({ error: error.code === "P0001" ? error.message : "Rule review could not be saved." }, { status: error.code === "P0001" ? 409 : 503 });
     return Response.json({ ok: true, ruleId: data });
   } catch {

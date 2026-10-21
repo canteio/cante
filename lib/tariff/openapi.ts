@@ -81,6 +81,9 @@ export function buildTariffOpenApiSpec() {
             { name: "programme", in: "query", required: false, schema: { type: "string" }, description: "Claimed special-programme symbol. Eligibility remains unverified." },
           ],
           responses: {
+            "401": { description: "Authentication and workspace access required.", content: { "application/json": { schema: errorSchema } } },
+            "429": { description: "Account/workspace request or concurrency budget reached.", headers: { "Retry-After": { schema: { type: "integer", minimum: 1 } } }, content: { "application/json": { schema: errorSchema } } },
+            "503": { description: "Request limits are unavailable; no operation was run.", content: { "application/json": { schema: errorSchema } } },
             "200": {
               description: "A published row, duty quote, or declared-versus-expected comparison.",
               content: { "application/json": { schema: { oneOf: [

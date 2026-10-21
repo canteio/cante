@@ -116,3 +116,13 @@ export async function retrieveCustomerContext(input: {
     rank: Number(row.rank ?? 0),
   }));
 }
+
+/** Global shared-rule permission is managed in the database, not tenant roles/JWT metadata. */
+export async function isPlatformTariffReviewer(): Promise<boolean> {
+  try {
+    const { data, error } = await (await createRequestClient()).rpc("is_platform_tariff_reviewer");
+    return !error && data === true;
+  } catch {
+    return false; // Missing migration, unavailable database or invalid session must deny access.
+  }
+}
