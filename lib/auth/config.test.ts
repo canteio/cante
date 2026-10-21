@@ -4,6 +4,7 @@ import {
   emailIsAllowed,
   getAuthMode,
   hasSupabaseEnv,
+  isDemoAuthEnabled,
 } from "./config";
 
 // lib/auth/config.ts had zero test coverage despite gating both auth mode
@@ -21,6 +22,7 @@ const ENV_KEYS = [
   "CANTE_ALLOWED_EMAILS",
   "NEXT_PUBLIC_SUPABASE_URL",
   "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+  "ENABLE_DEMO_AUTH",
 ] as const;
 
 let savedEnv: Record<string, string | undefined> = {};
@@ -75,4 +77,25 @@ test("emailIsAllowed handles null/undefined input", () => {
   process.env.CANTE_ALLOWED_EMAILS = "j@cante.com";
   assert.equal(emailIsAllowed(null), false);
   assert.equal(emailIsAllowed(undefined), false);
+});
+
+// Oct 20 security review: demo mode was getAuthMode()'s silent default, and
+// middleware accepted the constant demo cookie whenever CANTE_AUTH_MODE was
+// not "supabase" -- i.e. by default, including in a misconfigured production
+// deploy. isDemoAuthEnabled() must require an explicit opt-in that is never
+// set in production/Vercel.
+test("isDemoAuthEnabled defaults to false (fails closed) when unset", () => {
+  assert.equal(isDemoAuthEnabled(), false);
+});
+
+test("isDemoAuthEnabled stays false for any non-exact-'true' value", () => {
+  for (const value of ["1", "True", "TRUE", "yes", "on", ""]) {
+    process.env.ENABLE_DEMO_AUTH = value;
+    assert.equal(isDemoAuthEnabled(), false, `expected false for ${JSON.stringify(value)}`);
+  }
+});
+
+test("isDemoAuthEnabled is true only when explicitly set to 'true'", () => {
+  process.env.ENABLE_DEMO_AUTH = "true";
+  assert.equal(isDemoAuthEnabled(), true);
 });

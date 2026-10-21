@@ -7,6 +7,18 @@ export function getAuthMode(): AuthMode {
   return process.env.CANTE_AUTH_MODE === "supabase" ? "supabase" : "demo";
 }
 
+/**
+ * Demo auth (the constant `cante_demo_session=demo` cookie, see
+ * app/api/demo-login/route.ts) must never be silently accepted. It requires
+ * an explicit opt-in via ENABLE_DEMO_AUTH=true, which is intentionally never
+ * set in production/Vercel. Without it, the demo cookie is rejected even if
+ * getAuthMode() resolves to "demo" (its default) -- fixes the Oct 20 security
+ * review finding that demo mode was a silent default rather than an opt-in.
+ */
+export function isDemoAuthEnabled(): boolean {
+  return process.env.ENABLE_DEMO_AUTH === "true";
+}
+
 export function hasSupabaseEnv() {
   return Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&

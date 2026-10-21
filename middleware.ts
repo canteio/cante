@@ -3,6 +3,7 @@ import {
   DEMO_SESSION_COOKIE,
   DEMO_SESSION_VALUE,
   getAuthMode,
+  isDemoAuthEnabled,
 } from "@/lib/auth/config";
 import { updateSupabaseSession } from "@/lib/supabase/middleware";
 
@@ -81,11 +82,19 @@ export async function middleware(request: NextRequest) {
       pendingUrl.search = "";
       return NextResponse.redirect(pendingUrl);
     }
-  } else {
+  } else if (isDemoAuthEnabled()) {
     const session = request.cookies.get(DEMO_SESSION_COOKIE)?.value;
     if (session === DEMO_SESSION_VALUE) {
       return NextResponse.next();
     }
+    if (isProtectedApi) {
+      return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+    }
+  } else {
+    // Fail closed: demo mode is getAuthMode()'s default, but the demo cookie
+    // must never be silently accepted without an explicit ENABLE_DEMO_AUTH=true
+    // opt-in (never set in production/Vercel). No cookie check happens here --
+    // every protected route is rejected the same as an unauthenticated request.
     if (isProtectedApi) {
       return NextResponse.json({ error: "Authentication required." }, { status: 401 });
     }

@@ -1,10 +1,17 @@
 import { NextResponse } from "next/server";
-import { DEMO_SESSION_COOKIE, DEMO_SESSION_VALUE } from "@/lib/auth/config";
+import { DEMO_SESSION_COOKIE, DEMO_SESSION_VALUE, isDemoAuthEnabled } from "@/lib/auth/config";
 
 const DEMO_USER = "demo";
 const DEMO_PASSWORD = "demo";
 
 export async function POST(request: Request) {
+  if (!isDemoAuthEnabled()) {
+    return NextResponse.json(
+      { error: "Demo login is disabled. Set ENABLE_DEMO_AUTH=true for local dev only." },
+      { status: 403 },
+    );
+  }
+
   let body: unknown;
   try {
     body = await request.json();
