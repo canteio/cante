@@ -50,3 +50,6 @@ scripts/test-fixtures/tariff-remedies/
 
 # Generated workers, private local reports and browser artifacts are separate outputs.
 output/
+
+# Private operator evidence and credentials.
+private/

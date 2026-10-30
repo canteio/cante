@@ -33,8 +33,8 @@ isolated rebuild check is `npm run verify:data-api-grants -- --postgres-bin=/abs
 
 
 October 23 ordinary-audit release: website Preview
-`https://cante-fnk6p700p-jeremygautamas-projects.vercel.app`, worker
-`https://cante-check-worker-xk1may2zx-jeremygautamas-projects.vercel.app`.
+`[private deployment URL omitted]`, worker
+`[private deployment URL omitted]`.
 Both builds are READY. Preview/local future worker connectors use this worker;
 existing daily Cron/Vault and production are unchanged. Real isolated local
 production-build acceptance passed upload-to-export with actual Supabase and
@@ -275,7 +275,7 @@ Use explicit `--project-ref nvdsjqzbzsczvmvjxhro`; `db query` and `db advisors`
 also require `--linked` with that flag. Never use the unrelated PeakMV project.
 
 The dev Vercel preview is
-https://cante-444ecg7ve-jeremygautamas-projects.vercel.app.
+[private deployment URL omitted]
 Its Supabase URL was verified to target Cante. Branch-specific dev preview
 settings now include `CANTE_LLM=api` and `CANTE_LLM_LOCKED=true`. The production
 website has not been promoted. No Telegram, launchd, Vault-secret change, or
@@ -482,7 +482,7 @@ current search data, extracted candidates and legal approval; a published rate
 reference alone cannot establish a complete historical stacked duty.
 
 The compatible worker deployment is
-`https://cante-check-worker-jrrloogja-jeremygautamas-projects.vercel.app/api/check`.
+`[private deployment URL omitted]`.
 Local and future Preview/Production connector settings are updated; no main
 website redeployment was performed. Privileged database keys remain absent from
 the website's configured Vercel environment. Execution verification used the
@@ -525,12 +525,12 @@ when replacing the worker deployment. Do not turn on external delivery.
 Verification: `supabase/tests/daily_monitor.sql` rolls back isolated fixtures;
 `scripts/test-daily-worker.mjs` verifies the built worker's authentication/admission.
 
-Earlier hosted-tested pilot Preview: `https://cante-ee1xdbktr-jeremygautamas-projects.vercel.app`.
+Earlier hosted-tested pilot Preview: `[private deployment URL omitted]`.
 The latest historical-expansion Preview is
-`https://cante-em259hiuw-jeremygautamas-projects.vercel.app`; its build is ready,
+`[private deployment URL omitted]`; its build is ready,
 but Vercel sign-in prevented hosted end-to-end acceptance of this exact version.
 Preview/local worker connectors and the Vault scheduler now target the separate
-`https://cante-check-worker-h41oj2412-jeremygautamas-projects.vercel.app` deployment,
+`[private deployment URL omitted]` deployment,
 using `/api/check` and `/api/monitor` respectively. Production website connector
 settings were not changed by this expansion. No workspace opt-in was added.
 Production website promotion remains separate. Migration
@@ -543,10 +543,10 @@ shared tariff-rule readers have their database context. Run
 sources; an idle-job smoke test alone cannot verify numerical calculations.
 
 Latest free historical-data Preview:
-`https://cante-rm5gwgb57-jeremygautamas-projects.vercel.app` (Vercel-auth protected;
+`[private deployment URL omitted]` (Vercel-auth protected;
 build ready, no new hosted signed-in end-to-end acceptance).
 Its Preview/local manual and audit connector selects
-`https://cante-check-worker-nyzd3q2ta-jeremygautamas-projects.vercel.app/api/check`.
+`[private deployment URL omitted]`.
 The daily Vault target remains on the previous `h41oj2412` worker recorded above;
 no daily schedule/settings change was needed. Production remains unchanged. See
 the [free-data source/release record](../audits/2026-10-22-free-official-data.md).

@@ -84,13 +84,13 @@ The existing bulk backfill and new importer share one operator publication helpe
 ## Release
 
 The new worker Preview is ready at
-`https://cante-check-worker-nyzd3q2ta-jeremygautamas-projects.vercel.app`.
+`[private deployment URL omitted]`.
 Preview and local manual/audit connectors select its `/api/check`. The existing
 daily Vault target remains on the previously tested worker; no scheduler change
 was required. Production is unchanged.
 
 Website Preview is ready at
-`https://cante-rm5gwgb57-jeremygautamas-projects.vercel.app`.
+`[private deployment URL omitted]`.
 Both Vercel deployments report `READY`; the website retains Vercel authentication.
 Hosted signed-in end-to-end acceptance of this exact release was not performed.
 The read-only live-source checks, fixture worker verification and successful build

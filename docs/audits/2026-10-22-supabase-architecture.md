@@ -300,7 +300,7 @@ produce legally approved historical audit coverage.
   authoring was denied. No paid model call or customer data was used.
 
 The compatible worker Preview was deployed successfully at
-[the worker deployment](https://cante-check-worker-jrrloogja-jeremygautamas-projects.vercel.app).
+the worker deployment (private deployment URL omitted).
 Local and future website Preview/Production connector settings reference its
 `/api/check` route. Its URL was not fetched for verification; the actual execution
 verification above used the identical compiled worker locally with real Supabase.

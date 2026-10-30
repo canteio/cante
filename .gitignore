@@ -46,3 +46,8 @@ output/prusa-public-research/
 # Isolated security-probe generated bundles and synthetic-only evidence.
 /output/security-probe/
 /output/historical-coverage/
+
+# Generated builds, reports, screenshots and local verification artifacts.
+/output/
+# Private operator evidence and credentials must never enter version control.
+/private/

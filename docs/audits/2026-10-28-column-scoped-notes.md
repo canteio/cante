@@ -86,7 +86,7 @@ No production deployment, daily target/opt-in or shared human approval changed.
   export-proof,cleanup,quota}.log`.
 - `/tmp/cante-missing-column2-recovery-inventory.json`: final 548-record inventory.
 - `/tmp/cante-v25-{general-note-evidence,corrected-weight,corrected-weight-calculation}.png`.
-  Download `/Users/a/Downloads/historical-audit (24).csv`.
+  Download `~/Downloads/historical-audit (24).csv`.
 
 Website and worker releases still require authorization and must stay aligned.
 This is a verified local expansion, not complete historical law or a deployment.

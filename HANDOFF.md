@@ -1,3 +1,9 @@
+October 30 privacy cleanup: account-identifying deployment URLs and local user
+paths redacted from tracked docs. Generated output is removed from the Git index,
+retained locally and ignored; private artifacts are excluded from Git and Vercel.
+Historical worker snapshots are local verification prerequisites, not source to
+re-add. No Git history rewrite, commit, push or deployment was performed.
+
 October 29 v37 selected verification COMPLETE, local/undeployed. This goal
 continuation made code and evidence progress. The full goal remains active;
 no broad completion checkbox is closed. Do not infer a global percentage.

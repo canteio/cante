@@ -90,7 +90,7 @@ new lib module, daily target or global legal approval changed.
 - `/tmp/cante-missing-column2-recovery-inventory.json`: final 548-record scan.
 - `/tmp/cante-v26-corrected-classification.png`,
   `/tmp/cante-v26-classification-calculation.png`.
-  Download `/Users/a/Downloads/historical-audit (25).csv`.
+  Download `~/Downloads/historical-audit (25).csv`.
 
 This is a verified local extension. Continue the
 [full coverage ledger](../plans/historical-coverage-completion.md); website and

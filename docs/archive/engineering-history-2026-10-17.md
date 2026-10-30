@@ -1211,7 +1211,7 @@ message — confirming the full `launchd` → `.env` → `claude` CLI → Telegr
 works unattended, not just interactively.
 
 Verified 17 Aug 2026: `~/Library/LaunchAgents/com.cante.dailycheck.plist` runs
-`/bin/zsh -lc "cd /Users/a/Desktop/cante && npm run check:scheduled"` daily at
+`/bin/zsh -lc "cd . && npm run check:scheduled"` daily at
 07:00 via `StartCalendarInterval`, with `StandardOutPath`/`StandardErrorPath`
 at `~/Library/Logs/cante-dailycheck.log` and `RunAtLoad` false so loading it
 does not immediately fire a real Telegram send. `launchctl load` registered it

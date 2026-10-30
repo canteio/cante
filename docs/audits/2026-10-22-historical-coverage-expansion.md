@@ -91,8 +91,8 @@ refund eligibility or correctness for an unseen customer file.
 
 Both Vercel builds completed with `READY` status:
 
-- Website Preview: https://cante-em259hiuw-jeremygautamas-projects.vercel.app
-- Trusted worker: https://cante-check-worker-h41oj2412-jeremygautamas-projects.vercel.app
+- Website Preview: [private deployment URL omitted]
+- Trusted worker: [private deployment URL omitted]
 
 Website Preview configuration and the local connector select the new worker's
 `/api/check`. Supabase Vault selects its `/api/monitor`; the existing authorized

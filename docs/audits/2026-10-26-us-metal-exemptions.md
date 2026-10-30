@@ -108,7 +108,7 @@ was originally contemplated by the fictional fixture.
   The 23-line downloaded CSV retained the original, correction, new result,
   exemption and blank unresolved totals. Screenshot:
   `/tmp/cante-us-metal-audit-results.png`; export:
-  `/Users/a/Downloads/historical-audit (15).csv` (fictional local artifacts).
+  `~/Downloads/historical-audit (15).csv` (fictional local artifacts).
 - Acceptance used isolated website build `cante-history-build-0ypzcn`; the
   final worker adds only bounded failure diagnostics to the same calculation
   code (3,811,605 bytes, 324 inputs). Its mocked checks also pass. Browser

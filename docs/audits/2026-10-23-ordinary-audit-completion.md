@@ -84,8 +84,8 @@ successful correction until saved and recalculated.
 
 ## Release
 
-- Website Preview: https://cante-fnk6p700p-jeremygautamas-projects.vercel.app
-- Worker Preview: https://cante-check-worker-xk1may2zx-jeremygautamas-projects.vercel.app
+- Website Preview: [private deployment URL omitted]
+- Worker Preview: [private deployment URL omitted]
 - Both Vercel builds report READY. Preview and local future worker connectors
   point to the new worker. Existing daily-monitor Vault configuration is unchanged.
 - Vercel SSO blocks browser access to this exact hosted website build. Local

@@ -109,7 +109,7 @@ No separate engine or new `lib/` module was added.
   paid-minus-expected amount, original/reviewed timestamps, partial exemption,
   obsolete-heading finding, v13 version and blank unsupported totals. Screenshot:
   `/tmp/cante-india-audit-results.png`; browser export:
-  `/Users/a/Downloads/historical-audit (14).csv` (local fictional artifacts).
+  `~/Downloads/historical-audit (14).csv` (local fictional artifacts).
 - Backend acceptance used isolated build `cante-history-build-LZYQw9`; the final
   timestamp-display-only build `cante-history-build-IWIX9x` also passed build and
   TypeScript, and used the same local worker for browser review/export. No

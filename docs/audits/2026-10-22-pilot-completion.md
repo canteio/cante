@@ -135,10 +135,10 @@ sources. The earlier entirely synthetic rules/120-entry fixture is separate.
 ### Completed hosted acceptance and final release
 
 Final website Preview:
-https://cante-ee1xdbktr-jeremygautamas-projects.vercel.app
+[private deployment URL omitted]
 
 Final separate worker Preview:
-https://cante-check-worker-olajbb24t-jeremygautamas-projects.vercel.app
+[private deployment URL omitted]
 
 The production website was not promoted. No commit or push was made. Browser tests
 used an isolated fictional workspace and temporary Vercel automation access; cleanup

@@ -505,7 +505,7 @@ explicitly labelled QA fixtures and were never persisted as customer audits.
 Final release validation: **907/907 tests**, clean TypeScript, successful production build, and successful live authenticated-review SQL checks with all fixtures rolled back. The isolated QA account/workspaces and temporary auth files were removed.
 
 Final Vercel preview (READY, October 11):
-https://cante-br13rakg3-jeremygautamas-projects.vercel.app
+[private deployment URL omitted]
 Deployment protection requires Vercel sign-in. Production was not promoted.
 No service key was added to Vercel. Cloud source checks remain unavailable
 until a trusted worker is connected; admin read/approval uses JWT-backed RPCs.

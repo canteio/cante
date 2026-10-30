@@ -95,7 +95,7 @@ v22/v23 saved-result sets still verify. No hosted app or worker was deployed.
   terminal log `/tmp/cante-v24-missing-recovery-final.log`.
 - Browser images: `/tmp/cante-v24-recovered-duty-evidence.png`,
   `/tmp/cante-v24-corrected-origin.png`, `/tmp/cante-v24-audit-results.png`.
-  Download: `/Users/a/Downloads/historical-audit (23).csv`.
+  Download: `~/Downloads/historical-audit (23).csv`.
 
 The website and worker must be released together when deployment is authorized.
 This record verifies the local bounded expansion, not complete historical law or

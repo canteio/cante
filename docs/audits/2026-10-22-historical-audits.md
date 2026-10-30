@@ -62,7 +62,7 @@ updates create revisions without modifying prior results.
 - All three audit migrations are applied. The administrative rollback test passes;
   no rollback fixtures remain. No historical bundles are approved. Remote SQL lint
   reports no errors and two pre-existing type warnings in unrelated functions.
-- The compatible [checking-worker preview](https://cante-check-worker-p4bj55ib0-jeremygautamas-projects.vercel.app)
+- The compatible checking-worker preview (private deployment URL omitted)
   is deployed. Local connector settings and the website's future-build Vercel
   connector settings point to it; dispatch secrets are unchanged. The hosted
   preview was not probed as an execution test. Real storage/execution verification
