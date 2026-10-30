@@ -1,6 +1,6 @@
 {
   "label": "SYNTHETIC 100-line, 18-year component ledger with independently preset arithmetic. Original-source verification is separate; declarations and supporting references are fictional.",
-  "engineVersion": "historical-audit-v37",
+  "engineVersion": "historical-audit-v38",
   "rows": [
     {
       "entry": "SYNTHETIC-LEGACY-WATCH-ENTRY-1",

@@ -74,3 +74,26 @@ test('Canada table corruption, partial rows, wrong dates and inactive cases do n
  for(const text of [m.text.replace('Cash deposit rate:  12.12%','Cash deposit rate:  $12.12/kg'),m.text.replace('Case number:  C-122-858-001','Case number:  C-122-858-002'),m.text.replace('08/12/2025 produced','08/13/2025 produced'),m.text+'\nProducer: Unknown\nExporter: Unknown\nCase number: C-122-858-999\nConditional rate: 1%'])assert.equal(parseCashDeposit(m.header,text),null);
  const inactive=historicalDeposits([canada('A122857')],{...caInput,shipment:{...caInput.shipment,cases:['A-122-857-349'],exporter:'FICTIONAL'}});assert.equal(inactive.measures.length,0);assert(inactive.issues.some(i=>i.includes('deactivates')));
 });
+
+const earlyCa=JSON.parse(readFileSync('scripts/test-fixtures/historical-audits/adcvd-canada-early-public.json','utf8')).messages as {header:AdcvdHeader;text:string;headerSourceId:string;bodySourceId:string}[];
+const earlyReference=(root:string):AdcvdReference=>({caseNumber:root,indexSourceId:'SYNTHETIC-EARLY-INDEX',issues:[],messages:earlyCa.filter(m=>m.header.caseNumberList.includes(root))});
+test('complete published early Canada tables retain typographic label/date variants without replacing source evidence',()=>{
+ const want:Record<string,number>={'3220409':291,'0336411':247,'2019402':262,'2032411':2,'3257413':289};for(const m of earlyCa){const before=m.text,p=parseCashDeposit(m.header,m.text);assert(p,m.header.messageNumber);if(want[m.header.messageNumber])assert.equal(p.rates.length,want[m.header.messageNumber]);assert.equal(m.text,before);}
+});
+test('an explicitly listed-company amendment preserves an unamended company from its same-date original',()=>{
+ const ref=earlyReference('A122857');for(const [code,exporter,rate,message]of[['A-122-857-001','Canfor Corporation','5.25%','3220409'],['A-122-857-004','West Fraser Mills Ltd.','7.06%','3257413']]){const r=historicalDeposits([ref],{date:'2023-08-01',origin:'CA',shipment:{cases:[code],exporter,dutyStage:'cash_deposit'},facts});assert.equal(r.issues.length,0,JSON.stringify(r.issues));assert.equal(r.measures[0]?.rate,rate);assert.equal(r.measures[0]?.messageNumber,message);assert.equal(r.measures[0]?.sourceIds.length,5);}
+});
+test('the omitted-company correction applies its own adjacent historical periods despite another January instruction',()=>{
+ const ref=earlyReference('C122858'),shipment={cases:['C-122-858-282'],exporter:'Carter Forest Products Inc',dutyStage:'cash_deposit' as const};for(const [date,rate,effective]of[['2021-12-02','6.31%','2021-12-02'],['2022-01-09','6.31%','2021-12-02'],['2022-01-10','6.32%','2022-01-10'],['2022-02-01','6.32%','2022-01-10']]){const r=historicalDeposits([ref],{date,origin:'CA',shipment,facts});assert.equal(r.issues.length,0,JSON.stringify(r.issues));assert.equal(r.measures[0]?.rate,rate);assert.equal(r.measures[0]?.legalEffectiveOn,effective);assert.equal(r.measures[0]?.messageNumber,'2032411');}
+ assert.equal(historicalDeposits([ref],{date:'2021-12-01',origin:'CA',shipment,facts}).measures.length,0);
+ for(const broken of [{...shipment,exporter:'Similar supplier'},{...shipment,dutyStage:'final_assessment' as const}])assert.equal(historicalDeposits([ref],{date:'2022-01-10',origin:'CA',shipment:broken,facts}).measures.length,0);
+ assert.equal(historicalDeposits([ref],{date:'2022-01-10',origin:'CA',shipment,facts:{}}).measures.length,0);
+});
+test('unknown multi-period wording, altered windows and conflicting repeated labels remain unsupported',()=>{
+ const m=earlyCa.find(m=>m.header.messageNumber==='2032411')!;for(const text of[m.text.replace('01/09/2022','01/10/2022'),m.text.replace('6.31%','6.32%'),m.text+'\nUnknown qualification'])assert.equal(parseCashDeposit(m.header,text),null);assert.equal(parseCashDeposit({...m.header,effectiveDate:'01/10/2022'},m.text),null);
+ const table=earlyCa.find(m=>m.header.messageNumber==='3220409')!;for(const text of[table.text.replace('Cash Deposit Rate: Cash deposit rate: 6.20%','Cash Deposit Rate: 5.00% Cash deposit rate: 6.20%'),table.text+'\nExporter: Unmapped party\nCase number: A-122-857-999\nUnknown rate: 2%'])assert.equal(parseCashDeposit(table.header,text),null);
+});
+
+test('actual ambiguous percentage tails and missing/misordered case fields cannot silently become rates',()=>{
+ const malformed=JSON.parse(readFileSync('scripts/test-fixtures/historical-audits/adcvd-canada-malformed-public.json','utf8'));assert(malformed.messages.find((m:any)=>m.header.messageNumber==='0343402').text.includes('1.57%2.02'));for(const m of malformed.messages)assert.equal(parseCashDeposit(m.header,m.text),null,m.header.messageNumber);
+});

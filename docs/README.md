@@ -1,3 +1,5 @@
+- [October 30 earlier Canadian deposits](audits/2026-10-30-earlier-canadian-deposits.md) — dated company corrections, preliminary publications, immutable registry projections, verification and database incident/recovery.
+
 - [October 29 initial Section 301 scope and PDF identity](audits/2026-10-29-initial301-and-pdf-identity.md) — original list parsing, exact publication recovery, list-integrity hardening and verified saved/browser/export workflow.
 
 - [October29 China20(g) scope](audits/2026-10-29-china20g-historical-scope.md) — dated statistical exceptions, new furniture stacking, older coverage gaps; saved API acceptance passes, final browser review pending.

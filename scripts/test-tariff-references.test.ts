@@ -12,7 +12,7 @@ const releases=normalizeReleases([rawRelease("2024HTSRev1"),rawRelease("2024HTSR
 const source=(id:string,kind:string):ReferenceSource=>({id,kind,release_name:releases[0].name,url:"https://www.usitc.gov/retained",title:"Historical original",original_sha256:"a".repeat(64),captured_at:"2026-10-22T00:00:00Z",metadata:{},rate_count:1});
 const rate={source_id:"schedule",hts:"8501314000",description:"Test",general:"4%",special:"Free (A)",column2:"35%",additional_duties:"",units:["No."],footnotes:[{value:"See 9903.88.02 and 9903.88.67"}]};
 const reference=referenceForEntry({date:"2024-05-15",hts:rate.hts},releases,[source("schedule","hts_json"),source("notes","chapter99_pdf")],[rate,{...rate,hts:"99038802",general:"25%"},{...rate,hts:"99038867",general:"Free"}],new Map());
-test("publisher identifiers retain historical spelling and exclude preliminary files",()=>{
+test("publisher identifiers retain historical spelling and exclude unrecognized preliminary files",()=>{
  assert.deepEqual(normalizeReleases([rawRelease("2023HTSARev4a"),rawRelease("2018BasicEdition"),rawRelease("2024HTSPrelimRev1")]).map(r=>r.name),["2023HTSARev4a","2018BasicEdition"]);
  assert.throws(()=>normalizeReleases([rawRelease("2024HTSRev1","02/30/2024")]));
  assert.throws(()=>normalizeReleases([rawRelease("2024HTSRev1"),rawRelease("2024HTSRev1")]));
@@ -82,4 +82,8 @@ test("older full-edition projections preserve leading zeros, inheritance, units 
  const projected=projectHistoricalRates(rows);assert.equal(projected.length,10000);assert.equal(projected[0].hts,"0101000001");assert.equal(projected[0].general,"4%");assert.deepEqual(projected[0].units,["No."]);assert.ok(projected[0].footnotes.length);
  assert.throws(()=>projectHistoricalRates(rows.filter(r=>!(r.htsno as string).startsWith("02"))),/omits a chapter/);
  assert.throws(()=>projectHistoricalRates(rows.map((r,i)=>i===1?{...r,units:"unknown string unit"}:r)));
+});
+
+test('observed official preliminary publications fill their own registry intervals without advancing next-year rates',()=>{
+ const original=JSON.parse(readFileSync('scripts/test-fixtures/historical-audits/published-preliminary-releases.json','utf8')),r=normalizeReleases(original.releases);assert.equal(r.length,5);assert.equal(r.find(x=>x.name==='2021HTSAPreliminary')?.available_from,'2021-01-01');assert.equal(candidateRelease(r,'2021-01-15')?.name,'2021HTSAPrelimRev2');assert.equal(candidateRelease(r,'2022-01-09')?.name,'2022HTSAPrelimC');assert.equal(candidateRelease(r,'2020-12-31'),null,'A next-year preliminary publication cannot establish the preceding year’s rates');assert.equal(candidateRelease(r,'2022-01-03'),null,'Missing published coverage remains explicit');assert.equal(candidateRelease(r,'2022-01-26'),null,'The preliminary interval ends at the next published edition');
 });

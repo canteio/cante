@@ -44,7 +44,7 @@ export function validateReleaseSnapshot(value:unknown):ReferenceRelease[]{
 }
 export function candidateRelease(releases:ReferenceRelease[],date:string){
   if(!isStrictIsoDate(date))return null;
-  const matches=releases.filter(r=>r.available_from<=date&&(!r.available_until||date<r.available_until));
+  const matches=releases.filter(r=>r.available_from<=date&&(!r.available_until||date<r.available_until)&&(!/prelim/i.test(r.name)||r.name.slice(0,4)<=date.slice(0,4)));
   return matches.length===1?matches[0]:null;
 }
 export async function referenceReleases(db:Db):Promise<ReferenceRelease[]>{

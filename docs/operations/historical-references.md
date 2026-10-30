@@ -313,3 +313,23 @@ never converted to January 1 or the source capture/publication date. The support
 and corrected chapter. All results remain labeled Cante-validated estimates on
 declared lawful scope, not human legal review. See the
 [v28 verification and remaining scope](../audits/2026-10-28-dated-rate-restoration.md).
+
+## October 30 published preliminary references
+
+Observed 2021/2022 preliminary editions use the normal reference archive, with
+printed publication identity checks and visible preliminary labels. Two source
+schema migrations `20261030062112` and `20261030063951` are applied. They preserve
+access controls and add immutable registry parser versions via an expression
+index. Do not replace this with a generated stored column: an attempted table
+rewrite exhausted WAL disk space and interrupted the database. Recovery was
+verified before the corrected index migration. Check live disk headroom before
+source/schema maintenance; avoid unnecessary bulk writes.
+
+`npm run references:backfill-preliminary` previews only. `-- --write` retains
+originals, and `-- --write --registry-only` verifies their existing metadata and
+updates only the versioned registry projection. Completion requires read-back of
+the projection version/releases, not just the original-byte hash. Registry raw
+bytes remain official evidence; derived comparison windows are not legal dates.
+The initial 2021 window is clipped to January1, preserving the publisher's
+December31 date separately. January1–3,2022 still needs coverage.
+[Verification, limits and recovery](../audits/2026-10-30-earlier-canadian-deposits.md).

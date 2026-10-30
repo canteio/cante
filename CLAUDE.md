@@ -54,6 +54,8 @@ customer check, accurate full coverage or a working production deployment.
   launchd, external delivery or other schedules. Keep delivery credentials blank.
 - Do not add new modules under `lib/` until a customer has paid. Existing exceptions:
   the API adapter, scripts, and fixes to code a real customer is touching.
+- Before live archive DDL, inspect relation/TOAST sizes and live disk/WAL headroom.
+  Prefer expression indexes over rewriting retained evidence tables.
 - Seeding and importing can write to a real workspace. Do not run them as routine
   setup or use customer records as disposable test fixtures.
 - Keep customer/contact/company identities out of root agent instructions. Use

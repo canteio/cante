@@ -490,3 +490,16 @@ zeroactive/sessions. Code remains local and undeployed. Ten Canadian instruction
 blockers were reinspected against retained originals without guessed repairs.
 [Evidence and boundaries](../audits/2026-10-29-initial301-and-pdf-identity.md).
 No broad completion checkbox is closed.
+
+## V38 selected progress and incident recovery
+
+Four earlier Canadian instruction grammars, exact two-period correction and
+listed-company amendment treatment are supported. Five published preliminary
+editions now have ten verified originals and an independently versioned parsed
+registry, preserving the original 173-release snapshot. Actual-source100 oracle
+passes90qualified/10open;480script tests and builds pass. Current inventory is
+27/34 deposit messages; a previously accepted ambiguous numeric tail is now
+withheld. The disk-space incident from a table rewrite, verified recovery and
+non-rewriting replacement are recorded explicitly. No new real v38 saved/browser
+acceptance, complete legal coverage or deployment is claimed. Every broad box
+remains open. [Evidence](../audits/2026-10-30-earlier-canadian-deposits.md).

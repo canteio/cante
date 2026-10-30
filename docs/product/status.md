@@ -1,3 +1,12 @@
+October30 v38: selected earlier Canadian deposits, company-specific amendments
+and five published preliminary editions are connected.480script tests,source100
+oracle(90qualified/10open),TypeScript/builds/workerrecovery pass. Seven retained
+Canadian messages and broader historical scope remain open. A table-rewrite
+migration caused a disk-space interruption; recovery and prior synthetic audit
+hashes were verified, and an expression index replaced the rewrite. Shared
+reference schema/data updated; app code remains local,undeployed. No new v38
+real saved/browser acceptance is claimed. [Evidence and incident](../audits/2026-10-30-earlier-canadian-deposits.md).
+
 October29 v37 selected verification complete, local and undeployed: complete
 original-list fingerprints reject missing/substituted cells.474script tests,
 TypeScript/builds/recovery,actual-source100 replay and real saved/browser/export/

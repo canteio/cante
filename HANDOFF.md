@@ -1,3 +1,61 @@
+October 30 v38 progress; full historical-coverage goal remains ACTIVE.
+App code is local/uncommitted/undeployed. Shared Supabase reference schema/data
+were updated. No tenant imports, legal approvals, reviewers, schedules or grants
+changed. Preserve the user's privacy exclusions and work on dev.
+
+IMPORTANT INCIDENT: attempted generated-stored-column registry migration caused
+WAL disk exhaustion/shutdown around06:29:30UTC. Writes stopped; no customer data
+was deleted and no manual restore/plan/compute change performed. DB recovered
+(postmaster06:34:18UTC). SQL proved failed migration/column absent. Old SQL is
+ignored private/incidents/2026-10-30-database-disk/attempted-table-rewrite.sql;
+DO NOT rerun it. Corrected expression-index migration63951 is applied and adds
+only304kB index, no stored column. Live metrics after fix: data disk8.4GB,
+6.3GBavailable; root10.5GB,2.9GBavailable. DB1550MB,reference table1005MB.
+Check live disk/WAL headroom and relation/TOAST sizes BEFORE further live DDL;
+prefer expression indexes, never blindly rewrite the evidence table. Recovery
+verified; previous user dashboard-sign-in question is RESOLVED/unnecessary.
+Temporary Supabase login tab51 closed; no login or paid upgrade was performed.
+
+V38 parser: four older CA instructions now read typography and exact two-period
+2032411 correction. Company-limited amendments retain unchanged same-date company
+rows. Rate fields must end at percent; actual0343402 tail1.57%2.02 stays rejected.
+Current inventory27/34 supported; open0189410,0189411,0343402,3216402,4018402,
+5121401,6238403. Do not guess the corrupt or missing fields. Final assessment,
+case scope and court/exclusion conditions remain separate evidence work.
+
+Five observed2021/2022preliminary editions have ten originals retained/read-back/
+hash/printed-identity verified. Comparison windows do not precede edition year;
+2021initial publisherDec31 preserved separately, usablewindowJan1. Jan1–3,2022
+still lacks an established window. Applied migrations62112(observednames/floor)
+and63951(immutable registry parser projections) preserve RLS/service-only invoker
+publisher, body/hash bounds, search path/timeouts. Security advisors same3,no new.
+
+RAW REGISTRY SAME SHA d07d7d022319bf6f1b4c60918565ad528ca3df8be9eb2e6d0c6ee2defd2d0f81.
+Old2077acc7-3214-40df-b60a-cedaa7c1998d remains173releases; new b89dc825-40b3-4bd0-
+9ed0-c78b9098d79f is published-preliminary-v1,178releases. Do NOT overwrite old
+metadata or spoof gov URLs for parser changes. referencePackage sets the parser
+version; operator completion checks metadata readback. --registry-only avoids
+recapturing ten books. Private original/metrics logs remain ignored, not tracked.
+
+VERIFIED: 480script tests,tsc,isolated webpacksite/workerbuilds,RESTworkerrecovery.
+Actual-source100 oracle90qualified/10open,USD30each fictionalover/under; all90
+amounts,operative dates, messages and100CSVfields pass. All100without evidence
+stay null. Newverifierpins100sources, no tenantwrites/models/approvals. Initial
+45genuineJanuarysource failures retained; not hidden by weakening expectations.
+Read-only v37 proof plus21earlier saved synthetic resultsets verify afterrecovery;
+no new38real saved/browser acceptance is claimed.112fixtureusersallbanned,
+0active/0sessions. Main24938/3000alive; no newAuthfixtures or3132/3133 servers.
+All current test/build/capture handles terminal; no process needs resumption.
+BuildworkerSHA617c05b4681e4ca7805f1226d9e31c372380f4660492297ec3ba1a6643b5c0cb.
+Logs/tmp/cante-v38-*,sitepath/tmp/cante-v38-site-path; originals raw/tariff-references/
+preliminary. Full evidence docs/audits/2026-10-30-earlier-canadian-deposits.md.
+
+NEXT: seven CA instruction blockers, conditional later301list completeness,
+Jan1–3,2022cross-year original-law coverage, other232/country/preference/quantity/
+special-entry work per full unchecked ledger. Do not infer total readiness or
+percent from90/100 selected fictional tests. Avoid unnecessary repeated live
+fixtures; full combined real saved/browser/tenant validation remains a later gate.
+
 October 30 privacy cleanup: account-identifying deployment URLs and local user
 paths redacted from tracked docs. Generated output is removed from the Git index,
 retained locally and ignored; private artifacts are excluded from Git and Vercel.

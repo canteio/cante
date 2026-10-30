@@ -1,0 +1,46 @@
+{
+  "source": "https://hts.usitc.gov/reststop/releaseList",
+  "description": "Observed published USITC preliminary editions and availability; these dates are not legal effective dates.",
+  "releases": [
+    {
+      "name": "2022HTSAPrelimC",
+      "description": "2022 Preliminary Edition",
+      "status": "archive",
+      "date": "01/04/2022",
+      "releaseStartDate": "01/04/2022",
+      "releaseEndDate": "01/26/2022"
+    },
+    {
+      "name": "2021HTSAPrelimRev2",
+      "description": "2021 Preliminary Revision 2",
+      "status": "archive",
+      "date": "01/07/2021",
+      "releaseStartDate": "01/11/2021",
+      "releaseEndDate": "02/06/2021"
+    },
+    {
+      "name": "2021HTSAPreliminary",
+      "description": "2021 Preliminary Edition",
+      "status": "archive",
+      "date": "12/16/2020",
+      "releaseStartDate": "12/31/2020",
+      "releaseEndDate": "01/06/2021"
+    },
+    {
+      "name": "2021HTSAPrelimRev3",
+      "description": "2021 Preliminary Revision 3",
+      "status": "archive",
+      "date": "01/26/2021",
+      "releaseStartDate": "02/06/2021",
+      "releaseEndDate": "03/15/2021"
+    },
+    {
+      "name": "2021HTSAPrelimRev1",
+      "description": "2021 Preliminary Revision 1",
+      "status": "archive",
+      "date": "01/05/2021",
+      "releaseStartDate": "01/06/2021",
+      "releaseEndDate": "01/11/2021"
+    }
+  ]
+}

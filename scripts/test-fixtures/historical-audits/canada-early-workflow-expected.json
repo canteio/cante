@@ -1,0 +1,2616 @@
+{
+  "label": "Fictional shipments, independent Decimal amounts; official evidence and human qualification remain separate.",
+  "engineVersion": "historical-audit-v38",
+  "rows": [
+    {
+      "row": 1,
+      "expected": "74.24",
+      "difference": "0.00",
+      "rate": "7.42%",
+      "message": "0336411",
+      "effective": "2020-12-01"
+    },
+    {
+      "row": 2,
+      "expected": "63.13",
+      "difference": "0.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 3,
+      "expected": "63.13",
+      "difference": "0.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 4,
+      "expected": "63.23",
+      "difference": "0.00",
+      "rate": "6.32%",
+      "message": "2032411",
+      "effective": "2022-01-10"
+    },
+    {
+      "row": 5,
+      "expected": "52.53",
+      "difference": "0.00",
+      "rate": "5.25%",
+      "message": "3220409",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 6,
+      "expected": "70.64",
+      "difference": "0.00",
+      "rate": "7.06%",
+      "message": "3257413",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 7,
+      "expected": "74.24",
+      "difference": "1.00",
+      "rate": "7.42%",
+      "message": "0336411",
+      "effective": "2020-12-01"
+    },
+    {
+      "row": 8,
+      "expected": "63.14",
+      "difference": "1.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 9,
+      "expected": "63.14",
+      "difference": "1.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 10,
+      "expected": "63.24",
+      "difference": "1.00",
+      "rate": "6.32%",
+      "message": "2032411",
+      "effective": "2022-01-10"
+    },
+    {
+      "row": 11,
+      "expected": "52.53",
+      "difference": "1.00",
+      "rate": "5.25%",
+      "message": "3220409",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 12,
+      "expected": "70.64",
+      "difference": "1.00",
+      "rate": "7.06%",
+      "message": "3257413",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 13,
+      "expected": "74.25",
+      "difference": "-1.00",
+      "rate": "7.42%",
+      "message": "0336411",
+      "effective": "2020-12-01"
+    },
+    {
+      "row": 14,
+      "expected": "63.14",
+      "difference": "-1.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 15,
+      "expected": "63.14",
+      "difference": "-1.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 16,
+      "expected": "63.24",
+      "difference": "-1.00",
+      "rate": "6.32%",
+      "message": "2032411",
+      "effective": "2022-01-10"
+    },
+    {
+      "row": 17,
+      "expected": "52.53",
+      "difference": "-1.00",
+      "rate": "5.25%",
+      "message": "3220409",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 18,
+      "expected": "70.65",
+      "difference": "-1.00",
+      "rate": "7.06%",
+      "message": "3257413",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 19,
+      "expected": "74.25",
+      "difference": "0.00",
+      "rate": "7.42%",
+      "message": "0336411",
+      "effective": "2020-12-01"
+    },
+    {
+      "row": 20,
+      "expected": "63.14",
+      "difference": "0.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 21,
+      "expected": "63.14",
+      "difference": "0.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 22,
+      "expected": "63.24",
+      "difference": "0.00",
+      "rate": "6.32%",
+      "message": "2032411",
+      "effective": "2022-01-10"
+    },
+    {
+      "row": 23,
+      "expected": "52.54",
+      "difference": "0.00",
+      "rate": "5.25%",
+      "message": "3220409",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 24,
+      "expected": "70.65",
+      "difference": "0.00",
+      "rate": "7.06%",
+      "message": "3257413",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 25,
+      "expected": "74.25",
+      "difference": "1.00",
+      "rate": "7.42%",
+      "message": "0336411",
+      "effective": "2020-12-01"
+    },
+    {
+      "row": 26,
+      "expected": "63.15",
+      "difference": "1.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 27,
+      "expected": "63.15",
+      "difference": "1.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 28,
+      "expected": "63.25",
+      "difference": "1.00",
+      "rate": "6.32%",
+      "message": "2032411",
+      "effective": "2022-01-10"
+    },
+    {
+      "row": 29,
+      "expected": "52.54",
+      "difference": "1.00",
+      "rate": "5.25%",
+      "message": "3220409",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 30,
+      "expected": "70.66",
+      "difference": "1.00",
+      "rate": "7.06%",
+      "message": "3257413",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 31,
+      "expected": "74.26",
+      "difference": "-1.00",
+      "rate": "7.42%",
+      "message": "0336411",
+      "effective": "2020-12-01"
+    },
+    {
+      "row": 32,
+      "expected": "63.15",
+      "difference": "-1.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 33,
+      "expected": "63.15",
+      "difference": "-1.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 34,
+      "expected": "63.25",
+      "difference": "-1.00",
+      "rate": "6.32%",
+      "message": "2032411",
+      "effective": "2022-01-10"
+    },
+    {
+      "row": 35,
+      "expected": "52.54",
+      "difference": "-1.00",
+      "rate": "5.25%",
+      "message": "3220409",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 36,
+      "expected": "70.66",
+      "difference": "-1.00",
+      "rate": "7.06%",
+      "message": "3257413",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 37,
+      "expected": "74.26",
+      "difference": "0.00",
+      "rate": "7.42%",
+      "message": "0336411",
+      "effective": "2020-12-01"
+    },
+    {
+      "row": 38,
+      "expected": "63.15",
+      "difference": "0.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 39,
+      "expected": "63.16",
+      "difference": "0.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 40,
+      "expected": "63.26",
+      "difference": "0.00",
+      "rate": "6.32%",
+      "message": "2032411",
+      "effective": "2022-01-10"
+    },
+    {
+      "row": 41,
+      "expected": "52.55",
+      "difference": "0.00",
+      "rate": "5.25%",
+      "message": "3220409",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 42,
+      "expected": "70.66",
+      "difference": "0.00",
+      "rate": "7.06%",
+      "message": "3257413",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 43,
+      "expected": "74.27",
+      "difference": "1.00",
+      "rate": "7.42%",
+      "message": "0336411",
+      "effective": "2020-12-01"
+    },
+    {
+      "row": 44,
+      "expected": "63.16",
+      "difference": "1.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 45,
+      "expected": "63.16",
+      "difference": "1.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 46,
+      "expected": "63.26",
+      "difference": "1.00",
+      "rate": "6.32%",
+      "message": "2032411",
+      "effective": "2022-01-10"
+    },
+    {
+      "row": 47,
+      "expected": "52.55",
+      "difference": "1.00",
+      "rate": "5.25%",
+      "message": "3220409",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 48,
+      "expected": "70.67",
+      "difference": "1.00",
+      "rate": "7.06%",
+      "message": "3257413",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 49,
+      "expected": "74.27",
+      "difference": "-1.00",
+      "rate": "7.42%",
+      "message": "0336411",
+      "effective": "2020-12-01"
+    },
+    {
+      "row": 50,
+      "expected": "63.16",
+      "difference": "-1.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 51,
+      "expected": "63.16",
+      "difference": "-1.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 52,
+      "expected": "63.26",
+      "difference": "-1.00",
+      "rate": "6.32%",
+      "message": "2032411",
+      "effective": "2022-01-10"
+    },
+    {
+      "row": 53,
+      "expected": "52.55",
+      "difference": "-1.00",
+      "rate": "5.25%",
+      "message": "3220409",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 54,
+      "expected": "70.67",
+      "difference": "-1.00",
+      "rate": "7.06%",
+      "message": "3257413",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 55,
+      "expected": "74.28",
+      "difference": "0.00",
+      "rate": "7.42%",
+      "message": "0336411",
+      "effective": "2020-12-01"
+    },
+    {
+      "row": 56,
+      "expected": "63.17",
+      "difference": "0.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 57,
+      "expected": "63.17",
+      "difference": "0.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 58,
+      "expected": "63.27",
+      "difference": "0.00",
+      "rate": "6.32%",
+      "message": "2032411",
+      "effective": "2022-01-10"
+    },
+    {
+      "row": 59,
+      "expected": "52.56",
+      "difference": "0.00",
+      "rate": "5.25%",
+      "message": "3220409",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 60,
+      "expected": "70.68",
+      "difference": "0.00",
+      "rate": "7.06%",
+      "message": "3257413",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 61,
+      "expected": "74.28",
+      "difference": "1.00",
+      "rate": "7.42%",
+      "message": "0336411",
+      "effective": "2020-12-01"
+    },
+    {
+      "row": 62,
+      "expected": "63.17",
+      "difference": "1.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 63,
+      "expected": "63.17",
+      "difference": "1.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 64,
+      "expected": "63.27",
+      "difference": "1.00",
+      "rate": "6.32%",
+      "message": "2032411",
+      "effective": "2022-01-10"
+    },
+    {
+      "row": 65,
+      "expected": "52.56",
+      "difference": "1.00",
+      "rate": "5.25%",
+      "message": "3220409",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 66,
+      "expected": "70.68",
+      "difference": "1.00",
+      "rate": "7.06%",
+      "message": "3257413",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 67,
+      "expected": "74.29",
+      "difference": "-1.00",
+      "rate": "7.42%",
+      "message": "0336411",
+      "effective": "2020-12-01"
+    },
+    {
+      "row": 68,
+      "expected": "63.17",
+      "difference": "-1.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 69,
+      "expected": "63.17",
+      "difference": "-1.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 70,
+      "expected": "63.28",
+      "difference": "-1.00",
+      "rate": "6.32%",
+      "message": "2032411",
+      "effective": "2022-01-10"
+    },
+    {
+      "row": 71,
+      "expected": "52.56",
+      "difference": "-1.00",
+      "rate": "5.25%",
+      "message": "3220409",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 72,
+      "expected": "70.69",
+      "difference": "-1.00",
+      "rate": "7.06%",
+      "message": "3257413",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 73,
+      "expected": "74.29",
+      "difference": "0.00",
+      "rate": "7.42%",
+      "message": "0336411",
+      "effective": "2020-12-01"
+    },
+    {
+      "row": 74,
+      "expected": "63.18",
+      "difference": "0.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 75,
+      "expected": "63.18",
+      "difference": "0.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 76,
+      "expected": "63.28",
+      "difference": "0.00",
+      "rate": "6.32%",
+      "message": "2032411",
+      "effective": "2022-01-10"
+    },
+    {
+      "row": 77,
+      "expected": "52.57",
+      "difference": "0.00",
+      "rate": "5.25%",
+      "message": "3220409",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 78,
+      "expected": "70.69",
+      "difference": "0.00",
+      "rate": "7.06%",
+      "message": "3257413",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 79,
+      "expected": "74.29",
+      "difference": "1.00",
+      "rate": "7.42%",
+      "message": "0336411",
+      "effective": "2020-12-01"
+    },
+    {
+      "row": 80,
+      "expected": "63.18",
+      "difference": "1.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 81,
+      "expected": "63.18",
+      "difference": "1.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 82,
+      "expected": "63.28",
+      "difference": "1.00",
+      "rate": "6.32%",
+      "message": "2032411",
+      "effective": "2022-01-10"
+    },
+    {
+      "row": 83,
+      "expected": "52.57",
+      "difference": "1.00",
+      "rate": "5.25%",
+      "message": "3220409",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 84,
+      "expected": "70.69",
+      "difference": "1.00",
+      "rate": "7.06%",
+      "message": "3257413",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 85,
+      "expected": "74.30",
+      "difference": "-1.00",
+      "rate": "7.42%",
+      "message": "0336411",
+      "effective": "2020-12-01"
+    },
+    {
+      "row": 86,
+      "expected": "63.19",
+      "difference": "-1.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 87,
+      "expected": "63.19",
+      "difference": "-1.00",
+      "rate": "6.31%",
+      "message": "2032411",
+      "effective": "2021-12-02"
+    },
+    {
+      "row": 88,
+      "expected": "63.29",
+      "difference": "-1.00",
+      "rate": "6.32%",
+      "message": "2032411",
+      "effective": "2022-01-10"
+    },
+    {
+      "row": 89,
+      "expected": "52.57",
+      "difference": "-1.00",
+      "rate": "5.25%",
+      "message": "3220409",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 90,
+      "expected": "70.70",
+      "difference": "-1.00",
+      "rate": "7.06%",
+      "message": "3257413",
+      "effective": "2023-08-01"
+    },
+    {
+      "row": 91,
+      "expected": null,
+      "difference": null,
+      "rate": null,
+      "message": null,
+      "effective": null
+    },
+    {
+      "row": 92,
+      "expected": null,
+      "difference": null,
+      "rate": null,
+      "message": null,
+      "effective": null
+    },
+    {
+      "row": 93,
+      "expected": null,
+      "difference": null,
+      "rate": null,
+      "message": null,
+      "effective": null
+    },
+    {
+      "row": 94,
+      "expected": null,
+      "difference": null,
+      "rate": null,
+      "message": null,
+      "effective": null
+    },
+    {
+      "row": 95,
+      "expected": null,
+      "difference": null,
+      "rate": null,
+      "message": null,
+      "effective": null
+    },
+    {
+      "row": 96,
+      "expected": null,
+      "difference": null,
+      "rate": null,
+      "message": null,
+      "effective": null
+    },
+    {
+      "row": 97,
+      "expected": null,
+      "difference": null,
+      "rate": null,
+      "message": null,
+      "effective": null
+    },
+    {
+      "row": 98,
+      "expected": null,
+      "difference": null,
+      "rate": null,
+      "message": null,
+      "effective": null
+    },
+    {
+      "row": 99,
+      "expected": null,
+      "difference": null,
+      "rate": null,
+      "message": null,
+      "effective": null
+    },
+    {
+      "row": 100,
+      "expected": null,
+      "difference": null,
+      "rate": null,
+      "message": null,
+      "effective": null
+    }
+  ],
+  "decisions": [
+    {
+      "row": 1,
+      "kind": "confirm_facts",
+      "validFrom": "2021-01-15",
+      "validBefore": "2021-01-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-1-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 2,
+      "kind": "confirm_facts",
+      "validFrom": "2021-12-02",
+      "validBefore": "2021-12-03",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-2-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 3,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-09",
+      "validBefore": "2022-01-10",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-3-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 4,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-4-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 5,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-5-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 6,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-6-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 7,
+      "kind": "confirm_facts",
+      "validFrom": "2021-01-15",
+      "validBefore": "2021-01-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-7-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 8,
+      "kind": "confirm_facts",
+      "validFrom": "2021-12-02",
+      "validBefore": "2021-12-03",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-8-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 9,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-09",
+      "validBefore": "2022-01-10",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-9-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 10,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-10-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 11,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-11-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 12,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-12-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 13,
+      "kind": "confirm_facts",
+      "validFrom": "2021-01-15",
+      "validBefore": "2021-01-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-13-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 14,
+      "kind": "confirm_facts",
+      "validFrom": "2021-12-02",
+      "validBefore": "2021-12-03",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-14-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 15,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-09",
+      "validBefore": "2022-01-10",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-15-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 16,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-16-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 17,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-17-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 18,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-18-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 19,
+      "kind": "confirm_facts",
+      "validFrom": "2021-01-15",
+      "validBefore": "2021-01-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-19-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 20,
+      "kind": "confirm_facts",
+      "validFrom": "2021-12-02",
+      "validBefore": "2021-12-03",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-20-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 21,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-09",
+      "validBefore": "2022-01-10",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-21-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 22,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-22-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 23,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-23-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 24,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-24-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 25,
+      "kind": "confirm_facts",
+      "validFrom": "2021-01-15",
+      "validBefore": "2021-01-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-25-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 26,
+      "kind": "confirm_facts",
+      "validFrom": "2021-12-02",
+      "validBefore": "2021-12-03",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-26-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 27,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-09",
+      "validBefore": "2022-01-10",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-27-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 28,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-28-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 29,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-29-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 30,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-30-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 31,
+      "kind": "confirm_facts",
+      "validFrom": "2021-01-15",
+      "validBefore": "2021-01-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-31-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 32,
+      "kind": "confirm_facts",
+      "validFrom": "2021-12-02",
+      "validBefore": "2021-12-03",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-32-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 33,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-09",
+      "validBefore": "2022-01-10",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-33-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 34,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-34-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 35,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-35-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 36,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-36-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 37,
+      "kind": "confirm_facts",
+      "validFrom": "2021-01-15",
+      "validBefore": "2021-01-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-37-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 38,
+      "kind": "confirm_facts",
+      "validFrom": "2021-12-02",
+      "validBefore": "2021-12-03",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-38-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 39,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-09",
+      "validBefore": "2022-01-10",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-39-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 40,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-40-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 41,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-41-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 42,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-42-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 43,
+      "kind": "confirm_facts",
+      "validFrom": "2021-01-15",
+      "validBefore": "2021-01-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-43-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 44,
+      "kind": "confirm_facts",
+      "validFrom": "2021-12-02",
+      "validBefore": "2021-12-03",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-44-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 45,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-09",
+      "validBefore": "2022-01-10",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-45-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 46,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-46-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 47,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-47-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 48,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-48-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 49,
+      "kind": "confirm_facts",
+      "validFrom": "2021-01-15",
+      "validBefore": "2021-01-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-49-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 50,
+      "kind": "confirm_facts",
+      "validFrom": "2021-12-02",
+      "validBefore": "2021-12-03",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-50-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 51,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-09",
+      "validBefore": "2022-01-10",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-51-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 52,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-52-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 53,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-53-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 54,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-54-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 55,
+      "kind": "confirm_facts",
+      "validFrom": "2021-01-15",
+      "validBefore": "2021-01-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-55-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 56,
+      "kind": "confirm_facts",
+      "validFrom": "2021-12-02",
+      "validBefore": "2021-12-03",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-56-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 57,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-09",
+      "validBefore": "2022-01-10",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-57-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 58,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-58-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 59,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-59-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 60,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-60-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 61,
+      "kind": "confirm_facts",
+      "validFrom": "2021-01-15",
+      "validBefore": "2021-01-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-61-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 62,
+      "kind": "confirm_facts",
+      "validFrom": "2021-12-02",
+      "validBefore": "2021-12-03",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-62-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 63,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-09",
+      "validBefore": "2022-01-10",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-63-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 64,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-64-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 65,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-65-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 66,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-66-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 67,
+      "kind": "confirm_facts",
+      "validFrom": "2021-01-15",
+      "validBefore": "2021-01-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-67-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 68,
+      "kind": "confirm_facts",
+      "validFrom": "2021-12-02",
+      "validBefore": "2021-12-03",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-68-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 69,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-09",
+      "validBefore": "2022-01-10",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-69-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 70,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-70-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 71,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-71-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 72,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-72-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 73,
+      "kind": "confirm_facts",
+      "validFrom": "2021-01-15",
+      "validBefore": "2021-01-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-73-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 74,
+      "kind": "confirm_facts",
+      "validFrom": "2021-12-02",
+      "validBefore": "2021-12-03",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-74-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 75,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-09",
+      "validBefore": "2022-01-10",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-75-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 76,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-76-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 77,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-77-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 78,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-78-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 79,
+      "kind": "confirm_facts",
+      "validFrom": "2021-01-15",
+      "validBefore": "2021-01-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-79-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 80,
+      "kind": "confirm_facts",
+      "validFrom": "2021-12-02",
+      "validBefore": "2021-12-03",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-80-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 81,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-09",
+      "validBefore": "2022-01-10",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-81-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 82,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-82-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 83,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-83-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 84,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-84-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 85,
+      "kind": "confirm_facts",
+      "validFrom": "2021-01-15",
+      "validBefore": "2021-01-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-85-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 86,
+      "kind": "confirm_facts",
+      "validFrom": "2021-12-02",
+      "validBefore": "2021-12-03",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-86-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 87,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-09",
+      "validBefore": "2022-01-10",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-87-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 88,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-88-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 89,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-89-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 90,
+      "kind": "confirm_facts",
+      "validFrom": "2023-08-01",
+      "validBefore": "2023-08-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-90-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 91,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-91-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 92,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-92-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 93,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-93-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 94,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-94-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 95,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": false,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-95-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 96,
+      "kind": "confirm_facts",
+      "validFrom": "2021-12-01",
+      "validBefore": "2021-12-02",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-96-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 97,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-97-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 98,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-98-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 99,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-99-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    },
+    {
+      "row": 100,
+      "kind": "confirm_facts",
+      "validFrom": "2022-01-10",
+      "validBefore": "2022-01-11",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-CAEARLY-100-QUALIFICATION"
+      ],
+      "note": "FICTIONAL qualification decision for deterministic functionality testing; no actual company scope, party qualification or refund entitlement established."
+    }
+  ],
+  "summary": {
+    "lines": 100,
+    "calculated": 90,
+    "unresolved": 10,
+    "discrepancies": 60,
+    "overpayment": "30.00",
+    "underpayment": "30.00"
+  }
+}

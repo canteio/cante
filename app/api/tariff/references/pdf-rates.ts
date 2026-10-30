@@ -218,6 +218,7 @@ export async function historicalPdfRates(bytes:Buffer,sourceId:string,release:Re
  const wanted=new Set(codes),result:ReferenceRate[]=[];
  const cover=(await cells(1)).map(c=>c.text).join(' '),year=release.name.slice(0,4),revision=/Revision\s+(\d+[a-z]?)/i.exec(release.description)?.[1];
  const encodedCover=historicalEncodedCoverIdentity(createHash('sha256').update(bytes).digest('hex'),cover,release);
+ if(/prelim/i.test(release.name)!==/Preliminary/i.test(cover))return [];
  if(!encodedCover&&(!cover.includes(`(${year})`)||!cover.includes('Harmonized Tariff Schedule')))return [];
  const exactRevision=revision?new RegExp(`Revision\\s+${revision}(?![\\da-z])`,'i'):null;
  const coverVerified=encodedCover||(exactRevision?exactRevision.test(cover):!/Revision\s+\d/i.test(cover));

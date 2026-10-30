@@ -34,7 +34,7 @@
     "verify:workflow": "node --import tsx scripts/verify-tariff-workflow.ts",
     "test:chat-files": "node --import tsx --test scripts/test-chat-file-intake.test.ts scripts/test-chat-csv.test.ts",
     "test:workspace": "node --import tsx --test scripts/test-workspace-dashboard.test.ts",
-    "test:audits": "node --import tsx --test scripts/test-audits.test.ts scripts/test-audit-store.test.ts scripts/test-audit-checkpoint.test.ts scripts/test-reference-projection-cache.test.ts scripts/test-annual-quantities.test.ts scripts/test-annual-schedule.test.ts scripts/test-watch-components.test.ts scripts/test-legacy-watch-components.test.ts scripts/test-pdf-unit-exponents.test.ts scripts/test-wood-history.test.ts scripts/test-china20g.test.ts scripts/test-initial301.test.ts",
+    "test:audits": "node --import tsx --test scripts/test-audits.test.ts scripts/test-audit-store.test.ts scripts/test-audit-checkpoint.test.ts scripts/test-reference-projection-cache.test.ts scripts/test-annual-quantities.test.ts scripts/test-annual-schedule.test.ts scripts/test-watch-components.test.ts scripts/test-legacy-watch-components.test.ts scripts/test-pdf-unit-exponents.test.ts scripts/test-wood-history.test.ts scripts/test-china20g.test.ts scripts/test-initial301.test.ts scripts/test-adcvd-history.test.ts scripts/test-adcvd-source.test.ts",
     "test:audit-worker": "node scripts/test-audit-worker.mjs",
     "test:references": "node --import tsx --test scripts/test-tariff-references.test.ts",
     "test:chat-markdown": "node --import tsx --test scripts/test-chat-markdown.test.mjs",
@@ -87,7 +87,9 @@
     "verify:historical-canada": "node --import tsx scripts/verify-canada-deposits.ts",
     "verify:historical-wood": "node --import tsx scripts/verify-wood-duties.ts",
     "verify:historical-china20g": "node --import tsx scripts/verify-wood-duties.ts --china20g",
-    "verify:historical-initial301": "node --import tsx scripts/verify-initial301.ts"
+    "verify:historical-initial301": "node --import tsx scripts/verify-initial301.ts",
+    "verify:historical-canada-early": "node --import tsx scripts/verify-canada-early-deposits.ts",
+    "references:backfill-preliminary": "node --import tsx scripts/backfill-preliminary-tariff-references.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",
