@@ -1,0 +1,6 @@
+dataset_label,sku,hts_code,origin_country,annual_customs_value_usd,standard_commercial,other_232_heading,special_232_claim,metal_weight_percent,us_metal_qualification,equipment_use,motorcycle_use
+FICTIONAL TEST INPUTS - NOT CUSTOMER DATA,DEMO-MOTOR-CN,8501.31.40.00,CN,10000,true,none,false,,false,false,false
+FICTIONAL TEST INPUTS - NOT CUSTOMER DATA,DEMO-BEARING-CN,8482.10.50.16,CN,10000,true,none,false,90,false,false,false
+FICTIONAL TEST INPUTS - NOT CUSTOMER DATA,DEMO-BEARING-US-METAL,8482.10.50.16,CN,10000,true,none,false,90,true,false,false
+FICTIONAL TEST INPUTS - NOT CUSTOMER DATA,DEMO-MOTOR-JP,8501.31.40.00,JP,10000,true,none,false,,false,false,false
+FICTIONAL TEST INPUTS - MISSING FACT INTENTIONALLY,DEMO-BEARING-MISSING-WEIGHT,8482.10.50.16,CN,10000,true,none,false,,false,false,false

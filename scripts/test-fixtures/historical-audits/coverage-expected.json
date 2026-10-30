@@ -1,0 +1,1593 @@
+{
+  "label": "Fictional shipments; independent hand arithmetic using actual public source rates. Not legal validation.",
+  "rows": [
+    {
+      "entry": "SYNTHETIC-COVERAGE-001",
+      "cohort": "EU",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-002",
+      "cohort": "EU",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-003",
+      "cohort": "EU",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-004",
+      "cohort": "EU",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-005",
+      "cohort": "EU",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-006",
+      "cohort": "EU",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-007",
+      "cohort": "EU",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-008",
+      "cohort": "EU",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-009",
+      "cohort": "EU",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-010",
+      "cohort": "EU",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-011",
+      "cohort": "Japan",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-012",
+      "cohort": "Japan",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-013",
+      "cohort": "Japan",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-014",
+      "cohort": "Japan",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-015",
+      "cohort": "Japan",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-016",
+      "cohort": "Japan",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-017",
+      "cohort": "Japan",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-018",
+      "cohort": "Japan",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-019",
+      "cohort": "Japan",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-020",
+      "cohort": "Japan",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-021",
+      "cohort": "Korea before agreement",
+      "initialExpected": "190.00",
+      "initialDifference": "810.00",
+      "reviewedExpected": "190.00",
+      "reviewedDifference": "810.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-022",
+      "cohort": "Korea before agreement",
+      "initialExpected": "190.00",
+      "initialDifference": "810.00",
+      "reviewedExpected": "190.00",
+      "reviewedDifference": "810.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-023",
+      "cohort": "Korea before agreement",
+      "initialExpected": "190.00",
+      "initialDifference": "810.00",
+      "reviewedExpected": "190.00",
+      "reviewedDifference": "810.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-024",
+      "cohort": "Korea before agreement",
+      "initialExpected": "190.00",
+      "initialDifference": "810.00",
+      "reviewedExpected": "190.00",
+      "reviewedDifference": "810.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-025",
+      "cohort": "Korea before agreement",
+      "initialExpected": "190.00",
+      "initialDifference": "810.00",
+      "reviewedExpected": "190.00",
+      "reviewedDifference": "810.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-026",
+      "cohort": "Korea before agreement",
+      "initialExpected": "190.00",
+      "initialDifference": "810.00",
+      "reviewedExpected": "190.00",
+      "reviewedDifference": "810.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-027",
+      "cohort": "Korea before agreement",
+      "initialExpected": "190.00",
+      "initialDifference": "810.00",
+      "reviewedExpected": "190.00",
+      "reviewedDifference": "810.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-028",
+      "cohort": "Korea before agreement",
+      "initialExpected": "190.00",
+      "initialDifference": "810.00",
+      "reviewedExpected": "190.00",
+      "reviewedDifference": "810.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-029",
+      "cohort": "Korea before agreement",
+      "initialExpected": "190.00",
+      "initialDifference": "810.00",
+      "reviewedExpected": "190.00",
+      "reviewedDifference": "810.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-030",
+      "cohort": "Korea before agreement",
+      "initialExpected": "190.00",
+      "initialDifference": "810.00",
+      "reviewedExpected": "190.00",
+      "reviewedDifference": "810.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-031",
+      "cohort": "Korea combined",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-032",
+      "cohort": "Korea combined",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-033",
+      "cohort": "Korea combined",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-034",
+      "cohort": "Korea combined",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-035",
+      "cohort": "Korea combined",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-036",
+      "cohort": "Korea combined",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-037",
+      "cohort": "Korea combined",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-038",
+      "cohort": "Korea combined",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-039",
+      "cohort": "Korea combined",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-040",
+      "cohort": "Korea combined",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-041",
+      "cohort": "Switzerland original",
+      "initialExpected": "430.00",
+      "initialDifference": "570.00",
+      "reviewedExpected": "430.00",
+      "reviewedDifference": "570.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-042",
+      "cohort": "Switzerland original",
+      "initialExpected": "430.00",
+      "initialDifference": "570.00",
+      "reviewedExpected": "430.00",
+      "reviewedDifference": "570.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-043",
+      "cohort": "Switzerland original",
+      "initialExpected": "430.00",
+      "initialDifference": "570.00",
+      "reviewedExpected": "430.00",
+      "reviewedDifference": "570.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-044",
+      "cohort": "Switzerland original",
+      "initialExpected": "430.00",
+      "initialDifference": "570.00",
+      "reviewedExpected": "430.00",
+      "reviewedDifference": "570.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-045",
+      "cohort": "Switzerland original",
+      "initialExpected": "430.00",
+      "initialDifference": "570.00",
+      "reviewedExpected": "430.00",
+      "reviewedDifference": "570.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-046",
+      "cohort": "Switzerland original",
+      "initialExpected": "430.00",
+      "initialDifference": "570.00",
+      "reviewedExpected": "430.00",
+      "reviewedDifference": "570.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-047",
+      "cohort": "Switzerland original",
+      "initialExpected": "430.00",
+      "initialDifference": "570.00",
+      "reviewedExpected": "430.00",
+      "reviewedDifference": "570.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-048",
+      "cohort": "Switzerland original",
+      "initialExpected": "430.00",
+      "initialDifference": "570.00",
+      "reviewedExpected": "430.00",
+      "reviewedDifference": "570.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-049",
+      "cohort": "Switzerland original",
+      "initialExpected": "430.00",
+      "initialDifference": "570.00",
+      "reviewedExpected": "430.00",
+      "reviewedDifference": "570.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-050",
+      "cohort": "Switzerland original",
+      "initialExpected": "430.00",
+      "initialDifference": "570.00",
+      "reviewedExpected": "430.00",
+      "reviewedDifference": "570.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-051",
+      "cohort": "Switzerland combined",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-052",
+      "cohort": "Switzerland combined",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-053",
+      "cohort": "Switzerland combined",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-054",
+      "cohort": "Switzerland combined",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-055",
+      "cohort": "Switzerland combined",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-056",
+      "cohort": "Switzerland combined",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-057",
+      "cohort": "Switzerland combined",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-058",
+      "cohort": "Switzerland combined",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-059",
+      "cohort": "Switzerland combined",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-060",
+      "cohort": "Switzerland combined",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-061",
+      "cohort": "India additional",
+      "initialExpected": "540.00",
+      "initialDifference": "460.00",
+      "reviewedExpected": "540.00",
+      "reviewedDifference": "460.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-062",
+      "cohort": "India additional",
+      "initialExpected": "540.00",
+      "initialDifference": "460.00",
+      "reviewedExpected": "540.00",
+      "reviewedDifference": "460.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-063",
+      "cohort": "India additional",
+      "initialExpected": "540.00",
+      "initialDifference": "460.00",
+      "reviewedExpected": "540.00",
+      "reviewedDifference": "460.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-064",
+      "cohort": "India additional",
+      "initialExpected": "540.00",
+      "initialDifference": "460.00",
+      "reviewedExpected": "540.00",
+      "reviewedDifference": "460.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-065",
+      "cohort": "India additional",
+      "initialExpected": "540.00",
+      "initialDifference": "460.00",
+      "reviewedExpected": "540.00",
+      "reviewedDifference": "460.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-066",
+      "cohort": "India additional",
+      "initialExpected": "540.00",
+      "initialDifference": "460.00",
+      "reviewedExpected": "540.00",
+      "reviewedDifference": "460.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-067",
+      "cohort": "India additional",
+      "initialExpected": "540.00",
+      "initialDifference": "460.00",
+      "reviewedExpected": "540.00",
+      "reviewedDifference": "460.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-068",
+      "cohort": "India additional",
+      "initialExpected": "540.00",
+      "initialDifference": "460.00",
+      "reviewedExpected": "540.00",
+      "reviewedDifference": "460.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-069",
+      "cohort": "India additional",
+      "initialExpected": "540.00",
+      "initialDifference": "460.00",
+      "reviewedExpected": "540.00",
+      "reviewedDifference": "460.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-070",
+      "cohort": "India additional",
+      "initialExpected": "540.00",
+      "initialDifference": "460.00",
+      "reviewedExpected": "540.00",
+      "reviewedDifference": "460.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-071",
+      "cohort": "India termination",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-072",
+      "cohort": "India termination",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-073",
+      "cohort": "India termination",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-074",
+      "cohort": "India termination",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-075",
+      "cohort": "India termination",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-076",
+      "cohort": "India termination",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-077",
+      "cohort": "India termination",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-078",
+      "cohort": "India termination",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-079",
+      "cohort": "India termination",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-080",
+      "cohort": "India termination",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-081",
+      "cohort": "Metal ordinary",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "750.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-082",
+      "cohort": "Metal ordinary",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "750.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-083",
+      "cohort": "Metal ordinary",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "750.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-084",
+      "cohort": "Metal ordinary",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "750.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-085",
+      "cohort": "Metal ordinary",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "750.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-086",
+      "cohort": "Metal ordinary",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "750.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-087",
+      "cohort": "Metal ordinary",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "750.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-088",
+      "cohort": "Metal ordinary",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "750.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-089",
+      "cohort": "Metal ordinary",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "750.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-090",
+      "cohort": "Metal ordinary",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "750.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-091",
+      "cohort": "Metal UK",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.00",
+      "reviewedDifference": "750.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-092",
+      "cohort": "Metal UK",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.00",
+      "reviewedDifference": "750.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-093",
+      "cohort": "Metal UK",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.00",
+      "reviewedDifference": "750.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-094",
+      "cohort": "Metal UK",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.00",
+      "reviewedDifference": "750.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-095",
+      "cohort": "Metal UK",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.00",
+      "reviewedDifference": "750.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-096",
+      "cohort": "Metal UK",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.00",
+      "reviewedDifference": "750.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-097",
+      "cohort": "Metal UK",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.00",
+      "reviewedDifference": "750.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-098",
+      "cohort": "Metal UK",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.00",
+      "reviewedDifference": "750.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-099",
+      "cohort": "Metal UK",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.00",
+      "reviewedDifference": "750.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-100",
+      "cohort": "Metal UK",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.00",
+      "reviewedDifference": "750.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-101",
+      "cohort": "Metal US qualified",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "650.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-102",
+      "cohort": "Metal US qualified",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "650.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-103",
+      "cohort": "Metal US qualified",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "650.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-104",
+      "cohort": "Metal US qualified",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "650.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-105",
+      "cohort": "Metal US qualified",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "650.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-106",
+      "cohort": "Metal US qualified",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "650.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-107",
+      "cohort": "Metal US qualified",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "650.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-108",
+      "cohort": "Metal US qualified",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "650.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-109",
+      "cohort": "Metal US qualified",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "650.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-110",
+      "cohort": "Metal US qualified",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "650.00"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-111",
+      "cohort": "Company cash deposit",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "1032.80",
+      "reviewedDifference": "-32.80"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-112",
+      "cohort": "Company cash deposit",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "1032.80",
+      "reviewedDifference": "-32.80"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-113",
+      "cohort": "Company cash deposit",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "1032.80",
+      "reviewedDifference": "-32.80"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-114",
+      "cohort": "Company cash deposit",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "1032.80",
+      "reviewedDifference": "-32.80"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-115",
+      "cohort": "Company cash deposit",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "1032.80",
+      "reviewedDifference": "-32.80"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-116",
+      "cohort": "Company cash deposit",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "1032.80",
+      "reviewedDifference": "-32.80"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-117",
+      "cohort": "Company cash deposit",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "1032.80",
+      "reviewedDifference": "-32.80"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-118",
+      "cohort": "Company cash deposit",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "1032.80",
+      "reviewedDifference": "-32.80"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-119",
+      "cohort": "Company cash deposit",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "1032.80",
+      "reviewedDifference": "-32.80"
+    },
+    {
+      "entry": "SYNTHETIC-COVERAGE-120",
+      "cohort": "Company cash deposit",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "1032.80",
+      "reviewedDifference": "-32.80"
+    }
+  ],
+  "decisions": [
+    {
+      "row": 81,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false
+      }
+    },
+    {
+      "row": 82,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false
+      }
+    },
+    {
+      "row": 83,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false
+      }
+    },
+    {
+      "row": 84,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false
+      }
+    },
+    {
+      "row": 85,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false
+      }
+    },
+    {
+      "row": 86,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false
+      }
+    },
+    {
+      "row": 87,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false
+      }
+    },
+    {
+      "row": 88,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false
+      }
+    },
+    {
+      "row": 89,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false
+      }
+    },
+    {
+      "row": 90,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false
+      }
+    },
+    {
+      "row": 91,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "uk_metal_qualified": true
+      }
+    },
+    {
+      "row": 92,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "uk_metal_qualified": true
+      }
+    },
+    {
+      "row": 93,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "uk_metal_qualified": true
+      }
+    },
+    {
+      "row": 94,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "uk_metal_qualified": true
+      }
+    },
+    {
+      "row": 95,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "uk_metal_qualified": true
+      }
+    },
+    {
+      "row": 96,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "uk_metal_qualified": true
+      }
+    },
+    {
+      "row": 97,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "uk_metal_qualified": true
+      }
+    },
+    {
+      "row": 98,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "uk_metal_qualified": true
+      }
+    },
+    {
+      "row": 99,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "uk_metal_qualified": true
+      }
+    },
+    {
+      "row": 100,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "uk_metal_qualified": true
+      }
+    },
+    {
+      "row": 101,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": true
+      }
+    },
+    {
+      "row": 102,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": true
+      }
+    },
+    {
+      "row": 103,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": true
+      }
+    },
+    {
+      "row": 104,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": true
+      }
+    },
+    {
+      "row": 105,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": true
+      }
+    },
+    {
+      "row": 106,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": true
+      }
+    },
+    {
+      "row": 107,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": true
+      }
+    },
+    {
+      "row": 108,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": true
+      }
+    },
+    {
+      "row": 109,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": true
+      }
+    },
+    {
+      "row": 110,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": true
+      }
+    },
+    {
+      "row": 111,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      }
+    },
+    {
+      "row": 112,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      }
+    },
+    {
+      "row": 113,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      }
+    },
+    {
+      "row": 114,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      }
+    },
+    {
+      "row": 115,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      }
+    },
+    {
+      "row": 116,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      }
+    },
+    {
+      "row": 117,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      }
+    },
+    {
+      "row": 118,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      }
+    },
+    {
+      "row": 119,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      }
+    },
+    {
+      "row": 120,
+      "kind": "confirm_facts",
+      "note": "FICTIONAL qualification for isolated functionality testing only. Not a real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COVERAGE-EVIDENCE"
+      ],
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-09-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      }
+    }
+  ],
+  "summary": {
+    "lines": 120,
+    "calculated": 80,
+    "unresolved": 40,
+    "discrepancies": 80,
+    "overpayment": "59500.00",
+    "underpayment": "0.00"
+  },
+  "reviewedSummary": {
+    "lines": 120,
+    "calculated": 120,
+    "unresolved": 0,
+    "discrepancies": 120,
+    "overpayment": "76000.00",
+    "underpayment": "328.00"
+  }
+}

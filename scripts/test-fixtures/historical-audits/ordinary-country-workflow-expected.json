@@ -1,0 +1,1010 @@
+{
+  "label": "100 fictional declarations; independent 4% of USD 1000 arithmetic and public-law NTR dates. Source originals tested separately. No origin inference, legal approval or refund entitlement. Pre-NTR Column 2 calculations remain deliberately unresolved.",
+  "engineVersion": "historical-audit-v37",
+  "rows": [
+    {
+      "row": 1,
+      "origin": "CA",
+      "date": "2000-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 2,
+      "origin": "MX",
+      "date": "2001-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 3,
+      "origin": "CH",
+      "date": "2002-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 4,
+      "origin": "LI",
+      "date": "2003-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 5,
+      "origin": "AT",
+      "date": "2004-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 6,
+      "origin": "BE",
+      "date": "2005-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 7,
+      "origin": "BG",
+      "date": "2006-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 8,
+      "origin": "HR",
+      "date": "2007-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 9,
+      "origin": "CY",
+      "date": "2008-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 10,
+      "origin": "CZ",
+      "date": "2009-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 11,
+      "origin": "DK",
+      "date": "2010-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 12,
+      "origin": "EE",
+      "date": "2011-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 13,
+      "origin": "FI",
+      "date": "2012-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 14,
+      "origin": "GR",
+      "date": "2013-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 15,
+      "origin": "HU",
+      "date": "2014-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 16,
+      "origin": "IE",
+      "date": "2015-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 17,
+      "origin": "LV",
+      "date": "2016-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 18,
+      "origin": "LT",
+      "date": "2017-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 19,
+      "origin": "LU",
+      "date": "2000-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 20,
+      "origin": "MT",
+      "date": "2001-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 21,
+      "origin": "NL",
+      "date": "2002-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 22,
+      "origin": "PL",
+      "date": "2003-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 23,
+      "origin": "PT",
+      "date": "2004-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 24,
+      "origin": "RO",
+      "date": "2005-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 25,
+      "origin": "SK",
+      "date": "2006-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 26,
+      "origin": "SI",
+      "date": "2007-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 27,
+      "origin": "ES",
+      "date": "2008-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 28,
+      "origin": "SE",
+      "date": "2009-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 29,
+      "origin": "CN",
+      "date": "2010-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 30,
+      "origin": "VN",
+      "date": "2011-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 31,
+      "origin": "JP",
+      "date": "2012-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 32,
+      "origin": "TW",
+      "date": "2013-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 33,
+      "origin": "KR",
+      "date": "2014-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 34,
+      "origin": "DE",
+      "date": "2015-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 35,
+      "origin": "FR",
+      "date": "2016-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 36,
+      "origin": "IT",
+      "date": "2017-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 37,
+      "origin": "GB",
+      "date": "2000-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 38,
+      "origin": "TH",
+      "date": "2001-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 39,
+      "origin": "MY",
+      "date": "2002-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 40,
+      "origin": "IN",
+      "date": "2003-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 41,
+      "origin": "ID",
+      "date": "2004-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 42,
+      "origin": "SG",
+      "date": "2005-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 43,
+      "origin": "AU",
+      "date": "2006-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 44,
+      "origin": "NZ",
+      "date": "2007-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 45,
+      "origin": "AF",
+      "date": "2008-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 46,
+      "origin": "LA",
+      "date": "2009-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 47,
+      "origin": "RS",
+      "date": "2010-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 48,
+      "origin": "ME",
+      "date": "2011-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 49,
+      "origin": "CA",
+      "date": "2012-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 50,
+      "origin": "MX",
+      "date": "2013-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 51,
+      "origin": "CH",
+      "date": "2014-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 52,
+      "origin": "LI",
+      "date": "2015-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 53,
+      "origin": "AT",
+      "date": "2016-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 54,
+      "origin": "BE",
+      "date": "2017-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 55,
+      "origin": "BG",
+      "date": "2000-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 56,
+      "origin": "HR",
+      "date": "2001-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 57,
+      "origin": "CY",
+      "date": "2002-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 58,
+      "origin": "CZ",
+      "date": "2003-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 59,
+      "origin": "DK",
+      "date": "2004-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 60,
+      "origin": "EE",
+      "date": "2005-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 61,
+      "origin": "FI",
+      "date": "2006-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 62,
+      "origin": "GR",
+      "date": "2007-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 63,
+      "origin": "HU",
+      "date": "2008-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 64,
+      "origin": "IE",
+      "date": "2009-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 65,
+      "origin": "LV",
+      "date": "2010-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 66,
+      "origin": "LT",
+      "date": "2011-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 67,
+      "origin": "LU",
+      "date": "2012-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 68,
+      "origin": "MT",
+      "date": "2013-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 69,
+      "origin": "NL",
+      "date": "2014-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 70,
+      "origin": "PL",
+      "date": "2015-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 71,
+      "origin": "PT",
+      "date": "2016-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 72,
+      "origin": "RO",
+      "date": "2017-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 73,
+      "origin": "SK",
+      "date": "2000-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 74,
+      "origin": "SI",
+      "date": "2001-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 75,
+      "origin": "ES",
+      "date": "2002-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 76,
+      "origin": "SE",
+      "date": "2003-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 77,
+      "origin": "CN",
+      "date": "2004-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 78,
+      "origin": "VN",
+      "date": "2005-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 79,
+      "origin": "JP",
+      "date": "2006-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 80,
+      "origin": "TW",
+      "date": "2007-06-15",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00"
+    },
+    {
+      "row": 81,
+      "origin": "VN",
+      "date": "2001-12-09",
+      "initialExpected": "350.00",
+      "initialDifference": "-310.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-310.00",
+      "countryChange": {
+        "effectiveOn": "2001-12-10",
+        "documentNumber": "01-30961",
+        "publicationDate": "2001-12-17",
+        "column": "column2"
+      }
+    },
+    {
+      "row": 82,
+      "origin": "VN",
+      "date": "2001-12-10",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00",
+      "countryChange": {
+        "effectiveOn": "2001-12-10",
+        "documentNumber": "01-30961",
+        "publicationDate": "2001-12-17",
+        "column": "column1"
+      }
+    },
+    {
+      "row": 83,
+      "origin": "AF",
+      "date": "2002-06-05",
+      "initialExpected": "350.00",
+      "initialDifference": "-315.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-315.00",
+      "countryChange": {
+        "effectiveOn": "2002-06-06",
+        "documentNumber": "02-11487",
+        "publicationDate": "2002-05-07",
+        "column": "column2"
+      }
+    },
+    {
+      "row": 84,
+      "origin": "AF",
+      "date": "2002-06-06",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00",
+      "countryChange": {
+        "effectiveOn": "2002-06-06",
+        "documentNumber": "02-11487",
+        "publicationDate": "2002-05-07",
+        "column": "column1"
+      }
+    },
+    {
+      "row": 85,
+      "origin": "RS",
+      "date": "2003-12-03",
+      "initialExpected": "350.00",
+      "initialDifference": "-305.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-305.00",
+      "countryChange": {
+        "effectiveOn": "2003-12-04",
+        "documentNumber": "03-28438",
+        "publicationDate": "2003-11-13",
+        "column": "column2"
+      }
+    },
+    {
+      "row": 86,
+      "origin": "RS",
+      "date": "2003-12-04",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00",
+      "countryChange": {
+        "effectiveOn": "2003-12-04",
+        "documentNumber": "03-28438",
+        "publicationDate": "2003-11-13",
+        "column": "column1"
+      }
+    },
+    {
+      "row": 87,
+      "origin": "ME",
+      "date": "2003-12-03",
+      "initialExpected": "350.00",
+      "initialDifference": "-310.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-310.00",
+      "countryChange": {
+        "effectiveOn": "2003-12-04",
+        "documentNumber": "03-28438",
+        "publicationDate": "2003-11-13",
+        "column": "column2"
+      }
+    },
+    {
+      "row": 88,
+      "origin": "ME",
+      "date": "2003-12-04",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00",
+      "countryChange": {
+        "effectiveOn": "2003-12-04",
+        "documentNumber": "03-28438",
+        "publicationDate": "2003-11-13",
+        "column": "column1"
+      }
+    },
+    {
+      "row": 89,
+      "origin": "LA",
+      "date": "2005-02-03",
+      "initialExpected": "350.00",
+      "initialDifference": "-315.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-315.00",
+      "countryChange": {
+        "effectiveOn": "2005-02-04",
+        "documentNumber": "05-2723",
+        "publicationDate": "2005-02-11",
+        "column": "column2"
+      }
+    },
+    {
+      "row": 90,
+      "origin": "LA",
+      "date": "2005-02-04",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00",
+      "countryChange": {
+        "effectiveOn": "2005-02-04",
+        "documentNumber": "05-2723",
+        "publicationDate": "2005-02-11",
+        "column": "column1"
+      }
+    },
+    {
+      "row": 91,
+      "origin": "VN",
+      "date": "2001-12-17",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00",
+      "countryChange": {
+        "effectiveOn": "2001-12-10",
+        "documentNumber": "01-30961",
+        "publicationDate": "2001-12-17",
+        "column": "column1"
+      }
+    },
+    {
+      "row": 92,
+      "origin": "LA",
+      "date": "2005-02-11",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00",
+      "countryChange": {
+        "effectiveOn": "2005-02-04",
+        "documentNumber": "05-2723",
+        "publicationDate": "2005-02-11",
+        "column": "column1"
+      }
+    },
+    {
+      "row": 93,
+      "origin": "VN",
+      "date": "2000-06-15",
+      "initialExpected": "350.00",
+      "initialDifference": "-300.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-300.00"
+    },
+    {
+      "row": 94,
+      "origin": "CU",
+      "date": "2010-06-15",
+      "initialExpected": "350.00",
+      "initialDifference": "-300.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-300.00"
+    },
+    {
+      "row": 95,
+      "origin": "KP",
+      "date": "2017-06-15",
+      "initialExpected": "350.00",
+      "initialDifference": "-300.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-300.00"
+    },
+    {
+      "row": 96,
+      "origin": "US",
+      "date": "2014-06-15",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 97,
+      "origin": "PR",
+      "date": "2014-06-15",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 98,
+      "origin": "CA",
+      "date": "2010-06-15",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 99,
+      "origin": "FR",
+      "date": "2014-06-15",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "row": 100,
+      "origin": "MX",
+      "date": "2014-06-15",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    }
+  ],
+  "summary": {
+    "lines": 100,
+    "calculated": 95,
+    "unresolved": 5,
+    "discrepancies": 67,
+    "overpayment": "150.00",
+    "underpayment": "2600.00"
+  },
+  "reviewedSummary": {
+    "lines": 100,
+    "calculated": 96,
+    "unresolved": 4,
+    "discrepancies": 68,
+    "overpayment": "160.00",
+    "underpayment": "2600.00"
+  },
+  "decisions": [
+    {
+      "row": 99,
+      "kind": "confirm_facts",
+      "origin": "DE",
+      "validFrom": "2014-06-15",
+      "validBefore": "2014-06-16",
+      "facts": {
+        "origin_verified": true
+      },
+      "evidence": [
+        "SYNTHETIC-COUNTRY-99-ORIGIN"
+      ],
+      "note": "FICTIONAL acceptance only: supplied origin evidence establishes DE for this entry date. No supplier-location inference or global legal approval."
+    }
+  ]
+}

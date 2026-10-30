@@ -1,0 +1,23 @@
+import test from'node:test';import assert from'node:assert/strict';import{readFileSync}from'node:fs';import{historicalMetalLists,historicalMetals,resolveHistoricalMetals,type HistoricalMetals}from'../app/api/tariff/references/metal-history';import type{ReferenceRate}from'../app/api/tariff/references/store';
+const notes=readFileSync('scripts/test-fixtures/historical-audits/metal-note16-2026.txt','utf8');
+// Published text excerpt tests structural extraction. Fictional rates below test
+// branch mechanics only, never official rate accuracy or source provenance.
+const rows=Array.from({length:26},(_,i)=>({hts:'990382'+String(i+1).padStart(2,'0'),general:[1,3,8,11,13,21,24,26].includes(i+1)?'No change':[7,10,23,25].includes(i+1)?(i+1===7||i+1===23?'10%':'15%'):'The duty provided in the applicable subheading + '+([2,14].includes(i+1)?'50%':i+1===4?'25%':'10%')} as ReferenceRate));
+const input={hts:'7317005503',from:'2026-08-01',before:'2026-09-01',noteId:'SYNTHETIC-NOTE',notes,rows,guidance:[{id:'SYNTHETIC-CSMS',number:'68855869',text:'June 8, 2026 9903.82.20 85 percent'}]};
+function scope(hts=input.hts){const out=historicalMetals({...input,hts});assert(out);return out;}
+const common={hts:input.hts,date:'2026-08-15',origin:'CN',baseRate:'Free',baseInput:{value:'1000.00'},facts:{metal_special_claim:false,us_metal_qualified:false}};
+test('all eleven dated metal lists extract completely; changed operative text and malformed rows fail closed',()=>{
+ const lists=historicalMetalLists(notes);assert(lists);assert.deepEqual(Object.values(lists).map(c=>c.length),[9,17,39,139,76,101,242,4,18,69,28]);assert(lists.iv.includes('73170055'));assert(!Object.values(lists).flat().some(c=>'8501314000'.startsWith(c)));assert.equal(historicalMetalLists(notes.replace('at least 15 percent','at least 10 percent')),null);assert.equal(historicalMetalLists(notes.replace('7606 7605','7606 nonsense 7605')),null);assert.equal(historicalMetals({...input,rows:rows.slice(1)}),null);assert.equal(historicalMetals({...input,from:'2026-05-01'}),null);
+});
+test('metal duties select full-value, evidence and country-specific qualification branches',()=>{
+ const s=scope();assert.deepEqual(s.lists,['iv']);assert.equal(resolveHistoricalMetals(s,common).measures[0]?.id,'9903.82.02');assert.equal(resolveHistoricalMetals(s,{...common,facts:{}}).issues.length>0,true);assert.equal(resolveHistoricalMetals(s,{...common,facts:{...common.facts,us_metal_qualified:true}}).measures[0]?.id,'9903.82.06');assert.equal(resolveHistoricalMetals(s,{...common,origin:'GB'}).measures.length,0);assert.equal(resolveHistoricalMetals(s,{...common,origin:'GB',facts:{...common.facts,uk_metal_qualified:true}}).measures[0]?.id,'9903.82.04');assert(resolveHistoricalMetals(s,{...common,origin:'GB',facts:{...common.facts,uk_metal_qualified:true,us_metal_qualified:true}}).issues.length);
+});
+test('weight threshold needs evidence and cumulative weight; subthreshold articles retain overlapping duties',()=>{
+ const hts='3701300000',s=scope(hts);assert(s.lists.length);const base={...common,hts,shipment:{metalWeightPercent:'14.999'},facts:{...common.facts,metal_weight_verified:true,russian_aluminum_clear:true}};const r=resolveHistoricalMetals(s,base);assert.equal(r.measures[0]?.id,'9903.82.03');assert.equal(r.exemptsOverlaps,false);assert(resolveHistoricalMetals(s,{...base,facts:common.facts}).issues.length);const above=resolveHistoricalMetals(s,{...base,shipment:{metalWeightPercent:'15'},facts:{...base.facts,motorcycle_use:false,equipment_use:false}});assert(above.exemptsOverlaps);
+});
+test('combined rates use exact compound equivalents and never add the full threshold to base',()=>{
+ const hts='8504340000',s=scope(hts);assert(s.lists.includes('ix'));const facts={...common.facts,russian_aluminum_clear:true,metal_weight_verified:true},row={...common,hts,baseRate:'1 cents/kg + 4%',baseInput:{value:'1000.00',quantity:'10',unit:'kg'},shipment:{metalWeightPercent:'20'},facts};const result=resolveHistoricalMetals(s,row);assert.equal(result.measures[0]?.id,'9903.82.10');assert.equal(result.replacesBase,true);assert.equal(result.measures[0]?.rate,'15%');assert(resolveHistoricalMetals(s,{...row,baseInput:{value:'1000.00'}}).issues.length);assert.equal(resolveHistoricalMetals(s,{...row,baseRate:'20%'}).measures[0]?.id,'9903.82.11');
+});
+test('scope proof and out-of-date/code replays cannot supply a metal calculation',()=>{
+ const s=scope();assert(resolveHistoricalMetals(s,{...common,hts:'8501314000'}).issues.length);assert(resolveHistoricalMetals(s,{...common,date:'2026-09-01'}).issues.length);const empty={...s,lists:[]} as HistoricalMetals;assert.deepEqual(resolveHistoricalMetals(empty,common).measures,[]);
+});

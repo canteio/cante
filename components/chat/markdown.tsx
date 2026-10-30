@@ -14,6 +14,11 @@ export function Markdown({ children }: { children: string }) {
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
+          // Model output is untrusted. An img URL can carry private data and
+          // browsers load it without a click; retain only escaped label text.
+          img: ({ alt }) => (
+            <span>{alt ? `[Image omitted: ${alt}]` : "[Image omitted]"}</span>
+          ),
           // Model-supplied links go to the open web — never let one navigate
           // the app frame, and don't leak the referrer.
           a: ({ href, children }) => (

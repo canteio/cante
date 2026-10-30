@@ -1,0 +1,330 @@
+{
+  "label": "SYNTHETIC 13-line focused workflow; published rules, fictional qualifications, not legal validation.",
+  "rows": [
+    {
+      "entry": "SYNTHETIC-METAL-ALLOCATION-1",
+      "cohort": "Dated charged-metal allocation",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "670.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-METAL-ALLOCATION-2",
+      "cohort": "Dated charged-metal allocation",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "420.00",
+      "reviewedDifference": "-50.00"
+    },
+    {
+      "entry": "SYNTHETIC-METAL-ALLOCATION-3",
+      "cohort": "Dated charged-metal allocation",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "220.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-METAL-ALLOCATION-4",
+      "cohort": "Dated charged-metal allocation",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "420.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-METAL-ALLOCATION-5",
+      "cohort": "Dated charged-metal allocation",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "420.00",
+      "reviewedDifference": "-50.00"
+    },
+    {
+      "entry": "SYNTHETIC-METAL-ALLOCATION-6",
+      "cohort": "Dated charged-metal allocation",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "719.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-METAL-ALLOCATION-7",
+      "cohort": "Dated charged-metal allocation",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "2299.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-METAL-ALLOCATION-8",
+      "cohort": "Dated charged-metal allocation",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "870.00",
+      "reviewedDifference": "-50.00"
+    },
+    {
+      "entry": "SYNTHETIC-METAL-ALLOCATION-9",
+      "cohort": "Dated charged-metal allocation",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "870.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-METAL-ALLOCATION-10",
+      "cohort": "Dated charged-metal allocation",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "670.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-METAL-ALLOCATION-11",
+      "cohort": "Dated charged-metal allocation",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "650.00",
+      "reviewedDifference": "-50.00"
+    },
+    {
+      "entry": "SYNTHETIC-METAL-ALLOCATION-12",
+      "cohort": "Dated charged-metal allocation",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "670.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-METAL-ALLOCATION-13",
+      "cohort": "Dated charged-metal allocation",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "670.00",
+      "reviewedDifference": "100.00"
+    }
+  ],
+  "decisions": [
+    {
+      "row": 1,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC qualification and non-overlapping content evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-METAL-ALLOCATION-EVIDENCE"
+      ],
+      "validFrom": "2026-03-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "steel_derivative_covered": true
+      }
+    },
+    {
+      "row": 2,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC qualification and non-overlapping content evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-METAL-ALLOCATION-EVIDENCE"
+      ],
+      "validFrom": "2026-03-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "steel_derivative_covered": true
+      }
+    },
+    {
+      "row": 3,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC qualification and non-overlapping content evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-METAL-ALLOCATION-EVIDENCE"
+      ],
+      "validFrom": "2026-03-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "steel_derivative_covered": true
+      }
+    },
+    {
+      "row": 4,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC qualification and non-overlapping content evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-METAL-ALLOCATION-EVIDENCE"
+      ],
+      "validFrom": "2026-03-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "steel_derivative_covered": true
+      }
+    },
+    {
+      "row": 5,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC qualification and non-overlapping content evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-METAL-ALLOCATION-EVIDENCE"
+      ],
+      "validFrom": "2026-03-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "steel_derivative_covered": true
+      }
+    },
+    {
+      "row": 6,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC qualification and non-overlapping content evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-METAL-ALLOCATION-EVIDENCE"
+      ],
+      "validFrom": "2026-03-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "aluminum_derivative_covered": true,
+        "russian_aluminum_clear": true,
+        "russian_aluminum_subject": false
+      }
+    },
+    {
+      "row": 7,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC qualification and non-overlapping content evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-METAL-ALLOCATION-EVIDENCE"
+      ],
+      "validFrom": "2026-03-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "aluminum_derivative_covered": true,
+        "russian_aluminum_clear": false,
+        "russian_aluminum_subject": true
+      }
+    },
+    {
+      "row": 8,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC qualification and non-overlapping content evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-METAL-ALLOCATION-EVIDENCE"
+      ],
+      "validFrom": "2025-06-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "steel_derivative_covered": true
+      }
+    },
+    {
+      "row": 9,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC qualification and non-overlapping content evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-METAL-ALLOCATION-EVIDENCE"
+      ],
+      "validFrom": "2025-06-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "steel_derivative_covered": true
+      }
+    },
+    {
+      "row": 10,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC qualification and non-overlapping content evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-METAL-ALLOCATION-EVIDENCE"
+      ],
+      "validFrom": "2026-03-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "steel_derivative_covered": true
+      }
+    },
+    {
+      "row": 11,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC qualification and non-overlapping content evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-METAL-ALLOCATION-EVIDENCE"
+      ],
+      "validFrom": "2026-02-24",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "steel_derivative_covered": true
+      }
+    },
+    {
+      "row": 12,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC qualification and non-overlapping content evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-METAL-ALLOCATION-EVIDENCE"
+      ],
+      "validFrom": "2026-02-24",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "steel_derivative_covered": true
+      }
+    },
+    {
+      "row": 13,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC qualification and non-overlapping content evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-METAL-ALLOCATION-EVIDENCE"
+      ],
+      "validFrom": "2026-03-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "steel_derivative_covered": true
+      },
+      "shipment": {
+        "aluminumValue": "100.00",
+        "copperValue": "50.00"
+      }
+    }
+  ],
+  "summary": {
+    "lines": 13,
+    "calculated": 0,
+    "unresolved": 13,
+    "discrepancies": 0,
+    "overpayment": "0.00",
+    "underpayment": "0.00"
+  },
+  "reviewedSummary": {
+    "lines": 13,
+    "calculated": 13,
+    "unresolved": 0,
+    "discrepancies": 9,
+    "overpayment": "500.00",
+    "underpayment": "200.00"
+  }
+}

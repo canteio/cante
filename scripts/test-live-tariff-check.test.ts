@@ -23,6 +23,11 @@ test("independent decimal verifier catches wrong engine answers and half-cent ro
   assert.equal(verifyBaseMath("Free",10000,0).status,"passed");
   assert.equal(verifyBaseMath("2.5¢/kg + 8.5%",10000,850).status,"not_checked");
   assert.equal(verifyBaseMath("See 9903.00.00",10000,0).status,"not_checked");
+  assert.equal(verifyBaseMath("15%",1000.50,150.08).status,"passed");
+  assert.equal(verifyBaseMath("15%",1000.50,150.07).status,"failed");
+  assert.equal(verifyBaseMath("15%",1000.50,150.08000000000004).status,"failed");
+  for(const value of [NaN,Infinity,-1,0.001])assert.equal(verifyBaseMath("5%",value,0).status,"not_checked");
+  assert.equal(verifyBaseMath("100%",9007199254740991,9007199254740991).status,"not_checked");
 });
 test("fresh rate lookup bypasses cached values and never falls back on fetch failure", async () => {
   const original = globalThis.fetch; let raw="4.4%", fail=false, calls=0; const modes: (RequestCache | undefined)[]=[];
@@ -50,6 +55,7 @@ function route(auth=true, fail=false, archiveFailure: "start"|"finish"|null=null
     if(id==="@/lib/supabase/server")return {getAuthenticatedWorkspace:async()=>auth?{customerId:"fixture",role}:null,createRequestClient:async()=>({})};
     if(id==="@/config/tariff-remedy-contract.json")return {version:1};
     if(id==="@/lib/tariff/business-impact-store")return {beginLiveCheckArchive:async()=>{if(archiveFailure==="start")throw Error();return "archive-fixture";},finishLiveCheckArchive:async()=>{if(archiveFailure==="finish")throw Error("The calculation could not be archived.");},failLiveCheckArchive:async()=>{}};
+    if(id==="./execute")return {executeArchivedCheck:async(_db:unknown,_customer:unknown,_id:unknown,_p:unknown,_signal:unknown,progress:Function)=>{progress("real stage boundary fixture");if(fail)throw Error("private internal failure");if(archiveFailure==="finish")throw Error("The calculation could not be archived.");return {totalAnnualDuty:null,unresolvedProducts:1};}};
     if(id==="./check")return {LIVE_MAX_BYTES:1000000,parseLiveProducts,runLiveCheck:async(_p:unknown,_signal:AbortSignal,progress:(m:string)=>void)=>{progress("real stage boundary fixture");if(fail)throw Error("private internal failure");return {totalAnnualDuty:null,unresolvedProducts:1};}};
     throw Error(`Unexpected dependency ${id}`);
   },exports);return exports.POST!;
@@ -69,7 +75,7 @@ test("the supplied 600-line imports.csv groups into 50 products without becoming
   const csv=readFileSync("public/examples/equipment-demo/imports.csv","utf8"); const products=parseLiveProducts(csv);
   assert.equal(products.length,50); assert.equal(products.reduce((n,p)=>n+p.history!.entries.length,0),600);
   const catalogue=parseLiveProducts(readFileSync("public/examples/equipment-demo/products.csv","utf8"));
-  for(const p of products) { const original=catalogue.find(q=>q.sku===p.sku)!; assert.equal(p.customsValue,original.customsValue); assert.equal(p.history!.entries.length,12); assert.equal(p.history!.startDate,"2025-10-15");assert.equal(p.history!.endDate,"2026-09-15");assert.equal(p.quantity,null); }
+  for(const p of products) { const original=catalogue.find(q=>q.sku===p.sku)!; assert.equal(p.customsValue,original.customsValue); assert.equal(p.history!.entries.length,12); assert.equal(p.history!.startDate,"2025-10-15");assert.equal(p.history!.endDate,"2026-09-15");assert.equal(p.quantity,Number(p.history!.entries.reduce((n,r)=>n+Number(r.quantity),0))); }
   assert.equal(products.find(p=>p.sku==="DEMO-MOT-001")!.history!.paidDuty,30360);
 });
 test("import history rejects duplicate entries, invalid dates and incomplete ledger headers",()=>{

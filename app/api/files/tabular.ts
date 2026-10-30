@@ -1,6 +1,6 @@
 import { parseCsv } from "@/lib/catalogue/csv";
 import type { ExtractedFile, ExtractedTable } from "@/lib/documents/extract-file";
-export type ValueBasis="annual"|"units"|"historical";
+export type ValueBasis="annual"|"units"|"historical"|"catalogue";
 export type ColumnMapping=Record<string,number>;
 export type TablePreview={index:number;headerRow:number;label:string;headers:string[];sampleRows:string[][];totalRows:number;mapping:ColumnMapping;basis:ValueBasis;requiresReview:boolean;issues:string[];ready:boolean};
 export const FIELD_LABELS:Record<string,string>={sku:"SKU / part number",hts_code:"10-digit HTS",origin_country:"Country of origin",annual_customs_value_usd:"Annual customs value · USD",unit_customs_value_usd:"Customs value per unit · USD",annual_import_units:"Annual units imported",entry_id:"Customs entry ID",line_number:"Entry line number",entry_date:"Entry date · YYYY-MM-DD",customs_value_usd:"Entry customs value · USD"};
@@ -8,7 +8,7 @@ const aliases:Record<string,string[]>={name:["name","product_name"],sku:["sku","
 for(const fact of ["standard_commercial","metal_weight_percent","us_metal_qualification","uk_metal_qualification","special_232_claim","equipment_use","motorcycle_use","other_232_heading"])aliases[fact]=[fact];
 const normalized=(text:string)=>text.trim().toLowerCase().replace(/[–—-]/g,"_").replace(/\s+/g,"_");
 const cell=(v:string)=>'"'+v.replaceAll('"','""')+'"';
-export function requiredFields(basis:ValueBasis){return ["sku","hts_code","origin_country",...(basis==="annual"?["annual_customs_value_usd"]:basis==="units"?["unit_customs_value_usd","annual_import_units"]:["entry_id","line_number","entry_date","customs_value_usd"])];}
+export function requiredFields(basis:ValueBasis){return basis==="catalogue" ? ["sku"] : ["sku","hts_code","origin_country",...(basis==="annual"?["annual_customs_value_usd"]:basis==="units"?["unit_customs_value_usd","annual_import_units"]:["entry_id","line_number","entry_date","customs_value_usd"])];}
 function inferred(headers:string[]){const mapping:ColumnMapping={};const issues:string[]=[];for(const [field,names] of Object.entries(aliases)){const matches=headers.map((h,i)=>names.includes(normalized(h))?i:-1).filter(i=>i>=0);if(matches.length===1)mapping[field]=matches[0];if(matches.length>1)issues.push(`Choose which ${FIELD_LABELS[field]??field} column to use.`);}return {mapping,issues};}
 function textTables(text:string,pdf:boolean):ExtractedTable[]{
  const lines=text.split(/\r?\n/).filter(line=>line.trim());
@@ -27,7 +27,8 @@ export function tablePreviews(tables:ExtractedTable[]):TablePreview[]{
   const headerIndex=table.rows.slice(0,20).findIndex(row=>{const {mapping}=inferred(row);return Object.keys(mapping).length>=2&&(mapping.hts_code!==undefined||mapping.sku!==undefined);});
   const offset=headerIndex<0?0:headerIndex;const headers=table.rows[offset]??[];const rows=table.rows.slice(offset+1);const {mapping,issues}=inferred(headers);
   if(mapping.annual_customs_value_usd!==undefined&&(mapping.customs_value_usd!==undefined||mapping.unit_customs_value_usd!==undefined))issues.push("Choose the value basis: this table contains more than one customs-value column.");
-  const basis:ValueBasis=mapping.entry_id!==undefined||mapping.customs_value_usd!==undefined?"historical":mapping.unit_customs_value_usd!==undefined&&mapping.annual_import_units!==undefined?"units":"annual";
+  const basis:ValueBasis=mapping.entry_id!==undefined||mapping.customs_value_usd!==undefined?"historical":mapping.unit_customs_value_usd!==undefined&&mapping.annual_import_units!==undefined?"units":mapping.annual_customs_value_usd!==undefined?"annual":"catalogue";
+  if(basis==="catalogue"&&headers.some(h=>/^(price|unit_price|unit_value|value|cost|currency)$/i.test(normalized(h))))issues.push("Reference prices are not customs values. Confirm products-only intake or select explicit USD customs-value columns.");
   const missing=requiredFields(basis).filter(field=>mapping[field]===undefined);
   const widthIssue=rows.some(row=>row.length>headers.length);const allIssues=[...table.issues,...issues,...missing.map(f=>`Select ${FIELD_LABELS[f]}.`),...(widthIssue?["Some rows contain more columns than the header. Check the original layout."]:[])];
   const sampleRows:string[][]=[];
@@ -40,7 +41,7 @@ export function canonicalTableCsv(tables:ExtractedTable[],index:number,selected?
  if(!selected&&!preview.ready)throw Error("Review and confirm the detected columns before running a tariff check.");
  if(selected&&!confirmed)throw Error("Confirm your column choices before checking.");
  const mapping=(selected??preview.mapping) as ColumnMapping;const mode=(basis??preview.basis) as ValueBasis;
- if(!["annual","units","historical"].includes(mode)||typeof mapping!=="object"||mapping===null||Array.isArray(mapping))throw Error("Invalid column mapping.");
+ if(!["annual","units","historical","catalogue"].includes(mode)||typeof mapping!=="object"||mapping===null||Array.isArray(mapping))throw Error("Invalid column mapping.");
  const keys=Object.keys(mapping);const used=new Set<number>();
  for(const key of keys){const value=mapping[key];if(!Object.hasOwn(aliases,key)||!Number.isInteger(value)||value<0||value>=preview.headers.length||used.has(value))throw Error("Choose a different existing column for each field.");used.add(value);}
  for(const required of requiredFields(mode))if(mapping[required]===undefined)throw Error(`Select ${FIELD_LABELS[required]}.`);
@@ -57,5 +58,5 @@ export function canonicalTableCsv(tables:ExtractedTable[],index:number,selected?
   }
   return cell(value);
  }).join(","));
- return {csv:[allowed.join(","),...normalizedRows].join("\n"),preview,mapping,basis:mode};
+ return {csv:[allowed.join(",")+(mode==="catalogue"?",input_basis":""),...normalizedRows.map(row=>row+(mode==="catalogue"?",catalogue":""))].join("\n"),preview,mapping,basis:mode};
 }

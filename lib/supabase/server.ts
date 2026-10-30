@@ -9,7 +9,8 @@ import { requireSupabaseEnv } from "@/lib/auth/config";
  * "called outside a request scope" the instant it's touched outside a real
  * request. Falling back to the trusted service-role client (no cookies,
  * bypasses RLS) keeps every queries.ts function usable from both contexts
- * without duplicating each one. This is safe here specifically because
+ * without duplicating each one. Hosted requests never use this fallback.
+ * This local/CLI compatibility path is bounded because
  * nothing in queries.ts trusts a caller-supplied customerId as an identity
  * claim — CLI callers already pass an explicit customerId resolved from
  * CANTE_CUSTOMER_ID or db:seed, never from untrusted request input, and the
@@ -43,7 +44,7 @@ export async function createClient() {
     return await createRequestClient();
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    if (!message.includes("outside a request scope")) throw error;
+    if (process.env.VERCEL || !message.includes("outside a request scope")) throw error;
     const { createServiceClient } = await import("@/lib/supabase/service");
     return createServiceClient();
   }
@@ -73,7 +74,7 @@ export async function getAuthenticatedWorkspace(
     .eq("user_id", userId);
   if (requestedCustomerId) query = query.eq("customer_id", requestedCustomerId);
 
-  const { data: membership, error } = await query.limit(1).maybeSingle();
+  const { data: membership, error } = await query.order("customer_id", { ascending: true }).limit(1).maybeSingle();
   if (error || !membership) return null;
 
   return {

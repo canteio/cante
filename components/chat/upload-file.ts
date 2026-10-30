@@ -1,6 +1,6 @@
 import type { TablePreview } from "@/app/api/files/tabular";
 export type FileAttachment={filename:string;format:string;text:string;originalCsv?:string;uploadId?:string;tables?:TablePreview[];tableIndex?:number;mapping?:Record<string,number>;basis?:string;mappingConfirmed?:boolean;skipCheck?:boolean;warnings?:string[]};
-export async function uploadChatFile(file:File,progress:(message:string)=>void):Promise<FileAttachment>{
+export async function uploadOriginalFile(file:File,progress:(message:string)=>void):Promise<string>{
  if(!file.size||file.size>15*1024*1024)throw Error("Use a nonempty file up to 15 MiB.");
  const bytes=await file.arrayBuffer();const digest=await crypto.subtle.digest("SHA-256",bytes);
  const sha256=[...new Uint8Array(digest)].map(n=>n.toString(16).padStart(2,"0")).join("");
@@ -13,8 +13,12 @@ export async function uploadChatFile(file:File,progress:(message:string)=>void):
   const saved=await fetch(`/api/files/uploads/${metadata.id}?part=${part}`,{method:"PUT",headers:{"content-type":"application/octet-stream"},body:file.slice(part*metadata.chunkBytes,(part+1)*metadata.chunkBytes)});
   if(!saved.ok){const error=await saved.json();throw Error(error.error??"Original upload interrupted.");}
  }
+ return metadata.id;
+}
+export async function uploadChatFile(file:File,progress:(message:string)=>void):Promise<FileAttachment>{
+ const uploadId=await uploadOriginalFile(file,progress);
  progress(`Reading ${file.name}…`);
- const response=await fetch("/api/files/extract",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({uploadId:metadata.id})});
+ const response=await fetch("/api/files/extract",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({uploadId})});
  const data=await response.json();if(!response.ok)throw Error(data.error??"Could not read original file.");
  return data;
 }

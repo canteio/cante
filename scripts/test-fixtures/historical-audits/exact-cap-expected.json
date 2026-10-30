@@ -1,0 +1,813 @@
+{
+  "label": "SYNTHETIC functionality only; independent Python Decimal ROUND_HALF_UP oracle, not legal validation",
+  "entries": [
+    {
+      "row": 2,
+      "date": "2024-01-01",
+      "cap": "0.01",
+      "expected": "10.01",
+      "paid": "11.01",
+      "difference": "1.00"
+    },
+    {
+      "row": 3,
+      "date": "2024-01-02",
+      "cap": "0.02",
+      "expected": "20.01",
+      "paid": "19.01",
+      "difference": "-1.00"
+    },
+    {
+      "row": 4,
+      "date": "2024-01-03",
+      "cap": "0.03",
+      "expected": "30.02",
+      "paid": "30.02",
+      "difference": "0.00"
+    },
+    {
+      "row": 5,
+      "date": "2024-01-04",
+      "cap": "0.04",
+      "expected": "40.02",
+      "paid": "41.02",
+      "difference": "1.00"
+    },
+    {
+      "row": 6,
+      "date": "2024-01-05",
+      "cap": "0.05",
+      "expected": "50.03",
+      "paid": "49.03",
+      "difference": "-1.00"
+    },
+    {
+      "row": 7,
+      "date": "2024-01-06",
+      "cap": "0.06",
+      "expected": "60.03",
+      "paid": "60.03",
+      "difference": "0.00"
+    },
+    {
+      "row": 8,
+      "date": "2024-01-07",
+      "cap": "0.07",
+      "expected": "70.04",
+      "paid": "71.04",
+      "difference": "1.00"
+    },
+    {
+      "row": 9,
+      "date": "2024-01-08",
+      "cap": "0.08",
+      "expected": "80.04",
+      "paid": "79.04",
+      "difference": "-1.00"
+    },
+    {
+      "row": 10,
+      "date": "2024-01-09",
+      "cap": "0.09",
+      "expected": "90.05",
+      "paid": "90.05",
+      "difference": "0.00"
+    },
+    {
+      "row": 11,
+      "date": "2024-01-10",
+      "cap": "0.1",
+      "expected": "100.05",
+      "paid": "101.05",
+      "difference": "1.00"
+    },
+    {
+      "row": 12,
+      "date": "2024-01-11",
+      "cap": "0.11",
+      "expected": "110.06",
+      "paid": "109.06",
+      "difference": "-1.00"
+    },
+    {
+      "row": 13,
+      "date": "2024-01-12",
+      "cap": "0.12",
+      "expected": "120.06",
+      "paid": "120.06",
+      "difference": "0.00"
+    },
+    {
+      "row": 14,
+      "date": "2024-01-13",
+      "cap": "0.13",
+      "expected": "130.07",
+      "paid": "131.07",
+      "difference": "1.00"
+    },
+    {
+      "row": 15,
+      "date": "2024-01-14",
+      "cap": "0.14",
+      "expected": "140.07",
+      "paid": "139.07",
+      "difference": "-1.00"
+    },
+    {
+      "row": 16,
+      "date": "2024-01-15",
+      "cap": "0.15",
+      "expected": "150.08",
+      "paid": "150.08",
+      "difference": "0.00"
+    },
+    {
+      "row": 17,
+      "date": "2024-01-16",
+      "cap": "0.16",
+      "expected": "160.08",
+      "paid": "161.08",
+      "difference": "1.00"
+    },
+    {
+      "row": 18,
+      "date": "2024-01-17",
+      "cap": "0.17",
+      "expected": "170.09",
+      "paid": "169.09",
+      "difference": "-1.00"
+    },
+    {
+      "row": 19,
+      "date": "2024-01-18",
+      "cap": "0.18",
+      "expected": "180.09",
+      "paid": "180.09",
+      "difference": "0.00"
+    },
+    {
+      "row": 20,
+      "date": "2024-01-19",
+      "cap": "0.19",
+      "expected": "190.10",
+      "paid": "191.10",
+      "difference": "1.00"
+    },
+    {
+      "row": 21,
+      "date": "2024-01-20",
+      "cap": "0.2",
+      "expected": "200.10",
+      "paid": "199.10",
+      "difference": "-1.00"
+    },
+    {
+      "row": 22,
+      "date": "2024-01-21",
+      "cap": "0.21",
+      "expected": "210.11",
+      "paid": "210.11",
+      "difference": "0.00"
+    },
+    {
+      "row": 23,
+      "date": "2024-01-22",
+      "cap": "0.22",
+      "expected": "220.11",
+      "paid": "221.11",
+      "difference": "1.00"
+    },
+    {
+      "row": 24,
+      "date": "2024-01-23",
+      "cap": "0.23",
+      "expected": "230.12",
+      "paid": "229.12",
+      "difference": "-1.00"
+    },
+    {
+      "row": 25,
+      "date": "2024-01-24",
+      "cap": "0.24",
+      "expected": "240.12",
+      "paid": "240.12",
+      "difference": "0.00"
+    },
+    {
+      "row": 26,
+      "date": "2024-01-25",
+      "cap": "0.25",
+      "expected": "250.13",
+      "paid": "251.13",
+      "difference": "1.00"
+    },
+    {
+      "row": 27,
+      "date": "2024-01-26",
+      "cap": "0.26",
+      "expected": "260.13",
+      "paid": "259.13",
+      "difference": "-1.00"
+    },
+    {
+      "row": 28,
+      "date": "2024-01-27",
+      "cap": "0.27",
+      "expected": "270.14",
+      "paid": "270.14",
+      "difference": "0.00"
+    },
+    {
+      "row": 29,
+      "date": "2024-01-28",
+      "cap": "0.28",
+      "expected": "280.14",
+      "paid": "281.14",
+      "difference": "1.00"
+    },
+    {
+      "row": 30,
+      "date": "2024-01-29",
+      "cap": "0.29",
+      "expected": "290.15",
+      "paid": "289.15",
+      "difference": "-1.00"
+    },
+    {
+      "row": 31,
+      "date": "2024-01-30",
+      "cap": "0.3",
+      "expected": "300.15",
+      "paid": "300.15",
+      "difference": "0.00"
+    },
+    {
+      "row": 32,
+      "date": "2024-01-31",
+      "cap": "0.31",
+      "expected": "310.16",
+      "paid": "311.16",
+      "difference": "1.00"
+    },
+    {
+      "row": 33,
+      "date": "2024-02-01",
+      "cap": "0.32",
+      "expected": "320.16",
+      "paid": "319.16",
+      "difference": "-1.00"
+    },
+    {
+      "row": 34,
+      "date": "2024-02-02",
+      "cap": "0.33",
+      "expected": "330.17",
+      "paid": "330.17",
+      "difference": "0.00"
+    },
+    {
+      "row": 35,
+      "date": "2024-02-03",
+      "cap": "0.34",
+      "expected": "340.17",
+      "paid": "341.17",
+      "difference": "1.00"
+    },
+    {
+      "row": 36,
+      "date": "2024-02-04",
+      "cap": "0.35",
+      "expected": "350.18",
+      "paid": "349.18",
+      "difference": "-1.00"
+    },
+    {
+      "row": 37,
+      "date": "2024-02-05",
+      "cap": "0.36",
+      "expected": "360.18",
+      "paid": "360.18",
+      "difference": "0.00"
+    },
+    {
+      "row": 38,
+      "date": "2024-02-06",
+      "cap": "0.37",
+      "expected": "370.19",
+      "paid": "371.19",
+      "difference": "1.00"
+    },
+    {
+      "row": 39,
+      "date": "2024-02-07",
+      "cap": "0.38",
+      "expected": "380.19",
+      "paid": "379.19",
+      "difference": "-1.00"
+    },
+    {
+      "row": 40,
+      "date": "2024-02-08",
+      "cap": "0.39",
+      "expected": "390.20",
+      "paid": "390.20",
+      "difference": "0.00"
+    },
+    {
+      "row": 41,
+      "date": "2024-02-09",
+      "cap": "0.4",
+      "expected": "400.20",
+      "paid": "401.20",
+      "difference": "1.00"
+    },
+    {
+      "row": 42,
+      "date": "2024-02-10",
+      "cap": "0.41",
+      "expected": "410.21",
+      "paid": "409.21",
+      "difference": "-1.00"
+    },
+    {
+      "row": 43,
+      "date": "2024-02-11",
+      "cap": "0.42",
+      "expected": "420.21",
+      "paid": "420.21",
+      "difference": "0.00"
+    },
+    {
+      "row": 44,
+      "date": "2024-02-12",
+      "cap": "0.43",
+      "expected": "430.22",
+      "paid": "431.22",
+      "difference": "1.00"
+    },
+    {
+      "row": 45,
+      "date": "2024-02-13",
+      "cap": "0.44",
+      "expected": "440.22",
+      "paid": "439.22",
+      "difference": "-1.00"
+    },
+    {
+      "row": 46,
+      "date": "2024-02-14",
+      "cap": "0.45",
+      "expected": "450.23",
+      "paid": "450.23",
+      "difference": "0.00"
+    },
+    {
+      "row": 47,
+      "date": "2024-02-15",
+      "cap": "0.46",
+      "expected": "460.23",
+      "paid": "461.23",
+      "difference": "1.00"
+    },
+    {
+      "row": 48,
+      "date": "2024-02-16",
+      "cap": "0.47",
+      "expected": "470.24",
+      "paid": "469.24",
+      "difference": "-1.00"
+    },
+    {
+      "row": 49,
+      "date": "2024-02-17",
+      "cap": "0.48",
+      "expected": "480.24",
+      "paid": "480.24",
+      "difference": "0.00"
+    },
+    {
+      "row": 50,
+      "date": "2024-02-18",
+      "cap": "0.49",
+      "expected": "490.25",
+      "paid": "491.25",
+      "difference": "1.00"
+    },
+    {
+      "row": 51,
+      "date": "2024-02-19",
+      "cap": "0.5",
+      "expected": "500.25",
+      "paid": "499.25",
+      "difference": "-1.00"
+    },
+    {
+      "row": 52,
+      "date": "2024-02-20",
+      "cap": "0.51",
+      "expected": "510.26",
+      "paid": "510.26",
+      "difference": "0.00"
+    },
+    {
+      "row": 53,
+      "date": "2024-02-21",
+      "cap": "0.52",
+      "expected": "520.26",
+      "paid": "521.26",
+      "difference": "1.00"
+    },
+    {
+      "row": 54,
+      "date": "2024-02-22",
+      "cap": "0.53",
+      "expected": "530.27",
+      "paid": "529.27",
+      "difference": "-1.00"
+    },
+    {
+      "row": 55,
+      "date": "2024-02-23",
+      "cap": "0.54",
+      "expected": "540.27",
+      "paid": "540.27",
+      "difference": "0.00"
+    },
+    {
+      "row": 56,
+      "date": "2024-02-24",
+      "cap": "0.55",
+      "expected": "550.28",
+      "paid": "551.28",
+      "difference": "1.00"
+    },
+    {
+      "row": 57,
+      "date": "2024-02-25",
+      "cap": "0.56",
+      "expected": "560.28",
+      "paid": "559.28",
+      "difference": "-1.00"
+    },
+    {
+      "row": 58,
+      "date": "2024-02-26",
+      "cap": "0.57",
+      "expected": "570.29",
+      "paid": "570.29",
+      "difference": "0.00"
+    },
+    {
+      "row": 59,
+      "date": "2024-02-27",
+      "cap": "0.58",
+      "expected": "580.29",
+      "paid": "581.29",
+      "difference": "1.00"
+    },
+    {
+      "row": 60,
+      "date": "2024-02-28",
+      "cap": "0.59",
+      "expected": "590.30",
+      "paid": "589.30",
+      "difference": "-1.00"
+    },
+    {
+      "row": 61,
+      "date": "2024-02-29",
+      "cap": "0.6",
+      "expected": "600.30",
+      "paid": "600.30",
+      "difference": "0.00"
+    },
+    {
+      "row": 62,
+      "date": "2024-03-01",
+      "cap": "0.61",
+      "expected": "610.31",
+      "paid": "611.31",
+      "difference": "1.00"
+    },
+    {
+      "row": 63,
+      "date": "2024-03-02",
+      "cap": "0.62",
+      "expected": "620.31",
+      "paid": "619.31",
+      "difference": "-1.00"
+    },
+    {
+      "row": 64,
+      "date": "2024-03-03",
+      "cap": "0.63",
+      "expected": "630.32",
+      "paid": "630.32",
+      "difference": "0.00"
+    },
+    {
+      "row": 65,
+      "date": "2024-03-04",
+      "cap": "0.64",
+      "expected": "640.32",
+      "paid": "641.32",
+      "difference": "1.00"
+    },
+    {
+      "row": 66,
+      "date": "2024-03-05",
+      "cap": "0.65",
+      "expected": "650.33",
+      "paid": "649.33",
+      "difference": "-1.00"
+    },
+    {
+      "row": 67,
+      "date": "2024-03-06",
+      "cap": "0.66",
+      "expected": "660.33",
+      "paid": "660.33",
+      "difference": "0.00"
+    },
+    {
+      "row": 68,
+      "date": "2024-03-07",
+      "cap": "0.67",
+      "expected": "670.34",
+      "paid": "671.34",
+      "difference": "1.00"
+    },
+    {
+      "row": 69,
+      "date": "2024-03-08",
+      "cap": "0.68",
+      "expected": "680.34",
+      "paid": "679.34",
+      "difference": "-1.00"
+    },
+    {
+      "row": 70,
+      "date": "2024-03-09",
+      "cap": "0.69",
+      "expected": "690.35",
+      "paid": "690.35",
+      "difference": "0.00"
+    },
+    {
+      "row": 71,
+      "date": "2024-03-10",
+      "cap": "0.7",
+      "expected": "700.35",
+      "paid": "701.35",
+      "difference": "1.00"
+    },
+    {
+      "row": 72,
+      "date": "2024-03-11",
+      "cap": "0.71",
+      "expected": "710.36",
+      "paid": "709.36",
+      "difference": "-1.00"
+    },
+    {
+      "row": 73,
+      "date": "2024-03-12",
+      "cap": "0.72",
+      "expected": "720.36",
+      "paid": "720.36",
+      "difference": "0.00"
+    },
+    {
+      "row": 74,
+      "date": "2024-03-13",
+      "cap": "0.73",
+      "expected": "730.37",
+      "paid": "731.37",
+      "difference": "1.00"
+    },
+    {
+      "row": 75,
+      "date": "2024-03-14",
+      "cap": "0.74",
+      "expected": "740.37",
+      "paid": "739.37",
+      "difference": "-1.00"
+    },
+    {
+      "row": 76,
+      "date": "2024-03-15",
+      "cap": "0.75",
+      "expected": "750.38",
+      "paid": "750.38",
+      "difference": "0.00"
+    },
+    {
+      "row": 77,
+      "date": "2024-03-16",
+      "cap": "0.76",
+      "expected": "760.38",
+      "paid": "761.38",
+      "difference": "1.00"
+    },
+    {
+      "row": 78,
+      "date": "2024-03-17",
+      "cap": "0.77",
+      "expected": "770.39",
+      "paid": "769.39",
+      "difference": "-1.00"
+    },
+    {
+      "row": 79,
+      "date": "2024-03-18",
+      "cap": "0.78",
+      "expected": "780.39",
+      "paid": "780.39",
+      "difference": "0.00"
+    },
+    {
+      "row": 80,
+      "date": "2024-03-19",
+      "cap": "0.79",
+      "expected": "790.40",
+      "paid": "791.40",
+      "difference": "1.00"
+    },
+    {
+      "row": 81,
+      "date": "2024-03-20",
+      "cap": "0.8",
+      "expected": "800.40",
+      "paid": "799.40",
+      "difference": "-1.00"
+    },
+    {
+      "row": 82,
+      "date": "2024-03-21",
+      "cap": "0.81",
+      "expected": "810.41",
+      "paid": "810.41",
+      "difference": "0.00"
+    },
+    {
+      "row": 83,
+      "date": "2024-03-22",
+      "cap": "0.82",
+      "expected": "820.41",
+      "paid": "821.41",
+      "difference": "1.00"
+    },
+    {
+      "row": 84,
+      "date": "2024-03-23",
+      "cap": "0.83",
+      "expected": "830.42",
+      "paid": "829.42",
+      "difference": "-1.00"
+    },
+    {
+      "row": 85,
+      "date": "2024-03-24",
+      "cap": "0.84",
+      "expected": "840.42",
+      "paid": "840.42",
+      "difference": "0.00"
+    },
+    {
+      "row": 86,
+      "date": "2024-03-25",
+      "cap": "0.85",
+      "expected": "850.43",
+      "paid": "851.43",
+      "difference": "1.00"
+    },
+    {
+      "row": 87,
+      "date": "2024-03-26",
+      "cap": "0.86",
+      "expected": "860.43",
+      "paid": "859.43",
+      "difference": "-1.00"
+    },
+    {
+      "row": 88,
+      "date": "2024-03-27",
+      "cap": "0.87",
+      "expected": "870.44",
+      "paid": "870.44",
+      "difference": "0.00"
+    },
+    {
+      "row": 89,
+      "date": "2024-03-28",
+      "cap": "0.88",
+      "expected": "880.44",
+      "paid": "881.44",
+      "difference": "1.00"
+    },
+    {
+      "row": 90,
+      "date": "2024-03-29",
+      "cap": "0.89",
+      "expected": "890.45",
+      "paid": "889.45",
+      "difference": "-1.00"
+    },
+    {
+      "row": 91,
+      "date": "2024-03-30",
+      "cap": "0.9",
+      "expected": "900.45",
+      "paid": "900.45",
+      "difference": "0.00"
+    },
+    {
+      "row": 92,
+      "date": "2024-03-31",
+      "cap": "0.91",
+      "expected": "910.46",
+      "paid": "911.46",
+      "difference": "1.00"
+    },
+    {
+      "row": 93,
+      "date": "2024-04-01",
+      "cap": "0.92",
+      "expected": "920.46",
+      "paid": "919.46",
+      "difference": "-1.00"
+    },
+    {
+      "row": 94,
+      "date": "2024-04-02",
+      "cap": "0.93",
+      "expected": "930.47",
+      "paid": "930.47",
+      "difference": "0.00"
+    },
+    {
+      "row": 95,
+      "date": "2024-04-03",
+      "cap": "0.94",
+      "expected": "940.47",
+      "paid": "941.47",
+      "difference": "1.00"
+    },
+    {
+      "row": 96,
+      "date": "2024-04-04",
+      "cap": "0.95",
+      "expected": "950.48",
+      "paid": "949.48",
+      "difference": "-1.00"
+    },
+    {
+      "row": 97,
+      "date": "2024-04-05",
+      "cap": "0.96",
+      "expected": "960.48",
+      "paid": "960.48",
+      "difference": "0.00"
+    },
+    {
+      "row": 98,
+      "date": "2024-04-06",
+      "cap": "0.97",
+      "expected": "970.49",
+      "paid": "971.49",
+      "difference": "1.00"
+    },
+    {
+      "row": 99,
+      "date": "2024-04-07",
+      "cap": "0.98",
+      "expected": "980.49",
+      "paid": "979.49",
+      "difference": "-1.00"
+    },
+    {
+      "row": 100,
+      "date": "2024-04-08",
+      "cap": "0.99",
+      "expected": "990.50",
+      "paid": "990.50",
+      "difference": "0.00"
+    },
+    {
+      "row": 101,
+      "date": "2024-04-09",
+      "cap": "1",
+      "expected": "1000.50",
+      "paid": "1001.50",
+      "difference": "1.00"
+    }
+  ],
+  "summary": {
+    "lines": 100,
+    "calculated": 100,
+    "unresolved": 0,
+    "discrepancies": 67,
+    "overpayment": "34.00",
+    "underpayment": "33.00"
+  }
+}

@@ -1,0 +1,1362 @@
+{
+  "id": "00000000-0000-4000-8000-000000000027",
+  "status": "draft",
+  "approved_by": null,
+  "approved_at": null,
+  "definition": {
+    "version": 1,
+    "synthetic": true,
+    "title": "SYNTHETIC exact capped-duty test \u2014 no real tariff law or approval",
+    "supersedes": [],
+    "coverage": [
+      {
+        "hts": [
+          "8501314000"
+        ],
+        "origins": [
+          "JP"
+        ],
+        "requiredFacts": [],
+        "from": "2024-01-01",
+        "before": "2025-01-01",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "id": "SYN-CAP-BASE",
+        "label": "Fictional 200 percent base",
+        "type": "base",
+        "hts": [
+          "8501314000"
+        ],
+        "origins": [
+          "JP"
+        ],
+        "rate": "200%",
+        "basis": "customs_value",
+        "conditions": {},
+        "from": "2024-01-01",
+        "before": "2025-01-01",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      }
+    ],
+    "stacking": [
+      {
+        "id": "SYN-CAP-001",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.01",
+        "conditions": {},
+        "from": "2024-01-01",
+        "before": "2024-01-02",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-002",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.02",
+        "conditions": {},
+        "from": "2024-01-02",
+        "before": "2024-01-03",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-003",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.03",
+        "conditions": {},
+        "from": "2024-01-03",
+        "before": "2024-01-04",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-004",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.04",
+        "conditions": {},
+        "from": "2024-01-04",
+        "before": "2024-01-05",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-005",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.05",
+        "conditions": {},
+        "from": "2024-01-05",
+        "before": "2024-01-06",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-006",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.06",
+        "conditions": {},
+        "from": "2024-01-06",
+        "before": "2024-01-07",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-007",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.07",
+        "conditions": {},
+        "from": "2024-01-07",
+        "before": "2024-01-08",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-008",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.08",
+        "conditions": {},
+        "from": "2024-01-08",
+        "before": "2024-01-09",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-009",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.09",
+        "conditions": {},
+        "from": "2024-01-09",
+        "before": "2024-01-10",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-010",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.1",
+        "conditions": {},
+        "from": "2024-01-10",
+        "before": "2024-01-11",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-011",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.11",
+        "conditions": {},
+        "from": "2024-01-11",
+        "before": "2024-01-12",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-012",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.12",
+        "conditions": {},
+        "from": "2024-01-12",
+        "before": "2024-01-13",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-013",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.13",
+        "conditions": {},
+        "from": "2024-01-13",
+        "before": "2024-01-14",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-014",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.14",
+        "conditions": {},
+        "from": "2024-01-14",
+        "before": "2024-01-15",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-015",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.15",
+        "conditions": {},
+        "from": "2024-01-15",
+        "before": "2024-01-16",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-016",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.16",
+        "conditions": {},
+        "from": "2024-01-16",
+        "before": "2024-01-17",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-017",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.17",
+        "conditions": {},
+        "from": "2024-01-17",
+        "before": "2024-01-18",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-018",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.18",
+        "conditions": {},
+        "from": "2024-01-18",
+        "before": "2024-01-19",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-019",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.19",
+        "conditions": {},
+        "from": "2024-01-19",
+        "before": "2024-01-20",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-020",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.2",
+        "conditions": {},
+        "from": "2024-01-20",
+        "before": "2024-01-21",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-021",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.21",
+        "conditions": {},
+        "from": "2024-01-21",
+        "before": "2024-01-22",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-022",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.22",
+        "conditions": {},
+        "from": "2024-01-22",
+        "before": "2024-01-23",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-023",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.23",
+        "conditions": {},
+        "from": "2024-01-23",
+        "before": "2024-01-24",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-024",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.24",
+        "conditions": {},
+        "from": "2024-01-24",
+        "before": "2024-01-25",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-025",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.25",
+        "conditions": {},
+        "from": "2024-01-25",
+        "before": "2024-01-26",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-026",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.26",
+        "conditions": {},
+        "from": "2024-01-26",
+        "before": "2024-01-27",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-027",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.27",
+        "conditions": {},
+        "from": "2024-01-27",
+        "before": "2024-01-28",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-028",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.28",
+        "conditions": {},
+        "from": "2024-01-28",
+        "before": "2024-01-29",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-029",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.29",
+        "conditions": {},
+        "from": "2024-01-29",
+        "before": "2024-01-30",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-030",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.3",
+        "conditions": {},
+        "from": "2024-01-30",
+        "before": "2024-01-31",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-031",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.31",
+        "conditions": {},
+        "from": "2024-01-31",
+        "before": "2024-02-01",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-032",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.32",
+        "conditions": {},
+        "from": "2024-02-01",
+        "before": "2024-02-02",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-033",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.33",
+        "conditions": {},
+        "from": "2024-02-02",
+        "before": "2024-02-03",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-034",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.34",
+        "conditions": {},
+        "from": "2024-02-03",
+        "before": "2024-02-04",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-035",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.35",
+        "conditions": {},
+        "from": "2024-02-04",
+        "before": "2024-02-05",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-036",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.36",
+        "conditions": {},
+        "from": "2024-02-05",
+        "before": "2024-02-06",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-037",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.37",
+        "conditions": {},
+        "from": "2024-02-06",
+        "before": "2024-02-07",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-038",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.38",
+        "conditions": {},
+        "from": "2024-02-07",
+        "before": "2024-02-08",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-039",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.39",
+        "conditions": {},
+        "from": "2024-02-08",
+        "before": "2024-02-09",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-040",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.4",
+        "conditions": {},
+        "from": "2024-02-09",
+        "before": "2024-02-10",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-041",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.41",
+        "conditions": {},
+        "from": "2024-02-10",
+        "before": "2024-02-11",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-042",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.42",
+        "conditions": {},
+        "from": "2024-02-11",
+        "before": "2024-02-12",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-043",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.43",
+        "conditions": {},
+        "from": "2024-02-12",
+        "before": "2024-02-13",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-044",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.44",
+        "conditions": {},
+        "from": "2024-02-13",
+        "before": "2024-02-14",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-045",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.45",
+        "conditions": {},
+        "from": "2024-02-14",
+        "before": "2024-02-15",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-046",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.46",
+        "conditions": {},
+        "from": "2024-02-15",
+        "before": "2024-02-16",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-047",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.47",
+        "conditions": {},
+        "from": "2024-02-16",
+        "before": "2024-02-17",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-048",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.48",
+        "conditions": {},
+        "from": "2024-02-17",
+        "before": "2024-02-18",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-049",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.49",
+        "conditions": {},
+        "from": "2024-02-18",
+        "before": "2024-02-19",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-050",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.5",
+        "conditions": {},
+        "from": "2024-02-19",
+        "before": "2024-02-20",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-051",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.51",
+        "conditions": {},
+        "from": "2024-02-20",
+        "before": "2024-02-21",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-052",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.52",
+        "conditions": {},
+        "from": "2024-02-21",
+        "before": "2024-02-22",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-053",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.53",
+        "conditions": {},
+        "from": "2024-02-22",
+        "before": "2024-02-23",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-054",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.54",
+        "conditions": {},
+        "from": "2024-02-23",
+        "before": "2024-02-24",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-055",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.55",
+        "conditions": {},
+        "from": "2024-02-24",
+        "before": "2024-02-25",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-056",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.56",
+        "conditions": {},
+        "from": "2024-02-25",
+        "before": "2024-02-26",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-057",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.57",
+        "conditions": {},
+        "from": "2024-02-26",
+        "before": "2024-02-27",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-058",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.58",
+        "conditions": {},
+        "from": "2024-02-27",
+        "before": "2024-02-28",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-059",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.59",
+        "conditions": {},
+        "from": "2024-02-28",
+        "before": "2024-02-29",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-060",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.6",
+        "conditions": {},
+        "from": "2024-02-29",
+        "before": "2024-03-01",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-061",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.61",
+        "conditions": {},
+        "from": "2024-03-01",
+        "before": "2024-03-02",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-062",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.62",
+        "conditions": {},
+        "from": "2024-03-02",
+        "before": "2024-03-03",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-063",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.63",
+        "conditions": {},
+        "from": "2024-03-03",
+        "before": "2024-03-04",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-064",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.64",
+        "conditions": {},
+        "from": "2024-03-04",
+        "before": "2024-03-05",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-065",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.65",
+        "conditions": {},
+        "from": "2024-03-05",
+        "before": "2024-03-06",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-066",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.66",
+        "conditions": {},
+        "from": "2024-03-06",
+        "before": "2024-03-07",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-067",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.67",
+        "conditions": {},
+        "from": "2024-03-07",
+        "before": "2024-03-08",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-068",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.68",
+        "conditions": {},
+        "from": "2024-03-08",
+        "before": "2024-03-09",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-069",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.69",
+        "conditions": {},
+        "from": "2024-03-09",
+        "before": "2024-03-10",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-070",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.7",
+        "conditions": {},
+        "from": "2024-03-10",
+        "before": "2024-03-11",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-071",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.71",
+        "conditions": {},
+        "from": "2024-03-11",
+        "before": "2024-03-12",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-072",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.72",
+        "conditions": {},
+        "from": "2024-03-12",
+        "before": "2024-03-13",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-073",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.73",
+        "conditions": {},
+        "from": "2024-03-13",
+        "before": "2024-03-14",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-074",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.74",
+        "conditions": {},
+        "from": "2024-03-14",
+        "before": "2024-03-15",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-075",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.75",
+        "conditions": {},
+        "from": "2024-03-15",
+        "before": "2024-03-16",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-076",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.76",
+        "conditions": {},
+        "from": "2024-03-16",
+        "before": "2024-03-17",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-077",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.77",
+        "conditions": {},
+        "from": "2024-03-17",
+        "before": "2024-03-18",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-078",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.78",
+        "conditions": {},
+        "from": "2024-03-18",
+        "before": "2024-03-19",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-079",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.79",
+        "conditions": {},
+        "from": "2024-03-19",
+        "before": "2024-03-20",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-080",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.8",
+        "conditions": {},
+        "from": "2024-03-20",
+        "before": "2024-03-21",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-081",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.81",
+        "conditions": {},
+        "from": "2024-03-21",
+        "before": "2024-03-22",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-082",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.82",
+        "conditions": {},
+        "from": "2024-03-22",
+        "before": "2024-03-23",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-083",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.83",
+        "conditions": {},
+        "from": "2024-03-23",
+        "before": "2024-03-24",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-084",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.84",
+        "conditions": {},
+        "from": "2024-03-24",
+        "before": "2024-03-25",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-085",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.85",
+        "conditions": {},
+        "from": "2024-03-25",
+        "before": "2024-03-26",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-086",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.86",
+        "conditions": {},
+        "from": "2024-03-26",
+        "before": "2024-03-27",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-087",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.87",
+        "conditions": {},
+        "from": "2024-03-27",
+        "before": "2024-03-28",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-088",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.88",
+        "conditions": {},
+        "from": "2024-03-28",
+        "before": "2024-03-29",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-089",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.89",
+        "conditions": {},
+        "from": "2024-03-29",
+        "before": "2024-03-30",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-090",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.9",
+        "conditions": {},
+        "from": "2024-03-30",
+        "before": "2024-03-31",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-091",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.91",
+        "conditions": {},
+        "from": "2024-03-31",
+        "before": "2024-04-01",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-092",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.92",
+        "conditions": {},
+        "from": "2024-04-01",
+        "before": "2024-04-02",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-093",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.93",
+        "conditions": {},
+        "from": "2024-04-02",
+        "before": "2024-04-03",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-094",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.94",
+        "conditions": {},
+        "from": "2024-04-03",
+        "before": "2024-04-04",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-095",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.95",
+        "conditions": {},
+        "from": "2024-04-04",
+        "before": "2024-04-05",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-096",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.96",
+        "conditions": {},
+        "from": "2024-04-05",
+        "before": "2024-04-06",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-097",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.97",
+        "conditions": {},
+        "from": "2024-04-06",
+        "before": "2024-04-07",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-098",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.98",
+        "conditions": {},
+        "from": "2024-04-07",
+        "before": "2024-04-08",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-099",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "0.99",
+        "conditions": {},
+        "from": "2024-04-08",
+        "before": "2024-04-09",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-CAP-100",
+        "target": "SYN-CAP-BASE",
+        "action": "cap_at",
+        "cap": "1",
+        "conditions": {},
+        "from": "2024-04-09",
+        "before": "2024-04-10",
+        "explanation": "SYNTHETIC dated cap; no real law or approval is asserted.",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      }
+    ]
+  },
+  "sources": [
+    {
+      "id": "SYN-SOURCE",
+      "url": "https://synthetic.invalid/rules",
+      "title": "SYNTHETIC ONLY",
+      "body": "SYNTHETIC FUNCTIONALITY RULES. NOT REAL TARIFF LAW. No customer or government accuracy is asserted.",
+      "encoding": "utf8",
+      "sha256": "1a37d3d08cdd829f4aa36775da30433398885abccf18c340afc1ae0c1cecfc4f",
+      "capturedAt": "2024-01-01T00:00:00Z"
+    }
+  ]
+}

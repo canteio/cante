@@ -15,10 +15,10 @@ export default async function Page() {
   const workspace = getAuthMode() === "supabase" ? await getAuthenticatedWorkspace() : null;
   const canReviewRules = Boolean(workspace) && await isPlatformTariffReviewer();
   return (
-    <div className="shell">
+    <div className="shell tariff-shell">
       <Sidebar active="tariff" />
       <main className="main">
-        <ImportReviewHome canReviewRules={canReviewRules} />
+        <ImportReviewHome canReviewRules={canReviewRules} customerId={workspace?.customerId ?? null} />
         {/* <MissionOneHub /> */}
       </main>
     </div>

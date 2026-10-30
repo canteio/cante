@@ -1,0 +1,846 @@
+{
+  "label": "100 fictional declarations, actual public 2017 sources, independent Python Decimal ROUND_HALF_UP oracle; no classification, origin, admissibility or refund determination",
+  "engineVersion": "historical-audit-v37",
+  "rows": [
+    {
+      "row": 1,
+      "entry": "SYN-DATED-1",
+      "initialExpected": "401.74",
+      "initialDifference": "1.00",
+      "reviewedExpected": "401.74",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 2,
+      "entry": "SYN-DATED-2",
+      "initialExpected": "58.03",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "58.03",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 3,
+      "entry": "SYN-DATED-3",
+      "initialExpected": "401.75",
+      "initialDifference": "0.00",
+      "reviewedExpected": "401.75",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 4,
+      "entry": "SYN-DATED-4",
+      "initialExpected": "58.03",
+      "initialDifference": "1.00",
+      "reviewedExpected": "58.03",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 5,
+      "entry": "SYN-DATED-5",
+      "initialExpected": "250.14",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "250.14",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 6,
+      "entry": "SYN-DATED-6",
+      "initialExpected": "37.02",
+      "initialDifference": "0.00",
+      "reviewedExpected": "37.02",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 7,
+      "entry": "SYN-DATED-7",
+      "initialExpected": "250.14",
+      "initialDifference": "1.00",
+      "reviewedExpected": "250.14",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 8,
+      "entry": "SYN-DATED-8",
+      "initialExpected": "37.02",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "37.02",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 9,
+      "entry": "SYN-DATED-9",
+      "initialExpected": "250.15",
+      "initialDifference": "0.00",
+      "reviewedExpected": "250.15",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 10,
+      "entry": "SYN-DATED-10",
+      "initialExpected": "37.02",
+      "initialDifference": "1.00",
+      "reviewedExpected": "37.02",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 11,
+      "entry": "SYN-DATED-11",
+      "initialExpected": "250.15",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "250.15",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 12,
+      "entry": "SYN-DATED-12",
+      "initialExpected": "37.02",
+      "initialDifference": "0.00",
+      "reviewedExpected": "37.02",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 13,
+      "entry": "SYN-DATED-13",
+      "initialExpected": "401.80",
+      "initialDifference": "1.00",
+      "reviewedExpected": "401.80",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 14,
+      "entry": "SYN-DATED-14",
+      "initialExpected": "58.04",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "58.04",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 15,
+      "entry": "SYN-DATED-15",
+      "initialExpected": "401.80",
+      "initialDifference": "0.00",
+      "reviewedExpected": "401.80",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 16,
+      "entry": "SYN-DATED-16",
+      "initialExpected": "58.04",
+      "initialDifference": "1.00",
+      "reviewedExpected": "58.04",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 17,
+      "entry": "SYN-DATED-17",
+      "initialExpected": "250.17",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "250.17",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 18,
+      "entry": "SYN-DATED-18",
+      "initialExpected": "37.02",
+      "initialDifference": "0.00",
+      "reviewedExpected": "37.02",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 19,
+      "entry": "SYN-DATED-19",
+      "initialExpected": "250.17",
+      "initialDifference": "1.00",
+      "reviewedExpected": "250.17",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 20,
+      "entry": "SYN-DATED-20",
+      "initialExpected": "37.03",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "37.03",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 21,
+      "entry": "SYN-DATED-21",
+      "initialExpected": "250.18",
+      "initialDifference": "0.00",
+      "reviewedExpected": "250.18",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 22,
+      "entry": "SYN-DATED-22",
+      "initialExpected": "37.03",
+      "initialDifference": "1.00",
+      "reviewedExpected": "37.03",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 23,
+      "entry": "SYN-DATED-23",
+      "initialExpected": "250.18",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "250.18",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 24,
+      "entry": "SYN-DATED-24",
+      "initialExpected": "37.03",
+      "initialDifference": "0.00",
+      "reviewedExpected": "37.03",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 25,
+      "entry": "SYN-DATED-25",
+      "initialExpected": "401.84",
+      "initialDifference": "1.00",
+      "reviewedExpected": "401.84",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 26,
+      "entry": "SYN-DATED-26",
+      "initialExpected": "58.04",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "58.04",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 27,
+      "entry": "SYN-DATED-27",
+      "initialExpected": "401.85",
+      "initialDifference": "0.00",
+      "reviewedExpected": "401.85",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 28,
+      "entry": "SYN-DATED-28",
+      "initialExpected": "58.04",
+      "initialDifference": "1.00",
+      "reviewedExpected": "58.04",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 29,
+      "entry": "SYN-DATED-29",
+      "initialExpected": "250.20",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "250.20",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 30,
+      "entry": "SYN-DATED-30",
+      "initialExpected": "37.03",
+      "initialDifference": "0.00",
+      "reviewedExpected": "37.03",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 31,
+      "entry": "SYN-DATED-31",
+      "initialExpected": "250.20",
+      "initialDifference": "1.00",
+      "reviewedExpected": "250.20",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 32,
+      "entry": "SYN-DATED-32",
+      "initialExpected": "37.03",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "37.03",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 33,
+      "entry": "SYN-DATED-33",
+      "initialExpected": "250.21",
+      "initialDifference": "0.00",
+      "reviewedExpected": "250.21",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 34,
+      "entry": "SYN-DATED-34",
+      "initialExpected": "37.03",
+      "initialDifference": "1.00",
+      "reviewedExpected": "37.03",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 35,
+      "entry": "SYN-DATED-35",
+      "initialExpected": "250.21",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "250.21",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 36,
+      "entry": "SYN-DATED-36",
+      "initialExpected": "37.03",
+      "initialDifference": "0.00",
+      "reviewedExpected": "37.03",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 37,
+      "entry": "SYN-DATED-37",
+      "initialExpected": "401.89",
+      "initialDifference": "1.00",
+      "reviewedExpected": "401.89",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 38,
+      "entry": "SYN-DATED-38",
+      "initialExpected": "58.05",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "58.05",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 39,
+      "entry": "SYN-DATED-39",
+      "initialExpected": "401.90",
+      "initialDifference": "0.00",
+      "reviewedExpected": "401.90",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 40,
+      "entry": "SYN-DATED-40",
+      "initialExpected": "58.05",
+      "initialDifference": "1.00",
+      "reviewedExpected": "58.05",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 41,
+      "entry": "SYN-DATED-41",
+      "initialExpected": "250.23",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "250.23",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 42,
+      "entry": "SYN-DATED-42",
+      "initialExpected": "37.03",
+      "initialDifference": "0.00",
+      "reviewedExpected": "37.03",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 43,
+      "entry": "SYN-DATED-43",
+      "initialExpected": "250.23",
+      "initialDifference": "1.00",
+      "reviewedExpected": "250.23",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 44,
+      "entry": "SYN-DATED-44",
+      "initialExpected": "37.03",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "37.03",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 45,
+      "entry": "SYN-DATED-45",
+      "initialExpected": "250.24",
+      "initialDifference": "0.00",
+      "reviewedExpected": "250.24",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 46,
+      "entry": "SYN-DATED-46",
+      "initialExpected": "37.04",
+      "initialDifference": "1.00",
+      "reviewedExpected": "37.04",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 47,
+      "entry": "SYN-DATED-47",
+      "initialExpected": "250.24",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "250.24",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 48,
+      "entry": "SYN-DATED-48",
+      "initialExpected": "37.04",
+      "initialDifference": "0.00",
+      "reviewedExpected": "37.04",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 49,
+      "entry": "SYN-DATED-49",
+      "initialExpected": "401.94",
+      "initialDifference": "1.00",
+      "reviewedExpected": "401.94",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 50,
+      "entry": "SYN-DATED-50",
+      "initialExpected": "58.06",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "58.06",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 51,
+      "entry": "SYN-DATED-51",
+      "initialExpected": "401.94",
+      "initialDifference": "0.00",
+      "reviewedExpected": "401.94",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 52,
+      "entry": "SYN-DATED-52",
+      "initialExpected": "58.06",
+      "initialDifference": "1.00",
+      "reviewedExpected": "58.06",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 53,
+      "entry": "SYN-DATED-53",
+      "initialExpected": "250.26",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "250.26",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 54,
+      "entry": "SYN-DATED-54",
+      "initialExpected": "37.04",
+      "initialDifference": "0.00",
+      "reviewedExpected": "37.04",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 55,
+      "entry": "SYN-DATED-55",
+      "initialExpected": "250.26",
+      "initialDifference": "1.00",
+      "reviewedExpected": "250.26",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 56,
+      "entry": "SYN-DATED-56",
+      "initialExpected": "37.04",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "37.04",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 57,
+      "entry": "SYN-DATED-57",
+      "initialExpected": "250.27",
+      "initialDifference": "0.00",
+      "reviewedExpected": "250.27",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 58,
+      "entry": "SYN-DATED-58",
+      "initialExpected": "37.04",
+      "initialDifference": "1.00",
+      "reviewedExpected": "37.04",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 59,
+      "entry": "SYN-DATED-59",
+      "initialExpected": "250.27",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "250.27",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 60,
+      "entry": "SYN-DATED-60",
+      "initialExpected": "37.04",
+      "initialDifference": "0.00",
+      "reviewedExpected": "37.04",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 61,
+      "entry": "SYN-DATED-61",
+      "initialExpected": "401.99",
+      "initialDifference": "1.00",
+      "reviewedExpected": "401.99",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 62,
+      "entry": "SYN-DATED-62",
+      "initialExpected": "58.06",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "58.06",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 63,
+      "entry": "SYN-DATED-63",
+      "initialExpected": "402.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "402.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 64,
+      "entry": "SYN-DATED-64",
+      "initialExpected": "58.07",
+      "initialDifference": "1.00",
+      "reviewedExpected": "58.07",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 65,
+      "entry": "SYN-DATED-65",
+      "initialExpected": "250.29",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "250.29",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 66,
+      "entry": "SYN-DATED-66",
+      "initialExpected": "37.04",
+      "initialDifference": "0.00",
+      "reviewedExpected": "37.04",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 67,
+      "entry": "SYN-DATED-67",
+      "initialExpected": "250.29",
+      "initialDifference": "1.00",
+      "reviewedExpected": "250.29",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 68,
+      "entry": "SYN-DATED-68",
+      "initialExpected": "37.04",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "37.04",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 69,
+      "entry": "SYN-DATED-69",
+      "initialExpected": "250.30",
+      "initialDifference": "0.00",
+      "reviewedExpected": "250.30",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 70,
+      "entry": "SYN-DATED-70",
+      "initialExpected": "37.04",
+      "initialDifference": "1.00",
+      "reviewedExpected": "37.04",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 71,
+      "entry": "SYN-DATED-71",
+      "initialExpected": "250.30",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "250.30",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 72,
+      "entry": "SYN-DATED-72",
+      "initialExpected": "37.04",
+      "initialDifference": "0.00",
+      "reviewedExpected": "37.04",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 73,
+      "entry": "SYN-DATED-73",
+      "initialExpected": "402.03",
+      "initialDifference": "1.00",
+      "reviewedExpected": "402.03",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 74,
+      "entry": "SYN-DATED-74",
+      "initialExpected": "58.07",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "58.07",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 75,
+      "entry": "SYN-DATED-75",
+      "initialExpected": "402.04",
+      "initialDifference": "0.00",
+      "reviewedExpected": "402.04",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 76,
+      "entry": "SYN-DATED-76",
+      "initialExpected": "58.07",
+      "initialDifference": "1.00",
+      "reviewedExpected": "58.07",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 77,
+      "entry": "SYN-DATED-77",
+      "initialExpected": "250.32",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "250.32",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 78,
+      "entry": "SYN-DATED-78",
+      "initialExpected": "37.05",
+      "initialDifference": "0.00",
+      "reviewedExpected": "37.05",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 79,
+      "entry": "SYN-DATED-79",
+      "initialExpected": "250.32",
+      "initialDifference": "1.00",
+      "reviewedExpected": "250.32",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 80,
+      "entry": "SYN-DATED-80",
+      "initialExpected": "37.05",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "37.05",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 81,
+      "entry": "SYN-DATED-81",
+      "initialExpected": "250.33",
+      "initialDifference": "0.00",
+      "reviewedExpected": "250.33",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 82,
+      "entry": "SYN-DATED-82",
+      "initialExpected": "37.05",
+      "initialDifference": "1.00",
+      "reviewedExpected": "37.05",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 83,
+      "entry": "SYN-DATED-83",
+      "initialExpected": "250.33",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "250.33",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 84,
+      "entry": "SYN-DATED-84",
+      "initialExpected": "37.05",
+      "initialDifference": "0.00",
+      "reviewedExpected": "37.05",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 85,
+      "entry": "SYN-DATED-85",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 86,
+      "entry": "SYN-DATED-86",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 87,
+      "entry": "SYN-DATED-87",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 88,
+      "entry": "SYN-DATED-88",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 89,
+      "entry": "SYN-DATED-89",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 90,
+      "entry": "SYN-DATED-90",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 91,
+      "entry": "SYN-DATED-91",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 92,
+      "entry": "SYN-DATED-92",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 93,
+      "entry": "SYN-DATED-93",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 94,
+      "entry": "SYN-DATED-94",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 95,
+      "entry": "SYN-DATED-95",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 96,
+      "entry": "SYN-DATED-96",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 97,
+      "entry": "SYN-DATED-97",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 98,
+      "entry": "SYN-DATED-98",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 99,
+      "entry": "SYN-DATED-99",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 100,
+      "entry": "SYN-DATED-100",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    }
+  ],
+  "summary": {
+    "lines": 100,
+    "calculated": 84,
+    "unresolved": 16,
+    "discrepancies": 56,
+    "overpayment": "28.00",
+    "underpayment": "28.00"
+  },
+  "browserSummary": {
+    "lines": 100,
+    "calculated": 85,
+    "unresolved": 15,
+    "discrepancies": 57,
+    "overpayment": "126.26",
+    "underpayment": "28.00"
+  },
+  "upgradeProbe": {
+    "row": 1,
+    "oldVersion": "historical-audit-v28",
+    "oldExpected": null,
+    "newExpected": "401.74"
+  },
+  "browserDecision": {
+    "row": 85,
+    "kind": "confirm_facts",
+    "hts": "2918170000",
+    "validFrom": "2017-06-30",
+    "validBefore": "2017-07-01",
+    "facts": {
+      "classification_verified": true
+    },
+    "evidence": [
+      "SYN-DATED-85-CLASSIFICATION-RECORD"
+    ],
+    "note": "FICTIONAL acceptance classification decision: the synthetic historical record supports suffix 00 for this June30 entry before the July1 annotation. The original suffix01 declaration remains unchanged. This approves no shared legal rule or refund entitlement.",
+    "expected": "401.74",
+    "difference": "98.26",
+    "originalHts": "2918170001",
+    "usedHts": "2918170000"
+  }
+}

@@ -1,0 +1,311 @@
+{
+  "label": "SYNTHETIC first reciprocal week, original law only. Hand-calculated goldens, fictional classification/origin/evidence; not legal approval.",
+  "rows": [
+    {
+      "entry": "SYNTHETIC-APRIL-START-1",
+      "cohort": "US steel original whole exception",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-START-2",
+      "cohort": "US aluminum original whole exception",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-START-3",
+      "cohort": "Ordinary 4% plus original reciprocal 10%",
+      "initialExpected": "140.00",
+      "initialDifference": "100.00",
+      "reviewedExpected": "140.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-START-4",
+      "cohort": "Independent China 301 and IEEPA remain",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "450.00",
+      "reviewedDifference": "-450.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-START-5",
+      "cohort": "Original Annex II HTS-only exception",
+      "initialExpected": "0.00",
+      "initialDifference": "100.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-START-6",
+      "cohort": "Exact new-program start, US metal exception",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-START-7",
+      "cohort": "Before the original new-program start",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-START-8",
+      "cohort": "Ordinary base remains before reciprocal starts",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-START-9",
+      "cohort": "One second later original reciprocal applies",
+      "initialExpected": "140.00",
+      "initialDifference": "-100.00",
+      "reviewedExpected": "140.00",
+      "reviewedDifference": "-100.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-START-10",
+      "cohort": "Missing time corrected by dated evidence",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "140.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-START-11",
+      "cohort": "Whole exception does not invent a content value",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-START-12",
+      "cohort": "Obsolete statistical suffix remains unresolved",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-START-13",
+      "cohort": "Missing time remains explicitly unknown",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-START-14",
+      "cohort": "Incorrect declared reciprocal heading; no payable difference",
+      "initialExpected": "0.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    }
+  ],
+  "decisions": [
+    {
+      "row": 1,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated shipment evidence for functionality testing; not human legal approval or a real import.",
+      "evidence": [
+        "SYNTHETIC-APRIL-START-1-DOC"
+      ],
+      "validFrom": "2025-04-06",
+      "validBefore": "2025-04-09",
+      "facts": {
+        "metal_special_claim": false,
+        "us_steel_melt_pour": true
+      }
+    },
+    {
+      "row": 2,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated shipment evidence for functionality testing; not human legal approval or a real import.",
+      "evidence": [
+        "SYNTHETIC-APRIL-START-2-DOC"
+      ],
+      "validFrom": "2025-04-06",
+      "validBefore": "2025-04-09",
+      "facts": {
+        "metal_special_claim": false,
+        "us_aluminum_smelt_cast": true,
+        "russian_aluminum_clear": true
+      }
+    },
+    {
+      "row": 3,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated shipment evidence for functionality testing; not human legal approval or a real import.",
+      "evidence": [
+        "SYNTHETIC-APRIL-START-3-DOC"
+      ],
+      "validFrom": "2025-04-06",
+      "validBefore": "2025-04-09",
+      "facts": {}
+    },
+    {
+      "row": 4,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated shipment evidence for functionality testing; not human legal approval or a real import.",
+      "evidence": [
+        "SYNTHETIC-APRIL-START-4-DOC"
+      ],
+      "validFrom": "2025-04-06",
+      "validBefore": "2025-04-09",
+      "facts": {
+        "metal_special_claim": false,
+        "us_steel_melt_pour": true
+      }
+    },
+    {
+      "row": 5,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated shipment evidence for functionality testing; not human legal approval or a real import.",
+      "evidence": [
+        "SYNTHETIC-APRIL-START-5-DOC"
+      ],
+      "validFrom": "2025-04-06",
+      "validBefore": "2025-04-09",
+      "facts": {}
+    },
+    {
+      "row": 6,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated shipment evidence for functionality testing; not human legal approval or a real import.",
+      "evidence": [
+        "SYNTHETIC-APRIL-START-6-DOC"
+      ],
+      "validFrom": "2025-04-05",
+      "validBefore": "2025-04-09",
+      "facts": {
+        "metal_special_claim": false,
+        "us_steel_melt_pour": true
+      }
+    },
+    {
+      "row": 7,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated shipment evidence for functionality testing; not human legal approval or a real import.",
+      "evidence": [
+        "SYNTHETIC-APRIL-START-7-DOC"
+      ],
+      "validFrom": "2025-04-05",
+      "validBefore": "2025-04-09",
+      "facts": {
+        "metal_special_claim": false,
+        "us_steel_melt_pour": true
+      }
+    },
+    {
+      "row": 8,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated shipment evidence for functionality testing; not human legal approval or a real import.",
+      "evidence": [
+        "SYNTHETIC-APRIL-START-8-DOC"
+      ],
+      "validFrom": "2025-04-05",
+      "validBefore": "2025-04-09",
+      "facts": {}
+    },
+    {
+      "row": 9,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated shipment evidence for functionality testing; not human legal approval or a real import.",
+      "evidence": [
+        "SYNTHETIC-APRIL-START-9-DOC"
+      ],
+      "validFrom": "2025-04-05",
+      "validBefore": "2025-04-09",
+      "facts": {}
+    },
+    {
+      "row": 10,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated shipment evidence for functionality testing; not human legal approval or a real import.",
+      "evidence": [
+        "SYNTHETIC-APRIL-START-10-DOC"
+      ],
+      "validFrom": "2025-04-05",
+      "validBefore": "2025-04-09",
+      "facts": {},
+      "shipment": {
+        "entryTimestamp": "2025-04-05T04:01:00Z"
+      }
+    },
+    {
+      "row": 11,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated shipment evidence for functionality testing; not human legal approval or a real import.",
+      "evidence": [
+        "SYNTHETIC-APRIL-START-11-DOC"
+      ],
+      "validFrom": "2025-04-08",
+      "validBefore": "2025-04-09",
+      "facts": {
+        "metal_special_claim": false,
+        "us_steel_melt_pour": true
+      }
+    },
+    {
+      "row": 12,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated shipment evidence for functionality testing; not human legal approval or a real import.",
+      "evidence": [
+        "SYNTHETIC-APRIL-START-12-DOC"
+      ],
+      "validFrom": "2025-04-06",
+      "validBefore": "2025-04-09",
+      "facts": {}
+    },
+    {
+      "row": 13,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated shipment evidence for functionality testing; not human legal approval or a real import.",
+      "evidence": [
+        "SYNTHETIC-APRIL-START-13-DOC"
+      ],
+      "validFrom": "2025-04-05",
+      "validBefore": "2025-04-09",
+      "facts": {}
+    },
+    {
+      "row": 14,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated shipment evidence for functionality testing; not human legal approval or a real import.",
+      "evidence": [
+        "SYNTHETIC-APRIL-START-14-DOC"
+      ],
+      "validFrom": "2025-04-06",
+      "validBefore": "2025-04-09",
+      "facts": {}
+    }
+  ],
+  "summary": {
+    "lines": 14,
+    "calculated": 5,
+    "unresolved": 9,
+    "discrepancies": 3,
+    "overpayment": "200.00",
+    "underpayment": "100.00"
+  },
+  "reviewedSummary": {
+    "lines": 14,
+    "calculated": 12,
+    "unresolved": 2,
+    "discrepancies": 7,
+    "overpayment": "500.00",
+    "underpayment": "550.00"
+  }
+}

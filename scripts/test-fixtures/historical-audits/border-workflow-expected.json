@@ -1,0 +1,165 @@
+{
+  "label": "Fictional small workflow fixture; separate 120-line acceptance remains the primary dataset.",
+  "rows": [
+    {
+      "entry": "SYNTHETIC-BORDER-WORKFLOW-1",
+      "cohort": "Ordinary border",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-BORDER-WORKFLOW-2",
+      "cohort": "Ordinary border",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "390.00",
+      "reviewedDifference": "610.00"
+    },
+    {
+      "entry": "SYNTHETIC-BORDER-WORKFLOW-3",
+      "cohort": "Ordinary border",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-BORDER-WORKFLOW-4",
+      "cohort": "Ordinary border",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-BORDER-WORKFLOW-5",
+      "cohort": "Ordinary border",
+      "initialExpected": "140.00",
+      "initialDifference": "860.00",
+      "reviewedExpected": "140.00",
+      "reviewedDifference": "860.00"
+    },
+    {
+      "entry": "SYNTHETIC-BORDER-WORKFLOW-6",
+      "cohort": "Ordinary border",
+      "initialExpected": "140.00",
+      "initialDifference": "860.00",
+      "reviewedExpected": "140.00",
+      "reviewedDifference": "860.00"
+    },
+    {
+      "entry": "SYNTHETIC-BORDER-WORKFLOW-7",
+      "cohort": "Ordinary border",
+      "initialExpected": "140.00",
+      "initialDifference": "860.00",
+      "reviewedExpected": "140.00",
+      "reviewedDifference": "860.00"
+    },
+    {
+      "entry": "SYNTHETIC-BORDER-WORKFLOW-8",
+      "cohort": "Ordinary border",
+      "initialExpected": "140.00",
+      "initialDifference": "860.00",
+      "reviewedExpected": "140.00",
+      "reviewedDifference": "860.00"
+    },
+    {
+      "entry": "SYNTHETIC-BORDER-WORKFLOW-9",
+      "cohort": "AD deposit",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "1032.80",
+      "reviewedDifference": "-32.80"
+    }
+  ],
+  "decisions": [
+    {
+      "row": 1,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC test qualification only, not a real entry or legal approval.",
+      "evidence": [
+        "SYNTHETIC-BORDER-WORKFLOW-EVIDENCE"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2027-01-01",
+      "facts": {
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 2,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC test qualification only, not a real entry or legal approval.",
+      "evidence": [
+        "SYNTHETIC-BORDER-WORKFLOW-EVIDENCE"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2027-01-01",
+      "facts": {
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 3,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC test qualification only, not a real entry or legal approval.",
+      "evidence": [
+        "SYNTHETIC-BORDER-WORKFLOW-EVIDENCE"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2027-01-01",
+      "facts": {
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 4,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC test qualification only, not a real entry or legal approval.",
+      "evidence": [
+        "SYNTHETIC-BORDER-WORKFLOW-EVIDENCE"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2027-01-01",
+      "facts": {
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 9,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC test qualification only, not a real entry or legal approval.",
+      "evidence": [
+        "SYNTHETIC-BORDER-WORKFLOW-EVIDENCE"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2027-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      }
+    }
+  ],
+  "summary": {
+    "lines": 9,
+    "calculated": 4,
+    "unresolved": 5,
+    "discrepancies": 4,
+    "overpayment": "3440.00",
+    "underpayment": "0.00"
+  },
+  "reviewedSummary": {
+    "lines": 9,
+    "calculated": 9,
+    "unresolved": 0,
+    "discrepancies": 9,
+    "overpayment": "6180.00",
+    "underpayment": "32.80"
+  }
+}

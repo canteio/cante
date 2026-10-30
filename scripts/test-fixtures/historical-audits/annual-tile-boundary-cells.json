@@ -1,0 +1,454 @@
+{
+  "label": "Public USITC table excerpt for parser tests; test source identities are fictional. Captured original hashes establish content integrity, not legal approval.",
+  "sourceId": "4f7b818b-3e61-4b3a-9167-38153dc05aea",
+  "url": "https://hts.usitc.gov/reststop/file?release=basicCorrections2&filename=Chapter%2069",
+  "sha256": "a2a0394ab3b0ef5e076e7d041a7f3f1372a525101e1f37c0a6da5e8d3c66be0c",
+  "page": 6,
+  "cells": [
+    {
+      "text": "Rates of Duty",
+      "x": 457.237,
+      "y": 719.212
+    },
+    {
+      "text": "Unit",
+      "x": 350.897,
+      "y": 718.712
+    },
+    {
+      "text": "of",
+      "x": 354.201,
+      "y": 710.313
+    },
+    {
+      "text": "Quantity",
+      "x": 344.086,
+      "y": 701.914
+    },
+    {
+      "text": "Article Description",
+      "x": 193.728,
+      "y": 710.313
+    },
+    {
+      "text": "Stat.",
+      "x": 93.24,
+      "y": 718.712
+    },
+    {
+      "text": "Suf-",
+      "x": 94.021,
+      "y": 710.313
+    },
+    {
+      "text": "fix",
+      "x": 96.94,
+      "y": 701.914
+    },
+    {
+      "text": "Heading/",
+      "x": 55.473,
+      "y": 718.212
+    },
+    {
+      "text": "Subheading",
+      "x": 50.8,
+      "y": 709.813
+    },
+    {
+      "text": "2",
+      "x": 548.134,
+      "y": 710.313
+    },
+    {
+      "text": "1",
+      "x": 448.414,
+      "y": 710.313
+    },
+    {
+      "text": "Special",
+      "x": 471.283,
+      "y": 701.414
+    },
+    {
+      "text": "General",
+      "x": 398.705,
+      "y": 701.414
+    },
+    {
+      "text": "Ceramic flags and paving, hearth or wall tiles; ceramic mosaic",
+      "x": 110.72,
+      "y": 689.353
+    },
+    {
+      "text": "cubes and the like, whether or not on a backing; finishing",
+      "x": 110.72,
+      "y": 679.153
+    },
+    {
+      "text": "ceramics: (con.)",
+      "x": 110.72,
+      "y": 668.953
+    },
+    {
+      "text": "6907 (con.)",
+      "x": 47.8,
+      "y": 689.353
+    },
+    {
+      "text": "Flags and paving, hearth or wall tiles, other than those of",
+      "x": 125.12,
+      "y": 658.753
+    },
+    {
+      "text": "subheading 6907.30 and 6907.40: (con.)",
+      "x": 125.12,
+      "y": 648.553
+    },
+    {
+      "text": "Of a water absorption coefficient by weight not",
+      "x": 139.52,
+      "y": 638.353
+    },
+    {
+      "text": "exceeding 0.5%: (con.)",
+      "x": 139.52,
+      "y": 628.153
+    },
+    {
+      "text": "6907.21",
+      "x": 47.8,
+      "y": 638.353
+    },
+    {
+      "text": "(con.)",
+      "x": 47.8,
+      "y": 628.153
+    },
+    {
+      "text": "Glazed:",
+      "x": 153.92,
+      "y": 617.953
+    },
+    {
+      "text": "The largest surface area of which is capable",
+      "x": 168.32,
+      "y": 607.753
+    },
+    {
+      "text": "of being enclosed in a square the side of which",
+      "x": 168.32,
+      "y": 597.553
+    },
+    {
+      "text": "is less than 7 cm:",
+      "x": 168.32,
+      "y": 587.353
+    },
+    {
+      "text": "Having not over 3229 tiles per square",
+      "x": 182.72,
+      "y": 577.153
+    },
+    {
+      "text": "meter, most of which have faces bounded",
+      "x": 182.72,
+      "y": 566.953
+    },
+    {
+      "text": "entirely by straight lines..............................",
+      "x": 182.72,
+      "y": 556.753
+    },
+    {
+      "text": "00",
+      "x": 95.714,
+      "y": 577.153
+    },
+    {
+      "text": "6907.21.20",
+      "x": 47.8,
+      "y": 577.153
+    },
+    {
+      "text": "55%",
+      "x": 524,
+      "y": 558.553
+    },
+    {
+      "text": "Free (AU, BH, CA,",
+      "x": 445.52,
+      "y": 558.553
+    },
+    {
+      "text": "CL, CO, D, E.IL,",
+      "x": 450.52,
+      "y": 548.353
+    },
+    {
+      "text": "JO, MA, MX, P,",
+      "x": 450.52,
+      "y": 538.153
+    },
+    {
+      "text": "PA, PE, SG) 1%",
+      "x": 450.52,
+      "y": 527.953
+    },
+    {
+      "text": "(OM)",
+      "x": 450.52,
+      "y": 517.753
+    },
+    {
+      "text": "5.9% (KR)",
+      "x": 445.52,
+      "y": 507.553
+    },
+    {
+      "text": "10%",
+      "x": 380.72,
+      "y": 558.553
+    },
+    {
+      "text": "m",
+      "x": 337.52,
+      "y": 556.819
+    },
+    {
+      "text": "2",
+      "x": 344.778,
+      "y": 561.273
+    },
+    {
+      "text": "..............",
+      "x": 347.97,
+      "y": 556.819
+    },
+    {
+      "text": "Other:",
+      "x": 182.72,
+      "y": 493.353
+    },
+    {
+      "text": "The largest surface area of which is",
+      "x": 197.12,
+      "y": 483.153
+    },
+    {
+      "text": "less than 38.7 cm",
+      "x": 197.12,
+      "y": 471.219
+    },
+    {
+      "text": "2",
+      "x": 262.682,
+      "y": 475.673
+    },
+    {
+      "text": "................................",
+      "x": 265.518,
+      "y": 471.219
+    },
+    {
+      "text": "00",
+      "x": 95.714,
+      "y": 483.153
+    },
+    {
+      "text": "6907.21.30",
+      "x": 47.8,
+      "y": 483.153
+    },
+    {
+      "text": "55%",
+      "x": 524,
+      "y": 473.019
+    },
+    {
+      "text": "Free (A*, AU, BH,",
+      "x": 445.52,
+      "y": 473.019
+    },
+    {
+      "text": "CA, CL, CO, D, E,",
+      "x": 450.52,
+      "y": 462.819
+    },
+    {
+      "text": "IL, JO, MA, MX,",
+      "x": 450.52,
+      "y": 452.619
+    },
+    {
+      "text": "OM, P, PA, PE,",
+      "x": 450.52,
+      "y": 442.419
+    },
+    {
+      "text": "SG)",
+      "x": 450.52,
+      "y": 432.219
+    },
+    {
+      "text": "5.9% (KR)",
+      "x": 445.52,
+      "y": 422.019
+    },
+    {
+      "text": "10%",
+      "x": 380.72,
+      "y": 473.019
+    },
+    {
+      "text": "m",
+      "x": 337.52,
+      "y": 471.285
+    },
+    {
+      "text": "2",
+      "x": 344.778,
+      "y": 475.739
+    },
+    {
+      "text": "..............",
+      "x": 347.97,
+      "y": 471.285
+    },
+    {
+      "text": "Other......................................................",
+      "x": 197.12,
+      "y": 407.819
+    },
+    {
+      "text": "00",
+      "x": 95.714,
+      "y": 407.819
+    },
+    {
+      "text": "6907.21.40",
+      "x": 47.8,
+      "y": 407.819
+    },
+    {
+      "text": "55%",
+      "x": 524,
+      "y": 409.619
+    },
+    {
+      "text": "Free (AU, BH, CA,",
+      "x": 445.52,
+      "y": 409.619
+    },
+    {
+      "text": "CL, CO, D, E, IL,",
+      "x": 450.52,
+      "y": 399.419
+    },
+    {
+      "text": "JO, MA, MX, P,",
+      "x": 450.52,
+      "y": 389.219
+    },
+    {
+      "text": "PA, PE, SG)",
+      "x": 450.52,
+      "y": 379.019
+    },
+    {
+      "text": "0.8% (OM)",
+      "x": 445.52,
+      "y": 368.819
+    },
+    {
+      "text": "5% (KR)",
+      "x": 445.52,
+      "y": 358.619
+    },
+    {
+      "text": "8.5%",
+      "x": 380.72,
+      "y": 409.619
+    },
+    {
+      "text": "m",
+      "x": 337.52,
+      "y": 407.885
+    },
+    {
+      "text": "2",
+      "x": 344.778,
+      "y": 412.339
+    },
+    {
+      "text": "..............",
+      "x": 347.97,
+      "y": 407.885
+    },
+    {
+      "text": "Other...................................................................",
+      "x": 168.32,
+      "y": 348.419
+    },
+    {
+      "text": "6907.21.90",
+      "x": 47.8,
+      "y": 348.419
+    },
+    {
+      "text": "55%",
+      "x": 524,
+      "y": 348.219
+    },
+    {
+      "text": "Free (AU, BH, CA,",
+      "x": 445.52,
+      "y": 348.219
+    },
+    {
+      "text": "CL, CO, D, E, IL,",
+      "x": 450.52,
+      "y": 338.019
+    },
+    {
+      "text": "8.5%",
+      "x": 380.72,
+      "y": 348.219
+    },
+    {
+      "text": "..................",
+      "x": 337.52,
+      "y": 348.219
+    },
+    {
+      "text": "Rates of Duty",
+      "x": 457.237,
+      "y": 718.332
+    },
+    {
+      "text": "1",
+      "x": 448.054,
+      "y": 709.836
+    },
+    {
+      "text": "Harmonized Tariff Schedule of the United States (2017)",
+      "x": 170.314,
+      "y": 757.39
+    },
+    {
+      "text": "Annotated for Statistical Reporting Purposes",
+      "x": 243.654,
+      "y": 747.613
+    },
+    {
+      "text": "XIII",
+      "x": 45.72,
+      "y": 739.214
+    },
+    {
+      "text": "69-6",
+      "x": 45.72,
+      "y": 730.815
+    }
+  ]
+}

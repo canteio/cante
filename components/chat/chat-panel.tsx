@@ -67,11 +67,17 @@ export function ChatPanel({
   initialConversationId,
   initialCountry,
   initialDemo = false,
+  embedded = false,
+  initialPrompt = "",
+  auditContext,
 }: {
   customerId: string | null;
   initialConversationId: string | null;
   initialCountry: JurisdictionName;
   initialDemo?: boolean;
+  embedded?: boolean;
+  initialPrompt?: string;
+  auditContext?: {id:string;row:number};
 }) {
   const router = useRouter();
   const [demoInput, setDemoInput] = useState<DemoInput | null>(null);
@@ -80,7 +86,7 @@ export function ChatPanel({
     try { return calculateDemo(demoInput); } catch { return null; }
   }, [demoInput]);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState(initialPrompt);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [conversationId, setConversationId] = useState<string | null>(null);
@@ -171,6 +177,7 @@ export function ChatPanel({
     abortRef.current?.abort();
     setBusy(false);
     setConversationId(null);
+    try { if (!initialDemo && customerId) sessionStorage.removeItem(`cante:active-chat:${customerId}`); } catch { /* A storage preference cannot block a new chat. */ }
     setMessages([]);
     setError(null);
     setInput("");
@@ -262,9 +269,18 @@ export function ChatPanel({
     if (initialConversationId) {
       void openConversation(initialConversationId);
     } else {
-      newChat();
+      let remembered:string|null=null;
+      try { remembered = customerId ? sessionStorage.getItem(`cante:active-chat:${customerId}`) : null; } catch { /* Chat still works without tab-local preferences. */ }
+      if (remembered && /^[a-zA-Z0-9_-]{1,100}$/.test(remembered)) void openConversation(remembered);
+      else newChat();
     }
   }, [initialConversationId, initialCountry, initialDemo]);
+
+  useEffect(() => {
+    try { if (!initialDemo && customerId && conversationId) sessionStorage.setItem(`cante:active-chat:${customerId}`, conversationId); } catch { /* Saved conversations remain on the server. */ }
+  }, [conversationId, customerId, initialDemo]);
+
+  useEffect(() => { if (initialPrompt) { setInput(initialPrompt); textareaRef.current?.focus(); } }, [initialPrompt]);
 
   useEffect(() => {
     const onNew = () => newChat();
@@ -342,6 +358,7 @@ export function ChatPanel({
           customerId,
           conversationId,
           country,
+          ...(!initialDemo&&auditContext?{auditId:auditContext.id,auditRow:auditContext.row}:{}),
         }),
         signal: abortController.signal,
       });
@@ -453,7 +470,7 @@ export function ChatPanel({
             // A brand-new chat adopts the id the server created, so the next
             // turn appends instead of starting another conversation.
             setConversationId(ev.id);
-            window.history.replaceState(
+            if (!embedded) window.history.replaceState(
               null,
               "",
               `/chat?country=${encodeURIComponent(country)}&conversationId=${ev.id}`,
@@ -484,6 +501,7 @@ export function ChatPanel({
         closeOpenItems(m);
       });
       setBusy(false);
+      if (!initialDemo) window.dispatchEvent(new Event("cante:workspace-updated"));
     }
   }
 
@@ -491,9 +509,10 @@ export function ChatPanel({
   function suggest(text: string) { setInput(text); textareaRef.current?.focus(); }
 
   return (
-    <div className={`chat-page cante-chat${isEmpty ? " is-empty" : ""}`}>
+    <div className={`chat-page cante-chat${isEmpty ? " is-empty" : ""}${embedded ? " is-embedded" : ""}`}>
+      {!embedded && !initialDemo && <a className="chat-workspace-link" href={auditContext?`/tariff/audits/${auditContext.id}?finding=${auditContext.row}`:"/tariff"}>{auditContext?"← Return to this audit finding":"← Tariff dashboard · shares your products and saved checks"}</a>}
       {initialDemo && <div className="chat-demo-banner"><span><strong>Fictional scenario</strong>{demoResult ? ` · ${demoResult.affectedCount}/${demoResult.productCount} products · ${demoMoney(demoResult.totalExtraCents)} extra/year. Not saved to your workspace.` : " · Calculate a demo first."}</span><a href="/tariff/demo">Edit scenario</a><a href="/chat">Leave demo</a></div>}
-      {!isEmpty && <div className="cante-chat-mobile-actions"><button className="btn" disabled={busy} onClick={() => { newChat(); router.push(`/chat?country=${encodeURIComponent(country)}`); }}>New chat</button></div>}
+      {!isEmpty && <div className="cante-chat-mobile-actions"><button className="btn" disabled={busy} onClick={() => { newChat(); if (!embedded) router.push(`/chat?country=${encodeURIComponent(country)}`); }}>New chat</button></div>}
       <div className="chat-scroll">
         <div className="chat-inner">
           {messages.map((m, i) =>

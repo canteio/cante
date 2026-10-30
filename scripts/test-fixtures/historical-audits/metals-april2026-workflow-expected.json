@@ -1,0 +1,400 @@
+{
+  "label": "SYNTHETIC 16-line focused workflow; government-source rules, fictional shipment qualifications. Not legal validation.",
+  "rows": [
+    {
+      "entry": "SYNTHETIC-APRIL-METAL-1",
+      "cohort": "Dated April-June transition",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "750.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-METAL-2",
+      "cohort": "Dated April-June transition",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "750.00",
+      "reviewedDifference": "-50.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-METAL-3",
+      "cohort": "Dated April-June transition",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "750.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-METAL-4",
+      "cohort": "Dated April-June transition",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "750.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-METAL-5",
+      "cohort": "Dated April-June transition",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "500.00",
+      "reviewedDifference": "-50.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-METAL-6",
+      "cohort": "Dated April-June transition",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "500.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-METAL-7",
+      "cohort": "Dated April-June transition",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-METAL-8",
+      "cohort": "Dated April-June transition",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-50.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-METAL-9",
+      "cohort": "Dated April-June transition",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-METAL-10",
+      "cohort": "Dated April-June transition",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-METAL-11",
+      "cohort": "Dated April-June transition",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "500.00",
+      "reviewedDifference": "-50.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-METAL-12",
+      "cohort": "Dated April-June transition",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-METAL-13",
+      "cohort": "Dated April-June transition",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-METAL-14",
+      "cohort": "Dated April-June transition",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-50.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-METAL-15",
+      "cohort": "Dated April-June transition",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "750.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-APRIL-METAL-16",
+      "cohort": "Dated April-June transition",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "750.00",
+      "reviewedDifference": "100.00"
+    }
+  ],
+  "decisions": [
+    {
+      "row": 1,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated qualification; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-APRIL-METAL-EVIDENCE"
+      ],
+      "validFrom": "2026-04-06",
+      "validBefore": "2026-06-08",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false
+      }
+    },
+    {
+      "row": 2,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated qualification; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-APRIL-METAL-EVIDENCE"
+      ],
+      "validFrom": "2026-04-15",
+      "validBefore": "2026-06-08",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false
+      }
+    },
+    {
+      "row": 3,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated qualification; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-APRIL-METAL-EVIDENCE"
+      ],
+      "validFrom": "2026-05-15",
+      "validBefore": "2026-06-08",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false
+      }
+    },
+    {
+      "row": 4,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated qualification; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-APRIL-METAL-EVIDENCE"
+      ],
+      "validFrom": "2026-06-07",
+      "validBefore": "2026-06-08",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false
+      }
+    },
+    {
+      "row": 5,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated qualification; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-APRIL-METAL-EVIDENCE"
+      ],
+      "validFrom": "2026-05-15",
+      "validBefore": "2026-06-08",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false
+      }
+    },
+    {
+      "row": 6,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated qualification; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-APRIL-METAL-EVIDENCE"
+      ],
+      "validFrom": "2026-05-15",
+      "validBefore": "2026-06-08",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false
+      }
+    },
+    {
+      "row": 7,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated qualification; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-APRIL-METAL-EVIDENCE"
+      ],
+      "validFrom": "2026-05-15",
+      "validBefore": "2026-06-08",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "uk_metal_qualified": true
+      }
+    },
+    {
+      "row": 8,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated qualification; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-APRIL-METAL-EVIDENCE"
+      ],
+      "validFrom": "2026-05-15",
+      "validBefore": "2026-06-08",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": true
+      }
+    },
+    {
+      "row": 9,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated qualification; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-APRIL-METAL-EVIDENCE"
+      ],
+      "validFrom": "2026-04-06",
+      "validBefore": "2026-06-08",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "metal_weight_verified": true,
+        "no_metal_content": true,
+        "russian_aluminum_clear": true,
+        "motorcycle_use": false
+      }
+    },
+    {
+      "row": 10,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated qualification; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-APRIL-METAL-EVIDENCE"
+      ],
+      "validFrom": "2026-04-15",
+      "validBefore": "2026-06-08",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "metal_weight_verified": true,
+        "no_metal_content": false,
+        "russian_aluminum_clear": true,
+        "motorcycle_use": false
+      }
+    },
+    {
+      "row": 11,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated qualification; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-APRIL-METAL-EVIDENCE"
+      ],
+      "validFrom": "2026-05-15",
+      "validBefore": "2026-06-08",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "metal_weight_verified": true,
+        "no_metal_content": false,
+        "russian_aluminum_clear": true,
+        "motorcycle_use": false
+      }
+    },
+    {
+      "row": 12,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated qualification; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-APRIL-METAL-EVIDENCE"
+      ],
+      "validFrom": "2026-05-15",
+      "validBefore": "2026-06-08",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "metal_weight_verified": true,
+        "no_metal_content": false,
+        "russian_aluminum_clear": true,
+        "motorcycle_use": true
+      }
+    },
+    {
+      "row": 13,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated qualification; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-APRIL-METAL-EVIDENCE"
+      ],
+      "validFrom": "2026-05-15",
+      "validBefore": "2026-06-08",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false,
+        "metal_weight_verified": true,
+        "no_metal_content": false,
+        "russian_aluminum_clear": true,
+        "motorcycle_use": false
+      }
+    },
+    {
+      "row": 14,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated qualification; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-APRIL-METAL-EVIDENCE"
+      ],
+      "validFrom": "2026-05-15",
+      "validBefore": "2026-06-08",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": true,
+        "metal_weight_verified": true,
+        "no_metal_content": false,
+        "russian_aluminum_clear": true,
+        "motorcycle_use": false
+      }
+    },
+    {
+      "row": 15,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated qualification; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-APRIL-METAL-EVIDENCE"
+      ],
+      "validFrom": "2026-04-24",
+      "validBefore": "2026-06-08",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false
+      }
+    },
+    {
+      "row": 16,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated qualification; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-APRIL-METAL-EVIDENCE"
+      ],
+      "validFrom": "2026-05-25",
+      "validBefore": "2026-06-08",
+      "facts": {
+        "metal_special_claim": false,
+        "us_metal_qualified": false
+      }
+    }
+  ],
+  "summary": {
+    "lines": 16,
+    "calculated": 0,
+    "unresolved": 16,
+    "discrepancies": 0,
+    "overpayment": "0.00",
+    "underpayment": "0.00"
+  },
+  "reviewedSummary": {
+    "lines": 16,
+    "calculated": 16,
+    "unresolved": 0,
+    "discrepancies": 11,
+    "overpayment": "600.00",
+    "underpayment": "250.00"
+  }
+}

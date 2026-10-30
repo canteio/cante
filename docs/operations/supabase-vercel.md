@@ -1,5 +1,47 @@
 # Supabase + Vercel Production Runbook
 
+Monitoring results identify their calculation method. The current website requires
+`exact-duty-arithmetic-v2` from the trusted worker. Release matching website and
+worker builds together; a worker mismatch is a visible failure, not a completed
+fresh check. A method change establishes a new numerical baseline, and old
+attested checks remain in history. Refresh before using old/unknown methods for
+current chat or dashboard costs. Never rewrite historical attestations to add a
+method marker. Local verification does not update hosted targets.
+
+October 27: migration `20261027194112_historical_audit_engine_refresh.sql` is
+applied. The current audit refresh HTTP route requires this RPC and pins the
+server calculation version; older clients retain their legacy RPC. Actual worker
+proofs remain authoritative, separate from requested-version metadata. Release
+the website and trusted worker together so a request for new support executes
+on that version. No deployment or daily target changed. The real isolated
+old-v19 → refresh → v20 workflow and tenant denials pass.
+[Scope, rollback tests, advisors and cleanup](../audits/2026-10-27-statistical-components.md).
+
+October 25 historical expansion is local-only. Migrations `20261024162000` and
+`20261024210000` are applied for strict CBP original URLs and 512 pinned references.
+The updated website and trusted worker must be released together; no deployment,
+worker connector or daily Vault target was changed in this work. Use the
+[historical audit runbook](historical-audits.md) and
+[verified scope](../audits/2026-10-24-multiyear-chapter99.md) for bounds and checks.
+
+October 30 Data API defaults: migration
+`20261023165515_explicit_data_api_worker_grants.sql` is applied. Older table-creation
+migrations now declare worker grants and sequence access explicitly; new tables
+must do the same. Never copy anonymous access grants onto tenant tables. The
+isolated rebuild check is `npm run verify:data-api-grants -- --postgres-bin=/absolute/postgresql/bin`.
+[Scope and verification](../audits/2026-10-23-explicit-data-api-grants.md).
+
+
+October 23 ordinary-audit release: website Preview
+`https://cante-fnk6p700p-jeremygautamas-projects.vercel.app`, worker
+`https://cante-check-worker-xk1may2zx-jeremygautamas-projects.vercel.app`.
+Both builds are READY. Preview/local future worker connectors use this worker;
+existing daily Cron/Vault and production are unchanged. Real isolated local
+production-build acceptance passed upload-to-export with actual Supabase and
+worker proof. Vercel SSO blocks browser acceptance of the exact hosted website
+build. [Current evidence and limits](../audits/2026-10-23-ordinary-audit-completion.md).
+
+
 ## Architecture
 
 ```txt
@@ -105,7 +147,9 @@ ANTHROPIC_MODEL=claude-sonnet-4-20250514
 ```
 
 Do **not** add the worker's `SUPABASE_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
-local CLI paths, Telegram credentials, or `CANTE_DB_PATH` to Vercel. Create a
+local CLI paths, Telegram credentials, or `CANTE_DB_PATH` to the customer-facing
+Vercel project. The isolated checking-function project below is a separate trusted
+worker, with no website routes or browser bundle. Create a
 separate, revocable Supabase secret for `WAITLIST_WRITE_KEY`; keep it server-only
 and use it only for the waitlist RPC.
 
@@ -313,3 +357,294 @@ three simultaneous reads, avoiding oversized combined responses of many PDFs.
 Run `npm run test:history` offline or `npm run verify:history` for a fresh read-only
 comparison against the current official release. The latter can fail honestly
 when the source format, current law or supported archive coverage changes.
+
+## On-demand file checking worker (October 21)
+
+Supabase and Vercel are sufficient for the implemented on-demand path. The
+customer-facing project dispatches to a separate Vercel Function project; only
+that isolated worker has a Supabase service credential. No schedule, model or
+delivery is needed. The older tariff-recalculation bridge and its unconditional
+Vercel rejection remain unchanged.
+
+Package the reviewed code:
+
+```sh
+npm run build:check-worker
+```
+
+This builds `output/check-worker/api/check.mjs`, plus the standalone Vercel
+configuration. The generated directory is ignored. The build checks that no
+Next.js website, LLM provider or delivery modules are included. Its authenticated
+Supabase adapter is request-scoped; calculations retain the user's JWT and RLS.
+There is no privileged fallback when that context is absent. Node.js 22 and a
+300-second function duration are configured. The measured PDF-processing workload
+exceeded Supabase Edge Functions' two-second CPU limit, so this package uses the
+existing Vercel account rather than adding another hosting provider.
+
+Link this generated directory to a **separate worker project**, not the website
+project. Set the following server environment there:
+
+```txt
+NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=YOUR_PUBLISHABLE_KEY
+SUPABASE_SECRET_KEY=WORKER_ONLY_SUPABASE_SECRET
+CANTE_TRUSTED_CHECK_WORKER=true
+CANTE_DEPLOYMENT_ROLE=trusted-check-worker
+CANTE_CHECK_DISPATCH_SECRET=AT_LEAST_32_RANDOM_CHARACTERS
+```
+
+The publishable settings are public configuration; the service and dispatch keys
+must be Vercel Secrets. Only the worker's own extra deployment SSO gate may be
+disabled for server-to-server calls; its function still requires both the signed
+dispatch and a verified workspace session. The customer-facing project's existing
+deployment protection is preserved.
+
+For the website project's matching environment, configure only:
+
+```txt
+CANTE_CHECK_WORKER_URL=https://YOUR_WORKER_DEPLOYMENT/api/check
+CANTE_CHECK_DISPATCH_SECRET=THE_SAME_DISPATCH_SECRET
+```
+
+The connector secret authorizes this connection; it is not a database/admin
+credential. Never put the worker's Supabase service credential in the website
+project. HTTPS is required except explicit localhost development. Redirects,
+credentials in URLs, query strings and unexpected endpoint paths are rejected.
+The standalone worker receives a user access token, verifies it with Supabase
+Auth, verifies write-capable membership and record ownership, and reads the
+immutable original itself. HMAC freshness binds the IDs and authentication header.
+Hosted dispatch remains behind the shared database admission guard. Partial
+connector settings fail visibly; no alternate worker or old result is substituted.
+
+The worker fetches and computes independently, saves through the user's RLS-scoped
+client, compares the committed payload to its own output, then inserts the
+protected execution proof using its service client. Existing member-authored
+completed reports are never signed retrospectively. Failed proofs leave an
+unverified archive; start a new check to retry. The response omits source bodies;
+original bytes remain available through authenticated history/export.
+
+The Next.js adapter at `/api/internal/tariff-live-check` can also run on a separate
+trusted Node worker using signed cookies. A normal website deployment rejects it;
+Vercel execution additionally requires the explicit isolated-worker deployment
+role. This exception does not change the older recalculation bridge's rejection.
+
+Without a connector, direct on-demand checking remains available, but its saved
+calculation is unverified and cannot become a saved numerical baseline. The worker
+flag does not launch a process or enable a schedule. Preview deployments and their
+settings do not update the existing production website. On a brand-new Vercel
+project, the first deployment may receive the project's default production alias;
+check its environment before use. The active test worker was an explicitly
+configured preview; the initial bootstrap had no execution credentials.
+
+A government archive index returned HTTP 403 from Vercel during verification.
+Historical checking therefore retrieves and verifies the two versioned legal-note
+PDFs independently. A failed JSON/index phase leaves historical base-duty/heading
+comparisons unavailable, with explicit coverage flags and the failed request kept
+in evidence. Empty missing comparisons never mean no change. This fallback does
+not manufacture archive filenames, infer historical rates, or approve exclusions.
+
+Verification records and limits are in the
+[October 21 audit](../audits/2026-10-21-mvp-file-impact-flow.md). The isolated worker
+and preview were exercised with labelled fictional inputs and real Supabase
+archives. No customer ledger, full legal coverage or production release is implied.
+
+## Unified workspace (October 22)
+
+Migration `20261022041336_workspace_tariff_inputs.sql` adds nullable, bounded JSON
+inputs to products under existing tenant RLS. It does not backfill reference prices
+as customs values or rewrite customer data. Both dashboard and chat refreshes now
+snapshot the catalogue, not the latest separately uploaded file. Deploy the
+compatible worker before the website because catalogue snapshots can contain null
+customs values and missing classification facts. Keep the website connector URL and
+shared dispatch key paired with that worker. Local Next development reads the two
+connector settings from ignored `.env.local`; a custom `.env.check-worker.local`
+file alone is not automatically loaded by Next. Never put the worker's database
+service key in the website environment.
+
+The compatible isolated worker and standard local connector are configured.
+Website preview and production build environments also have matching connector
+settings. These environment updates do not redeploy the current production
+website; the unified dashboard has not yet been promoted there.
+
+Use the [workspace audit](../audits/2026-10-22-unified-tariff-workspace.md) for the
+specific verification and release state. No new background schedule is part of
+this dashboard refresh flow.
+
+
+## Historical reference archive and database audit (October 22)
+
+Five follow-up migrations add immutable shared sources, per-chapter publication,
+exact historical rate lookups and indexed code/origin/date-scoped approved-rule
+selection. They also add 65 missing relationship indexes and remove redundant
+read policies/expensive auth expressions. See the [full schema/routing audit](../audits/2026-10-22-supabase-architecture.md)
+and [reference operations](historical-references.md). The latter distinguishes
+current search data, extracted candidates and legal approval; a published rate
+reference alone cannot establish a complete historical stacked duty.
+
+The compatible worker deployment is
+`https://cante-check-worker-jrrloogja-jeremygautamas-projects.vercel.app/api/check`.
+Local and future Preview/Production connector settings are updated; no main
+website redeployment was performed. Privileged database keys remain absent from
+the website's configured Vercel environment. Execution verification used the
+compiled worker locally with actual Supabase, not an HTTP probe of its Vercel URL.
+
+The existing `tariff-impact-recalculate` Edge Function is now v3, matching repository
+failure-count handling; unauthenticated calls return 401. `hts-revision-check` v6
+also matches repository source. The one existing HTS cron is unchanged and no
+recalculation schedule or delivery was enabled. SQL lint is clean. The remaining
+advisor warning about leaked-password protection is an Auth configuration item;
+it was not changed by schema cleanup. Deliberate narrowly authorized definer RPCs,
+service-only deny-all RLS tables and recently added unused indexes are documented
+in the architecture audit rather than hidden by granting broader access.
+
+## Daily workspace checks (October 22)
+
+The user authorized only the Cante daily monitor, with in-app notices. Owners/admins
+opt in using the dashboard checkbox. No workspace is enabled by deployment.
+Apply `20261022224156_daily_workspace_monitor.sql` before releasing this UI.
+
+The separate worker serves `/api/monitor` and requires its own random 32-byte
+`CANTE_MONITOR_CRON_SECRET`. Keep that secret and all Supabase privileged keys off
+the website. Provision the same secret in `.env.check-worker.local` and the worker's
+Vercel environment, then deploy `output/check-worker` after `npm run build:check-worker`.
+Configure Vault plus the one authorized Supabase Cron job explicitly:
+
+```sh
+node scripts/configure-daily-monitor.mjs --worker=https://WORKER.vercel.app/api/monitor
+# Inspect the dry run, then apply:
+node scripts/configure-daily-monitor.mjs --write --worker=https://WORKER.vercel.app/api/monitor
+```
+
+The job checks due workspaces every five minutes, one at a time; successful workspaces
+recur after 24 hours, failed source/check attempts after one hour. Current workspace
+limit is 100 active products. Review `cron.job_run_details`, `net._http_response`
+and tenant daily settings for failures; never interpret a dispatch as a completed
+check. A protected archive attestation is required before completion. Repoint Vault
+when replacing the worker deployment. Do not turn on external delivery.
+
+Verification: `supabase/tests/daily_monitor.sql` rolls back isolated fixtures;
+`scripts/test-daily-worker.mjs` verifies the built worker's authentication/admission.
+
+Earlier hosted-tested pilot Preview: `https://cante-ee1xdbktr-jeremygautamas-projects.vercel.app`.
+The latest historical-expansion Preview is
+`https://cante-em259hiuw-jeremygautamas-projects.vercel.app`; its build is ready,
+but Vercel sign-in prevented hosted end-to-end acceptance of this exact version.
+Preview/local worker connectors and the Vault scheduler now target the separate
+`https://cante-check-worker-h41oj2412-jeremygautamas-projects.vercel.app` deployment,
+using `/api/check` and `/api/monitor` respectively. Production website connector
+settings were not changed by this expansion. No workspace opt-in was added.
+Production website promotion remains separate. Migration
+`20261022231308_tariff_archive_execution_timeout.sql` gives only the bounded atomic
+archive writers a 45-second REST statement allowance; ordinary roles remain at
+8 seconds. Preserve this per-function setting when updating those functions.
+Background execution must bind the trusted client with `withWorkerClient`, so the
+shared tariff-rule readers have their database context. Run
+`node scripts/verify-check-worker-bundle.mjs --daily` after retaining official
+sources; an idle-job smoke test alone cannot verify numerical calculations.
+
+Latest free historical-data Preview:
+`https://cante-rm5gwgb57-jeremygautamas-projects.vercel.app` (Vercel-auth protected;
+build ready, no new hosted signed-in end-to-end acceptance).
+Its Preview/local manual and audit connector selects
+`https://cante-check-worker-nyzd3q2ta-jeremygautamas-projects.vercel.app/api/check`.
+The daily Vault target remains on the previous `h41oj2412` worker recorded above;
+no daily schedule/settings change was needed. Production remains unchanged. See
+the [free-data source/release record](../audits/2026-10-22-free-official-data.md).
+
+
+October 27 v21 source/engine expansion: 48 unique Chapter 91 originals across
+2000–2017 are retained with archive/index or registry provenance. This is partial
+reference coverage; 64 sampled edition/component source issues and publication
+gaps remain explicit. No new migration, grant or human approval is introduced.
+The v20 engine-refresh migration remains required. Website and protected worker
+must both run the current engine before claiming refreshed support; request
+metadata alone is insufficient. Local isolated builds/tests are not a production
+deployment. Production/daily targets and customer opt-ins remain unchanged. See
+[older statistical source evidence](../audits/2026-10-27-older-statistical-schedules.md).
+
+
+October 27 v22 country/processing extension: four original country-status notices
+are retained and paired with dated General Note 3. No schema, grant, rule approval,
+quota policy or daily target changes. Current website and protected worker must
+be released together when deployment is authorized; source captures alone do not
+upgrade deployed calculations. Engine-refresh migration 20261027194112 remains
+required. Request-local annual subsets retain at most 4 MB and preserve conflicts;
+checkpoints save at most 25 new lines or every 30 seconds and flush before a timed
+continuation. Usage limits remain enforced. The first browser attempt exhausted
+its check allowance; the final isolated rerun and export pass with five total
+admissions. Do not clear counters or reuse its now-revoked fictional credentials.
+See [country/processing acceptance and limits](../audits/2026-10-27-ordinary-country-coverage.md).
+
+
+October 28 v23: Column 2 uses separate original fields and shared deterministic
+formulas. Current app and protected worker must be released together when deployment
+is authorized. Existing engine-refresh migration remains required; no new migration,
+grant, rule approval, quota change or daily target is introduced. Final isolated
+actual-worker/browser acceptance and export pass with four admitted checks and
+zero remaining fixture sessions. The first test UI hold expired and was cleaned
+up; its revoked credentials were not reused. [Scope and release evidence](../audits/2026-10-28-column2-historical-duties.md).
+
+
+October28 v29: dated statistical-code support requires matched app/worker release
+when authorized; no deployment performed. Actual v28 retained separately for
+upgrade acceptance. Read-only retained-source check:
+`node --import tsx scripts/verify-ordinary-pilot.ts --dated-codes`.
+No source capture, migration, grant, approval, quota or daily target change.
+Real fictional acceptance verified correction/export and tenant denials, followed
+by independent zero-active/zero-session cleanup. See
+[v29 scope and verification](../audits/2026-10-28-dated-statistical-codes.md).
+
+
+October28 v30: optional relatedArticleHts CSV/review data reuses existing immutable
+JSON snapshots and dated evidence decisions. No migration/grant/source import or
+reviewer authority change. Matched app/worker release is required when authorized;
+no deployment performed. Read-only check:
+`node --import tsx scripts/verify-related-article.ts`. Real isolated fixture
+acceptance uses `--related-article-only`, verifies tenant denials and cleans up
+identities; do not run against customer records. v29 remains separately retained.
+[Scope and verification](../audits/2026-10-28-related-article-duties.md).
+
+
+October28 v31:21 public CBP A201844 originals were captured (complete59-message
+index and10deposit header/body pairs),with no shared approval or tenant writes.
+Other49 message types require separate review; this is not a complete AD/CVD
+legal engine. New audits keep bounded pinned sources; ambiguous versions fail
+closed. Existing tables/grants/RLS remain,no migration or quota change.
+
+Read-only: `npm run verify:historical-adcvd`. Parser/source tests:
+`npm run test:adcvd`. Real isolated acceptance uses `--mexico-deposit-only
+--engine-upgrade`,the actual preservedv30 worker and current matched app/worker.
+Old outputs,source versions and declarations stay. Cleanup independently verifies
+zero fixture sessions. No deployment performed; app and worker release together
+when authorized. [Scope and next work](../audits/2026-10-28-mexico-deposit-instructions.md).
+
+October28 v32: no schema,grant,review-authority,quota,source-capture or schedule
+changes. Matched website/worker build is required when release is authorized;
+no deployment performed. Corrections invalidate stale AD evidence; original
+snapshots remain readable. Request-local Chapter99 cache shares existing4MB PDF
+bounds and never stores failed/partial projections. Real isolated old31→32
+acceptance uses `--mexico-evidence-only --engine-upgrade`; retain the actual old
+bundle. Cleanup independently confirms zero active fixture users/sessions.
+[Verification and boundaries](../audits/2026-10-28-evidence-corrections-and-reference-cache.md).
+
+October29 v33: deliberate public-source capture retained70 CBP records for
+A122857/C122858; all originals read back and hashes verify. No shared approval,
+customer writes, schema/grant/quota/reviewer/schedule change. Matched local
+website/worker build and real old32→33 acceptance pass; no deployment performed.
+The isolated external node_modules symlink needs the previously used
+`next build --webpack` for this local test setup. Production build compatibility
+is not inferred from that local workaround. Read-only:
+`npm run verify:historical-canada`. Test fixtures stay fictional, and their
+identities are revoked/banned; independent cleanup confirms zeroactive/sessions.
+[Scope and remaining work](../audits/2026-10-29-canadian-deposit-instructions.md).
+
+October29 v34 local work: four public wood enactment/instruction originals were
+captured and hash verified. No schema/grant/RLS/quota/reviewer/schedule change.
+`npm run verify:historical-wood` is read-only; optional snapshot replay requires
+exact input identity. Real isolated acceptance uses `--wood-only --engine-upgrade`
+and the preserved actual33 worker. That old worker has27 incomplete totals in
+the selected fictional baseline; preserve them rather than assuming100nulls.
+Current calculations require explicit wood facts. Website/worker builds and
+tests pass; saved/browser/export/tenant acceptance and cleanup pass.104fixture
+users banned,0active/sessions; owned3132/3133 closed,main3000 remains. No deployment.
+[Sources and limits](../audits/2026-10-29-wood-historical-duties.md).

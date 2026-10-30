@@ -1,0 +1,943 @@
+{
+  "label": "SYNTHETIC FUNCTIONALITY EXPECTATIONS; independently specified, not legal validation.",
+  "summary": {
+    "lines": 120,
+    "calculated": 75,
+    "unresolved": 45,
+    "discrepancies": 50,
+    "overpayment": "4375.00",
+    "underpayment": "600.00"
+  },
+  "entries": [
+    {
+      "row": 1,
+      "expected": "300.00",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 2,
+      "expected": "300.00",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 3,
+      "expected": "300.00",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 4,
+      "expected": "300.00",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 5,
+      "expected": "300.00",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 6,
+      "expected": "300.00",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 7,
+      "expected": "300.00",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 8,
+      "expected": "300.00",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 9,
+      "expected": "300.00",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 10,
+      "expected": "300.00",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 11,
+      "expected": "300.00",
+      "difference": "50.00",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 12,
+      "expected": "300.00",
+      "difference": "50.00",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 13,
+      "expected": "300.00",
+      "difference": "50.00",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 14,
+      "expected": "300.00",
+      "difference": "50.00",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 15,
+      "expected": "300.00",
+      "difference": "50.00",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 16,
+      "expected": "300.00",
+      "difference": "50.00",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 17,
+      "expected": "300.00",
+      "difference": "50.00",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 18,
+      "expected": "300.00",
+      "difference": "50.00",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 19,
+      "expected": "300.00",
+      "difference": "50.00",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 20,
+      "expected": "300.00",
+      "difference": "50.00",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 21,
+      "expected": "300.00",
+      "difference": "-50.00",
+      "findingTypes": [
+        "underpayment"
+      ]
+    },
+    {
+      "row": 22,
+      "expected": "300.00",
+      "difference": "-50.00",
+      "findingTypes": [
+        "underpayment"
+      ]
+    },
+    {
+      "row": 23,
+      "expected": "300.00",
+      "difference": "-50.00",
+      "findingTypes": [
+        "underpayment"
+      ]
+    },
+    {
+      "row": 24,
+      "expected": "300.00",
+      "difference": "-50.00",
+      "findingTypes": [
+        "underpayment"
+      ]
+    },
+    {
+      "row": 25,
+      "expected": "300.00",
+      "difference": "-50.00",
+      "findingTypes": [
+        "underpayment"
+      ]
+    },
+    {
+      "row": 26,
+      "expected": "300.00",
+      "difference": "-50.00",
+      "findingTypes": [
+        "underpayment"
+      ]
+    },
+    {
+      "row": 27,
+      "expected": "300.00",
+      "difference": "-50.00",
+      "findingTypes": [
+        "underpayment"
+      ]
+    },
+    {
+      "row": 28,
+      "expected": "300.00",
+      "difference": "-50.00",
+      "findingTypes": [
+        "underpayment"
+      ]
+    },
+    {
+      "row": 29,
+      "expected": "300.00",
+      "difference": "-50.00",
+      "findingTypes": [
+        "underpayment"
+      ]
+    },
+    {
+      "row": 30,
+      "expected": "300.00",
+      "difference": "-50.00",
+      "findingTypes": [
+        "underpayment"
+      ]
+    },
+    {
+      "row": 31,
+      "expected": "300.00",
+      "difference": "12.50",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 32,
+      "expected": "300.00",
+      "difference": "12.50",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 33,
+      "expected": "300.00",
+      "difference": "12.50",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 34,
+      "expected": "300.00",
+      "difference": "12.50",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 35,
+      "expected": "300.00",
+      "difference": "12.50",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 36,
+      "expected": "300.00",
+      "difference": "12.50",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 37,
+      "expected": "300.00",
+      "difference": "12.50",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 38,
+      "expected": "300.00",
+      "difference": "12.50",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 39,
+      "expected": "300.00",
+      "difference": "12.50",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 40,
+      "expected": "300.00",
+      "difference": "12.50",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 41,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "origin_mismatch"
+      ]
+    },
+    {
+      "row": 42,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "origin_mismatch"
+      ]
+    },
+    {
+      "row": 43,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "origin_mismatch"
+      ]
+    },
+    {
+      "row": 44,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "origin_mismatch"
+      ]
+    },
+    {
+      "row": 45,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "origin_mismatch"
+      ]
+    },
+    {
+      "row": 46,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "origin_mismatch"
+      ]
+    },
+    {
+      "row": 47,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "origin_mismatch"
+      ]
+    },
+    {
+      "row": 48,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "origin_mismatch"
+      ]
+    },
+    {
+      "row": 49,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "origin_mismatch"
+      ]
+    },
+    {
+      "row": 50,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "origin_mismatch"
+      ]
+    },
+    {
+      "row": 51,
+      "expected": "50.00",
+      "difference": "250.00",
+      "findingTypes": [
+        "overpayment",
+        "possible_missed_exclusion"
+      ]
+    },
+    {
+      "row": 52,
+      "expected": "50.00",
+      "difference": "250.00",
+      "findingTypes": [
+        "overpayment",
+        "possible_missed_exclusion"
+      ]
+    },
+    {
+      "row": 53,
+      "expected": "50.00",
+      "difference": "250.00",
+      "findingTypes": [
+        "overpayment",
+        "possible_missed_exclusion"
+      ]
+    },
+    {
+      "row": 54,
+      "expected": "50.00",
+      "difference": "250.00",
+      "findingTypes": [
+        "overpayment",
+        "possible_missed_exclusion"
+      ]
+    },
+    {
+      "row": 55,
+      "expected": "50.00",
+      "difference": "250.00",
+      "findingTypes": [
+        "overpayment",
+        "possible_missed_exclusion"
+      ]
+    },
+    {
+      "row": 56,
+      "expected": "50.00",
+      "difference": "250.00",
+      "findingTypes": [
+        "overpayment",
+        "possible_missed_exclusion"
+      ]
+    },
+    {
+      "row": 57,
+      "expected": "50.00",
+      "difference": "250.00",
+      "findingTypes": [
+        "overpayment",
+        "possible_missed_exclusion"
+      ]
+    },
+    {
+      "row": 58,
+      "expected": "50.00",
+      "difference": "250.00",
+      "findingTypes": [
+        "overpayment",
+        "possible_missed_exclusion"
+      ]
+    },
+    {
+      "row": 59,
+      "expected": "50.00",
+      "difference": "250.00",
+      "findingTypes": [
+        "overpayment",
+        "possible_missed_exclusion"
+      ]
+    },
+    {
+      "row": 60,
+      "expected": "50.00",
+      "difference": "250.00",
+      "findingTypes": [
+        "overpayment",
+        "possible_missed_exclusion"
+      ]
+    },
+    {
+      "row": 61,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "invalid_input"
+      ]
+    },
+    {
+      "row": 62,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "invalid_input"
+      ]
+    },
+    {
+      "row": 63,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "invalid_input"
+      ]
+    },
+    {
+      "row": 64,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "invalid_input"
+      ]
+    },
+    {
+      "row": 65,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "invalid_input"
+      ]
+    },
+    {
+      "row": 66,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "invalid_input"
+      ]
+    },
+    {
+      "row": 67,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "invalid_input"
+      ]
+    },
+    {
+      "row": 68,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "invalid_input"
+      ]
+    },
+    {
+      "row": 69,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "invalid_input"
+      ]
+    },
+    {
+      "row": 70,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "invalid_input"
+      ]
+    },
+    {
+      "row": 71,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "exclusion_review",
+        "stacking_review"
+      ]
+    },
+    {
+      "row": 72,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "exclusion_review",
+        "stacking_review"
+      ]
+    },
+    {
+      "row": 73,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "exclusion_review",
+        "stacking_review"
+      ]
+    },
+    {
+      "row": 74,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "exclusion_review",
+        "stacking_review"
+      ]
+    },
+    {
+      "row": 75,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "exclusion_review",
+        "stacking_review"
+      ]
+    },
+    {
+      "row": 76,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "exclusion_review",
+        "stacking_review"
+      ]
+    },
+    {
+      "row": 77,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "exclusion_review",
+        "stacking_review"
+      ]
+    },
+    {
+      "row": 78,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "exclusion_review",
+        "stacking_review"
+      ]
+    },
+    {
+      "row": 79,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "exclusion_review",
+        "stacking_review"
+      ]
+    },
+    {
+      "row": 80,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "exclusion_review",
+        "stacking_review"
+      ]
+    },
+    {
+      "row": 81,
+      "expected": "300.00",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 82,
+      "expected": "300.00",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 83,
+      "expected": "300.00",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 84,
+      "expected": "300.00",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 85,
+      "expected": "300.00",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 86,
+      "expected": "320.00",
+      "difference": "-20.00",
+      "findingTypes": [
+        "underpayment"
+      ]
+    },
+    {
+      "row": 87,
+      "expected": "320.00",
+      "difference": "-20.00",
+      "findingTypes": [
+        "underpayment"
+      ]
+    },
+    {
+      "row": 88,
+      "expected": "320.00",
+      "difference": "-20.00",
+      "findingTypes": [
+        "underpayment"
+      ]
+    },
+    {
+      "row": 89,
+      "expected": "320.00",
+      "difference": "-20.00",
+      "findingTypes": [
+        "underpayment"
+      ]
+    },
+    {
+      "row": 90,
+      "expected": "320.00",
+      "difference": "-20.00",
+      "findingTypes": [
+        "underpayment"
+      ]
+    },
+    {
+      "row": 91,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "historical_coverage"
+      ]
+    },
+    {
+      "row": 92,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "historical_coverage"
+      ]
+    },
+    {
+      "row": 93,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "historical_coverage"
+      ]
+    },
+    {
+      "row": 94,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "historical_coverage"
+      ]
+    },
+    {
+      "row": 95,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "historical_coverage"
+      ]
+    },
+    {
+      "row": 96,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "historical_coverage"
+      ]
+    },
+    {
+      "row": 97,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "historical_coverage"
+      ]
+    },
+    {
+      "row": 98,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "historical_coverage"
+      ]
+    },
+    {
+      "row": 99,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "historical_coverage"
+      ]
+    },
+    {
+      "row": 100,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "historical_coverage"
+      ]
+    },
+    {
+      "row": 101,
+      "expected": "50.00",
+      "difference": "250.00",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 102,
+      "expected": "50.00",
+      "difference": "250.00",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 103,
+      "expected": "50.00",
+      "difference": "250.00",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 104,
+      "expected": "50.00",
+      "difference": "250.00",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 105,
+      "expected": "50.00",
+      "difference": "250.00",
+      "findingTypes": [
+        "overpayment"
+      ]
+    },
+    {
+      "row": 106,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "classification_mismatch"
+      ]
+    },
+    {
+      "row": 107,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "classification_mismatch"
+      ]
+    },
+    {
+      "row": 108,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "classification_mismatch"
+      ]
+    },
+    {
+      "row": 109,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "classification_mismatch"
+      ]
+    },
+    {
+      "row": 110,
+      "expected": null,
+      "difference": null,
+      "findingTypes": [
+        "classification_mismatch"
+      ]
+    },
+    {
+      "row": 111,
+      "expected": "0.05",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 112,
+      "expected": "0.05",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 113,
+      "expected": "0.05",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 114,
+      "expected": "0.05",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 115,
+      "expected": "0.05",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 116,
+      "expected": "1.25",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 117,
+      "expected": "1.25",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 118,
+      "expected": "1.25",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 119,
+      "expected": "1.25",
+      "difference": "0.00",
+      "findingTypes": []
+    },
+    {
+      "row": 120,
+      "expected": "1.25",
+      "difference": "0.00",
+      "findingTypes": []
+    }
+  ]
+}

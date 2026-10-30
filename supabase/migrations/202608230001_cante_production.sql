@@ -799,3 +799,42 @@ grant execute on function public.search_cante_context(text, uuid, text, integer)
   to authenticated;
 
 grant usage, select on sequence public.document_chunks_id_seq to authenticated;
+
+-- Explicit worker Data API access; do not depend on Supabase default grants.
+-- Tenant/browser privileges and RLS policies are defined separately above.
+grant select, insert, update, delete on
+  public.customers,
+  public.customer_users,
+  public.customer_profiles,
+  public.jurisdiction_profiles,
+  public.kbli_records,
+  public.sources,
+  public.source_packs,
+  public.check_runs,
+  public.source_results,
+  public.source_documents,
+  public.findings,
+  public.alerts,
+  public.conversations,
+  public.chat_messages,
+  public.memories,
+  public.checklist_items,
+  public.products,
+  public.product_classifications,
+  public.suppliers,
+  public.trade_lanes,
+  public.supplier_documents,
+  public.trade_documents,
+  public.document_findings,
+  public.regulation_links,
+  public.product_components,
+  public.substances,
+  public.component_substances,
+  public.restricted_substance_lists,
+  public.restricted_substance_entries,
+  public.finding_actions,
+  public.impact_assessments,
+  public.screening_results,
+  public.document_chunks
+to service_role;
+grant usage, select on sequence public.document_chunks_id_seq to service_role;

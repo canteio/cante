@@ -1,0 +1,37 @@
+{
+  "label": "Actual original rendered and visually inspected; narrow publication identity contract, not legal approval.",
+  "release": {
+    "name": "2019HTSAREV7C",
+    "description": "2019 Revision 7",
+    "published_on": "2019-06-13",
+    "available_from": "2019-06-13",
+    "available_until": "2019-06-28"
+  },
+  "source": {
+    "id": "d52e89d3-18c9-484a-acb0-f7930c5f7285",
+    "release_name": "2019HTSAREV7C",
+    "url": "https://hts.usitc.gov/reststop/file?release=2019HTSAREV7C&filename=finalCopy",
+    "original_sha256": "3395dc092051824ca265235363d60e9e26b325f33bf132f33028e16a0a9a5da6",
+    "metadata": {
+      "release": {
+        "name": "2019HTSAREV7C",
+        "description": "2019 Revision 7",
+        "published_on": "2019-06-13",
+        "available_from": "2019-06-13",
+        "available_until": "2019-06-28"
+      },
+      "storage": {
+        "path": "3395dc092051824ca265235363d60e9e26b325f33bf132f33028e16a0a9a5da6.bin",
+        "bucket": "official-tariff-references",
+        "storedBytes": 9358841,
+        "storedSha256": "e107124fa4564f606347c77816a7057bb878faabb48a188d4b6b4b6637814896"
+      },
+      "identity": "Versioned publisher download; no automatic rate or legal approval",
+      "fullSchedule": true,
+      "interpretation": "Captured evidence only. Legal effective dates and complete entry applicability require review.",
+      "rateProjection": false
+    }
+  },
+  "cover": "\u03d1\u03c5\u03bd\u03b5 2019 \u03a0\u03c5\u03b2\u03bb\u03b9\u03c7\u03b1\u03c4\u03b9\u03bf\u03bd \u039d\u03c5m\u03b2\u03b5\u03c1: 4899 \u03a5\u03bd\u03b9\u03c4\u03b5\u03b4 \u03a3\u03c4\u03b1\u03c4\u03b5\u03c3 \u0399\u03bd\u03c4\u03b5\u03c1\u03bd\u03b1\u03c4\u03b9\u03bf\u03bd\u03b1\u03bb \u03a4\u03c1\u03b1\u03b4\u03b5 \u03a7\u03bfmm\u03b9\u03c3\u03c3\u03b9\u03bf\u03bd \u0397\u03b1\u03c1m\u03bf\u03bd\u03b9\u03b6\u03b5\u03b4 \u03a4\u03b1\u03c1\u03b9\u03c6\u03c6 \u03a3\u03c7\u03b7\u03b5\u03b4\u03c5\u03bb\u03b5 \u03bf\u03c6 \u03c4\u03b7\u03b5 \u03a5\u03bd\u03b9\u03c4\u03b5\u03b4 \u03a3\u03c4\u03b1\u03c4\u03b5\u03c3 (2019) \u03a1\u03b5\u03d6\u03b9\u03c3\u03b9\u03bf\u03bd 7",
+  "coverSha256": "a5af429b794528a979f01934f69049e926757427a143971d21ef9dc027c33ef3"
+}

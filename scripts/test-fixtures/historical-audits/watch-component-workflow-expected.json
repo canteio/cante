@@ -1,0 +1,1091 @@
+{
+  "label": "SYNTHETIC component declarations and independently preset hand arithmetic; authoritative original formulas are checked separately. No legal approval, classifications, valuations or refund entitlement are established.",
+  "engineVersion": "historical-audit-v37",
+  "rows": [
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-1",
+      "line": "001",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "44.00",
+      "initialDifference": "0.13",
+      "reviewedExpected": "44.00",
+      "reviewedDifference": "0.13"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-1",
+      "line": "002",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "12.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "12.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-1",
+      "line": "003",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "21.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "21.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-1",
+      "line": "004",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "2.65",
+      "initialDifference": "0.00",
+      "reviewedExpected": "2.65",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-2",
+      "line": "001",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "4.40",
+      "initialDifference": "0.00",
+      "reviewedExpected": "4.40",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-2",
+      "line": "002",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "12.00",
+      "initialDifference": "-0.09",
+      "reviewedExpected": "12.00",
+      "reviewedDifference": "-0.09"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-2",
+      "line": "003",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "21.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "21.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-2",
+      "line": "004",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "2.65",
+      "initialDifference": "0.00",
+      "reviewedExpected": "2.65",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-3",
+      "line": "001",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "1.32",
+      "initialDifference": "0.00",
+      "reviewedExpected": "1.32",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-3",
+      "line": "002",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "12.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "12.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-3",
+      "line": "003",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "21.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "21.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-3",
+      "line": "004",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "2.65",
+      "initialDifference": "0.00",
+      "reviewedExpected": "2.65",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-4",
+      "line": "001",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "0.44",
+      "initialDifference": "0.13",
+      "reviewedExpected": "0.44",
+      "reviewedDifference": "0.13"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-4",
+      "line": "002",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "12.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "12.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-4",
+      "line": "003",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "21.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "21.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-4",
+      "line": "004",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "2.65",
+      "initialDifference": "0.00",
+      "reviewedExpected": "2.65",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-5",
+      "line": "001",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "3.08",
+      "initialDifference": "0.00",
+      "reviewedExpected": "3.08",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-5",
+      "line": "002",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "12.00",
+      "initialDifference": "-0.09",
+      "reviewedExpected": "12.00",
+      "reviewedDifference": "-0.09"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-5",
+      "line": "003",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "21.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "21.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-5",
+      "line": "004",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "2.65",
+      "initialDifference": "0.00",
+      "reviewedExpected": "2.65",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-6",
+      "line": "001",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "5.28",
+      "initialDifference": "0.00",
+      "reviewedExpected": "5.28",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-6",
+      "line": "002",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "12.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "12.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-6",
+      "line": "003",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "21.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "21.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-6",
+      "line": "004",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "2.65",
+      "initialDifference": "0.00",
+      "reviewedExpected": "2.65",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-7",
+      "line": "001",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "11.00",
+      "initialDifference": "0.13",
+      "reviewedExpected": "11.00",
+      "reviewedDifference": "0.13"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-7",
+      "line": "002",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "12.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "12.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-7",
+      "line": "003",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "21.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "21.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-7",
+      "line": "004",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "2.65",
+      "initialDifference": "0.00",
+      "reviewedExpected": "2.65",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-8",
+      "line": "001",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "14.52",
+      "initialDifference": "0.00",
+      "reviewedExpected": "14.52",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-8",
+      "line": "002",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "12.00",
+      "initialDifference": "-0.09",
+      "reviewedExpected": "12.00",
+      "reviewedDifference": "-0.09"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-8",
+      "line": "003",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "21.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "21.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-8",
+      "line": "004",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "2.65",
+      "initialDifference": "0.00",
+      "reviewedExpected": "2.65",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-9",
+      "line": "001",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "19.36",
+      "initialDifference": "0.00",
+      "reviewedExpected": "19.36",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-9",
+      "line": "002",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "12.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "12.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-9",
+      "line": "003",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "21.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "21.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-9",
+      "line": "004",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "2.65",
+      "initialDifference": "0.00",
+      "reviewedExpected": "2.65",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-10",
+      "line": "001",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "22.00",
+      "initialDifference": "0.13",
+      "reviewedExpected": "22.00",
+      "reviewedDifference": "0.13"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-10",
+      "line": "002",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "12.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "12.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-10",
+      "line": "003",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "21.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "21.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-10",
+      "line": "004",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "2.65",
+      "initialDifference": "0.00",
+      "reviewedExpected": "2.65",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-11",
+      "line": "001",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "35.20",
+      "initialDifference": "0.00",
+      "reviewedExpected": "35.20",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-11",
+      "line": "002",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "12.00",
+      "initialDifference": "-0.09",
+      "reviewedExpected": "12.00",
+      "reviewedDifference": "-0.09"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-11",
+      "line": "003",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "21.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "21.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-11",
+      "line": "004",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "2.65",
+      "initialDifference": "0.00",
+      "reviewedExpected": "2.65",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-12",
+      "line": "001",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "43.56",
+      "initialDifference": "0.00",
+      "reviewedExpected": "43.56",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-12",
+      "line": "002",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "12.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "12.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-12",
+      "line": "003",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "21.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "21.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-12",
+      "line": "004",
+      "cohort": "Complete watch / independent component counts / cent arithmetic",
+      "initialExpected": "2.65",
+      "initialDifference": "0.00",
+      "reviewedExpected": "2.65",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-13",
+      "line": "001",
+      "cohort": "Explicit absent battery zero line",
+      "initialExpected": "44.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "44.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-13",
+      "line": "002",
+      "cohort": "Explicit absent battery zero line",
+      "initialExpected": "15.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "15.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-13",
+      "line": "003",
+      "cohort": "Explicit absent battery zero line",
+      "initialExpected": "21.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "21.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-13",
+      "line": "004",
+      "cohort": "Explicit absent battery zero line",
+      "initialExpected": "0.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-14",
+      "line": "001",
+      "cohort": "Published AC-only article branch",
+      "initialExpected": "39.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "39.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-15",
+      "line": "001",
+      "cohort": "Combined movement and case / separate battery",
+      "initialExpected": "35.10",
+      "initialDifference": "4.90",
+      "reviewedExpected": "35.10",
+      "reviewedDifference": "4.90"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-15",
+      "line": "002",
+      "cohort": "Combined movement and case / separate battery",
+      "initialExpected": "5.30",
+      "initialDifference": "0.00",
+      "reviewedExpected": "5.30",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-16",
+      "line": "001",
+      "cohort": "Dutiable jewels explicitly supplied",
+      "initialExpected": "57.93",
+      "initialDifference": "2.07",
+      "reviewedExpected": "57.93",
+      "reviewedDifference": "2.07"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-16",
+      "line": "002",
+      "cohort": "Dutiable jewels explicitly supplied",
+      "initialExpected": "19.60",
+      "initialDifference": "0.00",
+      "reviewedExpected": "19.60",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-17",
+      "line": "001",
+      "cohort": "Mechanical movement and case",
+      "initialExpected": "20.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "20.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-17",
+      "line": "002",
+      "cohort": "Mechanical movement and case",
+      "initialExpected": "18.40",
+      "initialDifference": "0.00",
+      "reviewedExpected": "18.40",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-18",
+      "line": "001",
+      "cohort": "Missing named battery",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-18",
+      "line": "002",
+      "cohort": "Missing named battery",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-18",
+      "line": "003",
+      "cohort": "Missing named battery",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-19",
+      "line": "001",
+      "cohort": "Duplicate named case",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-19",
+      "line": "002",
+      "cohort": "Duplicate named case",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-19",
+      "line": "003",
+      "cohort": "Duplicate named case",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-19",
+      "line": "004",
+      "cohort": "Duplicate named case",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-19",
+      "line": "005",
+      "cohort": "Duplicate named case",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-20",
+      "line": "001",
+      "cohort": "Inconsistent complete article totals",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "20.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-20",
+      "line": "002",
+      "cohort": "Inconsistent complete article totals",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "18.40",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-21",
+      "line": "001",
+      "cohort": "Component sum differs from article total",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "20.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-21",
+      "line": "002",
+      "cohort": "Component sum differs from article total",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "13.80",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-22",
+      "line": "001",
+      "cohort": "Conflicting counts on one component",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "20.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-22",
+      "line": "002",
+      "cohort": "Conflicting counts on one component",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "18.40",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-23",
+      "line": "001",
+      "cohort": "Component count has wrong unit",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "20.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-23",
+      "line": "002",
+      "cohort": "Component count has wrong unit",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "18.40",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-24",
+      "line": "001",
+      "cohort": "Explicit group link missing",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "20.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-24",
+      "line": "002",
+      "cohort": "Explicit group link missing",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "18.40",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-25",
+      "line": "001",
+      "cohort": "Complete article value missing",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "20.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-25",
+      "line": "002",
+      "cohort": "Complete article value missing",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "18.40",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-26",
+      "line": "001",
+      "cohort": "Invalid statistical suffix",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "20.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-26",
+      "line": "002",
+      "cohort": "Invalid statistical suffix",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "18.40",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-27",
+      "line": "001",
+      "cohort": "Older component original now retained",
+      "initialExpected": "20.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "20.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-27",
+      "line": "002",
+      "cohort": "Older component original now retained",
+      "initialExpected": "18.40",
+      "initialDifference": "1.60",
+      "reviewedExpected": "18.40",
+      "reviewedDifference": "1.60"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-28",
+      "line": "001",
+      "cohort": "Invalid suffix on duty-free article",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-28",
+      "line": "002",
+      "cohort": "Invalid suffix on duty-free article",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-29",
+      "line": "001",
+      "cohort": "Duty-free components still reconcile reporting",
+      "initialExpected": "0.00",
+      "initialDifference": "10.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-29",
+      "line": "002",
+      "cohort": "Duty-free components still reconcile reporting",
+      "initialExpected": "0.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-30",
+      "line": "001",
+      "cohort": "Additional complete mechanical group",
+      "initialExpected": "20.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "20.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-30",
+      "line": "002",
+      "cohort": "Additional complete mechanical group",
+      "initialExpected": "18.40",
+      "initialDifference": "0.00",
+      "reviewedExpected": "18.40",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-31",
+      "line": "001",
+      "cohort": "Additional complete mechanical group",
+      "initialExpected": "20.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "20.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-31",
+      "line": "002",
+      "cohort": "Additional complete mechanical group",
+      "initialExpected": "18.40",
+      "initialDifference": "0.00",
+      "reviewedExpected": "18.40",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-32",
+      "line": "001",
+      "cohort": "Additional complete mechanical group",
+      "initialExpected": "20.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "20.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-32",
+      "line": "002",
+      "cohort": "Additional complete mechanical group",
+      "initialExpected": "18.40",
+      "initialDifference": "0.00",
+      "reviewedExpected": "18.40",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-33",
+      "line": "001",
+      "cohort": "Additional complete mechanical group",
+      "initialExpected": "20.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "20.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-33",
+      "line": "002",
+      "cohort": "Additional complete mechanical group",
+      "initialExpected": "18.40",
+      "initialDifference": "0.00",
+      "reviewedExpected": "18.40",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-34",
+      "line": "001",
+      "cohort": "Additional complete mechanical group",
+      "initialExpected": "20.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "20.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-34",
+      "line": "002",
+      "cohort": "Additional complete mechanical group",
+      "initialExpected": "18.40",
+      "initialDifference": "0.00",
+      "reviewedExpected": "18.40",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-35",
+      "line": "001",
+      "cohort": "Additional complete mechanical group",
+      "initialExpected": "20.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "20.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-35",
+      "line": "002",
+      "cohort": "Additional complete mechanical group",
+      "initialExpected": "18.40",
+      "initialDifference": "0.00",
+      "reviewedExpected": "18.40",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-WATCH-ENTRY-36",
+      "line": "001",
+      "cohort": "AC movement value contradicts its declared classification",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    }
+  ],
+  "summary": {
+    "lines": 100,
+    "calculated": 75,
+    "unresolved": 25,
+    "discrepancies": 12,
+    "overpayment": "19.09",
+    "underpayment": "0.36"
+  },
+  "reviewedSummary": {
+    "lines": 100,
+    "calculated": 91,
+    "unresolved": 9,
+    "discrepancies": 12,
+    "overpayment": "19.09",
+    "underpayment": "0.36"
+  },
+  "decisions": [
+    {
+      "row": 69,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated component-reporting evidence correction.",
+      "evidence": [
+        "SYNTHETIC-WATCH-69-CORRECTION"
+      ],
+      "validFrom": "2016-06-15",
+      "validBefore": "2016-06-16",
+      "shipment": {
+        "articleValue": "1000.00"
+      },
+      "facts": {}
+    },
+    {
+      "row": 70,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated component-reporting evidence correction.",
+      "evidence": [
+        "SYNTHETIC-WATCH-70-CORRECTION"
+      ],
+      "validFrom": "2016-06-15",
+      "validBefore": "2016-06-16",
+      "shipment": {
+        "articleValue": "900.00"
+      },
+      "facts": {}
+    },
+    {
+      "row": 71,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated component-reporting evidence correction.",
+      "evidence": [
+        "SYNTHETIC-WATCH-71-CORRECTION"
+      ],
+      "validFrom": "2016-06-15",
+      "validBefore": "2016-06-16",
+      "shipment": {
+        "articleValue": "900.00"
+      },
+      "facts": {}
+    },
+    {
+      "row": 72,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated component-reporting evidence correction.",
+      "evidence": [
+        "SYNTHETIC-WATCH-72-CORRECTION"
+      ],
+      "validFrom": "2016-06-15",
+      "validBefore": "2016-06-16",
+      "shipment": {
+        "primaryQuantity": "100",
+        "primaryUnit": "NO"
+      },
+      "facts": {}
+    },
+    {
+      "row": 74,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated component-reporting evidence correction.",
+      "evidence": [
+        "SYNTHETIC-WATCH-74-CORRECTION"
+      ],
+      "validFrom": "2016-06-15",
+      "validBefore": "2016-06-16",
+      "shipment": {
+        "primaryQuantity": "100",
+        "primaryUnit": "NO"
+      },
+      "facts": {}
+    },
+    {
+      "row": 76,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated component-reporting evidence correction.",
+      "evidence": [
+        "SYNTHETIC-WATCH-76-CORRECTION"
+      ],
+      "validFrom": "2016-06-15",
+      "validBefore": "2016-06-16",
+      "shipment": {
+        "componentGroup": "SYNTHETIC-WATCH-GROUP-24"
+      },
+      "facts": {}
+    },
+    {
+      "row": 77,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated component-reporting evidence correction.",
+      "evidence": [
+        "SYNTHETIC-WATCH-77-CORRECTION"
+      ],
+      "validFrom": "2016-06-15",
+      "validBefore": "2016-06-16",
+      "shipment": {
+        "componentGroup": "SYNTHETIC-WATCH-GROUP-24"
+      },
+      "facts": {}
+    },
+    {
+      "row": 78,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated component-reporting evidence correction.",
+      "evidence": [
+        "SYNTHETIC-WATCH-78-CORRECTION"
+      ],
+      "validFrom": "2016-06-15",
+      "validBefore": "2016-06-16",
+      "shipment": {
+        "articleValue": "1000.00"
+      },
+      "facts": {}
+    },
+    {
+      "row": 79,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated component-reporting evidence correction.",
+      "evidence": [
+        "SYNTHETIC-WATCH-79-CORRECTION"
+      ],
+      "validFrom": "2016-06-15",
+      "validBefore": "2016-06-16",
+      "shipment": {
+        "articleValue": "1000.00"
+      },
+      "facts": {}
+    },
+    {
+      "row": 80,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated component-reporting evidence correction.",
+      "evidence": [
+        "SYNTHETIC-WATCH-80-CORRECTION"
+      ],
+      "validFrom": "2016-06-15",
+      "validBefore": "2016-06-16",
+      "shipment": {},
+      "facts": {
+        "classification_verified": true
+      },
+      "hts": "9105291010"
+    },
+    {
+      "row": 84,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated component-reporting evidence correction.",
+      "evidence": [
+        "SYNTHETIC-WATCH-84-CORRECTION"
+      ],
+      "validFrom": "2016-06-15",
+      "validBefore": "2016-06-16",
+      "shipment": {},
+      "facts": {
+        "classification_verified": true
+      },
+      "hts": "9105992010"
+    }
+  ],
+  "browserCorrection": {
+    "row": 100,
+    "originalQuantity": "10",
+    "correctedQuantity": "20",
+    "priorExpected": null,
+    "correctedHts": "9109104010",
+    "expected": "36.40",
+    "overpayment": "21.09"
+  }
+}

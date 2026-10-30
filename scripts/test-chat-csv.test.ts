@@ -1,5 +1,6 @@
 import "./test-support/limit-loader";
 import * as limitsFixture from "./test-support/request-limits-fixture";
+import { DUTY_CALCULATION_VERSION } from "../lib/tariff/duty-expression";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -8,7 +9,9 @@ import ts from "typescript";
 import { parseLiveProducts } from "../app/api/tariff/live-check/check";
 import { POST as extract } from "../app/api/files/extract/route";
 import { parseCsv } from "../lib/catalogue/csv";
+import { attachCheckComparison, compareSavedChecks,currentCalculationResult } from "../app/api/tariff/live-check/comparison";
 import { easternIsoDate } from "../lib/tariff/date";
+import * as publicResearch from "../app/api/chat/public-research";
 import * as demoScenario from "../components/tariff/demo-scenario";
 
 const id = "12345678-1234-4234-8234-123456789abc";
@@ -17,11 +20,11 @@ function moduleAt(path: string, deps: Record<string, unknown>) {
   const code = ts.transpileModule(readFileSync(path, "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   const exports: any = {};
   const exposeIntent = path === "app/api/chat/route.ts" ? "\nexports.isTariffUpdateRequest = isTariffUpdateRequest;" : "";
-  runInThisContext(`(function(require,exports){${code}${exposeIntent}\n})`)((key: string) => { if (key === "@/app/api/request-limits") return limitsFixture; if (!(key in deps)) throw Error(`Unexpected dependency: ${key}`); return deps[key]; }, exports);
+  runInThisContext(`(function(require,exports){${code}${exposeIntent}\n})`)((key: string) => { if(key === "./public-research") return {publicResearchPlan:()=>null,researchPublicGuidance:publicResearch.researchPublicGuidance}; if (key === "@/app/api/request-limits") return limitsFixture; if (!(key in deps)) throw Error(`Unexpected dependency: ${key}`); return deps[key]; }, exports);
   return exports;
 }
 function report() {
-  return { checkedAt: "2026-10-19T12:00:00Z", basis: "annual", totalDuty: null, unresolvedProducts: 1, consistentRevision: true, revisionAfter: "fixture", products: 1,
+  return { calculationVersion:DUTY_CALCULATION_VERSION,checkedAt: "2026-10-19T12:00:00Z", entryDate:easternIsoDate(), basis: "annual", totalDuty: null, unresolvedProducts: 1, consistentRevision: true, revisionAfter: "fixture", products: 1,
     rows: [{ product: parseLiveProducts(csv)[0], stack: { totalAmount: null, components: [{ measureId: "9903.88.02", amount: 250, ratePercent: 0.25, citation: "https://hts.usitc.gov/" }], unresolvedMeasures: ["Missing importer facts"] }, error: null }],
     historicalComparison: { status: "compared", issues: [], candidateSkus: ["QA-CSV"], scope: ["fixture"], legalChanges: [], modifyingDocuments: [] },
     coverageNotes: ["Partial legal coverage"], notices: [], sources: [{ url: "https://hts.usitc.gov/", status: "fetched", error: null, body: "private source body" }] };
@@ -30,6 +33,15 @@ function helper(options: { role?: string; denied?: boolean; beginFail?: boolean;
   const calls: any[] = []; const result = report();
   const db = { from(table: string) { calls.push(["from", table]); const chain: any = { select: () => chain, eq: (key: string, value: string) => { calls.push(["eq", key, value]); return chain; }, order: () => chain, limit: () => chain, then: (resolve: Function) => resolve(options.readFail ? { error: "unavailable" } : { data: options.noRecords ? [] : [{ id, filename: "products.csv" }] }) }; return chain; } };
   const api = moduleAt("app/api/chat/csv-check.ts", {
+    "@/app/api/tariff/workspace-data": {
+      parseWorkspaceUpload:parseLiveProducts,
+      importWorkspaceProducts:async()=>{calls.push(["save-products"]);},
+      loadWorkspaceSnapshot:async()=>{calls.push(["workspace"]);if(options.readFail)throw Error("Unavailable workspace");if(options.noRecords)return {count:0,csv:"",products:[]};let raw=options.storedCsv??csv;
+        if(options.confirmations?.standardCommercial || options.confirmations?.noOther232){const table=parseCsv(raw);raw=[table.headers.concat(["standard_commercial","other_232_heading"]).join(","),...table.rows.map(r=>[...table.headers.map(h=>r[h]),options.confirmations?.standardCommercial?"true":"",options.confirmations?.noOther232?"none":""].join(","))].join("\n");}
+        return {count:1,csv:raw,products:[]};},
+    },
+    "@/app/api/tariff/live-check/comparison": { compareSavedChecks,currentCalculationResult },
+    "@/app/api/tariff/live-check/execute": { executeArchivedCheck: async (_db:any,_customer:any,_id:any,products:any,signal:any,progress:Function,observe:Function) => { calls.push(["run", products]); observe(result.sources); progress("Fetching fixture official source"); if(options.runFail)throw Error("Source unavailable"); if(options.previous!==undefined || calls.some(c=>c[0]==="begin"&&c[1][5]?.workflow==="workspace-refresh-v1")) attachCheckComparison(result as any,{record:{id},verifiedResult:options.unverified||options.archiveReadFail?null:options.previous===undefined?structuredClone(result):options.previous}); calls.push(["finish", [_db,_customer,_id,result]]); if(options.finishFail)throw Error("Could not archive result"); return result; } },
     "@/lib/supabase/server": { createRequestClient: async () => db, getAuthenticatedWorkspace: async (customerId: string) => options.denied ? null : { customerId, role: options.role ?? "member" } },
     "@/config/tariff-remedy-contract.json": {},
     "@/lib/catalogue/csv": { parseCsv },
@@ -124,7 +136,7 @@ function chat(h: ReturnType<typeof helper>, available = true, prepareUpload?: Fu
     "@/lib/countries": { normalizeJurisdiction: () => "United States" },
     "@/lib/chat/attachments": { fileAttachments: async () => [], renderAttachmentOutcomes: () => "" },
     "@/lib/supabase/server": { createClient: async () => { throw Error("catalogue unavailable fixture"); }, retrieveCustomerContext: async () => [] },
-    "@/lib/llm": { getProvider: () => ({ name: "api", available: async () => ({ ok: available, detail: "offline" }), async *stream(options: any) { modelCalls++; prompts.push(options.prompt); yield { type: "text", text: "Explanation from saved fixture." }; yield { type: "done" }; } }) },
+    "@/lib/llm": { getProvider: () => ({ name: "api", available: async () => ({ ok: available, detail: "offline" }), async *stream(options: any) { assert.deepEqual(options.tools, [], "Private chat must have no model-controlled outbound tools"); modelCalls++; prompts.push(options.prompt); yield { type: "text", text: "Explanation from saved fixture." }; yield { type: "done" }; } }) },
     "./csv-check": h.api,
     "@/app/api/files/prepare-chat-upload": {prepareChatUpload:prepareUpload,readChatUploadContext:async()=>({status:"loaded",files:[]})},
   };
@@ -137,7 +149,7 @@ for (const available of [true, false]) {
     const response = await c.route.POST(request({ attachments: [h.file] })); const text = await response.text();
     assert.equal(response.status, 200); assert.match(text, /tool_progress/); assert.match(text, /product group/);
     assert.equal(c.modelCalls(), 0); assert.equal(c.messages.filter(m => m[1] === "agent").length, 1);
-    assert.match(c.messages.find(m => m[1] === "agent")[2], /Saved CSV and check/); assert.match(text, /"type":"done"/);
+    assert.match(c.messages.find(m => m[1] === "agent")[2], /View on your dashboard/); assert.match(text, /"type":"done"/);
   });
 }
 test("actual chat route answers from persisted CSV context on a later new conversation", async () => {
@@ -166,17 +178,17 @@ for (const available of [true, false]) {
     assert.match(text, /tool_progress/); assert.equal(c.modelCalls(), 0);
     assert.match(text, /"hostname":"hts\.usitc\.gov"/);
     const begin = h.calls.find(c => c[0] === "begin")[1];
-    assert.equal(begin[2], csv); assert.equal(begin[5].sourceCheckId, id);
+    assert.equal(begin[2], csv); assert.equal(begin[5].workflow, "workspace-refresh-v1");
     assert.match(c.messages.find(m => m[1] === "agent")[2], /bounded feed coverage/);
     const archived = h.calls.find(c => c[0] === "finish")[1][3]; assert.equal(archived.chatRecheck.sourceCheckId, id);
   });
 }
-for (const options of [{ noRecords: true }, { readFail: true }, { archiveReadFail: true }, { role: "viewer" }]) {
+for (const options of [{ noRecords: true }, { readFail: true }, { role: "viewer" }]) {
   test(`news request cannot substitute general headlines or fake data when unavailable: ${JSON.stringify(options)}`, async () => {
     const h = helper(options); const c = chat(h); const response = await c.route.POST(request({ question: "any news today?" }));
     const body = await response.text(); assert.equal(c.modelCalls(), 0); assert(!h.calls.some(c => c[0] === "run"));
     assert(!h.calls.some(c => c[0] === "begin")); assert.doesNotMatch(body, /nothing changed|you are compliant/i);
-    assert.match(body, options.noRecords ? /Upload your product/ : options.role ? /read-only/ : /couldn’t read or verify/);
+    assert.match(body, options.noRecords ? /Add products/ : options.role ? /read-only/ : /couldn’t load/);
   });
 }
 test("latest invalid CSV remains the selected file; no silent fallback to an older catalogue", async () => {
@@ -209,7 +221,7 @@ test("today's captured notices are date-filtered and never called confirmed prod
 });
 function completePair() {
   const before: any = report(); before.totalDuty = 250; before.unresolvedProducts = 0;
-  before.rows[0].stack.totalAmount = 250; before.rows[0].quote = { column: "general", computation: { amount: 10 } };
+  before.rows[0].stack.totalAmount = 250; before.rows[0].stack.unresolvedMeasures = []; before.rows[0].quote = { column: "general", computation: { amount: 10 } };
   const after = structuredClone(before); after.totalDuty = 275.01; after.rows[0].stack.totalAmount = 275.01; after.rows[0].quote.computation.amount = 12;
   return { before, after };
 }
@@ -223,7 +235,7 @@ test("same-input comparison uses exact cents and survives JSONB object key order
 test("fresh-check report persists a calculated difference using an unchanged saved CSV", async () => {
   const { before, after } = completePair(); const h = helper({ previous: before }); Object.assign(h.result, after);
   const out = await h.api.recheckLatestChatCsv("owned", new AbortController().signal, () => {});
-  assert.match(out.markdown, /\$25\.01\/year/); assert.match(out.markdown, /products\.csv/);
+  assert.match(out.markdown, /\$25\.01\/year/); assert.match(out.markdown, /Saved products\.csv/);
   const persisted = h.calls.find(c => c[0] === "finish")[1][3]; assert.equal(persisted.chatRecheck.fullDutyDifference, 25.01);
 });
 test("missing totals never become zero exposure; input/qualification drift blocks comparisons", () => {
@@ -231,7 +243,7 @@ test("missing totals never become zero exposure; input/qualification drift block
   after.totalDuty = null; after.rows[0].stack.totalAmount = null;
   const partial = api.compareSavedChecks(before, after); assert.equal(partial.fullDutyDifference, null); assert.equal(partial.changedProducts, null); assert.equal(partial.baseDutyDifference, 2);
   after.rows[0].product.customsValue = 2000;
-  const mismatched = api.compareSavedChecks(before, after); assert.equal(mismatched.status, "unavailable"); assert.equal(mismatched.baseDutyDifference, null);
+  const mismatched = api.compareSavedChecks(before, after); assert.equal(mismatched.rows[0].status, "unresolved"); assert.equal(mismatched.baseDutyDifference, null);
 });
 test("no baseline and unstable government revisions cannot imply no change", () => {
   const { before, after } = completePair(); const api = helper().api;
@@ -265,6 +277,18 @@ test("unattested saved totals, source claims and failure text never enter chat c
   assert.equal(refresh.context.chatRecheck.status, "unavailable");
 });
 
+test("old attested arithmetic remains archived without supplying current chat costs",async()=>{
+ const old=report() as any;delete old.calculationVersion;old.totalDuty=987654321;
+ const h=helper({previous:old});const context=await h.api.readChatCsvContext("owned");
+ assert.equal(context.checks[0].data.status,"outdated");
+ assert.match(context.checks[0].data.reason,/older or unknown calculation method/);
+ assert(!JSON.stringify(context).includes("987654321"));
+ assert.equal(old.totalDuty,987654321,"The original archive is not rewritten");
+ const fresh=await h.api.recheckLatestChatCsv("owned",new AbortController().signal,()=>{});
+ assert.equal(fresh.context.chatRecheck.status,"unavailable");
+ assert.equal(fresh.context.chatRecheck.fullDutyDifference,null);
+});
+
 test("oversized CSV and document files are rejected before file.arrayBuffer allocation", async () => {
  const original=File.prototype.arrayBuffer;let reads=0;
  File.prototype.arrayBuffer=async function(){reads++;return original.call(this);};
@@ -280,7 +304,7 @@ test("oversized CSV and document files are rejected before file.arrayBuffer allo
 test("saved non-CSV originals invoke preparation and preserve source identity before any government fetch",async()=>{
  const h=helper();const source={id,sha256:"a".repeat(64),size:1234,format:"xlsx",tableIndex:0,mapping:{sku:0,hts_code:1,origin_country:2,annual_customs_value_usd:3},basis:"annual"};
  let prepared=0;const c=chat(h,false,async(customer:string,file:any)=>{assert.equal(customer,"owned");assert.equal(file.uploadId,id);prepared++;return {csv:{...h.file,filename:"products.xlsx",sourceUpload:source},preview:"Server-extracted original rows"};});
- const response=await c.route.POST(request({attachments:[{filename:"products.xlsx",format:"xlsx",text:"untrusted preview",uploadId:id}]}));const output=await response.text();assert.equal(prepared,1);assert.equal(c.modelCalls(),0);assert.match(output,/Saved CSV and check/);assert.equal(h.calls.find(c=>c[0]==="begin")[1][5].uploadId,id);assert(h.calls.some(c=>c[0]==="run"));
+ const response=await c.route.POST(request({attachments:[{filename:"products.xlsx",format:"xlsx",text:"untrusted preview",uploadId:id}]}));const output=await response.text();assert.equal(prepared,1);assert.equal(c.modelCalls(),0);assert.match(output,/View on your dashboard/);assert.equal(h.calls.find(c=>c[0]==="begin")[1][5].uploadId,id);assert(h.calls.some(c=>c[0]==="run"));
 });
 test("ambiguous original-file columns stay saved but never fetch rates or invent product values",async()=>{
  const h=helper();const c=chat(h,false,async()=>({csv:null,markdown:"Original saved. Review columns before checking. No rates fetched.",preview:"Original price column"}));

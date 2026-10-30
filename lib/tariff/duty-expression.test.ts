@@ -1,6 +1,25 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { computeDuty, parseDutyRate, specialProgrammeCodes } from "./duty-expression";
+import { computeDuty, parseDutyRate, specialProgrammeCodes,capAdValoremRate,combineDutyAmounts,computeExactDuty,computeAdValoremAmount } from "./duty-expression";
+
+test("synthetic cap fractions retain exact percentages and half-cent rounding",()=>{
+ for(let i=1;i<=100;i++){const cap=i===100?"1":"0."+String(i).padStart(2,"0"),raw=capAdValoremRate("200%",cap),cents=(100050n*BigInt(i)+50n)/100n,amount=`${cents/100n}.${String(cents%100n).padStart(2,"0")}`;assert.equal(raw,i+"%");assert.equal(capAdValoremRate("200%",Number(cap)),raw);assert.equal(computeExactDuty(raw!,{value:"1000.50"}),amount);}
+ assert.equal(capAdValoremRate("33 1/3%","0.29"),"29%");assert.equal(capAdValoremRate("33 1/3%","0.34"),"33 1/3%");assert.equal(capAdValoremRate("Free","0"),"Free");assert.equal(capAdValoremRate("100%",1e-8),"0.000001%");assert.equal(capAdValoremRate("120%","1"),"100%");
+ for(const rate of ["$1/kg","$1/kg + 5%","Free (unknown qualification)","33 1/0%","5% if qualified"])assert.equal(capAdValoremRate(rate,"0.29"),null);
+ for(const cap of ["-0.1","1.01","NaN","1e-8",Number.NaN,Number.POSITIVE_INFINITY])assert.equal(capAdValoremRate("50%",cap),null);
+});
+
+test("numeric and historical compound calculations share exact source arithmetic",()=>{
+ for(const [raw,value,quantity,unit,amount]of [["$0.01/kg + 29%",1000.50,1,"kg",290.16],["$0.005/kg + 5%",0.10,1,"kg",0.01],["$0.000000000001/kg",0,1e12,"kg",1],["50%",1000.01,null,null,500.01]] as const){const result=computeDuty(parseDutyRate(raw),{value,quantity,unit});assert.equal(result.amount,amount);assert(!result.basis.some(s=>s.includes("null")||s.includes("NaN")));}
+ assert.equal(computeAdValoremAmount(1000.50,0.15),150.08);
+ assert.equal(computeDuty(parseDutyRate("5%"),{value:Number.POSITIVE_INFINITY}).amount,null);
+ assert.equal(computeDuty(parseDutyRate("$1/kg + 29%"),{value:1000.50,quantity:1,unit:"lb"}).amount,null);
+});
+
+test("rounded components and combined-rate remainders add in exact cents",()=>{
+ assert.equal(combineDutyAmounts([0.1,0.2]),0.3);assert.equal(combineDutyAmounts([1000.5],[290.15]),710.35);assert.equal(combineDutyAmounts([0.1],[0.2]),-0.1);assert.equal(combineDutyAmounts(Array(64).fill(1000000000000.01)),64000000000000.64);
+ for(const bad of [[1.005],[Number.NaN],[-1],[Number.POSITIVE_INFINITY],Array(257).fill(0)])assert.equal(combineDutyAmounts(bad),null);
+});
 
 test("parseDutyRate reads a plain ad valorem rate", () => {
   const rate = parseDutyRate("8.8%");

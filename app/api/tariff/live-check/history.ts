@@ -59,9 +59,9 @@ export function compareLegalNote(before:string,after:string,note:number){
  const codes=[...new Set([...scopeText.matchAll(/\b\d{4}\.\d{2}\.\d{2}(?:\.?\d{2})?\b/g)].map(m=>m[0]))];
  return {note,kind:exact?"bounded_text_change" as const:"extensive_text_change" as const,before:oldContext,after:newContext,removed:exact?oldEdit:null,inserted:exact?newEdit:null,codes,reviewRequired:true};
 }
-export type HistoricalComparison={status:"compared"|"unavailable";current:HistoricalRelease|null;previous:HistoricalRelease|null;issues:string[];baseChanges:{sku:string;hts:string;origin:string;before:string|null;after:string|null;beforeAmount:number|null;afterAmount:number|null;difference:number|null;status:"compared"|"unresolved"}[];legalChanges:NonNullable<ReturnType<typeof compareLegalNote>>[];headingChanges:{code:string;before:string|null;after:string|null}[];modifyingDocuments:{number:string;title:string;publicationDate:string|null;effectiveOn:string|null;datesText:string|null;url:string;pdfUrl:string|null;pdfRetained:boolean}[];candidateSkus:string[];notesCompared:number[];scope:string[]};
+export type HistoricalComparison={coverage?:{legalNotes:boolean;historicalSchedule:boolean;modifyingDocuments:boolean};candidateProducts?:{sku:string;hts:string;origin:string}[];status:"compared"|"unavailable";current:HistoricalRelease|null;previous:HistoricalRelease|null;issues:string[];baseChanges:{sku:string;hts:string;origin:string;before:string|null;after:string|null;beforeAmount:number|null;afterAmount:number|null;difference:number|null;status:"compared"|"unresolved"}[];legalChanges:NonNullable<ReturnType<typeof compareLegalNote>>[];headingChanges:{code:string;before:string|null;after:string|null}[];modifyingDocuments:{number:string;title:string;publicationDate:string|null;effectiveOn:string|null;datesText:string|null;url:string;pdfUrl:string|null;pdfRetained:boolean}[];candidateSkus:string[];notesCompared:number[];scope:string[]};
 export async function compareHistoricalRules(input:{currentRevision:string;products:LiveProduct[];currentRows:Map<string,TariffRow|null>;currentHeadings:{htsno:string;description:string;general:string}[];productMeasures?:Map<string,string[]>;sources:LiveSource[];signal?:AbortSignal;progress:(s:string)=>void}):Promise<HistoricalComparison>{
- const out:HistoricalComparison={status:"unavailable",current:null,previous:null,issues:[],baseChanges:[],legalChanges:[],headingChanges:[],modifyingDocuments:[],candidateSkus:[],notesCompared:[],scope:["Adjacent published HTS revisions, exact uploaded codes, Chapter 99 headings and U.S. notes 16, 20 and 52. This is not all historical law.","Release availability dates are not legal effective dates. Retroactive amendments, transition rules and shipment qualification require review.","Money differences here compare base duty on identical uploaded values; a complete historical tariff-stack impact is not asserted."]};
+ const out:HistoricalComparison={coverage:{legalNotes:false,historicalSchedule:false,modifyingDocuments:false},status:"unavailable",current:null,previous:null,issues:[],baseChanges:[],legalChanges:[],headingChanges:[],modifyingDocuments:[],candidateSkus:[],notesCompared:[],scope:["Adjacent published HTS revisions, exact uploaded codes, Chapter 99 headings and U.S. notes 16, 20 and 52. This is not all historical law.","Release availability dates are not legal effective dates. Retroactive amendments, transition rules and shipment qualification require review.","Money differences here compare base duty on identical uploaded values; a complete historical tariff-stack impact is not asserted."]};
  let retained=0;
  const capture=async(name:string,url:string,format:"text"|"json"|"pdf"="text")=>{
   official(url);const source:LiveSource={name,url,fetchedAt:new Date().toISOString(),status:"failed",sha256:null,error:null,body:null};input.sources.push(source);
@@ -73,16 +73,6 @@ export async function compareHistoricalRules(input:{currentRevision:string;produ
  };
  try{
   input.progress("Finding the previous official tariff revision…");const list=JSON.parse((await capture('USITC historical release registry',LIST)).toString('utf8'));const pair=precedingRelease(list,input.currentRevision);Object.assign(out,pair);
-  // Discover the actual publisher links; never manufacture an archive filename.
-  const entries=new Map<string,{json:string;notices:string[]}>();
-  for(let page=0;page<4;page++){const html=(await capture('USITC revision archive index',INDEX+(page?`?page=${page}`:''))).toString('utf8');for(const [k,v] of archiveEntries(html))entries.set(k,v);if(entries.has(pair.current.name)&&entries.has(pair.previous.name))break;}
-  const oldEntry=entries.get(pair.previous.name),newEntry=entries.get(pair.current.name);if(!oldEntry||!newEntry)throw Error("Adjacent revision archive links were not found within four index pages.");
-  input.progress(`Retrieving ${pair.previous.description} and original rule documents…`);
-  const oldRows=JSON.parse((await capture(`${pair.previous.description}: original JSON schedule`,oldEntry.json,'json')).toString('utf8'));if(!Array.isArray(oldRows)||oldRows.length<10000||oldRows.length>100000)throw Error("Historical schedule is incomplete or outside supported bounds.");
-  for(const p of input.products){const old=archivedTariff(oldRows,p.hts),current=input.currentRows.get(p.hts)??null;const args={htsCode:p.hts,countryOfOrigin:p.origin,value:p.customsValue,quantity:p.quantity,unit:p.unit};const a=old?await quoteDuty(args,old):null,b=current?await quoteDuty(args,current):null;const valid=!!a&&!!b&&a.column===b.column&&a.computation.amount!==null&&b.computation.amount!==null;
-   out.baseChanges.push({sku:p.sku,hts:p.hts,origin:p.origin,before:a?.rate.raw??null,after:b?.rate.raw??null,beforeAmount:a?.computation.amount??null,afterAmount:b?.computation.amount??null,difference:valid?Math.round((b!.computation.amount!-a!.computation.amount!)*100)/100:null,status:valid?'compared':'unresolved'});}
-  const beforeMap=new Map<string,ArchiveRow>();for(const r of oldRows)if(typeof r.htsno==='string'&&r.htsno.startsWith('99')){if(beforeMap.has(r.htsno))throw Error("Duplicate historical Chapter 99 headings.");beforeMap.set(r.htsno,r);}
-  const nowMap=new Map(input.currentHeadings.filter(r=>r.htsno).map(r=>[r.htsno,r]));for(const code of new Set([...beforeMap.keys(),...nowMap.keys()])){const a=beforeMap.get(code),b=nowMap.get(code);const old=a?tidy(`${a.description??''} | ${a.general??''}`):null,current=b?tidy(`${b.description} | ${b.general}`):null;if(old!==current)out.headingChanges.push({code,before:old,after:current});}
   const texts:string[]=[];
   for(const revision of [pair.previous,pair.current]){
    const url=`https://hts.usitc.gov/reststop/file?release=${encodeURIComponent(revision.name)}&filename=Chapter%2099_III`;
@@ -90,7 +80,27 @@ export async function compareHistoricalRules(input:{currentRevision:string;produ
    const revisionNumber=/Rev(\d+)$/.exec(revision.name)?.[1];const year=revision.name.slice(0,4);if(!revisionNumber||!text.includes(`Harmonized Tariff Schedule of the United States Revision ${revisionNumber} (${year})`))throw Error("Historical PDF revision identity could not be verified.");texts.push(text);
   }
   for(const n of [16,20,52]){const a=legalNoteText(texts[0],n),b=legalNoteText(texts[1],n);const change=compareLegalNote(a,b,n);if(change)out.legalChanges.push(change);out.notesCompared.push(n);}
-  const docUrls=[...new Set([...newEntry.notices,...oldEntry.notices])];if(docUrls.length>6)out.issues.push(`Only six of ${docUrls.length} modifying documents were retrieved.`);
+  out.coverage!.legalNotes=true;
+  let docUrls:string[]=[];
+  try {
+  // Discover the actual publisher links; never manufacture an archive filename.
+  const entries=new Map<string,{json:string;notices:string[]}>();
+  for(let page=0;page<4;page++){const html=(await capture('USITC revision archive index',INDEX+(page?`?page=${page}`:''))).toString('utf8');for(const [k,v] of archiveEntries(html))entries.set(k,v);if(entries.has(pair.current.name)&&entries.has(pair.previous.name))break;}
+  const oldEntry=entries.get(pair.previous.name),newEntry=entries.get(pair.current.name);if(!oldEntry||!newEntry)throw Error("Adjacent revision archive links were not found within four index pages.");
+  input.progress(`Retrieving ${pair.previous.description} and original rule documents…`);
+  const oldRows=JSON.parse((await capture(`${pair.previous.description}: original JSON schedule`,oldEntry.json,'json')).toString('utf8'));if(!Array.isArray(oldRows)||oldRows.length<10000||oldRows.length>100000)throw Error("Historical schedule is incomplete or outside supported bounds.");
+  for(const p of input.products){const old=archivedTariff(oldRows,p.hts),current=input.currentRows.get(p.hts)??null;const args={htsCode:p.hts,countryOfOrigin:p.origin,value:p.customsValue,quantity:p.quantity,unit:p.unit,claimedProgramme:p.usmcaQualification?.decision==="qualifies"?"S":null};const a=old?await quoteDuty(args,old):null,b=current?await quoteDuty(args,current):null;const valid=!!a&&!!b&&a.column===b.column&&a.computation.amount!==null&&b.computation.amount!==null;
+   out.baseChanges.push({sku:p.sku,hts:p.hts,origin:p.origin,before:a?.rate.raw??null,after:b?.rate.raw??null,beforeAmount:a?.computation.amount??null,afterAmount:b?.computation.amount??null,difference:valid?Math.round((b!.computation.amount!-a!.computation.amount!)*100)/100:null,status:valid?'compared':'unresolved'});}
+  const beforeMap=new Map<string,ArchiveRow>();for(const r of oldRows)if(typeof r.htsno==='string'&&r.htsno.startsWith('99')){if(beforeMap.has(r.htsno))throw Error("Duplicate historical Chapter 99 headings.");beforeMap.set(r.htsno,r);}
+  const nowMap=new Map(input.currentHeadings.filter(r=>r.htsno).map(r=>[r.htsno,r]));for(const code of new Set([...beforeMap.keys(),...nowMap.keys()])){const a=beforeMap.get(code),b=nowMap.get(code);const old=a?tidy(`${a.description??''} | ${a.general??''}`):null,current=b?tidy(`${b.description} | ${b.general}`):null;if(old!==current)out.headingChanges.push({code,before:old,after:current});}
+   docUrls=[...new Set([...newEntry.notices,...oldEntry.notices])];
+   out.coverage!.historicalSchedule=true;
+  } catch(e) {
+   out.baseChanges=[];out.headingChanges=[];
+   out.issues.push(`Historical JSON schedule and amendment links unavailable: ${e instanceof Error?e.message:'source failure'}`);
+   out.scope.push("Partial comparison: the version-identified official PDFs establish legal-note differences only. Historical base-duty and Chapter 99 heading comparisons are unavailable; empty arrays do not mean no change.");
+  }
+  if(docUrls.length>6)out.issues.push(`Only six of ${docUrls.length} modifying documents were retrieved.`);
   input.progress("Linking the old/new rules to published amendments…");
   for(const url of docUrls.slice(0,6)){
    try{const number=/\/(\d{4}-\d+)(?:\/|$)/.exec(url)?.[1];if(!number)throw Error("Unrecognized modification-document identifier.");const meta=JSON.parse((await capture(`Federal Register modification ${number}`,`https://www.federalregister.gov/api/v1/documents/${number}.json`,'json')).toString('utf8'));if(meta.document_number!==number)throw Error("Modification document identity mismatch.");
@@ -99,7 +109,23 @@ export async function compareHistoricalRules(input:{currentRevision:string;produ
     out.modifyingDocuments.push({number,title:String(meta.title??number),publicationDate:typeof meta.publication_date==='string'?meta.publication_date:null,effectiveOn:typeof meta.effective_on==='string'?meta.effective_on:null,datesText:typeof meta.dates==='string'?meta.dates:null,url:typeof meta.html_url==='string'?official(meta.html_url).toString():url,pdfUrl:typeof meta.pdf_url==='string'?meta.pdf_url:null,pdfRetained});
    }catch(e){out.issues.push(`Modification source could not be fully retained: ${e instanceof Error?e.message:'unknown source failure'}`);}
   }
-  const codes=out.legalChanges.flatMap(c=>c.codes.map(digits));out.candidateSkus=input.products.filter(p=>codes.some(c=>digits(p.hts).startsWith(c))||out.headingChanges.some(h=>input.productMeasures?.get(p.sku)?.includes(h.code))||out.baseChanges.some(c=>c.sku===p.sku&&c.difference!==null&&c.difference!==0)).map(p=>p.sku);
+  out.coverage!.modifyingDocuments=docUrls.length>0&&docUrls.length<=6&&out.modifyingDocuments.length===docUrls.length&&out.modifyingDocuments.every(d=>d.pdfRetained);
+  out.candidateProducts=historicalProductCandidateRows(out,input.products,input.productMeasures);out.candidateSkus=[...new Set(out.candidateProducts.map(p=>p.sku))];
   out.modifyingDocuments.sort((a,b)=>(b.publicationDate??'').localeCompare(a.publicationDate??''));out.status='compared';return out;
  }catch(e){out.issues.push(e instanceof Error?e.message:"Historical comparison unavailable.");return out;}
+}
+
+/** Note 20 China Section 301 text is an origin-specific lead. Other legal-note
+ * matches remain conditional review leads; applied component matches already
+ * reflect the product's declared origin and qualifications. */
+export function historicalProductCandidateRows(comparison: Pick<HistoricalComparison,"legalChanges"|"headingChanges"|"baseChanges">, products: LiveProduct[], productMeasures?: Map<string,string[]>): {sku:string;hts:string;origin:string}[] {
+  return products.filter(product =>
+    comparison.legalChanges.some(change => (change.note !== 20 || product.origin === "CN") && change.codes.some(code => digits(product.hts).startsWith(digits(code))))
+    || comparison.headingChanges.some(heading => productMeasures?.get(product.sku)?.includes(heading.code))
+    || comparison.baseChanges.some(change => change.sku === product.sku && change.hts === product.hts && change.origin === product.origin && change.difference !== null && change.difference !== 0)
+  ).map(({sku,hts,origin}) => ({sku,hts,origin}));
+}
+
+export function historicalProductCandidates(comparison: Pick<HistoricalComparison,"legalChanges"|"headingChanges"|"baseChanges">, products: LiveProduct[], productMeasures?: Map<string,string[]>): string[] {
+  return [...new Set(historicalProductCandidateRows(comparison,products,productMeasures).map(p=>p.sku))];
 }

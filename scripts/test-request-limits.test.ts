@@ -71,3 +71,14 @@ test("aborted uploads cancel a pending reader instead of waiting for the full bo
  const result=bodyLimits.boundedRequest(request,100);abort.abort();
  await assert.rejects(()=>result);assert(cancelled);
 });
+
+test("hosted Request wrappers preserve unread input without native private-field copying",async()=>{
+ const source=request('{"sku":"SYNTHETIC"}',{"content-type":"application/json"});
+ // A runtime wrapper can share Request.prototype without the native constructor's
+ // private fields. Native new Request(wrapper) fails; public-field transfer works.
+ const descriptors=Object.fromEntries(["url","method","headers","body","signal"].map(key=>[key,{get:()=>source[key as keyof Request]}]));
+ const wrapped=Object.create(Request.prototype,descriptors);
+ assert.throws(()=>new Request(wrapped));
+ const h=helper();const response=await h.api.withRequestLimit(wrapped,"check",100,async(r:Request)=>Response.json(await r.json()));
+ assert.equal(response.status,200);assert.deepEqual(await response.json(),{sku:"SYNTHETIC"});assert.equal(h.releases(),1);
+});

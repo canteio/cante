@@ -1,0 +1,449 @@
+{
+  "label": "SYNTHETIC 18-entry focused workflow, manual expected arithmetic; real sources checked separately. No legal accuracy claim.",
+  "rows": [
+    {
+      "entry": "SYNTHETIC-COPPER-1",
+      "cohort": "China copper + 301 + fentanyl + reciprocal remainder",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "900.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-COPPER-2",
+      "cohort": "China later fentanyl rate",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "800.00",
+      "reviewedDifference": "-50.00"
+    },
+    {
+      "entry": "SYNTHETIC-COPPER-3",
+      "cohort": "Copper + independent China 301 + Section 122 remainder",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "700.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-COPPER-4",
+      "cohort": "Vietnam country reciprocal remainder",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "470.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-COPPER-5",
+      "cohort": "First copper day after exact cutoff; continuing reciprocal 10%",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "450.00",
+      "reviewedDifference": "-50.00"
+    },
+    {
+      "entry": "SYNTHETIC-COPPER-6",
+      "cohort": "Copper retains Canada border duty",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "780.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-COPPER-7",
+      "cohort": "Copper retains Mexico border duty",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "680.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-COPPER-8",
+      "cohort": "Copper has no steel/aluminum UK rate reduction",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "450.00",
+      "reviewedDifference": "-50.00"
+    },
+    {
+      "entry": "SYNTHETIC-COPPER-9",
+      "cohort": "Explicit full-value assessment; never inferred from missing value",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "980.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-COPPER-10",
+      "cohort": "Evidenced zero copper keeps other duties",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "580.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-COPPER-11",
+      "cohort": "Separate aluminum and copper duties; reciprocal on remainder 100",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "936.00",
+      "reviewedDifference": "-50.00"
+    },
+    {
+      "entry": "SYNTHETIC-COPPER-12",
+      "cohort": "Charged aluminum removes Canada border; copper independently remains",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "476.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-COPPER-13",
+      "cohort": "Combined metals plus China 301 and Section 122 on remainder 100",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "736.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-COPPER-14",
+      "cohort": "Before copper cutoff requires previous treatment, no retroactive new rate",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-COPPER-15",
+      "cohort": "Missing copper valuation corrected by dated evidence",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "900.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-COPPER-16",
+      "cohort": "No filing kilograms supplied; value-based audit only",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "900.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-COPPER-17",
+      "cohort": "Second copper statistical code",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "900.00",
+      "reviewedDifference": "-50.00"
+    },
+    {
+      "entry": "SYNTHETIC-COPPER-18",
+      "cohort": "Auto/civil-aircraft exception not cleared",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    }
+  ],
+  "decisions": [
+    {
+      "row": 1,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated non-overlapping copper values and qualification evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COPPER-1-DOC"
+      ],
+      "validFrom": "2025-09-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "copper_exceptions_clear": true,
+        "content_values_verified": true
+      }
+    },
+    {
+      "row": 2,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated non-overlapping copper values and qualification evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COPPER-2-DOC"
+      ],
+      "validFrom": "2025-11-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "copper_exceptions_clear": true,
+        "content_values_verified": true
+      }
+    },
+    {
+      "row": 3,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated non-overlapping copper values and qualification evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COPPER-3-DOC"
+      ],
+      "validFrom": "2026-03-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "copper_exceptions_clear": true,
+        "content_values_verified": true
+      }
+    },
+    {
+      "row": 4,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated non-overlapping copper values and qualification evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COPPER-4-DOC"
+      ],
+      "validFrom": "2025-09-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "copper_exceptions_clear": true,
+        "content_values_verified": true
+      }
+    },
+    {
+      "row": 5,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated non-overlapping copper values and qualification evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COPPER-5-DOC"
+      ],
+      "validFrom": "2025-08-01",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "copper_exceptions_clear": true,
+        "content_values_verified": true
+      }
+    },
+    {
+      "row": 6,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated non-overlapping copper values and qualification evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COPPER-6-DOC"
+      ],
+      "validFrom": "2025-09-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "copper_exceptions_clear": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 7,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated non-overlapping copper values and qualification evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COPPER-7-DOC"
+      ],
+      "validFrom": "2025-09-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "copper_exceptions_clear": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 8,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated non-overlapping copper values and qualification evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COPPER-8-DOC"
+      ],
+      "validFrom": "2025-09-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "copper_exceptions_clear": true,
+        "content_values_verified": true
+      }
+    },
+    {
+      "row": 9,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated non-overlapping copper values and qualification evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COPPER-9-DOC"
+      ],
+      "validFrom": "2025-09-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "copper_exceptions_clear": true,
+        "copper_full_value_assessment": true
+      }
+    },
+    {
+      "row": 10,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated non-overlapping copper values and qualification evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COPPER-10-DOC"
+      ],
+      "validFrom": "2025-09-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "copper_exceptions_clear": true,
+        "content_values_verified": true
+      }
+    },
+    {
+      "row": 11,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated non-overlapping copper values and qualification evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COPPER-11-DOC"
+      ],
+      "validFrom": "2025-09-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "copper_exceptions_clear": true,
+        "content_values_verified": true,
+        "us_aluminum_smelt_cast": false,
+        "russian_aluminum_clear": true
+      }
+    },
+    {
+      "row": 12,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated non-overlapping copper values and qualification evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COPPER-12-DOC"
+      ],
+      "validFrom": "2025-09-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "copper_exceptions_clear": true,
+        "content_values_verified": true,
+        "us_aluminum_smelt_cast": false,
+        "russian_aluminum_clear": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 13,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated non-overlapping copper values and qualification evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COPPER-13-DOC"
+      ],
+      "validFrom": "2026-03-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "copper_exceptions_clear": true,
+        "content_values_verified": true,
+        "us_aluminum_smelt_cast": false,
+        "russian_aluminum_clear": true
+      }
+    },
+    {
+      "row": 14,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated non-overlapping copper values and qualification evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COPPER-14-DOC"
+      ],
+      "validFrom": "2025-08-01",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "copper_exceptions_clear": true,
+        "content_values_verified": true
+      }
+    },
+    {
+      "row": 15,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated non-overlapping copper values and qualification evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COPPER-15-DOC"
+      ],
+      "validFrom": "2025-09-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "copper_exceptions_clear": true,
+        "content_values_verified": true
+      },
+      "shipment": {
+        "copperValue": "800.00"
+      }
+    },
+    {
+      "row": 16,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated non-overlapping copper values and qualification evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COPPER-16-DOC"
+      ],
+      "validFrom": "2025-09-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "copper_exceptions_clear": true,
+        "content_values_verified": true
+      }
+    },
+    {
+      "row": 17,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated non-overlapping copper values and qualification evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COPPER-17-DOC"
+      ],
+      "validFrom": "2025-09-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "copper_exceptions_clear": true,
+        "content_values_verified": true
+      }
+    },
+    {
+      "row": 18,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated non-overlapping copper values and qualification evidence; no real shipment or legal approval.",
+      "evidence": [
+        "SYNTHETIC-COPPER-18-DOC"
+      ],
+      "validFrom": "2025-09-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "copper_exceptions_clear": false,
+        "content_values_verified": true
+      }
+    }
+  ],
+  "summary": {
+    "lines": 18,
+    "calculated": 0,
+    "unresolved": 18,
+    "discrepancies": 0,
+    "overpayment": "0.00",
+    "underpayment": "0.00"
+  },
+  "reviewedSummary": {
+    "lines": 18,
+    "calculated": 16,
+    "unresolved": 2,
+    "discrepancies": 11,
+    "overpayment": "600.00",
+    "underpayment": "250.00"
+  }
+}

@@ -1,4 +1,4 @@
-import { computeAdValoremAmount } from "./duty-expression";
+import { computeAdValoremAmount, combineDutyAmounts } from "./duty-expression";
 import { lookupTariff, quoteDuty, type DutyQuote, type TariffRow } from "@/lib/tariff/rates";
 import {
   extractChapter99Refs,
@@ -250,7 +250,7 @@ export async function computeStackedDuty(
 
   const currentAmount=(resolution:RemedyResolution)=>{
     if(input.value===null||resolution.rate===null)return null;
-    if(resolution.combinedRate!==undefined){const target=computeAdValoremAmount(input.value,resolution.combinedRate);return target===null||base.computation.amount===null?null:Math.max(0,Math.round((target-base.computation.amount)*100)/100);}
+    if(resolution.combinedRate!==undefined){const target=computeAdValoremAmount(input.value,resolution.combinedRate);const difference=target===null||base.computation.amount===null?null:combineDutyAmounts([target],[base.computation.amount]);return difference===null?null:Math.max(0,difference);}
     return computeAdValoremAmount(input.value,resolution.rate);
   };
   const components: StackedDutyComponent[] = [];
@@ -368,7 +368,7 @@ export async function computeStackedDuty(
       }
       const amount =
         base.computation.amount !== null && input.value !== null
-          ? Number((input.value * measure.ratePercent).toFixed(2))
+          ? computeAdValoremAmount(input.value, measure.ratePercent)
           : null;
       components.push({
         type: "section301",
@@ -435,6 +435,8 @@ export async function computeStackedDuty(
     if (!["72", "73", "74", "76"].includes(base.htsCode.slice(0, 2))) {
       unresolvedMeasures.push("Section 232 derivative applicability requires verified applicable-metal weight and use qualifications.");
     }
+    const targetAmount=combined&&base.column!=="column2"&&input.value!==null?computeAdValoremAmount(input.value,match.ratePercent):null;
+    const remainderAmount=targetAmount!==null&&base.computation.amount!==null?combineDutyAmounts([targetAmount],[base.computation.amount]):null;
     components.push({
       type: "section232",
       label: `Section 232 — ${match.annex}`,
@@ -442,7 +444,7 @@ export async function computeStackedDuty(
       effectiveDate: match.effectiveDate,
       sourceDocumentNumber: match.sourceDocumentNumber,
       ratePercent: rate,
-      amount: rate !== null && input.value !== null ? Number((input.value * rate).toFixed(2)) : null,
+      amount: combined&&base.column!=="column2" ? remainderAmount===null?null:Math.max(0,remainderAmount) : rate !== null && input.value !== null ? computeAdValoremAmount(input.value, rate) : null,
       citation: [`${match.sourceTitle}, ${match.sourceDocumentNumber} (${match.sourcePdfUrl})`],
       explanation: combined && base.column !== "column2"
         ? `Annex III sets a combined Column 1 plus Section 232 rate of ${match.ratePercent * 100}%. The additional component is the positive difference from the base rate; no additional duty is due when the base meets that threshold.`
@@ -481,7 +483,7 @@ export async function computeStackedDuty(
       label: section232Match.label,
       measureId: section232Match.chapter99Code,
       ratePercent: rate,
-      amount: rate !== null && input.value !== null ? Number((input.value * rate).toFixed(2)) : null,
+      amount: rate !== null && input.value !== null ? computeAdValoremAmount(input.value, rate) : null,
       citation: section232Match.federalRegisterCitations,
       explanation: reason ?? `Section 232 basic ${section232Match.category} article: ${rate! * 100}% on full customs value${importDate ? ` for ${importDate}` : " (today's current in-force rate; no import date was given)"}. ${country === "GB" ? section232Match.note : ""}`,
     });
@@ -575,7 +577,8 @@ export async function computeStackedDuty(
         continue;
       }
 
-      const amount = Number((contentValue * applicableRate).toFixed(2));
+      const amount = computeAdValoremAmount(contentValue, applicableRate);
+      if(amount===null)unresolvedMeasures.push(`${measure.chapter99Code}: content duty exceeds exact-cent monetary output bounds`);
       components.push({
         type: "section232",
         label: measure.label,
@@ -586,10 +589,10 @@ export async function computeStackedDuty(
         contentCategory: measure.category,
         amount,
         citation: measure.citations,
-        explanation: `${measure.note} USD ${contentValue.toFixed(2)} ${measure.category} content value × ${(applicableRate * 100).toFixed(0)}% = USD ${amount.toFixed(2)}.`,
+        explanation: `${measure.note} USD ${contentValue.toFixed(2)} ${measure.category} content value × ${(applicableRate * 100).toFixed(0)}% = ${amount===null?"amount withheld":`USD ${amount.toFixed(2)}`}.`,
       });
       stackingExplanation.push(
-        `${measure.label} (${measure.chapter99Code}, effective ${measure.effectiveDate}) adds USD ${amount.toFixed(2)}, calculated only from the supplied USD ${contentValue.toFixed(2)} ${measure.category} content value. It is not represented as an ad valorem rate on total shipment value.`,
+        `${measure.label} (${measure.chapter99Code}, effective ${measure.effectiveDate}): ${amount===null?"amount withheld":`USD ${amount.toFixed(2)}`}, calculated only from the supplied USD ${contentValue.toFixed(2)} ${measure.category} content value. It is not represented as an ad valorem rate on total shipment value.`,
       );
     }
   }
@@ -639,11 +642,12 @@ export async function computeStackedDuty(
     } catch (error) {
       resolution = { status: "needs_review" as const, reason: error instanceof Error ? error.message : "Stacking-rules lookup failed." };
     }
-    if (resolution.status === "resolved" && (resolution.match.action === "include" || resolution.match.action === "cap_at")) {
+    const invalidCap=resolution.status==="resolved"&&resolution.match.action==="cap_at"&&(resolution.match.capRatePercent===null||!Number.isFinite(resolution.match.capRatePercent)||resolution.match.capRatePercent<0||resolution.match.capRatePercent>1);
+    if (resolution.status === "resolved" && !invalidCap && (resolution.match.action === "include" || resolution.match.action === "cap_at")) {
       const rate = resolution.match.action === "cap_at" && resolution.match.capRatePercent !== null
         ? Math.min(section338AlcoholOnlyMatch!.ratePercent, resolution.match.capRatePercent)
         : section338AlcoholOnlyMatch!.ratePercent;
-      const amount = input.value !== null ? Number((input.value * rate).toFixed(2)) : null;
+      const amount = input.value !== null ? computeAdValoremAmount(input.value, rate) : null;
       components.push({
         type: "section338",
         measureId: "9903.03.12",
@@ -659,7 +663,7 @@ export async function computeStackedDuty(
         `${section338AlcoholOnlyMatch!.chapter99Code}: excluded by confirmed rule ${resolution.match.ruleId} — ${resolution.match.explanation}`,
       );
     } else {
-      const reason = resolution.status === "needs_review" ? resolution.reason : "no confirmed stacking rule resolves this combination yet";
+      const reason = invalidCap?"the confirmed cap has no valid fractional rate":resolution.status === "needs_review" ? resolution.reason : "no confirmed stacking rule resolves this combination yet";
       unresolvedMeasures.push(
         `${section338AlcoholOnlyMatch!.chapter99Code}: Section 338 alcohol basket may stack with Section 232 per the Sept 15, 2026 amendment — ${reason}`,
       );
@@ -714,7 +718,7 @@ export async function computeStackedDuty(
       } else {
         const amount =
           base.computation.amount !== null && input.value !== null
-            ? Number((input.value * section338Match.ratePercent).toFixed(2))
+            ? computeAdValoremAmount(input.value, section338Match.ratePercent)
             : null;
         components.push({
           type: "section338",
@@ -783,11 +787,11 @@ export async function computeStackedDuty(
         component.amount = 0;
         if (component.contentRatePercent !== undefined) component.contentRatePercent = 0;
       } else if (result.match.action === "cap_at") {
-        if (component.ratePercent === null || result.match.capRatePercent === null || component.contentRatePercent !== undefined) {
+        if (component.ratePercent === null || result.match.capRatePercent === null || !Number.isFinite(result.match.capRatePercent) || result.match.capRatePercent<0 || result.match.capRatePercent>1 || component.contentRatePercent !== undefined) {
           unresolvedMeasures.push(`${component.measureId}: component cap needs an established shipment-value ad valorem rate`);
         } else {
           component.ratePercent = Math.min(component.ratePercent, result.match.capRatePercent);
-          component.amount = input.value === null ? null : Number((input.value * component.ratePercent).toFixed(2));
+          component.amount = input.value === null ? null : computeAdValoremAmount(input.value, component.ratePercent);
         }
       }
     }
@@ -795,6 +799,7 @@ export async function computeStackedDuty(
     unresolvedMeasures.push(`Stacking exclusions could not be checked: ${error instanceof Error ? error.message : "lookup failed"}`);
   }
   for (const component of components) {
+    if(component.amount===null&&component.ratePercent!==null&&input.value!==null&&unresolvedMeasures.length===0)unresolvedMeasures.push(`${component.label}: a complete amount within exact-cent output bounds could not be established`);
     if (component.amount !== null && !Number.isFinite(component.amount)) {
       component.amount = null;
       unresolvedMeasures.push(`${component.label}: arithmetic overflow`);
@@ -810,8 +815,9 @@ export async function computeStackedDuty(
 
   const allAmountsResolved = components.every((c) => c.amount !== null) && unresolvedMeasures.length === 0;
   const totalAmount = allAmountsResolved
-    ? Number(components.reduce((sum, c) => sum + (c.amount ?? 0), 0).toFixed(2))
+    ? combineDutyAmounts(components.map(c => c.amount!))
     : null;
+  if(allAmountsResolved&&totalAmount===null)unresolvedMeasures.push("Duty components cannot be combined within exact-cent monetary output bounds");
 
   const adCvdAdvisories = lookupAdCvdAdvisories(base.htsCode, country);
   if (adCvdAdvisories.length > 0) {

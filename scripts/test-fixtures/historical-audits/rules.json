@@ -1,0 +1,202 @@
+{
+  "id": "00000000-0000-4000-8000-000000000001",
+  "status": "approved",
+  "approved_by": "SYNTHETIC-REVIEWER",
+  "approved_at": "2024-01-01T00:00:00Z",
+  "definition": {
+    "version": 1,
+    "synthetic": true,
+    "title": "SYNTHETIC audit rules \u2014 not real tariff law",
+    "supersedes": [],
+    "coverage": [
+      {
+        "hts": [
+          "8501314000",
+          "8501324000",
+          "0101210010",
+          "0101290010"
+        ],
+        "origins": [
+          "CN",
+          "VN",
+          "JP"
+        ],
+        "requiredFacts": [],
+        "from": "2024-01-01",
+        "before": "2025-01-01",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "id": "SYN-BASE-A",
+        "label": "SYN-BASE-A",
+        "type": "base",
+        "hts": [
+          "8501314000"
+        ],
+        "origins": [
+          "CN",
+          "VN",
+          "JP"
+        ],
+        "rate": "5%",
+        "basis": "customs_value",
+        "conditions": {},
+        "from": "2024-01-01",
+        "before": "2024-06-01",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-BASE-B",
+        "label": "SYN-BASE-B",
+        "type": "base",
+        "hts": [
+          "8501314000"
+        ],
+        "origins": [
+          "CN",
+          "VN",
+          "JP"
+        ],
+        "rate": "7%",
+        "basis": "customs_value",
+        "conditions": {},
+        "from": "2024-06-01",
+        "before": "2025-01-01",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "9903.88.01",
+        "label": "9903.88.01",
+        "type": "section301",
+        "hts": [
+          "8501314000"
+        ],
+        "origins": [
+          "CN"
+        ],
+        "rate": "25%",
+        "basis": "customs_value",
+        "conditions": {},
+        "from": "2024-01-01",
+        "before": "2025-01-01",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-BASE-ALT",
+        "label": "SYN-BASE-ALT",
+        "type": "base",
+        "hts": [
+          "8501324000"
+        ],
+        "origins": [
+          "CN",
+          "VN",
+          "JP"
+        ],
+        "rate": "5%",
+        "basis": "customs_value",
+        "conditions": {},
+        "from": "2024-01-01",
+        "before": "2025-01-01",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-SPECIFIC",
+        "label": "SYN-SPECIFIC",
+        "type": "base",
+        "hts": [
+          "0101210010"
+        ],
+        "origins": [
+          "CN",
+          "VN",
+          "JP"
+        ],
+        "rate": "$0.005/kg",
+        "basis": "customs_value",
+        "conditions": {},
+        "from": "2024-01-01",
+        "before": "2025-01-01",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-COMPOUND",
+        "label": "SYN-COMPOUND",
+        "type": "base",
+        "hts": [
+          "0101290010"
+        ],
+        "origins": [
+          "CN",
+          "VN",
+          "JP"
+        ],
+        "rate": "2.5 cents/kg + 5%",
+        "basis": "customs_value",
+        "conditions": {},
+        "from": "2024-01-01",
+        "before": "2025-01-01",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      }
+    ],
+    "stacking": [
+      {
+        "id": "SYN-EXCLUSION",
+        "target": "9903.88.01",
+        "action": "exclude",
+        "cap": null,
+        "conditions": {
+          "exclusion_qualified": true
+        },
+        "explanation": "SYNTHETIC: documented qualifying goods exclude the fictional additional duty.",
+        "from": "2024-01-01",
+        "before": "2025-01-01",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      },
+      {
+        "id": "SYN-NO-EXCLUSION",
+        "target": "9903.88.01",
+        "action": "include",
+        "cap": null,
+        "conditions": {
+          "exclusion_qualified": false
+        },
+        "explanation": "SYNTHETIC: reviewed nonqualifying goods retain the fictional additional duty.",
+        "from": "2024-01-01",
+        "before": "2025-01-01",
+        "sourceIds": [
+          "SYN-SOURCE"
+        ]
+      }
+    ]
+  },
+  "sources": [
+    {
+      "id": "SYN-SOURCE",
+      "url": "https://synthetic.invalid/rules",
+      "title": "SYNTHETIC ONLY",
+      "body": "SYNTHETIC FUNCTIONALITY RULES. NOT REAL TARIFF LAW. No customer or government accuracy is asserted.",
+      "encoding": "utf8",
+      "sha256": "1a37d3d08cdd829f4aa36775da30433398885abccf18c340afc1ae0c1cecfc4f",
+      "capturedAt": "2024-01-01T00:00:00Z"
+    }
+  ]
+}

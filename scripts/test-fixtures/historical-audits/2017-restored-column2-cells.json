@@ -1,0 +1,718 @@
+{
+  "label": "Public USITC original table cells and annual row, for fictional functionality tests only; no classification or human approval.",
+  "annual": {
+    "record": 7315,
+    "hts8": "69073010",
+    "description": "Unglazed ceramic mosaic cubes, o/t subheading 6907.40",
+    "from": "2017-01-01",
+    "through": "2050-12-31",
+    "rateType": "7",
+    "adValorem": "0.10",
+    "specific": "0.00",
+    "other": "0.00",
+    "textRate": "10%",
+    "special": "Free (AU,BH,CA,CL,CO,D,E,IL,JO,MA,MX,P,PA,PE,SG) 1% (OM) 5.9% (KR)",
+    "column2": "",
+    "units": [
+      "M2"
+    ],
+    "quantityCodes": [
+      "M2",
+      ""
+    ],
+    "footnote": "",
+    "additional": "",
+    "column2Data": {
+      "rateType": "",
+      "adValorem": "",
+      "specific": "",
+      "other": "",
+      "fieldsComplete": true,
+      "textRateAvailable": true
+    }
+  },
+  "originals": [
+    {
+      "sourceId": "4f7b818b-3e61-4b3a-9167-38153dc05aea",
+      "url": "https://hts.usitc.gov/reststop/file?release=basicCorrections2&filename=Chapter%2069",
+      "sha256": "a2a0394ab3b0ef5e076e7d041a7f3f1372a525101e1f37c0a6da5e8d3c66be0c",
+      "page": 11,
+      "cells": [
+        {
+          "text": "Rates of Duty",
+          "x": 457.237,
+          "y": 719.212,
+          "width": 42.406000000000056
+        },
+        {
+          "text": "Unit",
+          "x": 350.897,
+          "y": 718.712,
+          "width": 12.446
+        },
+        {
+          "text": "of",
+          "x": 354.201,
+          "y": 710.313,
+          "width": 5.838
+        },
+        {
+          "text": "Quantity",
+          "x": 344.086,
+          "y": 701.914,
+          "width": 26.068
+        },
+        {
+          "text": "Article Description",
+          "x": 193.728,
+          "y": 710.313,
+          "width": 56.78400000000003
+        },
+        {
+          "text": "Stat.",
+          "x": 93.24,
+          "y": 718.712,
+          "width": 14.399
+        },
+        {
+          "text": "Suf-",
+          "x": 94.021,
+          "y": 710.313,
+          "width": 12.838
+        },
+        {
+          "text": "fix",
+          "x": 96.94,
+          "y": 701.914,
+          "width": 7
+        },
+        {
+          "text": "Heading/",
+          "x": 55.473,
+          "y": 718.212,
+          "width": 28.014
+        },
+        {
+          "text": "Subheading",
+          "x": 50.8,
+          "y": 709.813,
+          "width": 37.359
+        },
+        {
+          "text": "2",
+          "x": 548.134,
+          "y": 710.313,
+          "width": 3.892
+        },
+        {
+          "text": "1",
+          "x": 448.414,
+          "y": 710.313,
+          "width": 3.892
+        },
+        {
+          "text": "Special",
+          "x": 471.283,
+          "y": 701.414,
+          "width": 22.952999999999996
+        },
+        {
+          "text": "General",
+          "x": 398.705,
+          "y": 701.414,
+          "width": 24.829000000000004
+        },
+        {
+          "text": "Ceramic flags and paving, hearth or wall tiles; ceramic mosaic",
+          "x": 110.72,
+          "y": 689.353,
+          "width": 222.80099999999993
+        },
+        {
+          "text": "cubes and the like, whether or not on a backing; finishing",
+          "x": 110.72,
+          "y": 679.153,
+          "width": 207.91350000000003
+        },
+        {
+          "text": "ceramics: (con.)",
+          "x": 110.72,
+          "y": 668.953,
+          "width": 58.990500000000026
+        },
+        {
+          "text": "6907 (con.)",
+          "x": 47.8,
+          "y": 689.353,
+          "width": 42.219500000000004
+        },
+        {
+          "text": "Mosaic cubes and the like, other than those of subheading",
+          "x": 125.12,
+          "y": 658.753,
+          "width": 208.39950000000016
+        },
+        {
+          "text": "6907.40:",
+          "x": 125.12,
+          "y": 648.553,
+          "width": 32.605999999999995
+        },
+        {
+          "text": "6907.30",
+          "x": 47.8,
+          "y": 658.753,
+          "width": 30.480999999999998
+        },
+        {
+          "text": "Unglazed..........................................................................",
+          "x": 139.52,
+          "y": 638.353,
+          "width": 193.993
+        },
+        {
+          "text": "6907.30.10",
+          "x": 47.8,
+          "y": 638.353,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "Free (AU, BH, CA,",
+          "x": 445.52,
+          "y": 638.153,
+          "width": 68.51150000000001
+        },
+        {
+          "text": "CL, CO, D, E, IL,",
+          "x": 450.52,
+          "y": 627.953,
+          "width": 62.28050000000003
+        },
+        {
+          "text": "JO, MA, MX, P,",
+          "x": 450.52,
+          "y": 617.753,
+          "width": 58.183000000000106
+        },
+        {
+          "text": "PA, PE, SG)",
+          "x": 450.52,
+          "y": 607.553,
+          "width": 46.17249999999999
+        },
+        {
+          "text": "1% (OM)",
+          "x": 445.52,
+          "y": 597.353,
+          "width": 33.92399999999999
+        },
+        {
+          "text": "5.9% (KR)",
+          "x": 445.52,
+          "y": 587.153,
+          "width": 38.67549999999999
+        },
+        {
+          "text": "10%",
+          "x": 380.72,
+          "y": 638.153,
+          "width": 17.0085
+        },
+        {
+          "text": "..................",
+          "x": 337.52,
+          "y": 638.153,
+          "width": 38.25
+        },
+        {
+          "text": "Cubes and the like, whether or not rectangular, the",
+          "x": 153.92,
+          "y": 576.953,
+          "width": 179.6365
+        },
+        {
+          "text": "largest surface area of which is capable of being",
+          "x": 153.92,
+          "y": 566.753,
+          "width": 177.16749999999993
+        },
+        {
+          "text": "enclosed in a square the side of which is less than",
+          "x": 153.92,
+          "y": 556.553,
+          "width": 179.6080000000001
+        },
+        {
+          "text": "7 cm............................................................................",
+          "x": 153.92,
+          "y": 546.353,
+          "width": 179.60000000000005
+        },
+        {
+          "text": "05",
+          "x": 95.714,
+          "y": 576.953,
+          "width": 9.452
+        },
+        {
+          "text": "m",
+          "x": 337.52,
+          "y": 546.419,
+          "width": 6.902
+        },
+        {
+          "text": "2",
+          "x": 344.422,
+          "y": 550.873,
+          "width": 2.8356
+        },
+        {
+          "text": "Other:",
+          "x": 153.92,
+          "y": 532.153,
+          "width": 23.0775
+        },
+        {
+          "text": "Cubes and the like, the largest surface area",
+          "x": 168.32,
+          "y": 521.953,
+          "width": 159.7945
+        },
+        {
+          "text": "of which is capable of being enclosed in a",
+          "x": 168.32,
+          "y": 511.753,
+          "width": 152.44150000000008
+        },
+        {
+          "text": "square the side of which is 30cm or less........",
+          "x": 168.32,
+          "y": 501.553,
+          "width": 165.19500000000005
+        },
+        {
+          "text": "11",
+          "x": 95.714,
+          "y": 521.953,
+          "width": 9.452
+        },
+        {
+          "text": "m",
+          "x": 337.52,
+          "y": 501.619,
+          "width": 6.902
+        },
+        {
+          "text": "2",
+          "x": 344.422,
+          "y": 506.073,
+          "width": 2.8356
+        },
+        {
+          "text": "Other...................................................................",
+          "x": 168.32,
+          "y": 487.353,
+          "width": 165.19800000000004
+        },
+        {
+          "text": "51",
+          "x": 95.714,
+          "y": 487.353,
+          "width": 9.452
+        },
+        {
+          "text": "m",
+          "x": 337.52,
+          "y": 487.419,
+          "width": 6.902
+        },
+        {
+          "text": "2",
+          "x": 344.422,
+          "y": 491.873,
+          "width": 2.8356
+        },
+        {
+          "text": "Rates of Duty",
+          "x": 457.237,
+          "y": 718.332,
+          "width": 42.406000000000056
+        },
+        {
+          "text": "1",
+          "x": 448.054,
+          "y": 709.836,
+          "width": 3.892
+        },
+        {
+          "text": "Harmonized Tariff Schedule of the United States (2017)",
+          "x": 170.314,
+          "y": 757.39,
+          "width": 284.69099999999986
+        },
+        {
+          "text": "Annotated for Statistical Reporting Purposes",
+          "x": 243.654,
+          "y": 747.613,
+          "width": 138.01199999999994
+        },
+        {
+          "text": "XIII",
+          "x": 569.093,
+          "y": 739.214,
+          "width": 10.507
+        },
+        {
+          "text": "69-11",
+          "x": 561.701,
+          "y": 730.815,
+          "width": 17.898999999999887
+        }
+      ]
+    },
+    {
+      "sourceId": "a00a0be2-f83e-422e-9488-60f730704c09",
+      "url": "https://hts.usitc.gov/reststop/file?release=NTE&filename=Chapter%2069",
+      "sha256": "623ed043d6c4ed86ea9b2f550d825a49c5e7a17cc339c3203e8f5b02c9c6d3f3",
+      "page": 11,
+      "cells": [
+        {
+          "text": "Rates of Duty",
+          "x": 457.237,
+          "y": 719.212,
+          "width": 42.406000000000056
+        },
+        {
+          "text": "Unit",
+          "x": 350.897,
+          "y": 718.712,
+          "width": 12.446
+        },
+        {
+          "text": "of",
+          "x": 354.201,
+          "y": 710.313,
+          "width": 5.838
+        },
+        {
+          "text": "Quantity",
+          "x": 344.086,
+          "y": 701.914,
+          "width": 26.068
+        },
+        {
+          "text": "Article Description",
+          "x": 193.728,
+          "y": 710.313,
+          "width": 56.78400000000003
+        },
+        {
+          "text": "Stat.",
+          "x": 93.24,
+          "y": 718.712,
+          "width": 14.399
+        },
+        {
+          "text": "Suf-",
+          "x": 94.021,
+          "y": 710.313,
+          "width": 12.838
+        },
+        {
+          "text": "fix",
+          "x": 96.94,
+          "y": 701.914,
+          "width": 7
+        },
+        {
+          "text": "Heading/",
+          "x": 55.473,
+          "y": 718.212,
+          "width": 28.014
+        },
+        {
+          "text": "Subheading",
+          "x": 50.8,
+          "y": 709.813,
+          "width": 37.359
+        },
+        {
+          "text": "2",
+          "x": 548.134,
+          "y": 710.313,
+          "width": 3.892
+        },
+        {
+          "text": "1",
+          "x": 448.414,
+          "y": 710.313,
+          "width": 3.892
+        },
+        {
+          "text": "Special",
+          "x": 471.283,
+          "y": 701.414,
+          "width": 22.952999999999996
+        },
+        {
+          "text": "General",
+          "x": 398.705,
+          "y": 701.414,
+          "width": 24.829000000000004
+        },
+        {
+          "text": "Ceramic flags and paving, hearth or wall tiles; ceramic mosaic",
+          "x": 110.72,
+          "y": 689.353,
+          "width": 222.80099999999993
+        },
+        {
+          "text": "cubes and the like, whether or not on a backing; finishing",
+          "x": 110.72,
+          "y": 679.153,
+          "width": 207.91350000000003
+        },
+        {
+          "text": "ceramics: (con.)",
+          "x": 110.72,
+          "y": 668.953,
+          "width": 58.990500000000026
+        },
+        {
+          "text": "6907 (con.)",
+          "x": 47.8,
+          "y": 689.353,
+          "width": 42.219500000000004
+        },
+        {
+          "text": "Mosaic cubes and the like, other than those of subheading",
+          "x": 125.12,
+          "y": 658.753,
+          "width": 208.39950000000016
+        },
+        {
+          "text": "6907.40:",
+          "x": 125.12,
+          "y": 648.553,
+          "width": 32.605999999999995
+        },
+        {
+          "text": "6907.30",
+          "x": 47.8,
+          "y": 658.753,
+          "width": 30.480999999999998
+        },
+        {
+          "text": "Unglazed..........................................................................",
+          "x": 139.52,
+          "y": 638.353,
+          "width": 193.993
+        },
+        {
+          "text": "6907.30.10",
+          "x": 47.8,
+          "y": 638.353,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "55%",
+          "x": 524,
+          "y": 638.153,
+          "width": 17.0085
+        },
+        {
+          "text": "Free (AU, BH, CA,",
+          "x": 445.52,
+          "y": 638.153,
+          "width": 68.51150000000001
+        },
+        {
+          "text": "CL, CO, D, E, IL,",
+          "x": 450.52,
+          "y": 627.953,
+          "width": 62.28050000000003
+        },
+        {
+          "text": "JO, MA, MX, P,",
+          "x": 450.52,
+          "y": 617.753,
+          "width": 58.183000000000106
+        },
+        {
+          "text": "PA, PE, SG)",
+          "x": 450.52,
+          "y": 607.553,
+          "width": 46.17249999999999
+        },
+        {
+          "text": "1% (OM)",
+          "x": 445.52,
+          "y": 597.353,
+          "width": 33.92399999999999
+        },
+        {
+          "text": "5.9% (KR)",
+          "x": 445.52,
+          "y": 587.153,
+          "width": 38.67549999999999
+        },
+        {
+          "text": "10%",
+          "x": 380.72,
+          "y": 638.153,
+          "width": 17.0085
+        },
+        {
+          "text": "..................",
+          "x": 337.52,
+          "y": 638.153,
+          "width": 38.25
+        },
+        {
+          "text": "Cubes and the like, whether or not rectangular, the",
+          "x": 153.92,
+          "y": 576.953,
+          "width": 179.6365
+        },
+        {
+          "text": "largest surface area of which is capable of being",
+          "x": 153.92,
+          "y": 566.753,
+          "width": 177.16749999999993
+        },
+        {
+          "text": "enclosed in a square the side of which is less than",
+          "x": 153.92,
+          "y": 556.553,
+          "width": 179.6080000000001
+        },
+        {
+          "text": "7 cm............................................................................",
+          "x": 153.92,
+          "y": 546.353,
+          "width": 179.60000000000005
+        },
+        {
+          "text": "05",
+          "x": 95.714,
+          "y": 576.953,
+          "width": 9.452
+        },
+        {
+          "text": "m",
+          "x": 337.52,
+          "y": 546.419,
+          "width": 6.902
+        },
+        {
+          "text": "2",
+          "x": 344.422,
+          "y": 550.873,
+          "width": 2.8356
+        },
+        {
+          "text": "Other:",
+          "x": 153.92,
+          "y": 532.153,
+          "width": 23.0775
+        },
+        {
+          "text": "Cubes and the like, the largest surface area",
+          "x": 168.32,
+          "y": 521.953,
+          "width": 159.7945
+        },
+        {
+          "text": "of which is capable of being enclosed in a",
+          "x": 168.32,
+          "y": 511.753,
+          "width": 152.44150000000008
+        },
+        {
+          "text": "square the side of which is 30cm or less........",
+          "x": 168.32,
+          "y": 501.553,
+          "width": 165.19500000000005
+        },
+        {
+          "text": "11",
+          "x": 95.714,
+          "y": 521.953,
+          "width": 9.452
+        },
+        {
+          "text": "m",
+          "x": 337.52,
+          "y": 501.619,
+          "width": 6.902
+        },
+        {
+          "text": "2",
+          "x": 344.422,
+          "y": 506.073,
+          "width": 2.8356
+        },
+        {
+          "text": "Other...................................................................",
+          "x": 168.32,
+          "y": 487.353,
+          "width": 165.19800000000004
+        },
+        {
+          "text": "51",
+          "x": 95.714,
+          "y": 487.353,
+          "width": 9.452
+        },
+        {
+          "text": "m",
+          "x": 337.52,
+          "y": 487.419,
+          "width": 6.902
+        },
+        {
+          "text": "2",
+          "x": 344.422,
+          "y": 491.873,
+          "width": 2.8356
+        },
+        {
+          "text": "Rates of Duty",
+          "x": 457.237,
+          "y": 718.332,
+          "width": 42.406000000000056
+        },
+        {
+          "text": "1",
+          "x": 448.054,
+          "y": 709.836,
+          "width": 3.892
+        },
+        {
+          "text": "Harmonized Tariff Schedule of the United States (2017) - Revision 1",
+          "x": 137.996,
+          "y": 757.39,
+          "width": 349.3269999999999
+        },
+        {
+          "text": "Annotated for Statistical Reporting Purposes",
+          "x": 243.654,
+          "y": 747.613,
+          "width": 138.01199999999994
+        },
+        {
+          "text": "XIII",
+          "x": 569.093,
+          "y": 739.214,
+          "width": 10.507
+        },
+        {
+          "text": "69-11",
+          "x": 561.701,
+          "y": 730.815,
+          "width": 17.898999999999887
+        }
+      ]
+    }
+  ]
+}

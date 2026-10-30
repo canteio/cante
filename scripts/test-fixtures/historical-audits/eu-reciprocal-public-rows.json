@@ -1,0 +1,85 @@
+{
+  "label": "Actual retained public rows; no legal approval. Tests use separate synthetic guidance.",
+  "sourceId": "d4b02bdb-1420-41b4-b86d-210a03e3343b",
+  "release": "2025HTSRev25",
+  "rows": [
+    {
+      "source_id": "d4b02bdb-1420-41b4-b86d-210a03e3343b",
+      "hts": "99030219",
+      "description": "Except for goods loaded onto a vessel at the port of loading and in transit on the final mode of transit before 12:01 a.m. eastern daylight time on August 7, 2025, and entered for consumption or withdrawn from warehouse for consumption before 12:01 a.m. eastern daylight time on October 5, 2025,except for products described in headings 9903.01.30\u20139903.01.33 and 9903.02.74\u2013 9903.02.77, and except as provided for in headings 9903.01.34 and 9903.02.01, articles the product of the European Union, with an ad valorem (or ad valorem equivalent) rate of duty under column 1-General equal to or greater than 15 percent, as provided for in subdivision (v) of U.S. note 2 to this subchapter",
+      "general": "The duty provided in the applicable subheading",
+      "special": "The duty provided in the applicable subheading",
+      "column2": "The duty provided in the applicable subheading",
+      "additional_duties": "",
+      "units": [],
+      "footnotes": [],
+      "pdfPage": 351,
+      "projection": "official-chapter99-pdf-v1"
+    },
+    {
+      "source_id": "d4b02bdb-1420-41b4-b86d-210a03e3343b",
+      "hts": "99030220",
+      "description": "Except for goods loaded onto a vessel at the port of loading and in transit on the final mode of transit before 12:01 a.m. eastern daylight time on August 7, 2025, and entered for consumption or withdrawn from warehouse for consumption before 12:01 a.m. eastern daylight time on October 5, 2025, except for products described in headings 9903.01.30\u20139903.01.33 and 9903.02.74\u2013 9903.02.77, and except as provided for in headings 9903.01.34 and 9903.02.01, articles the product of the European Union, with an ad valorem (or ad valorem equivalent) rate of duty under column 1-General less than 15 percent, as provided for in subdivision (v) of U.S. note 2 to this subchapter",
+      "general": "15%",
+      "special": "15%",
+      "column2": "The duty provided in the applicable subheading",
+      "additional_duties": "",
+      "units": [],
+      "footnotes": [],
+      "pdfPage": 351,
+      "projection": "official-chapter99-pdf-v1"
+    },
+    {
+      "source_id": "d4b02bdb-1420-41b4-b86d-210a03e3343b",
+      "hts": "99030274",
+      "description": "Articles the product of the European Union, as provided for in subdivision (v)(xvi) of U.S. note 2 to this subchapter",
+      "general": "The duty provided in the applicable subheading",
+      "special": "The duty provided in the applicable subheading",
+      "column2": "The duty provided in the applicable subheading",
+      "additional_duties": "",
+      "units": [],
+      "footnotes": [],
+      "pdfPage": 365,
+      "projection": "official-chapter99-pdf-v1"
+    },
+    {
+      "source_id": "d4b02bdb-1420-41b4-b86d-210a03e3343b",
+      "hts": "99030275",
+      "description": "Articles the product of the European Union, as provided for in subdivision (v)(xvii) of U.S. note 2 to this subchapter",
+      "general": "The duty provided in the applicable subheading",
+      "special": "The duty provided in the applicable subheading",
+      "column2": "The duty provided in the applicable subheading",
+      "additional_duties": "",
+      "units": [],
+      "footnotes": [],
+      "pdfPage": 365,
+      "projection": "official-chapter99-pdf-v1"
+    },
+    {
+      "source_id": "d4b02bdb-1420-41b4-b86d-210a03e3343b",
+      "hts": "99030276",
+      "description": "Articles of civil aircraft (all aircraft other than military aircraft); their engines, parts, and components; their other parts, components, and subassemblies; and ground flight simulators and their parts and components of the European Union, excluding unmanned aircraft, provided for in subdivision (v)(xviii) of U.S. note 2 to this subchapter",
+      "general": "The duty provided in the applicable subheading",
+      "special": "The duty provided in the applicable subheading",
+      "column2": "The duty provided in the applicable subheading",
+      "additional_duties": "",
+      "units": [],
+      "footnotes": [],
+      "pdfPage": 365,
+      "projection": "official-chapter99-pdf-v1"
+    },
+    {
+      "source_id": "d4b02bdb-1420-41b4-b86d-210a03e3343b",
+      "hts": "99030277",
+      "description": "Articles the product of the European Union that are non-patented articles for use in pharmaceutical applications, provided for in subdivision (v)(xix) of U.S. note 2 to this subchapter Blue-mold cheese:",
+      "general": "The duty provided in the applicable subheading",
+      "special": "The duty provided in the applicable subheading",
+      "column2": "The duty provided in the applicable subheading",
+      "additional_duties": "",
+      "units": [],
+      "footnotes": [],
+      "pdfPage": 365,
+      "projection": "official-chapter99-pdf-v1"
+    }
+  ]
+}

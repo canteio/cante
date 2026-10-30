@@ -1,0 +1,231 @@
+{
+  "label": "Public original USITC table excerpt, fictional test identities. Integrity hashes do not establish approval.",
+  "sourceId": "a31e35ba-9028-4227-b782-40ae1adb958e",
+  "url": "https://hts.usitc.gov/reststop/file?release=NTE&filename=Chapter%2037",
+  "sha256": "f22a7dabccda9fed61c5cc2c8827771e4e297cb4dfc00318242a830bcc1a2460",
+  "page": 5,
+  "cells": [
+    {
+      "text": "Rates of Duty",
+      "x": 457.237,
+      "y": 719.212,
+      "width": 42.406000000000056
+    },
+    {
+      "text": "Unit",
+      "x": 350.897,
+      "y": 718.712,
+      "width": 12.446
+    },
+    {
+      "text": "of",
+      "x": 354.201,
+      "y": 710.313,
+      "width": 5.838
+    },
+    {
+      "text": "Quantity",
+      "x": 344.086,
+      "y": 701.914,
+      "width": 26.068
+    },
+    {
+      "text": "Article Description",
+      "x": 193.728,
+      "y": 710.313,
+      "width": 56.78400000000003
+    },
+    {
+      "text": "Stat.",
+      "x": 93.24,
+      "y": 718.712,
+      "width": 14.399
+    },
+    {
+      "text": "Suf-",
+      "x": 94.021,
+      "y": 710.313,
+      "width": 12.838
+    },
+    {
+      "text": "fix",
+      "x": 96.94,
+      "y": 701.914,
+      "width": 7
+    },
+    {
+      "text": "Heading/",
+      "x": 55.473,
+      "y": 718.212,
+      "width": 28.014
+    },
+    {
+      "text": "Subheading",
+      "x": 50.8,
+      "y": 709.813,
+      "width": 37.359
+    },
+    {
+      "text": "2",
+      "x": 548.134,
+      "y": 710.313,
+      "width": 3.892
+    },
+    {
+      "text": "1",
+      "x": 448.414,
+      "y": 710.313,
+      "width": 3.892
+    },
+    {
+      "text": "Special",
+      "x": 471.283,
+      "y": 701.414,
+      "width": 22.952999999999996
+    },
+    {
+      "text": "General",
+      "x": 398.705,
+      "y": 701.414,
+      "width": 24.829000000000004
+    },
+    {
+      "text": "Photographic plates, film, paper, paperboard and textiles,",
+      "x": 110.72,
+      "y": 219.153,
+      "width": 210.79250000000002
+    },
+    {
+      "text": "exposed but not developed..........................................................",
+      "x": 110.72,
+      "y": 208.953,
+      "width": 222.79900000000015
+    },
+    {
+      "text": "00",
+      "x": 95.714,
+      "y": 219.153,
+      "width": 9.452
+    },
+    {
+      "text": "3704.00.00",
+      "x": 47.8,
+      "y": 219.153,
+      "width": 42.05799999999999
+    },
+    {
+      "text": "$3.88/m",
+      "x": 524,
+      "y": 209.019,
+      "width": 30.294
+    },
+    {
+      "text": "2",
+      "x": 554.294,
+      "y": 213.473,
+      "width": 2.8356
+    },
+    {
+      "text": "Free",
+      "x": 380.72,
+      "y": 210.753,
+      "width": 16.9745
+    },
+    {
+      "text": "m",
+      "x": 337.52,
+      "y": 209.019,
+      "width": 6.902
+    },
+    {
+      "text": "2",
+      "x": 344.778,
+      "y": 213.473,
+      "width": 2.8356
+    },
+    {
+      "text": "..............",
+      "x": 347.97,
+      "y": 209.019,
+      "width": 29.75
+    },
+    {
+      "text": "Photographic plates and film, exposed and developed, other",
+      "x": 110.72,
+      "y": 194.753,
+      "width": 220.52549999999985
+    },
+    {
+      "text": "than cinematographic film............................................................",
+      "x": 110.72,
+      "y": 184.553,
+      "width": 222.8000000000001
+    },
+    {
+      "text": "00",
+      "x": 95.714,
+      "y": 194.753,
+      "width": 9.452
+    },
+    {
+      "text": "3705.00.00",
+      "x": 47.8,
+      "y": 194.753,
+      "width": 42.05799999999999
+    },
+    {
+      "text": "25%",
+      "x": 524,
+      "y": 184.353,
+      "width": 17.0085
+    },
+    {
+      "text": "Free",
+      "x": 380.72,
+      "y": 184.353,
+      "width": 16.9745
+    },
+    {
+      "text": "X................",
+      "x": 337.52,
+      "y": 184.353,
+      "width": 40.20000000000005
+    },
+    {
+      "text": "Rates of Duty",
+      "x": 457.237,
+      "y": 718.332,
+      "width": 42.406000000000056
+    },
+    {
+      "text": "1",
+      "x": 448.054,
+      "y": 709.836,
+      "width": 3.892
+    },
+    {
+      "text": "Harmonized Tariff Schedule of the United States (2017) - Revision 1",
+      "x": 137.996,
+      "y": 757.39,
+      "width": 349.3269999999999
+    },
+    {
+      "text": "Annotated for Statistical Reporting Purposes",
+      "x": 243.654,
+      "y": 747.613,
+      "width": 138.01199999999994
+    },
+    {
+      "text": "VI",
+      "x": 572.985,
+      "y": 739.214,
+      "width": 6.615
+    },
+    {
+      "text": "37-5",
+      "x": 565.593,
+      "y": 730.815,
+      "width": 14.006999999999886
+    }
+  ]
+}

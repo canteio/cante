@@ -1,0 +1,571 @@
+{
+  "label": "SYNTHETIC 23-entry US-metal workflow, hand-calculated goldens. Fictional facts; authoritative source verification is separate.",
+  "rows": [
+    {
+      "entry": "SYNTHETIC-US-METAL-1",
+      "cohort": "US steel zero duty; reciprocal 10% on remainder 200",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "20.00",
+      "reviewedDifference": "400.00"
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-2",
+      "cohort": "US aluminum zero duty; reciprocal on remainder",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "20.00",
+      "reviewedDifference": "-20.00"
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-3",
+      "cohort": "Original whole-article reciprocal exception",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-4",
+      "cohort": "Original aluminum whole-article exception",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-5",
+      "cohort": "Independent China 301 25% and IEEPA 20%, reciprocal remainder 20",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "470.00",
+      "reviewedDifference": "-20.00"
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-6",
+      "cohort": "US steel expressly named India exception; reciprocal remainder 50",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "50.00",
+      "reviewedDifference": "450.00"
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-7",
+      "cohort": "US aluminum India exception and reciprocal remainder",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "50.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-8",
+      "cohort": "Qualified US aluminum plus copper 800; base 26, copper 400, reciprocal 25",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "451.00",
+      "reviewedDifference": "75.00"
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-9",
+      "cohort": "Zero metal amount does not exempt payable Canada border duty",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.00",
+      "reviewedDifference": "-250.00"
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-10",
+      "cohort": "Zero metal amount does not exempt payable Mexico border duty",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-11",
+      "cohort": "Original new-derivative US melt/pour exemption",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-12",
+      "cohort": "Section 122 explicitly names zero-duty US steel; remainder only",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "20.00",
+      "reviewedDifference": "80.00"
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-13",
+      "cohort": "Section 122 explicitly names zero-duty US aluminum",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "20.00",
+      "reviewedDifference": "-20.00"
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-14",
+      "cohort": "First-day Section 122 amendment pinned independently",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "20.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-15",
+      "cohort": "Missing content value must withhold total",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-16",
+      "cohort": "Conflicting US and Russian material facts",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-17",
+      "cohort": "Missing US qualification evidence",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-18",
+      "cohort": "Zero content contradicts claimed positive US-metal qualification",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-19",
+      "cohort": "False US qualification applies foreign metal duty; claimed zero heading flagged",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "420.00",
+      "reviewedDifference": "-400.00"
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-20",
+      "cohort": "UK origin does not remove qualification evidence",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "20.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-21",
+      "cohort": "EU combined threshold retains exact additional rate on remainder",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "30.00",
+      "reviewedDifference": "-30.00"
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-22",
+      "cohort": "Whole-article old exception needs no invented content value",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "50.00"
+    },
+    {
+      "entry": "SYNTHETIC-US-METAL-23",
+      "cohort": "Unpublished statistical suffix must remain unresolved",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    }
+  ],
+  "decisions": [
+    {
+      "row": 1,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-1-DOC"
+      ],
+      "validFrom": "2025-06-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_steel_melt_pour": true
+      }
+    },
+    {
+      "row": 2,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-2-DOC"
+      ],
+      "validFrom": "2025-06-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_aluminum_smelt_cast": true,
+        "russian_aluminum_clear": true
+      }
+    },
+    {
+      "row": 3,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-3-DOC"
+      ],
+      "validFrom": "2025-05-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_steel_melt_pour": true
+      }
+    },
+    {
+      "row": 4,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-4-DOC"
+      ],
+      "validFrom": "2025-05-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_aluminum_smelt_cast": true,
+        "russian_aluminum_clear": true
+      }
+    },
+    {
+      "row": 5,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-5-DOC"
+      ],
+      "validFrom": "2025-06-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_steel_melt_pour": true
+      }
+    },
+    {
+      "row": 6,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-6-DOC"
+      ],
+      "validFrom": "2025-12-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_steel_melt_pour": true
+      }
+    },
+    {
+      "row": 7,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-7-DOC"
+      ],
+      "validFrom": "2025-12-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_aluminum_smelt_cast": true,
+        "russian_aluminum_clear": true,
+        "us_steel_melt_pour": false
+      }
+    },
+    {
+      "row": 8,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-8-DOC"
+      ],
+      "validFrom": "2025-12-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_aluminum_smelt_cast": true,
+        "russian_aluminum_clear": true,
+        "copper_exceptions_clear": true,
+        "us_steel_melt_pour": false
+      }
+    },
+    {
+      "row": 9,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-9-DOC"
+      ],
+      "validFrom": "2025-06-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_steel_melt_pour": true,
+        "border_exceptions_clear": true,
+        "usmca_qualified": false
+      }
+    },
+    {
+      "row": 10,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-10-DOC"
+      ],
+      "validFrom": "2025-06-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_steel_melt_pour": true,
+        "border_exceptions_clear": true,
+        "usmca_qualified": false
+      }
+    },
+    {
+      "row": 11,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-11-DOC"
+      ],
+      "validFrom": "2025-03-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_steel_melt_pour": true
+      }
+    },
+    {
+      "row": 12,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-12-DOC"
+      ],
+      "validFrom": "2026-03-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_steel_melt_pour": true
+      }
+    },
+    {
+      "row": 13,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-13-DOC"
+      ],
+      "validFrom": "2026-03-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_aluminum_smelt_cast": true,
+        "russian_aluminum_clear": true,
+        "us_steel_melt_pour": false
+      }
+    },
+    {
+      "row": 14,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-14-DOC"
+      ],
+      "validFrom": "2026-02-24",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_steel_melt_pour": true
+      }
+    },
+    {
+      "row": 15,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-15-DOC"
+      ],
+      "validFrom": "2025-12-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_steel_melt_pour": true
+      }
+    },
+    {
+      "row": 16,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-16-DOC"
+      ],
+      "validFrom": "2025-12-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_aluminum_smelt_cast": true,
+        "russian_aluminum_clear": false,
+        "russian_aluminum_subject": true,
+        "us_steel_melt_pour": false
+      }
+    },
+    {
+      "row": 17,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-17-DOC"
+      ],
+      "validFrom": "2025-12-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "russian_aluminum_clear": true,
+        "us_steel_melt_pour": false
+      }
+    },
+    {
+      "row": 18,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-18-DOC"
+      ],
+      "validFrom": "2025-12-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_steel_melt_pour": true
+      }
+    },
+    {
+      "row": 19,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-19-DOC"
+      ],
+      "validFrom": "2025-06-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_steel_melt_pour": false
+      }
+    },
+    {
+      "row": 20,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-20-DOC"
+      ],
+      "validFrom": "2025-06-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_steel_melt_pour": true
+      }
+    },
+    {
+      "row": 21,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-21-DOC"
+      ],
+      "validFrom": "2025-09-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_aluminum_smelt_cast": true,
+        "russian_aluminum_clear": true,
+        "us_steel_melt_pour": false
+      }
+    },
+    {
+      "row": 22,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-22-DOC"
+      ],
+      "validFrom": "2025-05-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_steel_melt_pour": true
+      }
+    },
+    {
+      "row": 23,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material qualification and values, not a legal approval or real customer evidence.",
+      "evidence": [
+        "SYNTHETIC-US-METAL-23-DOC"
+      ],
+      "validFrom": "2025-06-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "us_steel_melt_pour": true
+      }
+    }
+  ],
+  "summary": {
+    "lines": 23,
+    "calculated": 0,
+    "unresolved": 23,
+    "discrepancies": 0,
+    "overpayment": "0.00",
+    "underpayment": "0.00"
+  },
+  "reviewedSummary": {
+    "lines": 23,
+    "calculated": 18,
+    "unresolved": 5,
+    "discrepancies": 13,
+    "overpayment": "1255.00",
+    "underpayment": "740.00"
+  }
+}

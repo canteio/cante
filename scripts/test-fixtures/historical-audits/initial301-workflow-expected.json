@@ -1,0 +1,1219 @@
+{
+  "label": "100 fictional entries; actual dated publication evidence is separate from explicit synthetic qualifications. Independent Decimal monetary oracle; no customer savings or legal approval claimed.",
+  "engineVersion": "historical-audit-v37",
+  "rows": [
+    {
+      "row": 1,
+      "oldExpected": "100.05",
+      "oldDifference": "-1.00",
+      "initialExpected": "100.05",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "100.05",
+      "reviewedDifference": "-1.00",
+      "additional301": "100.05"
+    },
+    {
+      "row": 2,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 3,
+      "oldExpected": "100.05",
+      "oldDifference": "-1.00",
+      "initialExpected": "100.05",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "100.05",
+      "reviewedDifference": "-1.00",
+      "additional301": "100.05"
+    },
+    {
+      "row": 4,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 5,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.14",
+      "reviewedDifference": "-1.00",
+      "additional301": "250.14"
+    },
+    {
+      "row": 6,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 7,
+      "oldExpected": "100.06",
+      "oldDifference": "-1.00",
+      "initialExpected": "100.06",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "100.06",
+      "reviewedDifference": "-1.00",
+      "additional301": "100.06"
+    },
+    {
+      "row": 8,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 9,
+      "oldExpected": "100.06",
+      "oldDifference": "-1.00",
+      "initialExpected": "100.06",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "100.06",
+      "reviewedDifference": "-1.00",
+      "additional301": "100.06"
+    },
+    {
+      "row": 10,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 11,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.15",
+      "reviewedDifference": "-1.00",
+      "additional301": "250.15"
+    },
+    {
+      "row": 12,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 13,
+      "oldExpected": "100.06",
+      "oldDifference": "-1.00",
+      "initialExpected": "100.06",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "100.06",
+      "reviewedDifference": "-1.00",
+      "additional301": "100.06"
+    },
+    {
+      "row": 14,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 15,
+      "oldExpected": "100.06",
+      "oldDifference": "-1.00",
+      "initialExpected": "100.06",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "100.06",
+      "reviewedDifference": "-1.00",
+      "additional301": "100.06"
+    },
+    {
+      "row": 16,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 17,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.17",
+      "reviewedDifference": "-1.00",
+      "additional301": "250.17"
+    },
+    {
+      "row": 18,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 19,
+      "oldExpected": "100.07",
+      "oldDifference": "-1.00",
+      "initialExpected": "100.07",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "100.07",
+      "reviewedDifference": "-1.00",
+      "additional301": "100.07"
+    },
+    {
+      "row": 20,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 21,
+      "oldExpected": "100.07",
+      "oldDifference": "-1.00",
+      "initialExpected": "100.07",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "100.07",
+      "reviewedDifference": "-1.00",
+      "additional301": "100.07"
+    },
+    {
+      "row": 22,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 23,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.18",
+      "reviewedDifference": "-1.00",
+      "additional301": "250.18"
+    },
+    {
+      "row": 24,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 25,
+      "oldExpected": "100.07",
+      "oldDifference": "-1.00",
+      "initialExpected": "100.07",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "100.07",
+      "reviewedDifference": "-1.00",
+      "additional301": "100.07"
+    },
+    {
+      "row": 26,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 27,
+      "oldExpected": "100.08",
+      "oldDifference": "-1.00",
+      "initialExpected": "100.08",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "100.08",
+      "reviewedDifference": "-1.00",
+      "additional301": "100.08"
+    },
+    {
+      "row": 28,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 29,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.20",
+      "reviewedDifference": "-1.00",
+      "additional301": "250.20"
+    },
+    {
+      "row": 30,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 31,
+      "oldExpected": "100.08",
+      "oldDifference": "-1.00",
+      "initialExpected": "100.08",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "100.08",
+      "reviewedDifference": "-1.00",
+      "additional301": "100.08"
+    },
+    {
+      "row": 32,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 33,
+      "oldExpected": "100.08",
+      "oldDifference": "-1.00",
+      "initialExpected": "100.08",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "100.08",
+      "reviewedDifference": "-1.00",
+      "additional301": "100.08"
+    },
+    {
+      "row": 34,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 35,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.21",
+      "reviewedDifference": "-1.00",
+      "additional301": "250.21"
+    },
+    {
+      "row": 36,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 37,
+      "oldExpected": "100.09",
+      "oldDifference": "-1.00",
+      "initialExpected": "100.09",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "100.09",
+      "reviewedDifference": "-1.00",
+      "additional301": "100.09"
+    },
+    {
+      "row": 38,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 39,
+      "oldExpected": "100.09",
+      "oldDifference": "-1.00",
+      "initialExpected": "100.09",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "100.09",
+      "reviewedDifference": "-1.00",
+      "additional301": "100.09"
+    },
+    {
+      "row": 40,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 41,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.23",
+      "reviewedDifference": "-1.00",
+      "additional301": "250.23"
+    },
+    {
+      "row": 42,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 43,
+      "oldExpected": "100.09",
+      "oldDifference": "-1.00",
+      "initialExpected": "100.09",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "100.09",
+      "reviewedDifference": "-1.00",
+      "additional301": "100.09"
+    },
+    {
+      "row": 44,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 45,
+      "oldExpected": "100.09",
+      "oldDifference": "-1.00",
+      "initialExpected": "100.09",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "100.09",
+      "reviewedDifference": "-1.00",
+      "additional301": "100.09"
+    },
+    {
+      "row": 46,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 47,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.24",
+      "reviewedDifference": "-1.00",
+      "additional301": "250.24"
+    },
+    {
+      "row": 48,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 49,
+      "oldExpected": "100.10",
+      "oldDifference": "-1.00",
+      "initialExpected": "100.10",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "100.10",
+      "reviewedDifference": "-1.00",
+      "additional301": "100.10"
+    },
+    {
+      "row": 50,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 51,
+      "oldExpected": "100.10",
+      "oldDifference": "-1.00",
+      "initialExpected": "100.10",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "100.10",
+      "reviewedDifference": "-1.00",
+      "additional301": "100.10"
+    },
+    {
+      "row": 52,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 53,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.26",
+      "reviewedDifference": "-1.00",
+      "additional301": "250.26"
+    },
+    {
+      "row": 54,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "1.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 55,
+      "oldExpected": "100.10",
+      "oldDifference": "0.00",
+      "initialExpected": "100.10",
+      "initialDifference": "0.00",
+      "reviewedExpected": "100.10",
+      "reviewedDifference": "0.00",
+      "additional301": "100.10"
+    },
+    {
+      "row": 56,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 57,
+      "oldExpected": "100.11",
+      "oldDifference": "0.00",
+      "initialExpected": "100.11",
+      "initialDifference": "0.00",
+      "reviewedExpected": "100.11",
+      "reviewedDifference": "0.00",
+      "additional301": "100.11"
+    },
+    {
+      "row": 58,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 59,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.27",
+      "reviewedDifference": "0.00",
+      "additional301": "250.27"
+    },
+    {
+      "row": 60,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 61,
+      "oldExpected": "100.11",
+      "oldDifference": "0.00",
+      "initialExpected": "100.11",
+      "initialDifference": "0.00",
+      "reviewedExpected": "100.11",
+      "reviewedDifference": "0.00",
+      "additional301": "100.11"
+    },
+    {
+      "row": 62,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 63,
+      "oldExpected": "100.11",
+      "oldDifference": "0.00",
+      "initialExpected": "100.11",
+      "initialDifference": "0.00",
+      "reviewedExpected": "100.11",
+      "reviewedDifference": "0.00",
+      "additional301": "100.11"
+    },
+    {
+      "row": 64,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 65,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.29",
+      "reviewedDifference": "0.00",
+      "additional301": "250.29"
+    },
+    {
+      "row": 66,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 67,
+      "oldExpected": "100.12",
+      "oldDifference": "0.00",
+      "initialExpected": "100.12",
+      "initialDifference": "0.00",
+      "reviewedExpected": "100.12",
+      "reviewedDifference": "0.00",
+      "additional301": "100.12"
+    },
+    {
+      "row": 68,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 69,
+      "oldExpected": "100.12",
+      "oldDifference": "0.00",
+      "initialExpected": "100.12",
+      "initialDifference": "0.00",
+      "reviewedExpected": "100.12",
+      "reviewedDifference": "0.00",
+      "additional301": "100.12"
+    },
+    {
+      "row": 70,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 71,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.30",
+      "reviewedDifference": "0.00",
+      "additional301": "250.30"
+    },
+    {
+      "row": 72,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 73,
+      "oldExpected": "100.12",
+      "oldDifference": "0.00",
+      "initialExpected": "100.12",
+      "initialDifference": "0.00",
+      "reviewedExpected": "100.12",
+      "reviewedDifference": "0.00",
+      "additional301": "100.12"
+    },
+    {
+      "row": 74,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 75,
+      "oldExpected": "100.12",
+      "oldDifference": "0.00",
+      "initialExpected": "100.12",
+      "initialDifference": "0.00",
+      "reviewedExpected": "100.12",
+      "reviewedDifference": "0.00",
+      "additional301": "100.12"
+    },
+    {
+      "row": 76,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 77,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.32",
+      "reviewedDifference": "0.00",
+      "additional301": "250.32"
+    },
+    {
+      "row": 78,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 79,
+      "oldExpected": "100.13",
+      "oldDifference": "0.00",
+      "initialExpected": "100.13",
+      "initialDifference": "0.00",
+      "reviewedExpected": "100.13",
+      "reviewedDifference": "0.00",
+      "additional301": "100.13"
+    },
+    {
+      "row": 80,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": "0.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00",
+      "additional301": "0.00"
+    },
+    {
+      "row": 81,
+      "oldExpected": "100.13",
+      "oldDifference": "0.00",
+      "initialExpected": "100.13",
+      "initialDifference": "0.00",
+      "reviewedExpected": "100.13",
+      "reviewedDifference": "0.00",
+      "additional301": "100.13"
+    },
+    {
+      "row": 82,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "additional301": null
+    },
+    {
+      "row": 83,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "additional301": null
+    },
+    {
+      "row": 84,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "additional301": null
+    },
+    {
+      "row": 85,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "additional301": null
+    },
+    {
+      "row": 86,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "additional301": null
+    },
+    {
+      "row": 87,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "additional301": null
+    },
+    {
+      "row": 88,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "additional301": null
+    },
+    {
+      "row": 89,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "additional301": null
+    },
+    {
+      "row": 90,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "additional301": null
+    },
+    {
+      "row": 91,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "additional301": null
+    },
+    {
+      "row": 92,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "additional301": null
+    },
+    {
+      "row": 93,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "additional301": null
+    },
+    {
+      "row": 94,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "additional301": null
+    },
+    {
+      "row": 95,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "additional301": null
+    },
+    {
+      "row": 96,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "additional301": null
+    },
+    {
+      "row": 97,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "additional301": null
+    },
+    {
+      "row": 98,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "additional301": null
+    },
+    {
+      "row": 99,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "additional301": null
+    },
+    {
+      "row": 100,
+      "oldExpected": null,
+      "oldDifference": null,
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "additional301": null
+    }
+  ],
+  "decisions": [
+    {
+      "row": 5,
+      "kind": "confirm_facts",
+      "validFrom": "2019-06-15",
+      "validBefore": "2019-06-16",
+      "facts": {
+        "section301_transit_clear": true
+      },
+      "evidence": [
+        "SYN-INITIAL301-5-SHIPPING"
+      ],
+      "note": "FICTIONAL dated shipping evidence establishes that no reduced 2019 in-transit treatment applies."
+    },
+    {
+      "row": 11,
+      "kind": "confirm_facts",
+      "validFrom": "2019-06-15",
+      "validBefore": "2019-06-16",
+      "facts": {
+        "section301_transit_clear": true
+      },
+      "evidence": [
+        "SYN-INITIAL301-11-SHIPPING"
+      ],
+      "note": "FICTIONAL dated shipping evidence establishes that no reduced 2019 in-transit treatment applies."
+    },
+    {
+      "row": 17,
+      "kind": "confirm_facts",
+      "validFrom": "2019-06-15",
+      "validBefore": "2019-06-16",
+      "facts": {
+        "section301_transit_clear": true
+      },
+      "evidence": [
+        "SYN-INITIAL301-17-SHIPPING"
+      ],
+      "note": "FICTIONAL dated shipping evidence establishes that no reduced 2019 in-transit treatment applies."
+    },
+    {
+      "row": 23,
+      "kind": "confirm_facts",
+      "validFrom": "2019-06-15",
+      "validBefore": "2019-06-16",
+      "facts": {
+        "section301_transit_clear": true
+      },
+      "evidence": [
+        "SYN-INITIAL301-23-SHIPPING"
+      ],
+      "note": "FICTIONAL dated shipping evidence establishes that no reduced 2019 in-transit treatment applies."
+    },
+    {
+      "row": 29,
+      "kind": "confirm_facts",
+      "validFrom": "2019-06-15",
+      "validBefore": "2019-06-16",
+      "facts": {
+        "section301_transit_clear": true
+      },
+      "evidence": [
+        "SYN-INITIAL301-29-SHIPPING"
+      ],
+      "note": "FICTIONAL dated shipping evidence establishes that no reduced 2019 in-transit treatment applies."
+    },
+    {
+      "row": 35,
+      "kind": "confirm_facts",
+      "validFrom": "2019-06-15",
+      "validBefore": "2019-06-16",
+      "facts": {
+        "section301_transit_clear": true
+      },
+      "evidence": [
+        "SYN-INITIAL301-35-SHIPPING"
+      ],
+      "note": "FICTIONAL dated shipping evidence establishes that no reduced 2019 in-transit treatment applies."
+    },
+    {
+      "row": 41,
+      "kind": "confirm_facts",
+      "validFrom": "2019-06-15",
+      "validBefore": "2019-06-16",
+      "facts": {
+        "section301_transit_clear": true
+      },
+      "evidence": [
+        "SYN-INITIAL301-41-SHIPPING"
+      ],
+      "note": "FICTIONAL dated shipping evidence establishes that no reduced 2019 in-transit treatment applies."
+    },
+    {
+      "row": 47,
+      "kind": "confirm_facts",
+      "validFrom": "2019-06-15",
+      "validBefore": "2019-06-16",
+      "facts": {
+        "section301_transit_clear": true
+      },
+      "evidence": [
+        "SYN-INITIAL301-47-SHIPPING"
+      ],
+      "note": "FICTIONAL dated shipping evidence establishes that no reduced 2019 in-transit treatment applies."
+    },
+    {
+      "row": 53,
+      "kind": "confirm_facts",
+      "validFrom": "2019-06-15",
+      "validBefore": "2019-06-16",
+      "facts": {
+        "section301_transit_clear": true
+      },
+      "evidence": [
+        "SYN-INITIAL301-53-SHIPPING"
+      ],
+      "note": "FICTIONAL dated shipping evidence establishes that no reduced 2019 in-transit treatment applies."
+    },
+    {
+      "row": 59,
+      "kind": "confirm_facts",
+      "validFrom": "2019-06-15",
+      "validBefore": "2019-06-16",
+      "facts": {
+        "section301_transit_clear": true
+      },
+      "evidence": [
+        "SYN-INITIAL301-59-SHIPPING"
+      ],
+      "note": "FICTIONAL dated shipping evidence establishes that no reduced 2019 in-transit treatment applies."
+    },
+    {
+      "row": 65,
+      "kind": "confirm_facts",
+      "validFrom": "2019-06-15",
+      "validBefore": "2019-06-16",
+      "facts": {
+        "section301_transit_clear": true
+      },
+      "evidence": [
+        "SYN-INITIAL301-65-SHIPPING"
+      ],
+      "note": "FICTIONAL dated shipping evidence establishes that no reduced 2019 in-transit treatment applies."
+    },
+    {
+      "row": 71,
+      "kind": "confirm_facts",
+      "validFrom": "2019-06-15",
+      "validBefore": "2019-06-16",
+      "facts": {
+        "section301_transit_clear": true
+      },
+      "evidence": [
+        "SYN-INITIAL301-71-SHIPPING"
+      ],
+      "note": "FICTIONAL dated shipping evidence establishes that no reduced 2019 in-transit treatment applies."
+    },
+    {
+      "row": 77,
+      "kind": "confirm_facts",
+      "validFrom": "2019-06-15",
+      "validBefore": "2019-06-16",
+      "facts": {
+        "section301_transit_clear": true
+      },
+      "evidence": [
+        "SYN-INITIAL301-77-SHIPPING"
+      ],
+      "note": "FICTIONAL dated shipping evidence establishes that no reduced 2019 in-transit treatment applies."
+    }
+  ],
+  "oldSummary": {
+    "lines": 100,
+    "calculated": 28,
+    "unresolved": 72,
+    "discrepancies": 18,
+    "overpayment": "0.00",
+    "underpayment": "18.00"
+  },
+  "summary": {
+    "lines": 100,
+    "calculated": 68,
+    "unresolved": 32,
+    "discrepancies": 45,
+    "overpayment": "27.00",
+    "underpayment": "18.00"
+  },
+  "reviewedSummary": {
+    "lines": 100,
+    "calculated": 81,
+    "unresolved": 19,
+    "discrepancies": 54,
+    "overpayment": "27.00",
+    "underpayment": "27.00"
+  },
+  "browserDecision": {
+    "row": 85,
+    "kind": "confirm_facts",
+    "hts": "9401614011",
+    "facts": {
+      "classification_verified": true,
+      "section301_transit_clear": true
+    },
+    "validFrom": "2019-06-15",
+    "validBefore": "2019-06-16",
+    "evidence": [
+      "SYN-INITIAL301-85-CLASSIFICATION",
+      "SYN-INITIAL301-85-SHIPPING"
+    ],
+    "note": "FICTIONAL dated specifications establish other upholstered wooden seats rather than the declared chairs for children. Shipping records establish no reduced 2019 transit treatment. The original declaration remains unchanged.",
+    "expected": "250.34",
+    "difference": "1.00"
+  }
+}

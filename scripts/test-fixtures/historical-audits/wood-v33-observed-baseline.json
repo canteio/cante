@@ -1,0 +1,507 @@
+{
+  "label": "Observed actual v33 worker outputs from an isolated fictional import, retained solely as a software regression baseline. These omit wood treatment and are not correct legal duties or expected customer savings.",
+  "workerSha256": "721f9b76ab2026e57fc72e3147eabf73426cd72bc6eb2337f6d2c6fbbd76f1af",
+  "retainedAuditId": "63e678ea-b9d6-49f9-a125-bda5432f32d4",
+  "rows": [
+    {
+      "row": 1,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 2,
+      "expected": "550.28",
+      "difference": "-1.00"
+    },
+    {
+      "row": 3,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 4,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 5,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 6,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 7,
+      "expected": "100.06",
+      "difference": "51.02"
+    },
+    {
+      "row": 8,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 9,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 10,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 11,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 12,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 13,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 14,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 15,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 16,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 17,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 18,
+      "expected": "350.24",
+      "difference": "0.00"
+    },
+    {
+      "row": 19,
+      "expected": "100.07",
+      "difference": "51.03"
+    },
+    {
+      "row": 20,
+      "expected": "100.07",
+      "difference": "49.03"
+    },
+    {
+      "row": 21,
+      "expected": "100.07",
+      "difference": "0.00"
+    },
+    {
+      "row": 22,
+      "expected": "100.07",
+      "difference": "51.04"
+    },
+    {
+      "row": 23,
+      "expected": "100.07",
+      "difference": "49.04"
+    },
+    {
+      "row": 24,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 25,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 26,
+      "expected": "100.08",
+      "difference": "-1.00"
+    },
+    {
+      "row": 27,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 28,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 29,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 30,
+      "expected": "550.44",
+      "difference": "0.00"
+    },
+    {
+      "row": 31,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 32,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 33,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 34,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 35,
+      "expected": "100.08",
+      "difference": "49.05"
+    },
+    {
+      "row": 36,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 37,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 38,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 39,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 40,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 41,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 42,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 43,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 44,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 45,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 46,
+      "expected": "350.34",
+      "difference": "1.00"
+    },
+    {
+      "row": 47,
+      "expected": "100.10",
+      "difference": "49.04"
+    },
+    {
+      "row": 48,
+      "expected": "100.10",
+      "difference": "50.05"
+    },
+    {
+      "row": 49,
+      "expected": "100.10",
+      "difference": "1.00"
+    },
+    {
+      "row": 50,
+      "expected": "100.10",
+      "difference": "49.05"
+    },
+    {
+      "row": 51,
+      "expected": "100.10",
+      "difference": "50.05"
+    },
+    {
+      "row": 52,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 53,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 54,
+      "expected": "100.10",
+      "difference": "0.00"
+    },
+    {
+      "row": 55,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 56,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 57,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 58,
+      "expected": "550.59",
+      "difference": "1.00"
+    },
+    {
+      "row": 59,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 60,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 61,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 62,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 63,
+      "expected": "100.11",
+      "difference": "50.06"
+    },
+    {
+      "row": 64,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 65,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 66,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 67,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 68,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 69,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 70,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 71,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 72,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 73,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 74,
+      "expected": "350.43",
+      "difference": "-1.00"
+    },
+    {
+      "row": 75,
+      "expected": "100.12",
+      "difference": "50.07"
+    },
+    {
+      "row": 76,
+      "expected": "100.13",
+      "difference": "51.06"
+    },
+    {
+      "row": 77,
+      "expected": "100.13",
+      "difference": "-1.00"
+    },
+    {
+      "row": 78,
+      "expected": "100.13",
+      "difference": "50.06"
+    },
+    {
+      "row": 79,
+      "expected": "100.13",
+      "difference": "51.06"
+    },
+    {
+      "row": 80,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 81,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 82,
+      "expected": "100.13",
+      "difference": "1.00"
+    },
+    {
+      "row": 83,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 84,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 85,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 86,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 87,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 88,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 89,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 90,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 91,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 92,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 93,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 94,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 95,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 96,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 97,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 98,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 99,
+      "expected": null,
+      "difference": null
+    },
+    {
+      "row": 100,
+      "expected": null,
+      "difference": null
+    }
+  ]
+}

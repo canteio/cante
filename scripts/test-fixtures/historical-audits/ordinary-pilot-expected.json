@@ -1,0 +1,613 @@
+{
+  "label": "Fictional inputs, actual dated source arithmetic; not legal/customer validation",
+  "rows": [
+    {
+      "entry": "FICTIONAL-ORDINARY-2000-1",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2000-2",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2000-3",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2000-4",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2000-5",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2000-6",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2000-7",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2000-8",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2001-1",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2001-2",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2001-3",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2001-4",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2001-5",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2001-6",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2001-7",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2001-8",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2002-1",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2002-2",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2002-3",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2002-4",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2002-5",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2002-6",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2002-7",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2002-8",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2003-1",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2003-2",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2003-3",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2003-4",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2003-5",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2003-6",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2003-7",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2003-8",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2004-1",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2004-2",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2004-3",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2004-4",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2004-5",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2004-6",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2004-7",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2004-8",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2005-1",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2005-2",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2005-3",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2005-4",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2005-5",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2005-6",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2005-7",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2005-8",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2006-1",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2006-2",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2006-3",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2006-4",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2006-5",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2006-6",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2006-7",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2006-8",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2007-1",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2007-2",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2007-3",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2007-4",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2007-5",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2007-6",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2007-7",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2007-8",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2008-1",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2008-2",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2008-3",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2008-4",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2008-5",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2008-6",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2008-7",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2008-8",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2009-1",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2009-2",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2009-3",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2009-4",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2009-5",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2009-6",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2009-7",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2009-8",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2010-1",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2010-2",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2010-3",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2010-4",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2010-5",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2010-6",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2010-7",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2010-8",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2011-1",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2011-2",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2011-3",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2011-4",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2011-5",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2011-6",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2011-7",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2011-8",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2012-1",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2012-2",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2012-3",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2012-4",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2012-5",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2012-6",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2012-7",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2012-8",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2013-1",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2013-2",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2013-3",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2013-4",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2013-5",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2013-6",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2013-7",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2013-8",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2014-1",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2014-2",
+      "expected": "40.00",
+      "difference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2014-3",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2014-4",
+      "expected": "40.00",
+      "difference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2014-5",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2014-6",
+      "expected": "40.00",
+      "difference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2014-7",
+      "expected": null,
+      "difference": null
+    },
+    {
+      "entry": "FICTIONAL-ORDINARY-2014-8",
+      "expected": null,
+      "difference": null
+    }
+  ],
+  "summary": {
+    "lines": 120,
+    "calculated": 90,
+    "unresolved": 30,
+    "discrepancies": 60,
+    "overpayment": "7500.00",
+    "underpayment": "600.00"
+  }
+}

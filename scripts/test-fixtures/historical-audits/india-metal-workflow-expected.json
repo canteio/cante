@@ -1,0 +1,407 @@
+{
+  "label": "SYNTHETIC 16-entry India/metal workflow. Hand-calculated expected results on fictional facts; authoritative sources validated separately.",
+  "rows": [
+    {
+      "entry": "SYNTHETIC-INDIA-METAL-1",
+      "cohort": "Steel portion and two 25% remainder duties",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "500.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-INDIA-METAL-2",
+      "cohort": "Copper portion and two remainder duties",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "530.00",
+      "reviewedDifference": "-50.00"
+    },
+    {
+      "entry": "SYNTHETIC-INDIA-METAL-3",
+      "cohort": "Copper and aluminum; only remainder 100 receives both India duties",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "526.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-INDIA-METAL-4",
+      "cohort": "Fictional declared bearing code, 9% base; no ruling classification inferred",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "590.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-INDIA-METAL-5",
+      "cohort": "Aluminum and two remainder duties",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "549.00",
+      "reviewedDifference": "-50.00"
+    },
+    {
+      "entry": "SYNTHETIC-INDIA-METAL-6",
+      "cohort": "Explicit full-value assessment exempts the full copper assessment from India overlap",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "530.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-INDIA-METAL-7",
+      "cohort": "Zero copper retains both India duties on full value",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "530.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-INDIA-METAL-8",
+      "cohort": "India ending cutoff before 00:01 Eastern",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "500.00",
+      "reviewedDifference": "-50.00"
+    },
+    {
+      "entry": "SYNTHETIC-INDIA-METAL-9",
+      "cohort": "India starting cutoff before 00:01 Eastern",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "450.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-INDIA-METAL-10",
+      "cohort": "India starting cutoff at 00:01 Eastern",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "500.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-INDIA-METAL-11",
+      "cohort": "India ending cutoff at 00:01 Eastern",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "450.00",
+      "reviewedDifference": "-50.00"
+    },
+    {
+      "entry": "SYNTHETIC-INDIA-METAL-12",
+      "cohort": "Termination removes additional India duty; reciprocal remains",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "480.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-INDIA-METAL-13",
+      "cohort": "Section 122 follows its own later date and remainder",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "450.00",
+      "reviewedDifference": "100.00"
+    },
+    {
+      "entry": "SYNTHETIC-INDIA-METAL-14",
+      "cohort": "Earlier edition confirms the same mixed allocation",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "526.00",
+      "reviewedDifference": "-50.00"
+    },
+    {
+      "entry": "SYNTHETIC-INDIA-METAL-15",
+      "cohort": "Uncleared copper exception withholds total",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-INDIA-METAL-16",
+      "cohort": "Missing exact ending-cutoff time",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    }
+  ],
+  "decisions": [
+    {
+      "row": 1,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material scope, values and exceptions. No real shipment, classification from a ruling, or legal approval.",
+      "evidence": [
+        "SYNTHETIC-INDIA-METAL-1-DOC"
+      ],
+      "validFrom": "2025-12-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "steel_derivative_covered": true,
+        "us_steel_melt_pour": false
+      }
+    },
+    {
+      "row": 2,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material scope, values and exceptions. No real shipment, classification from a ruling, or legal approval.",
+      "evidence": [
+        "SYNTHETIC-INDIA-METAL-2-DOC"
+      ],
+      "validFrom": "2025-12-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "copper_exceptions_clear": true
+      }
+    },
+    {
+      "row": 3,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material scope, values and exceptions. No real shipment, classification from a ruling, or legal approval.",
+      "evidence": [
+        "SYNTHETIC-INDIA-METAL-3-DOC"
+      ],
+      "validFrom": "2025-12-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "aluminum_derivative_covered": true,
+        "us_aluminum_smelt_cast": false,
+        "russian_aluminum_clear": true,
+        "copper_exceptions_clear": true
+      }
+    },
+    {
+      "row": 4,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material scope, values and exceptions. No real shipment, classification from a ruling, or legal approval.",
+      "evidence": [
+        "SYNTHETIC-INDIA-METAL-4-DOC"
+      ],
+      "validFrom": "2025-12-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "steel_derivative_covered": true,
+        "us_steel_melt_pour": false
+      }
+    },
+    {
+      "row": 5,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material scope, values and exceptions. No real shipment, classification from a ruling, or legal approval.",
+      "evidence": [
+        "SYNTHETIC-INDIA-METAL-5-DOC"
+      ],
+      "validFrom": "2025-12-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "aluminum_derivative_covered": true,
+        "us_aluminum_smelt_cast": false,
+        "russian_aluminum_clear": true
+      }
+    },
+    {
+      "row": 6,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material scope, values and exceptions. No real shipment, classification from a ruling, or legal approval.",
+      "evidence": [
+        "SYNTHETIC-INDIA-METAL-6-DOC"
+      ],
+      "validFrom": "2025-12-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "copper_exceptions_clear": true,
+        "copper_full_value_assessment": true
+      }
+    },
+    {
+      "row": 7,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material scope, values and exceptions. No real shipment, classification from a ruling, or legal approval.",
+      "evidence": [
+        "SYNTHETIC-INDIA-METAL-7-DOC"
+      ],
+      "validFrom": "2025-12-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "copper_exceptions_clear": true
+      }
+    },
+    {
+      "row": 8,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material scope, values and exceptions. No real shipment, classification from a ruling, or legal approval.",
+      "evidence": [
+        "SYNTHETIC-INDIA-METAL-8-DOC"
+      ],
+      "validFrom": "2026-02-07",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "steel_derivative_covered": true,
+        "us_steel_melt_pour": false
+      }
+    },
+    {
+      "row": 9,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material scope, values and exceptions. No real shipment, classification from a ruling, or legal approval.",
+      "evidence": [
+        "SYNTHETIC-INDIA-METAL-9-DOC"
+      ],
+      "validFrom": "2025-08-27",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "steel_derivative_covered": true,
+        "us_steel_melt_pour": false
+      }
+    },
+    {
+      "row": 10,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material scope, values and exceptions. No real shipment, classification from a ruling, or legal approval.",
+      "evidence": [
+        "SYNTHETIC-INDIA-METAL-10-DOC"
+      ],
+      "validFrom": "2025-08-27",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "steel_derivative_covered": true,
+        "us_steel_melt_pour": false
+      }
+    },
+    {
+      "row": 11,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material scope, values and exceptions. No real shipment, classification from a ruling, or legal approval.",
+      "evidence": [
+        "SYNTHETIC-INDIA-METAL-11-DOC"
+      ],
+      "validFrom": "2026-02-07",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "steel_derivative_covered": true,
+        "us_steel_melt_pour": false
+      }
+    },
+    {
+      "row": 12,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material scope, values and exceptions. No real shipment, classification from a ruling, or legal approval.",
+      "evidence": [
+        "SYNTHETIC-INDIA-METAL-12-DOC"
+      ],
+      "validFrom": "2026-02-08",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "copper_exceptions_clear": true
+      }
+    },
+    {
+      "row": 13,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material scope, values and exceptions. No real shipment, classification from a ruling, or legal approval.",
+      "evidence": [
+        "SYNTHETIC-INDIA-METAL-13-DOC"
+      ],
+      "validFrom": "2026-03-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "copper_exceptions_clear": true
+      }
+    },
+    {
+      "row": 14,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material scope, values and exceptions. No real shipment, classification from a ruling, or legal approval.",
+      "evidence": [
+        "SYNTHETIC-INDIA-METAL-14-DOC"
+      ],
+      "validFrom": "2025-09-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "aluminum_derivative_covered": true,
+        "us_aluminum_smelt_cast": false,
+        "russian_aluminum_clear": true,
+        "copper_exceptions_clear": true
+      }
+    },
+    {
+      "row": 15,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material scope, values and exceptions. No real shipment, classification from a ruling, or legal approval.",
+      "evidence": [
+        "SYNTHETIC-INDIA-METAL-15-DOC"
+      ],
+      "validFrom": "2025-12-15",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "copper_exceptions_clear": false
+      }
+    },
+    {
+      "row": 16,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated material scope, values and exceptions. No real shipment, classification from a ruling, or legal approval.",
+      "evidence": [
+        "SYNTHETIC-INDIA-METAL-16-DOC"
+      ],
+      "validFrom": "2026-02-07",
+      "validBefore": "2026-04-06",
+      "facts": {
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "steel_derivative_covered": true,
+        "us_steel_melt_pour": false
+      }
+    }
+  ],
+  "summary": {
+    "lines": 16,
+    "calculated": 0,
+    "unresolved": 16,
+    "discrepancies": 0,
+    "overpayment": "0.00",
+    "underpayment": "0.00"
+  },
+  "reviewedSummary": {
+    "lines": 16,
+    "calculated": 14,
+    "unresolved": 2,
+    "discrepancies": 10,
+    "overpayment": "500.00",
+    "underpayment": "250.00"
+  }
+}

@@ -2,6 +2,11 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { resolveStackingRule, type StackingRuleRow } from "./stacking-rules";
 
+test("applicable caps with missing or invalid fractions cannot resolve as an inclusion",()=>{
+ for(const cap of [null,Number.NaN,Number.POSITIVE_INFINITY,-0.1,1.01])assert.equal(resolveStackingRule([rule({action:"cap_at",capRatePercent:cap})],{},"2024-05-15").status,"needs_review");
+ const rows=[rule({id:"valid"}),rule({id:"irrelevant",action:"cap_at",capRatePercent:null,conditions:{country_of_origin:"CN"}})];assert.equal(resolveStackingRule(rows,{country_of_origin:"VN"},"2024-05-15").status,"resolved");
+});
+
 function rule(overrides: Partial<StackingRuleRow> = {}): StackingRuleRow {
   return {
     id: "rule-1",

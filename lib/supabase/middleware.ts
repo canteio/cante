@@ -36,6 +36,7 @@ export async function updateSupabaseSession(request: NextRequest) {
         .from("customer_users")
         .select("customer_id, role")
         .eq("user_id", userId)
+        .order("customer_id", { ascending: true })
         .limit(1)
         .maybeSingle()
     : { data: null, error: null };

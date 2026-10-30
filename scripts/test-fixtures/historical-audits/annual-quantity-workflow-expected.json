@@ -1,0 +1,251 @@
+{
+  "label": "SYNTHETIC declarations and hand arithmetic. Published uniform 8-digit formulas do not independently prove statistical suffix, classification, origin, qualification or legal/refund entitlement.",
+  "rows": [
+    {
+      "entry": "SYNTHETIC-ANNUAL-QUANTITY-1",
+      "cohort": "Specific kilograms",
+      "initialExpected": "1.80",
+      "initialDifference": "0.00",
+      "reviewedExpected": "1.80",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-ANNUAL-QUANTITY-2",
+      "cohort": "Specific overpayment",
+      "initialExpected": "1.80",
+      "initialDifference": "10.00",
+      "reviewedExpected": "1.80",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "SYNTHETIC-ANNUAL-QUANTITY-3",
+      "cohort": "Specific underpayment",
+      "initialExpected": "1.80",
+      "initialDifference": "-1.80",
+      "reviewedExpected": "1.80",
+      "reviewedDifference": "-1.80"
+    },
+    {
+      "entry": "SYNTHETIC-ANNUAL-QUANTITY-4",
+      "cohort": "Second quantity kilograms",
+      "initialExpected": "5.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "5.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-ANNUAL-QUANTITY-5",
+      "cohort": "Component kilograms distinct",
+      "initialExpected": "1.78",
+      "initialDifference": "0.00",
+      "reviewedExpected": "1.78",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-ANNUAL-QUANTITY-6",
+      "cohort": "Two-unit excise excluded",
+      "initialExpected": "16.96",
+      "initialDifference": "3.04",
+      "reviewedExpected": "16.96",
+      "reviewedDifference": "3.04"
+    },
+    {
+      "entry": "SYNTHETIC-ANNUAL-QUANTITY-7",
+      "cohort": "Count plus percent",
+      "initialExpected": "26.60",
+      "initialDifference": "0.00",
+      "reviewedExpected": "26.60",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-ANNUAL-QUANTITY-8",
+      "cohort": "Second quantity plus percent",
+      "initialExpected": "262.53",
+      "initialDifference": "0.00",
+      "reviewedExpected": "262.53",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-ANNUAL-QUANTITY-9",
+      "cohort": "Two units plus percent rounded once",
+      "initialExpected": "68.28",
+      "initialDifference": "31.72",
+      "reviewedExpected": "68.28",
+      "reviewedDifference": "31.72"
+    },
+    {
+      "entry": "SYNTHETIC-ANNUAL-QUANTITY-10",
+      "cohort": "Count and jewels plus percent",
+      "initialExpected": "60.10",
+      "initialDifference": "0.00",
+      "reviewedExpected": "60.10",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-ANNUAL-QUANTITY-11",
+      "cohort": "Missing second quantity",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "67.60",
+      "reviewedDifference": "32.40"
+    },
+    {
+      "entry": "SYNTHETIC-ANNUAL-QUANTITY-12",
+      "cohort": "Conflicting count quantities",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "68.28",
+      "reviewedDifference": "31.72"
+    },
+    {
+      "entry": "SYNTHETIC-ANNUAL-QUANTITY-13",
+      "cohort": "Component quantity missing",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "1.78",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-ANNUAL-QUANTITY-14",
+      "cohort": "Statistical procedure T unsupported",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-ANNUAL-QUANTITY-15",
+      "cohort": "Preference claim needs its own coverage",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-ANNUAL-QUANTITY-16",
+      "cohort": "Origin discrepancy review",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "68.28",
+      "reviewedDifference": "31.72"
+    },
+    {
+      "entry": "SYNTHETIC-ANNUAL-QUANTITY-17",
+      "cohort": "Legacy count plus percent",
+      "initialExpected": "26.60",
+      "initialDifference": "0.00",
+      "reviewedExpected": "26.60",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-ANNUAL-QUANTITY-18",
+      "cohort": "Legacy two units plus percent",
+      "initialExpected": "60.10",
+      "initialDifference": "0.00",
+      "reviewedExpected": "60.10",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-ANNUAL-QUANTITY-19",
+      "cohort": "Legacy two quantity units",
+      "initialExpected": "16.96",
+      "initialDifference": "0.00",
+      "reviewedExpected": "16.96",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-ANNUAL-QUANTITY-20",
+      "cohort": "Original schedules reconcile truncated numeric fields",
+      "initialExpected": "68.28",
+      "initialDifference": "31.72",
+      "reviewedExpected": "68.28",
+      "reviewedDifference": "31.72"
+    },
+    {
+      "entry": "SYNTHETIC-ANNUAL-QUANTITY-21",
+      "cohort": "Original schedules reconcile truncated numeric fields",
+      "initialExpected": "68.28",
+      "initialDifference": "31.72",
+      "reviewedExpected": "68.28",
+      "reviewedDifference": "31.72"
+    }
+  ],
+  "summary": {
+    "lines": 21,
+    "calculated": 15,
+    "unresolved": 6,
+    "discrepancies": 6,
+    "overpayment": "108.20",
+    "underpayment": "1.80"
+  },
+  "reviewedSummary": {
+    "lines": 21,
+    "calculated": 19,
+    "unresolved": 2,
+    "discrepancies": 9,
+    "overpayment": "204.04",
+    "underpayment": "1.80"
+  },
+  "decisions": [
+    {
+      "row": 11,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated quantity or origin evidence correction.",
+      "evidence": [
+        "SYNTHETIC-QUANTITY-11-DOC"
+      ],
+      "validFrom": "2014-01-01",
+      "validBefore": "2015-01-01",
+      "shipment": {
+        "quantity2": "20",
+        "unit2": "KG"
+      },
+      "facts": {}
+    },
+    {
+      "row": 12,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated quantity or origin evidence correction.",
+      "evidence": [
+        "SYNTHETIC-QUANTITY-12-DOC"
+      ],
+      "validFrom": "2014-01-01",
+      "validBefore": "2015-01-01",
+      "shipment": {
+        "quantity2": "100",
+        "unit2": "NO"
+      },
+      "facts": {}
+    },
+    {
+      "row": 13,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated quantity or origin evidence correction.",
+      "evidence": [
+        "SYNTHETIC-QUANTITY-13-DOC"
+      ],
+      "validFrom": "2014-01-01",
+      "validBefore": "2015-01-01",
+      "shipment": {
+        "quantity2": "10",
+        "unit2": "CKG"
+      },
+      "facts": {}
+    },
+    {
+      "row": 16,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated quantity or origin evidence correction.",
+      "evidence": [
+        "SYNTHETIC-QUANTITY-16-DOC"
+      ],
+      "validFrom": "2014-01-01",
+      "validBefore": "2015-01-01",
+      "shipment": {},
+      "facts": {
+        "origin_verified": true
+      }
+    }
+  ],
+  "engineVersion": "historical-audit-v37"
+}

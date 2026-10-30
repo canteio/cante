@@ -1,0 +1,3314 @@
+{
+  "label": "100 fictional entries; independent Decimal half-up oracle; actual public CBP rates, fictional scope/party evidence, no legal approval.",
+  "engineVersion": "historical-audit-v37",
+  "rows": [
+    {
+      "row": 1,
+      "entry": "SYN-CADEP-1",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.32",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "354.88",
+        "121.26",
+        "350.18"
+      ]
+    },
+    {
+      "row": 2,
+      "entry": "SYN-CADEP-2",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.55",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.37",
+        "350.18"
+      ]
+    },
+    {
+      "row": 3,
+      "entry": "SYN-CADEP-3",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.56",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.38",
+        "350.18"
+      ]
+    },
+    {
+      "row": 4,
+      "entry": "SYN-CADEP-4",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.34",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "354.89",
+        "121.26",
+        "350.19"
+      ]
+    },
+    {
+      "row": 5,
+      "entry": "SYN-CADEP-5",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.57",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.38",
+        "350.19"
+      ]
+    },
+    {
+      "row": 6,
+      "entry": "SYN-CADEP-6",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.57",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.38",
+        "350.19"
+      ]
+    },
+    {
+      "row": 7,
+      "entry": "SYN-CADEP-7",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.37",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "354.90",
+        "121.27",
+        "350.20"
+      ]
+    },
+    {
+      "row": 8,
+      "entry": "SYN-CADEP-8",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.58",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.38",
+        "350.20"
+      ]
+    },
+    {
+      "row": 9,
+      "entry": "SYN-CADEP-9",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.58",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.38",
+        "350.20"
+      ]
+    },
+    {
+      "row": 10,
+      "entry": "SYN-CADEP-10",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.39",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "354.91",
+        "121.27",
+        "350.21"
+      ]
+    },
+    {
+      "row": 11,
+      "entry": "SYN-CADEP-11",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.60",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.39",
+        "350.21"
+      ]
+    },
+    {
+      "row": 12,
+      "entry": "SYN-CADEP-12",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.60",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.39",
+        "350.21"
+      ]
+    },
+    {
+      "row": 13,
+      "entry": "SYN-CADEP-13",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.42",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "354.92",
+        "121.28",
+        "350.22"
+      ]
+    },
+    {
+      "row": 14,
+      "entry": "SYN-CADEP-14",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.61",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.39",
+        "350.22"
+      ]
+    },
+    {
+      "row": 15,
+      "entry": "SYN-CADEP-15",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.61",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.39",
+        "350.22"
+      ]
+    },
+    {
+      "row": 16,
+      "entry": "SYN-CADEP-16",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.44",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "354.93",
+        "121.28",
+        "350.23"
+      ]
+    },
+    {
+      "row": 17,
+      "entry": "SYN-CADEP-17",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.63",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.40",
+        "350.23"
+      ]
+    },
+    {
+      "row": 18,
+      "entry": "SYN-CADEP-18",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.63",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.40",
+        "350.23"
+      ]
+    },
+    {
+      "row": 19,
+      "entry": "SYN-CADEP-19",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.46",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "354.94",
+        "121.28",
+        "350.24"
+      ]
+    },
+    {
+      "row": 20,
+      "entry": "SYN-CADEP-20",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.64",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.40",
+        "350.24"
+      ]
+    },
+    {
+      "row": 21,
+      "entry": "SYN-CADEP-21",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.65",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.40",
+        "350.25"
+      ]
+    },
+    {
+      "row": 22,
+      "entry": "SYN-CADEP-22",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.49",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "354.95",
+        "121.29",
+        "350.25"
+      ]
+    },
+    {
+      "row": 23,
+      "entry": "SYN-CADEP-23",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.66",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.41",
+        "350.25"
+      ]
+    },
+    {
+      "row": 24,
+      "entry": "SYN-CADEP-24",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.67",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.41",
+        "350.26"
+      ]
+    },
+    {
+      "row": 25,
+      "entry": "SYN-CADEP-25",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.51",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "354.96",
+        "121.29",
+        "350.26"
+      ]
+    },
+    {
+      "row": 26,
+      "entry": "SYN-CADEP-26",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.67",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.41",
+        "350.26"
+      ]
+    },
+    {
+      "row": 27,
+      "entry": "SYN-CADEP-27",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.68",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.41",
+        "350.27"
+      ]
+    },
+    {
+      "row": 28,
+      "entry": "SYN-CADEP-28",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.53",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "354.97",
+        "121.29",
+        "350.27"
+      ]
+    },
+    {
+      "row": 29,
+      "entry": "SYN-CADEP-29",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.68",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.41",
+        "350.27"
+      ]
+    },
+    {
+      "row": 30,
+      "entry": "SYN-CADEP-30",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.70",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.42",
+        "350.28"
+      ]
+    },
+    {
+      "row": 31,
+      "entry": "SYN-CADEP-31",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.56",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "354.98",
+        "121.30",
+        "350.28"
+      ]
+    },
+    {
+      "row": 32,
+      "entry": "SYN-CADEP-32",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.70",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.42",
+        "350.28"
+      ]
+    },
+    {
+      "row": 33,
+      "entry": "SYN-CADEP-33",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.71",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.42",
+        "350.29"
+      ]
+    },
+    {
+      "row": 34,
+      "entry": "SYN-CADEP-34",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.58",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "354.99",
+        "121.30",
+        "350.29"
+      ]
+    },
+    {
+      "row": 35,
+      "entry": "SYN-CADEP-35",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.71",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.42",
+        "350.29"
+      ]
+    },
+    {
+      "row": 36,
+      "entry": "SYN-CADEP-36",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.72",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.42",
+        "350.30"
+      ]
+    },
+    {
+      "row": 37,
+      "entry": "SYN-CADEP-37",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.61",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "355.01",
+        "121.30",
+        "350.30"
+      ]
+    },
+    {
+      "row": 38,
+      "entry": "SYN-CADEP-38",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.73",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.43",
+        "350.30"
+      ]
+    },
+    {
+      "row": 39,
+      "entry": "SYN-CADEP-39",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.74",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.43",
+        "350.31"
+      ]
+    },
+    {
+      "row": 40,
+      "entry": "SYN-CADEP-40",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.64",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "355.02",
+        "121.31",
+        "350.31"
+      ]
+    },
+    {
+      "row": 41,
+      "entry": "SYN-CADEP-41",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.75",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.43",
+        "350.32"
+      ]
+    },
+    {
+      "row": 42,
+      "entry": "SYN-CADEP-42",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.75",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.43",
+        "350.32"
+      ]
+    },
+    {
+      "row": 43,
+      "entry": "SYN-CADEP-43",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.66",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "355.03",
+        "121.31",
+        "350.32"
+      ]
+    },
+    {
+      "row": 44,
+      "entry": "SYN-CADEP-44",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.77",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.44",
+        "350.33"
+      ]
+    },
+    {
+      "row": 45,
+      "entry": "SYN-CADEP-45",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.77",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.44",
+        "350.33"
+      ]
+    },
+    {
+      "row": 46,
+      "entry": "SYN-CADEP-46",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.69",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "355.04",
+        "121.32",
+        "350.33"
+      ]
+    },
+    {
+      "row": 47,
+      "entry": "SYN-CADEP-47",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.78",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.44",
+        "350.34"
+      ]
+    },
+    {
+      "row": 48,
+      "entry": "SYN-CADEP-48",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.78",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.44",
+        "350.34"
+      ]
+    },
+    {
+      "row": 49,
+      "entry": "SYN-CADEP-49",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.71",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "355.05",
+        "121.32",
+        "350.34"
+      ]
+    },
+    {
+      "row": 50,
+      "entry": "SYN-CADEP-50",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.79",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.44",
+        "350.35"
+      ]
+    },
+    {
+      "row": 51,
+      "entry": "SYN-CADEP-51",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.80",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.45",
+        "350.35"
+      ]
+    },
+    {
+      "row": 52,
+      "entry": "SYN-CADEP-52",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.73",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "355.06",
+        "121.32",
+        "350.35"
+      ]
+    },
+    {
+      "row": 53,
+      "entry": "SYN-CADEP-53",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.81",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.45",
+        "350.36"
+      ]
+    },
+    {
+      "row": 54,
+      "entry": "SYN-CADEP-54",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.81",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.45",
+        "350.36"
+      ]
+    },
+    {
+      "row": 55,
+      "entry": "SYN-CADEP-55",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.76",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "355.07",
+        "121.33",
+        "350.36"
+      ]
+    },
+    {
+      "row": 56,
+      "entry": "SYN-CADEP-56",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.82",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.45",
+        "350.37"
+      ]
+    },
+    {
+      "row": 57,
+      "entry": "SYN-CADEP-57",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.83",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.46",
+        "350.37"
+      ]
+    },
+    {
+      "row": 58,
+      "entry": "SYN-CADEP-58",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.78",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "355.08",
+        "121.33",
+        "350.37"
+      ]
+    },
+    {
+      "row": 59,
+      "entry": "SYN-CADEP-59",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.84",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.46",
+        "350.38"
+      ]
+    },
+    {
+      "row": 60,
+      "entry": "SYN-CADEP-60",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.84",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.46",
+        "350.38"
+      ]
+    },
+    {
+      "row": 61,
+      "entry": "SYN-CADEP-61",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.81",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "355.09",
+        "121.33",
+        "350.39"
+      ]
+    },
+    {
+      "row": 62,
+      "entry": "SYN-CADEP-62",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.85",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.46",
+        "350.39"
+      ]
+    },
+    {
+      "row": 63,
+      "entry": "SYN-CADEP-63",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.85",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.46",
+        "350.39"
+      ]
+    },
+    {
+      "row": 64,
+      "entry": "SYN-CADEP-64",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.84",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "355.10",
+        "121.34",
+        "350.40"
+      ]
+    },
+    {
+      "row": 65,
+      "entry": "SYN-CADEP-65",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.87",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.47",
+        "350.40"
+      ]
+    },
+    {
+      "row": 66,
+      "entry": "SYN-CADEP-66",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.87",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.47",
+        "350.40"
+      ]
+    },
+    {
+      "row": 67,
+      "entry": "SYN-CADEP-67",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.86",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "355.11",
+        "121.34",
+        "350.41"
+      ]
+    },
+    {
+      "row": 68,
+      "entry": "SYN-CADEP-68",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.88",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.47",
+        "350.41"
+      ]
+    },
+    {
+      "row": 69,
+      "entry": "SYN-CADEP-69",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.88",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.47",
+        "350.41"
+      ]
+    },
+    {
+      "row": 70,
+      "entry": "SYN-CADEP-70",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.88",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "355.12",
+        "121.34",
+        "350.42"
+      ]
+    },
+    {
+      "row": 71,
+      "entry": "SYN-CADEP-71",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.90",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.48",
+        "350.42"
+      ]
+    },
+    {
+      "row": 72,
+      "entry": "SYN-CADEP-72",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.90",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.48",
+        "350.42"
+      ]
+    },
+    {
+      "row": 73,
+      "entry": "SYN-CADEP-73",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.91",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "355.13",
+        "121.35",
+        "350.43"
+      ]
+    },
+    {
+      "row": 74,
+      "entry": "SYN-CADEP-74",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.91",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.48",
+        "350.43"
+      ]
+    },
+    {
+      "row": 75,
+      "entry": "SYN-CADEP-75",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.91",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.48",
+        "350.43"
+      ]
+    },
+    {
+      "row": 76,
+      "entry": "SYN-CADEP-76",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.93",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "355.14",
+        "121.35",
+        "350.44"
+      ]
+    },
+    {
+      "row": 77,
+      "entry": "SYN-CADEP-77",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.92",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.48",
+        "350.44"
+      ]
+    },
+    {
+      "row": 78,
+      "entry": "SYN-CADEP-78",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.93",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.49",
+        "350.44"
+      ]
+    },
+    {
+      "row": 79,
+      "entry": "SYN-CADEP-79",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.96",
+      "reviewedDifference": "1.00",
+      "componentAmounts": [
+        "355.15",
+        "121.36",
+        "350.45"
+      ]
+    },
+    {
+      "row": 80,
+      "entry": "SYN-CADEP-80",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.94",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": [
+        "146.49",
+        "350.45"
+      ]
+    },
+    {
+      "row": 81,
+      "entry": "SYN-CADEP-81",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "496.95",
+      "reviewedDifference": "0.00",
+      "componentAmounts": [
+        "146.49",
+        "350.46"
+      ]
+    },
+    {
+      "row": 82,
+      "entry": "SYN-CADEP-82",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": []
+    },
+    {
+      "row": 83,
+      "entry": "SYN-CADEP-83",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": []
+    },
+    {
+      "row": 84,
+      "entry": "SYN-CADEP-84",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": []
+    },
+    {
+      "row": 85,
+      "entry": "SYN-CADEP-85",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": []
+    },
+    {
+      "row": 86,
+      "entry": "SYN-CADEP-86",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": []
+    },
+    {
+      "row": 87,
+      "entry": "SYN-CADEP-87",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": []
+    },
+    {
+      "row": 88,
+      "entry": "SYN-CADEP-88",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": []
+    },
+    {
+      "row": 89,
+      "entry": "SYN-CADEP-89",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": []
+    },
+    {
+      "row": 90,
+      "entry": "SYN-CADEP-90",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": []
+    },
+    {
+      "row": 91,
+      "entry": "SYN-CADEP-91",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": []
+    },
+    {
+      "row": 92,
+      "entry": "SYN-CADEP-92",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": []
+    },
+    {
+      "row": 93,
+      "entry": "SYN-CADEP-93",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": []
+    },
+    {
+      "row": 94,
+      "entry": "SYN-CADEP-94",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": []
+    },
+    {
+      "row": 95,
+      "entry": "SYN-CADEP-95",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": []
+    },
+    {
+      "row": 96,
+      "entry": "SYN-CADEP-96",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": []
+    },
+    {
+      "row": 97,
+      "entry": "SYN-CADEP-97",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": []
+    },
+    {
+      "row": 98,
+      "entry": "SYN-CADEP-98",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": []
+    },
+    {
+      "row": 99,
+      "entry": "SYN-CADEP-99",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": []
+    },
+    {
+      "row": 100,
+      "entry": "SYN-CADEP-100",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": []
+    }
+  ],
+  "decisions": [
+    {
+      "row": 1,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-1-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 2,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-2-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 3,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-3-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 4,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-4-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 5,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-5-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 6,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-6-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 7,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-7-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 8,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-8-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 9,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-9-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 10,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-10-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 11,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-11-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 12,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-12-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 13,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-13-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 14,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-14-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 15,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-15-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 16,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-16-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 17,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-17-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 18,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-18-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 19,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-19-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 20,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-20-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 21,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-21-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 22,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-22-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 23,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-23-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 24,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-24-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 25,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-25-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 26,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-26-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 27,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-27-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 28,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-28-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 29,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-29-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 30,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-30-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 31,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-31-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 32,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-32-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 33,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-33-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 34,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-34-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 35,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-35-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 36,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-36-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 37,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-37-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 38,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-38-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 39,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-39-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 40,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-40-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 41,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-41-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 42,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-42-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 43,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-43-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 44,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-44-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 45,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-45-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 46,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-46-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 47,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-47-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 48,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-48-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 49,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-49-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 50,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-50-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 51,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-51-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 52,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-52-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 53,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-53-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 54,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-54-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 55,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-55-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 56,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-56-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 57,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-57-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 58,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-58-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 59,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-59-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 60,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-60-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 61,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-61-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 62,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-62-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 63,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-63-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 64,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-64-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 65,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-65-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 66,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-66-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 67,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-67-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 68,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-68-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 69,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-69-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 70,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-70-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 71,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-71-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 72,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-72-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 73,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-73-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 74,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-74-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 75,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-75-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 76,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-76-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 77,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-77-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 78,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-78-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 79,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-79-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 80,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-80-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 81,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-81-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 82,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-82-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 83,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-83-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 84,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-84-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 85,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-85-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 86,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-86-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 87,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-87-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 88,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-88-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 89,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-89-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 90,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-90-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 91,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-91-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 92,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": false,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-92-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 93,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": false,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-93-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 94,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": false,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-94-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 95,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": false,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-95-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 96,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-96-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 97,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-97-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 98,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-98-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 99,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-99-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    },
+    {
+      "row": 100,
+      "kind": "confirm_facts",
+      "validFrom": "2025-09-15",
+      "validBefore": "2025-09-16",
+      "facts": {
+        "standard_commercial": true,
+        "classification_verified": true,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "usmca_qualified": false
+      },
+      "evidence": [
+        "SYN-CADEP-100-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no real classification, origin, company scope, court review or refund eligibility established."
+    }
+  ],
+  "summary": {
+    "lines": 100,
+    "calculated": 0,
+    "unresolved": 100,
+    "discrepancies": 0,
+    "overpayment": "0.00",
+    "underpayment": "0.00"
+  },
+  "reviewedSummary": {
+    "lines": 100,
+    "calculated": 81,
+    "unresolved": 19,
+    "discrepancies": 54,
+    "overpayment": "27.00",
+    "underpayment": "27.00"
+  },
+  "browserDecision": {
+    "row": 85,
+    "kind": "confirm_facts",
+    "validFrom": "2025-09-15",
+    "validBefore": "2025-09-16",
+    "shipment": {
+      "exporter": "Canfor Corporation"
+    },
+    "facts": {
+      "adcvd_party_verified": true,
+      "adcvd_instructions_clear": true,
+      "adcvd_cases_complete": true
+    },
+    "evidence": [
+      "SYN-CADEP-85-EXPORTER-REVIEW"
+    ],
+    "note": "FICTIONAL evidence supplies the missing exporter and renews dated party, instruction and complete-case checks. No shared law or refund entitlement is approved.",
+    "usedExporter": "Canfor Corporation",
+    "expected": "827.01"
+  }
+}

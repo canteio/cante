@@ -1,0 +1,51 @@
+{
+  "label": "FICTIONAL declarations tested against actual retained official PDFs; not customer or broker validation",
+  "hts": "8501314000",
+  "customsValue": "1000.00",
+  "paid": "300.00",
+  "base": "4%",
+  "cases": [
+    {
+      "date": "2018-08-24",
+      "edition": "2018HTSARevision10",
+      "chinaExpected": "290.00",
+      "vietnamExpected": "40.00",
+      "missingTreatment": []
+    },
+    {
+      "date": "2020-06-15",
+      "edition": "2020HTSARev13",
+      "chinaExpected": "290.00",
+      "vietnamExpected": "40.00",
+      "missingTreatment": []
+    },
+    {
+      "date": "2021-10-15",
+      "edition": "2021HTSABasicRev8",
+      "chinaExpected": "290.00",
+      "vietnamExpected": "40.00",
+      "missingTreatment": []
+    },
+    {
+      "date": "2022-08-15",
+      "edition": "2022HTSARev8",
+      "chinaExpected": "290.00",
+      "vietnamExpected": "40.00",
+      "missingTreatment": []
+    },
+    {
+      "date": "2023-10-15",
+      "edition": "2023HTSRev11",
+      "chinaExpected": "290.00",
+      "vietnamExpected": "40.00",
+      "missingTreatment": []
+    },
+    {
+      "date": "2024-06-20",
+      "edition": "2024HTSRev3",
+      "chinaExpected": "290.00",
+      "vietnamExpected": "40.00",
+      "missingTreatment": []
+    }
+  ]
+}

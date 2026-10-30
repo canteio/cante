@@ -1,0 +1,1552 @@
+[
+  {
+    "row": 1,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-1"
+  },
+  {
+    "row": 2,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-2"
+  },
+  {
+    "row": 3,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-3"
+  },
+  {
+    "row": 4,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-4"
+  },
+  {
+    "row": 5,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-5"
+  },
+  {
+    "row": 6,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-6"
+  },
+  {
+    "row": 7,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-7"
+  },
+  {
+    "row": 8,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-8"
+  },
+  {
+    "row": 9,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-9"
+  },
+  {
+    "row": 10,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-10"
+  },
+  {
+    "row": 11,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-11"
+  },
+  {
+    "row": 12,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-12"
+  },
+  {
+    "row": 13,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-13"
+  },
+  {
+    "row": 14,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-14"
+  },
+  {
+    "row": 15,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-15"
+  },
+  {
+    "row": 16,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-16"
+  },
+  {
+    "row": 17,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-17"
+  },
+  {
+    "row": 18,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-18"
+  },
+  {
+    "row": 19,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-19"
+  },
+  {
+    "row": 20,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-20"
+  },
+  {
+    "row": 21,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-21"
+  },
+  {
+    "row": 22,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-22"
+  },
+  {
+    "row": 23,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-23"
+  },
+  {
+    "row": 24,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-24"
+  },
+  {
+    "row": 25,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-25"
+  },
+  {
+    "row": 26,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-26"
+  },
+  {
+    "row": 27,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-27"
+  },
+  {
+    "row": 28,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-28"
+  },
+  {
+    "row": 29,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-29"
+  },
+  {
+    "row": 30,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-30"
+  },
+  {
+    "row": 31,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-31"
+  },
+  {
+    "row": 32,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-32"
+  },
+  {
+    "row": 33,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-33"
+  },
+  {
+    "row": 34,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-34"
+  },
+  {
+    "row": 35,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-35"
+  },
+  {
+    "row": 36,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-36"
+  },
+  {
+    "row": 37,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-37"
+  },
+  {
+    "row": 38,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-38"
+  },
+  {
+    "row": 39,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-39"
+  },
+  {
+    "row": 40,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-40"
+  },
+  {
+    "row": 41,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-41"
+  },
+  {
+    "row": 42,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-42"
+  },
+  {
+    "row": 43,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-43"
+  },
+  {
+    "row": 44,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-44"
+  },
+  {
+    "row": 45,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-45"
+  },
+  {
+    "row": 46,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-46"
+  },
+  {
+    "row": 47,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-47"
+  },
+  {
+    "row": 48,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-48"
+  },
+  {
+    "row": 49,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-49"
+  },
+  {
+    "row": 50,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-50"
+  },
+  {
+    "row": 51,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": true
+    },
+    "id": "synthetic-decision-51"
+  },
+  {
+    "row": 52,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": true
+    },
+    "id": "synthetic-decision-52"
+  },
+  {
+    "row": 53,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": true
+    },
+    "id": "synthetic-decision-53"
+  },
+  {
+    "row": 54,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": true
+    },
+    "id": "synthetic-decision-54"
+  },
+  {
+    "row": 55,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": true
+    },
+    "id": "synthetic-decision-55"
+  },
+  {
+    "row": 56,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": true
+    },
+    "id": "synthetic-decision-56"
+  },
+  {
+    "row": 57,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": true
+    },
+    "id": "synthetic-decision-57"
+  },
+  {
+    "row": 58,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": true
+    },
+    "id": "synthetic-decision-58"
+  },
+  {
+    "row": 59,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": true
+    },
+    "id": "synthetic-decision-59"
+  },
+  {
+    "row": 60,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": true
+    },
+    "id": "synthetic-decision-60"
+  },
+  {
+    "row": 61,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-61"
+  },
+  {
+    "row": 62,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-62"
+  },
+  {
+    "row": 63,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-63"
+  },
+  {
+    "row": 64,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-64"
+  },
+  {
+    "row": 65,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-65"
+  },
+  {
+    "row": 66,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-66"
+  },
+  {
+    "row": 67,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-67"
+  },
+  {
+    "row": 68,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-68"
+  },
+  {
+    "row": 69,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-69"
+  },
+  {
+    "row": 70,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-70"
+  },
+  {
+    "row": 81,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-81"
+  },
+  {
+    "row": 82,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-82"
+  },
+  {
+    "row": 83,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-83"
+  },
+  {
+    "row": 84,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-84"
+  },
+  {
+    "row": 85,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-85"
+  },
+  {
+    "row": 86,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-86"
+  },
+  {
+    "row": 87,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-87"
+  },
+  {
+    "row": 88,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-88"
+  },
+  {
+    "row": 89,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-89"
+  },
+  {
+    "row": 90,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-90"
+  },
+  {
+    "row": 91,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-91"
+  },
+  {
+    "row": 92,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-92"
+  },
+  {
+    "row": 93,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-93"
+  },
+  {
+    "row": 94,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-94"
+  },
+  {
+    "row": 95,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-95"
+  },
+  {
+    "row": 96,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-96"
+  },
+  {
+    "row": 97,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-97"
+  },
+  {
+    "row": 98,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-98"
+  },
+  {
+    "row": 99,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-99"
+  },
+  {
+    "row": 100,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-100"
+  },
+  {
+    "row": 101,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false,
+      "classification_verified": true
+    },
+    "id": "synthetic-decision-101",
+    "hts": "8501324000"
+  },
+  {
+    "row": 102,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false,
+      "classification_verified": true
+    },
+    "id": "synthetic-decision-102",
+    "hts": "8501324000"
+  },
+  {
+    "row": 103,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false,
+      "classification_verified": true
+    },
+    "id": "synthetic-decision-103",
+    "hts": "8501324000"
+  },
+  {
+    "row": 104,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false,
+      "classification_verified": true
+    },
+    "id": "synthetic-decision-104",
+    "hts": "8501324000"
+  },
+  {
+    "row": 105,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false,
+      "classification_verified": true
+    },
+    "id": "synthetic-decision-105",
+    "hts": "8501324000"
+  },
+  {
+    "row": 106,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-106"
+  },
+  {
+    "row": 107,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-107"
+  },
+  {
+    "row": 108,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-108"
+  },
+  {
+    "row": 109,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-109"
+  },
+  {
+    "row": 110,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-110"
+  },
+  {
+    "row": 111,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-111"
+  },
+  {
+    "row": 112,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-112"
+  },
+  {
+    "row": 113,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-113"
+  },
+  {
+    "row": 114,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-114"
+  },
+  {
+    "row": 115,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-115"
+  },
+  {
+    "row": 116,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-116"
+  },
+  {
+    "row": 117,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-117"
+  },
+  {
+    "row": 118,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-118"
+  },
+  {
+    "row": 119,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-119"
+  },
+  {
+    "row": 120,
+    "kind": "confirm_facts",
+    "note": "SYNTHETIC reviewed input for isolated functionality testing only.",
+    "evidence": [
+      "SYN-DOC-01"
+    ],
+    "validFrom": "2024-01-01",
+    "validBefore": "2025-01-01",
+    "facts": {
+      "exclusion_qualified": false
+    },
+    "id": "synthetic-decision-120"
+  }
+]

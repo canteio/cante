@@ -1,0 +1,3746 @@
+{
+  "label": "100 fictional declarations. Independent Python Decimal half-up per-component oracle; original government rates are not classification, origin, scope, instruction review or refund determinations.",
+  "engineVersion": "historical-audit-v37",
+  "rows": [
+    {
+      "row": 1,
+      "entry": "SYN-MXDEP-1",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "820.91",
+      "reviewedDifference": "1.00",
+      "depositExpected": "320.66",
+      "steelExpected": "500.25"
+    },
+    {
+      "row": 2,
+      "entry": "SYN-MXDEP-2",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "723.07",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "222.81",
+      "steelExpected": "500.26"
+    },
+    {
+      "row": 3,
+      "entry": "SYN-MXDEP-3",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "521.37",
+      "reviewedDifference": "0.00",
+      "depositExpected": "21.11",
+      "steelExpected": "500.26"
+    },
+    {
+      "row": 4,
+      "entry": "SYN-MXDEP-4",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "562.40",
+      "reviewedDifference": "1.00",
+      "depositExpected": "62.13",
+      "steelExpected": "500.27"
+    },
+    {
+      "row": 5,
+      "entry": "SYN-MXDEP-5",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "863.87",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "363.60",
+      "steelExpected": "500.27"
+    },
+    {
+      "row": 6,
+      "entry": "SYN-MXDEP-6",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "511.89",
+      "reviewedDifference": "0.00",
+      "depositExpected": "11.61",
+      "steelExpected": "500.28"
+    },
+    {
+      "row": 7,
+      "entry": "SYN-MXDEP-7",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "820.96",
+      "reviewedDifference": "1.00",
+      "depositExpected": "320.68",
+      "steelExpected": "500.28"
+    },
+    {
+      "row": 8,
+      "entry": "SYN-MXDEP-8",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "820.97",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "320.68",
+      "steelExpected": "500.29"
+    },
+    {
+      "row": 9,
+      "entry": "SYN-MXDEP-9",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "863.90",
+      "reviewedDifference": "0.00",
+      "depositExpected": "363.61",
+      "steelExpected": "500.29"
+    },
+    {
+      "row": 10,
+      "entry": "SYN-MXDEP-10",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "820.99",
+      "reviewedDifference": "1.00",
+      "depositExpected": "320.69",
+      "steelExpected": "500.30"
+    },
+    {
+      "row": 11,
+      "entry": "SYN-MXDEP-11",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "723.13",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "222.83",
+      "steelExpected": "500.30"
+    },
+    {
+      "row": 12,
+      "entry": "SYN-MXDEP-12",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "521.42",
+      "reviewedDifference": "0.00",
+      "depositExpected": "21.11",
+      "steelExpected": "500.31"
+    },
+    {
+      "row": 13,
+      "entry": "SYN-MXDEP-13",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "562.45",
+      "reviewedDifference": "1.00",
+      "depositExpected": "62.14",
+      "steelExpected": "500.31"
+    },
+    {
+      "row": 14,
+      "entry": "SYN-MXDEP-14",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "863.95",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "363.63",
+      "steelExpected": "500.32"
+    },
+    {
+      "row": 15,
+      "entry": "SYN-MXDEP-15",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "511.93",
+      "reviewedDifference": "0.00",
+      "depositExpected": "11.61",
+      "steelExpected": "500.32"
+    },
+    {
+      "row": 16,
+      "entry": "SYN-MXDEP-16",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.04",
+      "reviewedDifference": "1.00",
+      "depositExpected": "320.71",
+      "steelExpected": "500.33"
+    },
+    {
+      "row": 17,
+      "entry": "SYN-MXDEP-17",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.04",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "320.71",
+      "steelExpected": "500.33"
+    },
+    {
+      "row": 18,
+      "entry": "SYN-MXDEP-18",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "863.98",
+      "reviewedDifference": "0.00",
+      "depositExpected": "363.64",
+      "steelExpected": "500.34"
+    },
+    {
+      "row": 19,
+      "entry": "SYN-MXDEP-19",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.06",
+      "reviewedDifference": "1.00",
+      "depositExpected": "320.72",
+      "steelExpected": "500.34"
+    },
+    {
+      "row": 20,
+      "entry": "SYN-MXDEP-20",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "723.20",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "222.85",
+      "steelExpected": "500.35"
+    },
+    {
+      "row": 21,
+      "entry": "SYN-MXDEP-21",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "521.46",
+      "reviewedDifference": "0.00",
+      "depositExpected": "21.11",
+      "steelExpected": "500.35"
+    },
+    {
+      "row": 22,
+      "entry": "SYN-MXDEP-22",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "562.50",
+      "reviewedDifference": "1.00",
+      "depositExpected": "62.14",
+      "steelExpected": "500.36"
+    },
+    {
+      "row": 23,
+      "entry": "SYN-MXDEP-23",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "864.02",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "363.66",
+      "steelExpected": "500.36"
+    },
+    {
+      "row": 24,
+      "entry": "SYN-MXDEP-24",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "511.98",
+      "reviewedDifference": "0.00",
+      "depositExpected": "11.61",
+      "steelExpected": "500.37"
+    },
+    {
+      "row": 25,
+      "entry": "SYN-MXDEP-25",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.11",
+      "reviewedDifference": "1.00",
+      "depositExpected": "320.74",
+      "steelExpected": "500.37"
+    },
+    {
+      "row": 26,
+      "entry": "SYN-MXDEP-26",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.12",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "320.74",
+      "steelExpected": "500.38"
+    },
+    {
+      "row": 27,
+      "entry": "SYN-MXDEP-27",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "864.06",
+      "reviewedDifference": "0.00",
+      "depositExpected": "363.68",
+      "steelExpected": "500.38"
+    },
+    {
+      "row": 28,
+      "entry": "SYN-MXDEP-28",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.14",
+      "reviewedDifference": "1.00",
+      "depositExpected": "320.75",
+      "steelExpected": "500.39"
+    },
+    {
+      "row": 29,
+      "entry": "SYN-MXDEP-29",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "723.26",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "222.87",
+      "steelExpected": "500.39"
+    },
+    {
+      "row": 30,
+      "entry": "SYN-MXDEP-30",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "521.52",
+      "reviewedDifference": "0.00",
+      "depositExpected": "21.12",
+      "steelExpected": "500.40"
+    },
+    {
+      "row": 31,
+      "entry": "SYN-MXDEP-31",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "562.55",
+      "reviewedDifference": "1.00",
+      "depositExpected": "62.15",
+      "steelExpected": "500.40"
+    },
+    {
+      "row": 32,
+      "entry": "SYN-MXDEP-32",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "864.10",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "363.69",
+      "steelExpected": "500.41"
+    },
+    {
+      "row": 33,
+      "entry": "SYN-MXDEP-33",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "512.02",
+      "reviewedDifference": "0.00",
+      "depositExpected": "11.61",
+      "steelExpected": "500.41"
+    },
+    {
+      "row": 34,
+      "entry": "SYN-MXDEP-34",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.19",
+      "reviewedDifference": "1.00",
+      "depositExpected": "320.77",
+      "steelExpected": "500.42"
+    },
+    {
+      "row": 35,
+      "entry": "SYN-MXDEP-35",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.19",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "320.77",
+      "steelExpected": "500.42"
+    },
+    {
+      "row": 36,
+      "entry": "SYN-MXDEP-36",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "864.14",
+      "reviewedDifference": "0.00",
+      "depositExpected": "363.71",
+      "steelExpected": "500.43"
+    },
+    {
+      "row": 37,
+      "entry": "SYN-MXDEP-37",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.21",
+      "reviewedDifference": "1.00",
+      "depositExpected": "320.78",
+      "steelExpected": "500.43"
+    },
+    {
+      "row": 38,
+      "entry": "SYN-MXDEP-38",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "723.33",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "222.89",
+      "steelExpected": "500.44"
+    },
+    {
+      "row": 39,
+      "entry": "SYN-MXDEP-39",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "521.56",
+      "reviewedDifference": "0.00",
+      "depositExpected": "21.12",
+      "steelExpected": "500.44"
+    },
+    {
+      "row": 40,
+      "entry": "SYN-MXDEP-40",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "562.61",
+      "reviewedDifference": "1.00",
+      "depositExpected": "62.16",
+      "steelExpected": "500.45"
+    },
+    {
+      "row": 41,
+      "entry": "SYN-MXDEP-41",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "864.18",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "363.73",
+      "steelExpected": "500.45"
+    },
+    {
+      "row": 42,
+      "entry": "SYN-MXDEP-42",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "512.07",
+      "reviewedDifference": "0.00",
+      "depositExpected": "11.61",
+      "steelExpected": "500.46"
+    },
+    {
+      "row": 43,
+      "entry": "SYN-MXDEP-43",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.25",
+      "reviewedDifference": "1.00",
+      "depositExpected": "320.79",
+      "steelExpected": "500.46"
+    },
+    {
+      "row": 44,
+      "entry": "SYN-MXDEP-44",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.27",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "320.80",
+      "steelExpected": "500.47"
+    },
+    {
+      "row": 45,
+      "entry": "SYN-MXDEP-45",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "864.21",
+      "reviewedDifference": "0.00",
+      "depositExpected": "363.74",
+      "steelExpected": "500.47"
+    },
+    {
+      "row": 46,
+      "entry": "SYN-MXDEP-46",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.28",
+      "reviewedDifference": "1.00",
+      "depositExpected": "320.80",
+      "steelExpected": "500.48"
+    },
+    {
+      "row": 47,
+      "entry": "SYN-MXDEP-47",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "723.39",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "222.91",
+      "steelExpected": "500.48"
+    },
+    {
+      "row": 48,
+      "entry": "SYN-MXDEP-48",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "521.61",
+      "reviewedDifference": "0.00",
+      "depositExpected": "21.12",
+      "steelExpected": "500.49"
+    },
+    {
+      "row": 49,
+      "entry": "SYN-MXDEP-49",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "562.65",
+      "reviewedDifference": "1.00",
+      "depositExpected": "62.16",
+      "steelExpected": "500.49"
+    },
+    {
+      "row": 50,
+      "entry": "SYN-MXDEP-50",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "864.26",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "363.76",
+      "steelExpected": "500.50"
+    },
+    {
+      "row": 51,
+      "entry": "SYN-MXDEP-51",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "512.11",
+      "reviewedDifference": "0.00",
+      "depositExpected": "11.61",
+      "steelExpected": "500.50"
+    },
+    {
+      "row": 52,
+      "entry": "SYN-MXDEP-52",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.33",
+      "reviewedDifference": "1.00",
+      "depositExpected": "320.82",
+      "steelExpected": "500.51"
+    },
+    {
+      "row": 53,
+      "entry": "SYN-MXDEP-53",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.34",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "320.83",
+      "steelExpected": "500.51"
+    },
+    {
+      "row": 54,
+      "entry": "SYN-MXDEP-54",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "864.29",
+      "reviewedDifference": "0.00",
+      "depositExpected": "363.77",
+      "steelExpected": "500.52"
+    },
+    {
+      "row": 55,
+      "entry": "SYN-MXDEP-55",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.35",
+      "reviewedDifference": "1.00",
+      "depositExpected": "320.83",
+      "steelExpected": "500.52"
+    },
+    {
+      "row": 56,
+      "entry": "SYN-MXDEP-56",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "723.46",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "222.93",
+      "steelExpected": "500.53"
+    },
+    {
+      "row": 57,
+      "entry": "SYN-MXDEP-57",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "521.65",
+      "reviewedDifference": "0.00",
+      "depositExpected": "21.12",
+      "steelExpected": "500.53"
+    },
+    {
+      "row": 58,
+      "entry": "SYN-MXDEP-58",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "562.71",
+      "reviewedDifference": "1.00",
+      "depositExpected": "62.17",
+      "steelExpected": "500.54"
+    },
+    {
+      "row": 59,
+      "entry": "SYN-MXDEP-59",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "864.33",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "363.79",
+      "steelExpected": "500.54"
+    },
+    {
+      "row": 60,
+      "entry": "SYN-MXDEP-60",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "512.16",
+      "reviewedDifference": "0.00",
+      "depositExpected": "11.61",
+      "steelExpected": "500.55"
+    },
+    {
+      "row": 61,
+      "entry": "SYN-MXDEP-61",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.40",
+      "reviewedDifference": "1.00",
+      "depositExpected": "320.85",
+      "steelExpected": "500.55"
+    },
+    {
+      "row": 62,
+      "entry": "SYN-MXDEP-62",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.42",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "320.86",
+      "steelExpected": "500.56"
+    },
+    {
+      "row": 63,
+      "entry": "SYN-MXDEP-63",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "864.37",
+      "reviewedDifference": "0.00",
+      "depositExpected": "363.81",
+      "steelExpected": "500.56"
+    },
+    {
+      "row": 64,
+      "entry": "SYN-MXDEP-64",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.43",
+      "reviewedDifference": "1.00",
+      "depositExpected": "320.86",
+      "steelExpected": "500.57"
+    },
+    {
+      "row": 65,
+      "entry": "SYN-MXDEP-65",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "723.52",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "222.95",
+      "steelExpected": "500.57"
+    },
+    {
+      "row": 66,
+      "entry": "SYN-MXDEP-66",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "521.70",
+      "reviewedDifference": "0.00",
+      "depositExpected": "21.12",
+      "steelExpected": "500.58"
+    },
+    {
+      "row": 67,
+      "entry": "SYN-MXDEP-67",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "562.75",
+      "reviewedDifference": "1.00",
+      "depositExpected": "62.17",
+      "steelExpected": "500.58"
+    },
+    {
+      "row": 68,
+      "entry": "SYN-MXDEP-68",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "864.42",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "363.83",
+      "steelExpected": "500.59"
+    },
+    {
+      "row": 69,
+      "entry": "SYN-MXDEP-69",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "512.20",
+      "reviewedDifference": "0.00",
+      "depositExpected": "11.61",
+      "steelExpected": "500.59"
+    },
+    {
+      "row": 70,
+      "entry": "SYN-MXDEP-70",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.48",
+      "reviewedDifference": "1.00",
+      "depositExpected": "320.88",
+      "steelExpected": "500.60"
+    },
+    {
+      "row": 71,
+      "entry": "SYN-MXDEP-71",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.48",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "320.88",
+      "steelExpected": "500.60"
+    },
+    {
+      "row": 72,
+      "entry": "SYN-MXDEP-72",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "864.45",
+      "reviewedDifference": "0.00",
+      "depositExpected": "363.84",
+      "steelExpected": "500.61"
+    },
+    {
+      "row": 73,
+      "entry": "SYN-MXDEP-73",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.50",
+      "reviewedDifference": "1.00",
+      "depositExpected": "320.89",
+      "steelExpected": "500.61"
+    },
+    {
+      "row": 74,
+      "entry": "SYN-MXDEP-74",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "723.59",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "222.97",
+      "steelExpected": "500.62"
+    },
+    {
+      "row": 75,
+      "entry": "SYN-MXDEP-75",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "521.75",
+      "reviewedDifference": "0.00",
+      "depositExpected": "21.13",
+      "steelExpected": "500.62"
+    },
+    {
+      "row": 76,
+      "entry": "SYN-MXDEP-76",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "562.81",
+      "reviewedDifference": "1.00",
+      "depositExpected": "62.18",
+      "steelExpected": "500.63"
+    },
+    {
+      "row": 77,
+      "entry": "SYN-MXDEP-77",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "864.49",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "363.86",
+      "steelExpected": "500.63"
+    },
+    {
+      "row": 78,
+      "entry": "SYN-MXDEP-78",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "512.25",
+      "reviewedDifference": "0.00",
+      "depositExpected": "11.61",
+      "steelExpected": "500.64"
+    },
+    {
+      "row": 79,
+      "entry": "SYN-MXDEP-79",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.55",
+      "reviewedDifference": "1.00",
+      "depositExpected": "320.91",
+      "steelExpected": "500.64"
+    },
+    {
+      "row": 80,
+      "entry": "SYN-MXDEP-80",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "821.56",
+      "reviewedDifference": "-1.00",
+      "depositExpected": "320.91",
+      "steelExpected": "500.65"
+    },
+    {
+      "row": 81,
+      "entry": "SYN-MXDEP-81",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "864.52",
+      "reviewedDifference": "0.00",
+      "depositExpected": "363.87",
+      "steelExpected": "500.65"
+    },
+    {
+      "row": 82,
+      "entry": "SYN-MXDEP-82",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "depositExpected": null,
+      "steelExpected": null
+    },
+    {
+      "row": 83,
+      "entry": "SYN-MXDEP-83",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "depositExpected": null,
+      "steelExpected": null
+    },
+    {
+      "row": 84,
+      "entry": "SYN-MXDEP-84",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "depositExpected": null,
+      "steelExpected": null
+    },
+    {
+      "row": 85,
+      "entry": "SYN-MXDEP-85",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "depositExpected": null,
+      "steelExpected": null
+    },
+    {
+      "row": 86,
+      "entry": "SYN-MXDEP-86",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "depositExpected": null,
+      "steelExpected": null
+    },
+    {
+      "row": 87,
+      "entry": "SYN-MXDEP-87",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "depositExpected": null,
+      "steelExpected": null
+    },
+    {
+      "row": 88,
+      "entry": "SYN-MXDEP-88",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "depositExpected": null,
+      "steelExpected": null
+    },
+    {
+      "row": 89,
+      "entry": "SYN-MXDEP-89",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "depositExpected": null,
+      "steelExpected": null
+    },
+    {
+      "row": 90,
+      "entry": "SYN-MXDEP-90",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "depositExpected": null,
+      "steelExpected": null
+    },
+    {
+      "row": 91,
+      "entry": "SYN-MXDEP-91",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "depositExpected": null,
+      "steelExpected": null
+    },
+    {
+      "row": 92,
+      "entry": "SYN-MXDEP-92",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "depositExpected": null,
+      "steelExpected": null
+    },
+    {
+      "row": 93,
+      "entry": "SYN-MXDEP-93",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "depositExpected": null,
+      "steelExpected": null
+    },
+    {
+      "row": 94,
+      "entry": "SYN-MXDEP-94",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "depositExpected": null,
+      "steelExpected": null
+    },
+    {
+      "row": 95,
+      "entry": "SYN-MXDEP-95",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "depositExpected": null,
+      "steelExpected": null
+    },
+    {
+      "row": 96,
+      "entry": "SYN-MXDEP-96",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "depositExpected": null,
+      "steelExpected": null
+    },
+    {
+      "row": 97,
+      "entry": "SYN-MXDEP-97",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "depositExpected": null,
+      "steelExpected": null
+    },
+    {
+      "row": 98,
+      "entry": "SYN-MXDEP-98",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "depositExpected": null,
+      "steelExpected": null
+    },
+    {
+      "row": 99,
+      "entry": "SYN-MXDEP-99",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "depositExpected": null,
+      "steelExpected": null
+    },
+    {
+      "row": 100,
+      "entry": "SYN-MXDEP-100",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "depositExpected": null,
+      "steelExpected": null
+    }
+  ],
+  "decisions": [
+    {
+      "row": 1,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-1-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 2,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-2-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 3,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-3-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 4,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-4-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 5,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-5-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 6,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-6-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 7,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-7-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 8,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-8-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 9,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-9-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 10,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-10-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 11,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-11-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 12,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-12-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 13,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-13-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 14,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-14-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 15,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-15-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 16,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-16-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 17,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-17-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 18,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-18-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 19,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-19-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 20,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-20-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 21,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-21-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 22,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-22-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 23,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-23-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 24,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-24-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 25,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-25-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 26,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-26-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 27,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-27-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 28,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-28-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 29,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-29-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 30,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-30-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 31,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-31-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 32,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-32-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 33,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-33-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 34,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-34-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 35,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-35-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 36,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-36-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 37,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-37-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 38,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-38-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 39,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-39-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 40,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-40-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 41,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-41-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 42,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-42-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 43,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-43-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 44,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-44-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 45,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-45-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 46,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-46-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 47,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-47-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 48,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-48-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 49,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-49-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 50,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-50-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 51,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-51-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 52,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-52-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 53,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-53-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 54,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-54-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 55,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-55-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 56,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-56-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 57,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-57-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 58,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-58-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 59,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-59-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 60,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-60-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 61,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-61-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 62,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-62-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 63,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-63-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 64,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-64-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 65,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-65-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 66,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-66-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 67,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-67-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 68,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-68-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 69,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-69-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 70,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-70-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 71,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-71-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 72,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-72-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 73,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-73-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 74,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-74-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 75,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-75-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 76,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-76-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 77,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-77-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 78,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-78-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 79,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-79-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 80,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-80-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 81,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-81-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 82,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-82-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 83,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-83-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 84,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-84-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 85,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-85-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": false,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 86,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-86-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 87,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-87-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 88,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-88-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 89,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-89-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": false,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 90,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-90-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": false,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 91,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-91-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 92,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-92-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 93,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-93-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 94,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-94-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 95,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-95-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 96,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-96-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 97,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-97-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 98,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-98-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 99,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-99-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": false,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    },
+    {
+      "row": 100,
+      "kind": "confirm_facts",
+      "validFrom": "2024-01-01",
+      "validBefore": "2027-01-01",
+      "evidence": [
+        "SYN-MXDEP-100-SCOPE-PARTY-ENTRY"
+      ],
+      "note": "FICTIONAL evidence identifies the declared order scope, exact exporter, all cases, cash deposit stage, primary steel and ordinary-entry exceptions. No shared legal rule or final assessment is approved.",
+      "facts": {
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "other_232_clear": true,
+        "usmca_qualified": false,
+        "metal_special_claim": true,
+        "content_values_verified": true,
+        "metal_weight_verified": true,
+        "steel_derivative_covered": false,
+        "aluminum_derivative_covered": false,
+        "border_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true
+      }
+    }
+  ],
+  "summary": {
+    "lines": 100,
+    "calculated": 0,
+    "unresolved": 100,
+    "discrepancies": 0,
+    "overpayment": "0.00",
+    "underpayment": "0.00"
+  },
+  "reviewedSummary": {
+    "lines": 100,
+    "calculated": 81,
+    "unresolved": 19,
+    "discrepancies": 54,
+    "overpayment": "27.00",
+    "underpayment": "27.00"
+  },
+  "browserDecision": {
+    "row": 85,
+    "kind": "confirm_facts",
+    "validFrom": "2025-10-01",
+    "validBefore": "2025-10-02",
+    "evidence": [
+      "SYN-MXDEP-85-EXPORTER-RECORD"
+    ],
+    "shipment": {
+      "exporter": "Deacero S.A.P.I. de C.V."
+    },
+    "facts": {
+      "adcvd_party_verified": true,
+      "adcvd_instructions_clear": true,
+      "adcvd_cases_complete": true
+    },
+    "note": "FICTIONAL acceptance record establishes the exact exporter for the declared case and confirms dated cash-deposit instructions and complete cases. Original blank exporter is preserved; no shared law or refund right is approved.",
+    "expected": "821.60",
+    "difference": "1.00",
+    "originalExporter": "",
+    "usedExporter": "Deacero S.A.P.I. de C.V."
+  }
+}

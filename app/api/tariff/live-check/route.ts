@@ -1,7 +1,8 @@
 import { withRequestLimit } from "@/app/api/request-limits";
 import { createRequestClient, getAuthenticatedWorkspace } from "@/lib/supabase/server";
-import { LIVE_MAX_BYTES, parseLiveProducts, runLiveCheck } from "./check";
-import { beginLiveCheckArchive, finishLiveCheckArchive, failLiveCheckArchive } from "@/lib/tariff/business-impact-store";
+import { LIVE_MAX_BYTES, parseLiveProducts } from "./check";
+import { beginLiveCheckArchive, failLiveCheckArchive } from "@/lib/tariff/business-impact-store";
+import { executeArchivedCheck } from "./execute";
 import remedyContract from "@/config/tariff-remedy-contract.json";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -38,10 +39,9 @@ async function handlePOST(request: Request) {
       const send = (event: unknown) => { if (!cancelled) controller.enqueue(encoder.encode(JSON.stringify(event) + "\n")); };
       try {
         send({type:"started",checkId});
-        const result = await runLiveCheck(products, signal, message => send({ type: "progress", message }), sources=>{capturedSources=sources;});
+        const result = await executeArchivedCheck(client, workspace.customerId, checkId, products, signal, message => send({ type: "progress", message }), sources=>{capturedSources=sources;});
         signal.throwIfAborted();
         send({type:"progress",message:"Saving inputs, government evidence and calculation…"});
-        await finishLiveCheckArchive(client,workspace.customerId,checkId,result);
         send({ type: "done", result, checkId, archived:true });
       }
       catch (failure) {

@@ -21,4 +21,11 @@ create policy tenant_insert on public.tariff_monitor_candidates for insert to au
     and exists (select 1 from public.findings f where f.id = finding_id and f.customer_id = tariff_monitor_candidates.customer_id and f.relevance in ('flagged','noted'))
     and exists (select 1 from public.products p where p.id = product_id and p.customer_id = tariff_monitor_candidates.customer_id)
   );
+
+-- Explicit worker Data API access; do not depend on Supabase default grants.
+-- Tenant/browser privileges and RLS policies are defined separately above.
+grant select, insert, update, delete on
+  public.tariff_monitor_candidates
+to service_role;
+
 commit;

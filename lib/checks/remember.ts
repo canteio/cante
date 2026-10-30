@@ -106,6 +106,7 @@ export async function extractMemories(input: {
         `## Already remembered — do not repeat these\n\n${existingList}\n\n` +
         `## The exchange\n\n**User:** ${input.question}\n\n**Assistant:** ${input.answer}\n\n` +
         `Extract any durable new facts about the customer.`,
+      tools: [],
       timeoutMs: 120_000,
     });
 

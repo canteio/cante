@@ -1,0 +1,273 @@
+{
+  "label": "Observed source-quality and date-scope inventory from retained originals on October 27, 2026. Not an expected-rate oracle, human approval or complete historical-coverage claim. No customer data.",
+  "uniqueOriginals": 48,
+  "knownComponentRecords": 14064,
+  "compiledFormulaContracts": 14000,
+  "unresolvedRecords": 64,
+  "issues": [
+    {
+      "year": 2005,
+      "edition": "2005 HTSA Supplement 1 Edition (February 1, 2005)",
+      "legalLine": "91069055",
+      "componentCodes": [
+        "9106905510",
+        "9106905520"
+      ],
+      "kind": "unresolved_original_formula_or_conflict",
+      "annualText": "3.9% on the apparatus",
+      "printedGeneral": "3.9% on the apparatus + 5.3% on the battery"
+    },
+    {
+      "year": 2000,
+      "edition": "2000 HTSA Basic Pub. (February 1, 2000)",
+      "legalLine": "91011940",
+      "componentCodes": [
+        "9101194010",
+        "9101194020",
+        "9101194030",
+        "9101194040"
+      ],
+      "kind": "unresolved_original_formula_or_conflict",
+      "annualText": "",
+      "printedGeneral": "41\u00a2 each + 5% on the case and strap, band bracelet 4.2% on battery"
+    },
+    {
+      "year": 2000,
+      "edition": "2000 HTSA Basic Pub. (February 1, 2000)",
+      "legalLine": "91091140",
+      "componentCodes": [
+        "9109114010",
+        "9109114020",
+        "9109114030"
+      ],
+      "kind": "unresolved_original_formula_or_conflict",
+      "annualText": "",
+      "printedGeneral": "7.5\u00a2 each 3.2% on the movement + 2.6% on the battery"
+    },
+    {
+      "year": 2003,
+      "edition": "2003 HTSA Supplement 1 (February 1, 2003)",
+      "legalLine": "91011940",
+      "componentCodes": [
+        "9101194010",
+        "9101194020",
+        "9101194030",
+        "9101194040"
+      ],
+      "kind": "unresolved_original_formula_or_conflict",
+      "annualText": "41 cents each + 5% on the case and strap, band bracelet 4.2% on battery",
+      "printedGeneral": "41\u00a2 each + 5% on the case and strap, band bracelet 4.2% on battery"
+    },
+    {
+      "year": 2001,
+      "edition": "2001 HTSA Supplement 1 (January 1, 2001) / 2001 HTSA Basic Pub. (February 1, 2001)",
+      "legalLine": "91011940",
+      "componentCodes": [
+        "9101194010",
+        "9101194020",
+        "9101194030",
+        "9101194040"
+      ],
+      "kind": "unresolved_original_formula_or_conflict",
+      "annualText": "",
+      "printedGeneral": "41\u00a2 each + 5% on the case and strap, band bracelet 4.2% on battery"
+    },
+    {
+      "year": 2001,
+      "edition": "2001 HTSA Supplement 1 (January 1, 2001) / 2001 HTSA Basic Pub. (February 1, 2001)",
+      "legalLine": "91091140",
+      "componentCodes": [
+        "9109114010",
+        "9109114020",
+        "9109114030"
+      ],
+      "kind": "unresolved_original_formula_or_conflict",
+      "annualText": "",
+      "printedGeneral": "7.5\u00a2 each 3.2% on the movement + 2.6% on the battery"
+    },
+    {
+      "year": 2000,
+      "edition": "2000 HTSA Supplement 1 (January 1, 2000)",
+      "legalLine": "91011940",
+      "componentCodes": [
+        "9101194010",
+        "9101194020",
+        "9101194030",
+        "9101194040"
+      ],
+      "kind": "unresolved_original_formula_or_conflict",
+      "annualText": "",
+      "printedGeneral": "41\u00a2 each + 5% on the case and strap, band bracelet 4.2% on battery"
+    },
+    {
+      "year": 2000,
+      "edition": "2000 HTSA Supplement 1 (January 1, 2000)",
+      "legalLine": "91091140",
+      "componentCodes": [
+        "9109114010",
+        "9109114020",
+        "9109114030"
+      ],
+      "kind": "unresolved_original_formula_or_conflict",
+      "annualText": "",
+      "printedGeneral": "7.5\u00a2 each 3.2% on the movement + 2.6% on the battery"
+    },
+    {
+      "year": 2002,
+      "edition": "2002 HTSA Basic Pub. (January 1, 2002)",
+      "legalLine": "91011940",
+      "componentCodes": [
+        "9101194010",
+        "9101194020",
+        "9101194030",
+        "9101194040"
+      ],
+      "kind": "unresolved_original_formula_or_conflict",
+      "annualText": "41 cents each + 5% on the case and strap, band or bracelet + 4.2% on battery",
+      "printedGeneral": "41\u00a2 each + 5% on the case and strap, band bracelet 4.2% on battery"
+    },
+    {
+      "year": 2005,
+      "edition": "2005 HTSA Basic Edition (January 1, 2005)",
+      "legalLine": "91069055",
+      "componentCodes": [
+        "9106905510",
+        "9106905520"
+      ],
+      "kind": "unresolved_original_formula_or_conflict",
+      "annualText": "3.9% on the apparatus",
+      "printedGeneral": "3.9% on the apparatus + 5.3% on the battery"
+    },
+    {
+      "year": 2012,
+      "edition": "2012 HTSA Basic Edition (February 2, 2012)",
+      "legalLine": "91091010",
+      "componentCodes": [
+        "9109101010",
+        "9109101020",
+        "9109101030"
+      ],
+      "kind": "no_annual_line_at_publication_date",
+      "annualText": null,
+      "printedGeneral": "3.9% on the movement + 5.3% on the battery"
+    },
+    {
+      "year": 2012,
+      "edition": "2012 HTSA Basic Edition (February 2, 2012)",
+      "legalLine": "91091020",
+      "componentCodes": [
+        "9109102010",
+        "9109102020",
+        "9109102030"
+      ],
+      "kind": "no_annual_line_at_publication_date",
+      "annualText": null,
+      "printedGeneral": "30\u00a2 each + 5.3% on the battery"
+    },
+    {
+      "year": 2012,
+      "edition": "2012 HTSA Basic Edition (February 2, 2012)",
+      "legalLine": "91091030",
+      "componentCodes": [
+        "9109103010",
+        "9109103020",
+        "9109103030"
+      ],
+      "kind": "no_annual_line_at_publication_date",
+      "annualText": null,
+      "printedGeneral": "7.5\u00a2 each + 3.2% on the movement + 2.6% on the battery"
+    },
+    {
+      "year": 2012,
+      "edition": "2012 HTSA Basic Edition (February 2, 2012)",
+      "legalLine": "91091040",
+      "componentCodes": [
+        "9109104010",
+        "9109104020",
+        "9109104030"
+      ],
+      "kind": "no_annual_line_at_publication_date",
+      "annualText": null,
+      "printedGeneral": "22\u00a2 each + 3.2% on the movement + 2.6% on the battery"
+    },
+    {
+      "year": 2012,
+      "edition": "2012 HTSA Basic Edition (February 2, 2012)",
+      "legalLine": "91091050",
+      "componentCodes": [
+        "9109105010",
+        "9109105020",
+        "9109105030"
+      ],
+      "kind": "no_annual_line_at_publication_date",
+      "annualText": null,
+      "printedGeneral": "3.9% on the movement + 5.3% on the battery"
+    },
+    {
+      "year": 2012,
+      "edition": "2012 HTSA Basic Edition (February 2, 2012)",
+      "legalLine": "91091060",
+      "componentCodes": [
+        "9109106010",
+        "9109106020",
+        "9109106030"
+      ],
+      "kind": "no_annual_line_at_publication_date",
+      "annualText": null,
+      "printedGeneral": "20\u00a2 each + 3.5% on the battery"
+    },
+    {
+      "year": 2012,
+      "edition": "2012 HTSA Basic Edition (February 2, 2012)",
+      "legalLine": "91091070",
+      "componentCodes": [
+        "9109107010",
+        "9109107020",
+        "9109107030"
+      ],
+      "kind": "no_annual_line_at_publication_date",
+      "annualText": null,
+      "printedGeneral": "12\u00a2 each + 5.1% on the movement + 4.2% on the battery"
+    },
+    {
+      "year": 2012,
+      "edition": "2012 HTSA Basic Edition (February 2, 2012)",
+      "legalLine": "91091080",
+      "componentCodes": [
+        "9109108010",
+        "9109108020",
+        "9109108030"
+      ],
+      "kind": "no_annual_line_at_publication_date",
+      "annualText": null,
+      "printedGeneral": "30\u00a2 each + 4.3% on the movement + 3.5% on the battery"
+    },
+    {
+      "year": 2003,
+      "edition": "2003 HTSA Basic Edition (January 1, 2003)",
+      "legalLine": "91011940",
+      "componentCodes": [
+        "9101194010",
+        "9101194020",
+        "9101194030",
+        "9101194040"
+      ],
+      "kind": "unresolved_original_formula_or_conflict",
+      "annualText": "41 cents each + 5% on the case and strap, band bracelet 4.2% on battery",
+      "printedGeneral": "41\u00a2 each + 5% on the case and strap, band bracelet 4.2% on battery"
+    },
+    {
+      "year": 2009,
+      "edition": "2009 HTSA Supplement 1 (Rev. 1) Edition (October 1, 2009)",
+      "legalLine": "91012940",
+      "componentCodes": [
+        "9101294010",
+        "9101294020",
+        "9101294030"
+      ],
+      "kind": "unresolved_original_formula_or_conflict",
+      "annualText": "$1.92 each + 5% on the case and strap, band or bracelet",
+      "printedGeneral": "$1.92 each + 5% on the case and the case + strap, band or bracelet"
+    }
+  ]
+}

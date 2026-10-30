@@ -1,0 +1,942 @@
+{
+  "label": "FICTIONAL declarations, evidence decisions and expected cents. Actual retained printed government rates; hand arithmetic only. No customer data, verified legal origin or refund proof.",
+  "engineVersion": "historical-audit-v37",
+  "summary": {
+    "lines": 100,
+    "calculated": 89,
+    "unresolved": 11,
+    "discrepancies": 62,
+    "overpayment": "262.50",
+    "underpayment": "2071.00"
+  },
+  "reviewedSummary": {
+    "lines": 100,
+    "calculated": 90,
+    "unresolved": 10,
+    "discrepancies": 63,
+    "overpayment": "272.50",
+    "underpayment": "2071.00"
+  },
+  "browserSummary": {
+    "lines": 100,
+    "calculated": 91,
+    "unresolved": 9,
+    "discrepancies": 64,
+    "overpayment": "272.50",
+    "underpayment": "2371.00"
+  },
+  "decisions": [
+    {
+      "row": 99,
+      "kind": "confirm_facts",
+      "origin": "DE",
+      "validFrom": "2014-06-15",
+      "validBefore": "2014-06-16",
+      "facts": {
+        "origin_verified": true
+      },
+      "evidence": [
+        "SYNTHETIC-COLUMN2-99-ORIGIN"
+      ],
+      "note": "FICTIONAL dated DE manufacturing and origin analysis, not supplier-location inference or global legal approval."
+    }
+  ],
+  "rows": [
+    {
+      "row": 1,
+      "entry": "SYNTHETIC-COLUMN2-1",
+      "initialExpected": "350.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 2,
+      "entry": "SYNTHETIC-COLUMN2-2",
+      "initialExpected": "350.00",
+      "initialDifference": "10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "row": 3,
+      "entry": "SYNTHETIC-COLUMN2-3",
+      "initialExpected": "350.00",
+      "initialDifference": "-10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "row": 4,
+      "entry": "SYNTHETIC-COLUMN2-4",
+      "initialExpected": "350.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 5,
+      "entry": "SYNTHETIC-COLUMN2-5",
+      "initialExpected": "350.00",
+      "initialDifference": "10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "row": 6,
+      "entry": "SYNTHETIC-COLUMN2-6",
+      "initialExpected": "350.00",
+      "initialDifference": "-10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "row": 7,
+      "entry": "SYNTHETIC-COLUMN2-7",
+      "initialExpected": "350.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 8,
+      "entry": "SYNTHETIC-COLUMN2-8",
+      "initialExpected": "350.00",
+      "initialDifference": "10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "row": 9,
+      "entry": "SYNTHETIC-COLUMN2-9",
+      "initialExpected": "350.00",
+      "initialDifference": "-10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "row": 10,
+      "entry": "SYNTHETIC-COLUMN2-10",
+      "initialExpected": "350.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 11,
+      "entry": "SYNTHETIC-COLUMN2-11",
+      "initialExpected": "350.00",
+      "initialDifference": "10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "row": 12,
+      "entry": "SYNTHETIC-COLUMN2-12",
+      "initialExpected": "350.00",
+      "initialDifference": "-10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "row": 13,
+      "entry": "SYNTHETIC-COLUMN2-13",
+      "initialExpected": "350.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 14,
+      "entry": "SYNTHETIC-COLUMN2-14",
+      "initialExpected": "350.00",
+      "initialDifference": "10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "row": 15,
+      "entry": "SYNTHETIC-COLUMN2-15",
+      "initialExpected": "350.00",
+      "initialDifference": "-10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "row": 16,
+      "entry": "SYNTHETIC-COLUMN2-16",
+      "initialExpected": "350.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 17,
+      "entry": "SYNTHETIC-COLUMN2-17",
+      "initialExpected": "350.00",
+      "initialDifference": "10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "row": 18,
+      "entry": "SYNTHETIC-COLUMN2-18",
+      "initialExpected": "350.00",
+      "initialDifference": "-10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "row": 19,
+      "entry": "SYNTHETIC-COLUMN2-19",
+      "initialExpected": "350.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 20,
+      "entry": "SYNTHETIC-COLUMN2-20",
+      "initialExpected": "350.00",
+      "initialDifference": "10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "row": 21,
+      "entry": "SYNTHETIC-COLUMN2-21",
+      "initialExpected": "350.00",
+      "initialDifference": "-10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "row": 22,
+      "entry": "SYNTHETIC-COLUMN2-22",
+      "initialExpected": "350.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 23,
+      "entry": "SYNTHETIC-COLUMN2-23",
+      "initialExpected": "350.00",
+      "initialDifference": "10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "row": 24,
+      "entry": "SYNTHETIC-COLUMN2-24",
+      "initialExpected": "350.00",
+      "initialDifference": "-10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "row": 25,
+      "entry": "SYNTHETIC-COLUMN2-25",
+      "initialExpected": "350.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 26,
+      "entry": "SYNTHETIC-COLUMN2-26",
+      "initialExpected": "350.00",
+      "initialDifference": "10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "row": 27,
+      "entry": "SYNTHETIC-COLUMN2-27",
+      "initialExpected": "350.00",
+      "initialDifference": "-10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "row": 28,
+      "entry": "SYNTHETIC-COLUMN2-28",
+      "initialExpected": "350.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 29,
+      "entry": "SYNTHETIC-COLUMN2-29",
+      "initialExpected": "350.00",
+      "initialDifference": "10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "row": 30,
+      "entry": "SYNTHETIC-COLUMN2-30",
+      "initialExpected": "350.00",
+      "initialDifference": "-10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "row": 31,
+      "entry": "SYNTHETIC-COLUMN2-31",
+      "initialExpected": "350.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 32,
+      "entry": "SYNTHETIC-COLUMN2-32",
+      "initialExpected": "350.00",
+      "initialDifference": "10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "row": 33,
+      "entry": "SYNTHETIC-COLUMN2-33",
+      "initialExpected": "350.00",
+      "initialDifference": "-10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "row": 34,
+      "entry": "SYNTHETIC-COLUMN2-34",
+      "initialExpected": "350.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 35,
+      "entry": "SYNTHETIC-COLUMN2-35",
+      "initialExpected": "350.00",
+      "initialDifference": "10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "row": 36,
+      "entry": "SYNTHETIC-COLUMN2-36",
+      "initialExpected": "350.00",
+      "initialDifference": "-10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "row": 37,
+      "entry": "SYNTHETIC-COLUMN2-37",
+      "initialExpected": "350.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 38,
+      "entry": "SYNTHETIC-COLUMN2-38",
+      "initialExpected": "350.00",
+      "initialDifference": "10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "row": 39,
+      "entry": "SYNTHETIC-COLUMN2-39",
+      "initialExpected": "350.00",
+      "initialDifference": "-10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "row": 40,
+      "entry": "SYNTHETIC-COLUMN2-40",
+      "initialExpected": "350.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 41,
+      "entry": "SYNTHETIC-COLUMN2-41",
+      "initialExpected": "350.00",
+      "initialDifference": "10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "row": 42,
+      "entry": "SYNTHETIC-COLUMN2-42",
+      "initialExpected": "350.00",
+      "initialDifference": "-10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "row": 43,
+      "entry": "SYNTHETIC-COLUMN2-43",
+      "initialExpected": "350.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 44,
+      "entry": "SYNTHETIC-COLUMN2-44",
+      "initialExpected": "350.00",
+      "initialDifference": "10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "row": 45,
+      "entry": "SYNTHETIC-COLUMN2-45",
+      "initialExpected": "350.00",
+      "initialDifference": "-10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "row": 46,
+      "entry": "SYNTHETIC-COLUMN2-46",
+      "initialExpected": "350.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 47,
+      "entry": "SYNTHETIC-COLUMN2-47",
+      "initialExpected": "350.00",
+      "initialDifference": "10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "row": 48,
+      "entry": "SYNTHETIC-COLUMN2-48",
+      "initialExpected": "350.00",
+      "initialDifference": "-10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "row": 49,
+      "entry": "SYNTHETIC-COLUMN2-49",
+      "initialExpected": "350.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 50,
+      "entry": "SYNTHETIC-COLUMN2-50",
+      "initialExpected": "350.00",
+      "initialDifference": "10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "row": 51,
+      "entry": "SYNTHETIC-COLUMN2-51",
+      "initialExpected": "350.00",
+      "initialDifference": "-10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "row": 52,
+      "entry": "SYNTHETIC-COLUMN2-52",
+      "initialExpected": "350.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 53,
+      "entry": "SYNTHETIC-COLUMN2-53",
+      "initialExpected": "350.00",
+      "initialDifference": "10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "row": 54,
+      "entry": "SYNTHETIC-COLUMN2-54",
+      "initialExpected": "350.00",
+      "initialDifference": "-10.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "row": 55,
+      "entry": "SYNTHETIC-COLUMN2-55",
+      "initialExpected": "0.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00",
+      "equation": "Published Free"
+    },
+    {
+      "row": 56,
+      "entry": "SYNTHETIC-COLUMN2-56",
+      "initialExpected": "333.33",
+      "initialDifference": "10.00",
+      "reviewedExpected": "333.33",
+      "reviewedDifference": "10.00",
+      "equation": "1000 \u00d7 (33 + 1/3)/100, rounded once"
+    },
+    {
+      "row": 57,
+      "entry": "SYNTHETIC-COLUMN2-57",
+      "initialExpected": "4.30",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "4.30",
+      "reviewedDifference": "-1.00",
+      "equation": "100 square metres \u00d7 USD 0.043"
+    },
+    {
+      "row": 58,
+      "entry": "SYNTHETIC-COLUMN2-58",
+      "initialExpected": "42.50",
+      "initialDifference": "0.00",
+      "reviewedExpected": "42.50",
+      "reviewedDifference": "0.00",
+      "equation": "25 cubic metres \u00d7 USD 1.70"
+    },
+    {
+      "row": 59,
+      "entry": "SYNTHETIC-COLUMN2-59",
+      "initialExpected": "400.00",
+      "initialDifference": "10.00",
+      "reviewedExpected": "400.00",
+      "reviewedDifference": "10.00",
+      "equation": "1000 \u00d7 40%"
+    },
+    {
+      "row": 60,
+      "entry": "SYNTHETIC-COLUMN2-60",
+      "initialExpected": "33.00",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "33.00",
+      "reviewedDifference": "-1.00",
+      "equation": "100 litres \u00d7 USD 0.33; excise excluded from customs-duty comparison"
+    },
+    {
+      "row": 61,
+      "entry": "SYNTHETIC-COLUMN2-61",
+      "initialExpected": "550.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.00",
+      "reviewedDifference": "0.00",
+      "equation": "1000 \u00d7 55%"
+    },
+    {
+      "row": 62,
+      "entry": "SYNTHETIC-COLUMN2-62",
+      "initialExpected": "1333.85",
+      "initialDifference": "10.00",
+      "reviewedExpected": "1333.85",
+      "reviewedDifference": "10.00",
+      "equation": "1000 \u00d7 133% + 25 kg \u00d7 USD 0.154"
+    },
+    {
+      "row": 63,
+      "entry": "SYNTHETIC-COLUMN2-63",
+      "initialExpected": "250.00",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "250.00",
+      "reviewedDifference": "-1.00",
+      "equation": "1000 \u00d7 25%"
+    },
+    {
+      "row": 64,
+      "entry": "SYNTHETIC-COLUMN2-64",
+      "initialExpected": "0.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00",
+      "equation": "Published Free"
+    },
+    {
+      "row": 65,
+      "entry": "SYNTHETIC-COLUMN2-65",
+      "initialExpected": "333.33",
+      "initialDifference": "10.00",
+      "reviewedExpected": "333.33",
+      "reviewedDifference": "10.00",
+      "equation": "1000 \u00d7 (33 + 1/3)/100, rounded once"
+    },
+    {
+      "row": 66,
+      "entry": "SYNTHETIC-COLUMN2-66",
+      "initialExpected": "4.30",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "4.30",
+      "reviewedDifference": "-1.00",
+      "equation": "100 square metres \u00d7 USD 0.043"
+    },
+    {
+      "row": 67,
+      "entry": "SYNTHETIC-COLUMN2-67",
+      "initialExpected": "42.50",
+      "initialDifference": "0.00",
+      "reviewedExpected": "42.50",
+      "reviewedDifference": "0.00",
+      "equation": "25 cubic metres \u00d7 USD 1.70"
+    },
+    {
+      "row": 68,
+      "entry": "SYNTHETIC-COLUMN2-68",
+      "initialExpected": "400.00",
+      "initialDifference": "10.00",
+      "reviewedExpected": "400.00",
+      "reviewedDifference": "10.00",
+      "equation": "1000 \u00d7 40%"
+    },
+    {
+      "row": 69,
+      "entry": "SYNTHETIC-COLUMN2-69",
+      "initialExpected": "33.00",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "33.00",
+      "reviewedDifference": "-1.00",
+      "equation": "100 litres \u00d7 USD 0.33; excise excluded from customs-duty comparison"
+    },
+    {
+      "row": 70,
+      "entry": "SYNTHETIC-COLUMN2-70",
+      "initialExpected": "550.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.00",
+      "reviewedDifference": "0.00",
+      "equation": "1000 \u00d7 55%"
+    },
+    {
+      "row": 71,
+      "entry": "SYNTHETIC-COLUMN2-71",
+      "initialExpected": "1333.85",
+      "initialDifference": "10.00",
+      "reviewedExpected": "1333.85",
+      "reviewedDifference": "10.00",
+      "equation": "1000 \u00d7 133% + 25 kg \u00d7 USD 0.154"
+    },
+    {
+      "row": 72,
+      "entry": "SYNTHETIC-COLUMN2-72",
+      "initialExpected": "250.00",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "250.00",
+      "reviewedDifference": "-1.00",
+      "equation": "1000 \u00d7 25%"
+    },
+    {
+      "row": 73,
+      "entry": "SYNTHETIC-COLUMN2-WATCH",
+      "initialExpected": "225.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "225.00",
+      "reviewedDifference": "5.00"
+    },
+    {
+      "row": 74,
+      "entry": "SYNTHETIC-COLUMN2-WATCH",
+      "initialExpected": "90.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "90.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 75,
+      "entry": "SYNTHETIC-COLUMN2-WATCH",
+      "initialExpected": "120.00",
+      "initialDifference": "-20.00",
+      "reviewedExpected": "120.00",
+      "reviewedDifference": "-20.00"
+    },
+    {
+      "row": 76,
+      "entry": "SYNTHETIC-COLUMN2-WATCH",
+      "initialExpected": "17.50",
+      "initialDifference": "2.50",
+      "reviewedExpected": "17.50",
+      "reviewedDifference": "2.50"
+    },
+    {
+      "row": 77,
+      "entry": "SYNTHETIC-COLUMN2-77",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 78,
+      "entry": "SYNTHETIC-COLUMN2-78",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 79,
+      "entry": "SYNTHETIC-COLUMN2-79",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 80,
+      "entry": "SYNTHETIC-COLUMN2-80",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 81,
+      "entry": "SYNTHETIC-COLUMN2-81",
+      "initialExpected": "350.00",
+      "initialDifference": "-310.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-310.00",
+      "countryChange": {
+        "effectiveOn": "2001-12-10",
+        "documentNumber": "01-30961",
+        "publicationDate": "2001-12-17",
+        "column": "column2"
+      }
+    },
+    {
+      "row": 82,
+      "entry": "SYNTHETIC-COLUMN2-82",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00",
+      "countryChange": {
+        "effectiveOn": "2001-12-10",
+        "documentNumber": "01-30961",
+        "publicationDate": "2001-12-17",
+        "column": "column1"
+      }
+    },
+    {
+      "row": 83,
+      "entry": "SYNTHETIC-COLUMN2-83",
+      "initialExpected": "350.00",
+      "initialDifference": "-315.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-315.00",
+      "countryChange": {
+        "effectiveOn": "2002-06-06",
+        "documentNumber": "02-11487",
+        "publicationDate": "2002-05-07",
+        "column": "column2"
+      }
+    },
+    {
+      "row": 84,
+      "entry": "SYNTHETIC-COLUMN2-84",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00",
+      "countryChange": {
+        "effectiveOn": "2002-06-06",
+        "documentNumber": "02-11487",
+        "publicationDate": "2002-05-07",
+        "column": "column1"
+      }
+    },
+    {
+      "row": 85,
+      "entry": "SYNTHETIC-COLUMN2-85",
+      "initialExpected": "350.00",
+      "initialDifference": "-305.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-305.00",
+      "countryChange": {
+        "effectiveOn": "2003-12-04",
+        "documentNumber": "03-28438",
+        "publicationDate": "2003-11-13",
+        "column": "column2"
+      }
+    },
+    {
+      "row": 86,
+      "entry": "SYNTHETIC-COLUMN2-86",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00",
+      "countryChange": {
+        "effectiveOn": "2003-12-04",
+        "documentNumber": "03-28438",
+        "publicationDate": "2003-11-13",
+        "column": "column1"
+      }
+    },
+    {
+      "row": 87,
+      "entry": "SYNTHETIC-COLUMN2-87",
+      "initialExpected": "350.00",
+      "initialDifference": "-310.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-310.00",
+      "countryChange": {
+        "effectiveOn": "2003-12-04",
+        "documentNumber": "03-28438",
+        "publicationDate": "2003-11-13",
+        "column": "column2"
+      }
+    },
+    {
+      "row": 88,
+      "entry": "SYNTHETIC-COLUMN2-88",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00",
+      "countryChange": {
+        "effectiveOn": "2003-12-04",
+        "documentNumber": "03-28438",
+        "publicationDate": "2003-11-13",
+        "column": "column1"
+      }
+    },
+    {
+      "row": 89,
+      "entry": "SYNTHETIC-COLUMN2-89",
+      "initialExpected": "350.00",
+      "initialDifference": "-315.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-315.00",
+      "countryChange": {
+        "effectiveOn": "2005-02-04",
+        "documentNumber": "05-2723",
+        "publicationDate": "2005-02-11",
+        "column": "column2"
+      }
+    },
+    {
+      "row": 90,
+      "entry": "SYNTHETIC-COLUMN2-90",
+      "initialExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "0.00",
+      "countryChange": {
+        "effectiveOn": "2005-02-04",
+        "documentNumber": "05-2723",
+        "publicationDate": "2005-02-11",
+        "column": "column1"
+      }
+    },
+    {
+      "row": 91,
+      "entry": "SYNTHETIC-COLUMN2-91",
+      "initialExpected": "40.00",
+      "initialDifference": "5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "5.00",
+      "countryChange": {
+        "effectiveOn": "2001-12-10",
+        "documentNumber": "01-30961",
+        "publicationDate": "2001-12-17",
+        "column": "column1"
+      }
+    },
+    {
+      "row": 92,
+      "entry": "SYNTHETIC-COLUMN2-92",
+      "initialExpected": "40.00",
+      "initialDifference": "-5.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "-5.00",
+      "countryChange": {
+        "effectiveOn": "2005-02-04",
+        "documentNumber": "05-2723",
+        "publicationDate": "2005-02-11",
+        "column": "column1"
+      }
+    },
+    {
+      "row": 93,
+      "entry": "SYNTHETIC-COLUMN2-93",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 94,
+      "entry": "SYNTHETIC-COLUMN2-94",
+      "initialExpected": "350.00",
+      "initialDifference": "-300.00",
+      "reviewedExpected": "350.00",
+      "reviewedDifference": "-300.00"
+    },
+    {
+      "row": 95,
+      "entry": "SYNTHETIC-COLUMN2-95",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 96,
+      "entry": "SYNTHETIC-COLUMN2-96",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 97,
+      "entry": "SYNTHETIC-COLUMN2-97",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 98,
+      "entry": "SYNTHETIC-COLUMN2-98",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 99,
+      "entry": "SYNTHETIC-COLUMN2-99",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "row": 100,
+      "entry": "SYNTHETIC-COLUMN2-100",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    }
+  ],
+  "upgradeProbe": {
+    "row": 55,
+    "oldVersion": "historical-audit-v23",
+    "oldExpected": null,
+    "newExpected": "0.00"
+  }
+}

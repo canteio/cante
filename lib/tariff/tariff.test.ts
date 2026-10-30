@@ -46,7 +46,7 @@ test("ad valorem duty computes and shows its arithmetic", () => {
   const rate = parseDutyRate("8.8%");
   const duty = computeDuty(rate, { value: 400_000 });
   assert.equal(duty.amount, 35_200);
-  assert.match(duty.basis.join(" "), /8\.80% × USD 400,000/);
+  assert.match(duty.basis.join(" "), /8\.8% × USD 400,000/);
 });
 
 test("Free computes to zero, and zero here means zero", () => {
@@ -82,5 +82,5 @@ test("a mismatched quantity unit does not silently apply", () => {
 test("an ad valorem rate with no shipment value cannot be computed", () => {
   const duty = computeDuty(parseDutyRate("8.8%"), { value: null });
   assert.equal(duty.amount, null);
-  assert.match(duty.basis.join(" "), /no shipment value/);
+  assert.match(duty.basis.join(" "), /no valid shipment value/);
 });

@@ -1,3 +1,5 @@
+import { importWorkspaceProducts, parseWorkspaceUpload } from "@/app/api/tariff/workspace-data";
+import { createRequestClient } from "@/lib/supabase/server";
 import { withRequestLimit } from "@/app/api/request-limits";
 import { resolveCustomerId } from "@/lib/db/queries";
 import {
@@ -100,8 +102,15 @@ async function handlePOST(request: Request) {
   }
 
   if (typeof payload.csv === "string") {
+    if (/annual_customs_value_usd|unit_customs_value_usd|entry_id|input_basis|standard_commercial/.test(payload.csv.split("\n")[0])) {
+      try {parseWorkspaceUpload(payload.csv);} catch(error){return Response.json({error:error instanceof Error?error.message:"Invalid tariff facts."},{status:400});}
+    }
     const summary =
       await importProductsCsv(customerId, payload.csv);
+    if (/annual_customs_value_usd|unit_customs_value_usd|entry_id|input_basis|standard_commercial/.test(payload.csv.split("\n")[0])) {
+      try { await importWorkspaceProducts(await createRequestClient(), customerId, payload.csv); }
+      catch(error) { return Response.json({error:error instanceof Error ? error.message : "Tariff facts could not be saved.",summary},{status:400}); }
+    }
     return Response.json({ summary });
   }
 

@@ -1,0 +1,1719 @@
+{
+  "label": "Fictional declarations and review decisions. Real dated official rates, independent hand arithmetic. Not legal accuracy or refund proof.",
+  "formulas": {
+    "motor": "1000 * (4% + 25%) = 290; qualified 301 exclusion: 40",
+    "pulley": "1000 * (2.8% + 25%) = 278; qualified 301 exclusion: 28",
+    "steel": "1000 * (0% + 7.5% + 25%) = 325",
+    "aluminum": "1000 * (1.5% + 7.5% + 10%) = 190; requires non-Russian smelt/cast evidence"
+  },
+  "summary": {
+    "lines": 120,
+    "calculated": 40,
+    "unresolved": 80,
+    "discrepancies": 20,
+    "overpayment": "100.00",
+    "underpayment": "2500.00"
+  },
+  "reviewedSummary": {
+    "lines": 120,
+    "calculated": 80,
+    "unresolved": 40,
+    "discrepancies": 70,
+    "overpayment": "10100.00",
+    "underpayment": "3500.00"
+  },
+  "decisions": [
+    {
+      "row": 11,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-011"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(20)"
+    },
+    {
+      "row": 12,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-012"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(20)"
+    },
+    {
+      "row": 13,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-013"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(20)"
+    },
+    {
+      "row": 14,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-014"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(20)"
+    },
+    {
+      "row": 15,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-015"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(20)"
+    },
+    {
+      "row": 16,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-016"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(20)"
+    },
+    {
+      "row": 17,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-017"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(20)"
+    },
+    {
+      "row": 18,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-018"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(20)"
+    },
+    {
+      "row": 19,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-019"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(20)"
+    },
+    {
+      "row": 20,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-020"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(20)"
+    },
+    {
+      "row": 21,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-021"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(20)"
+    },
+    {
+      "row": 22,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-022"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(20)"
+    },
+    {
+      "row": 23,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-023"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(20)"
+    },
+    {
+      "row": 24,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-024"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(20)"
+    },
+    {
+      "row": 25,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-025"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(20)"
+    },
+    {
+      "row": 26,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-026"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(20)"
+    },
+    {
+      "row": 27,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-027"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(20)"
+    },
+    {
+      "row": 28,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-028"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(20)"
+    },
+    {
+      "row": 29,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-029"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(20)"
+    },
+    {
+      "row": 30,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-030"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(20)"
+    },
+    {
+      "row": 31,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-031"
+      ],
+      "validFrom": "2024-06-20",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)"
+    },
+    {
+      "row": 32,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-032"
+      ],
+      "validFrom": "2024-06-20",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)"
+    },
+    {
+      "row": 33,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-033"
+      ],
+      "validFrom": "2024-06-20",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)"
+    },
+    {
+      "row": 34,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-034"
+      ],
+      "validFrom": "2024-06-20",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)"
+    },
+    {
+      "row": 35,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-035"
+      ],
+      "validFrom": "2024-06-20",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)"
+    },
+    {
+      "row": 36,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-036"
+      ],
+      "validFrom": "2024-06-20",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)"
+    },
+    {
+      "row": 37,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-037"
+      ],
+      "validFrom": "2024-06-20",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)"
+    },
+    {
+      "row": 38,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-038"
+      ],
+      "validFrom": "2024-06-20",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)"
+    },
+    {
+      "row": 39,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-039"
+      ],
+      "validFrom": "2024-06-20",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)"
+    },
+    {
+      "row": 40,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-040"
+      ],
+      "validFrom": "2024-06-20",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)"
+    },
+    {
+      "row": 61,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-061"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(i)(3)"
+    },
+    {
+      "row": 62,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-062"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(i)(3)"
+    },
+    {
+      "row": 63,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-063"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(i)(3)"
+    },
+    {
+      "row": 64,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-064"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(i)(3)"
+    },
+    {
+      "row": 65,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-065"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(i)(3)"
+    },
+    {
+      "row": 66,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-066"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(i)(3)"
+    },
+    {
+      "row": 67,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-067"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(i)(3)"
+    },
+    {
+      "row": 68,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-068"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(i)(3)"
+    },
+    {
+      "row": 69,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-069"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(i)(3)"
+    },
+    {
+      "row": 70,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-070"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "exclusion_qualified": true
+      },
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(i)(3)"
+    },
+    {
+      "row": 81,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-081"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "russian_aluminum_clear": true
+      }
+    },
+    {
+      "row": 82,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-082"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "russian_aluminum_clear": true
+      }
+    },
+    {
+      "row": 83,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-083"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "russian_aluminum_clear": true
+      }
+    },
+    {
+      "row": 84,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-084"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "russian_aluminum_clear": true
+      }
+    },
+    {
+      "row": 85,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-085"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "russian_aluminum_clear": true
+      }
+    },
+    {
+      "row": 86,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-086"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "russian_aluminum_clear": true
+      }
+    },
+    {
+      "row": 87,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-087"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "russian_aluminum_clear": true
+      }
+    },
+    {
+      "row": 88,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-088"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "russian_aluminum_clear": true
+      }
+    },
+    {
+      "row": 89,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-089"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "russian_aluminum_clear": true
+      }
+    },
+    {
+      "row": 90,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC product specification and dated qualification decision; functionality test only.",
+      "evidence": [
+        "SYNTHETIC-DOC-090"
+      ],
+      "validFrom": "2024-02-15",
+      "validBefore": "2024-07-01",
+      "facts": {
+        "russian_aluminum_clear": true
+      }
+    }
+  ],
+  "rows": [
+    {
+      "entry": "SYNTHETIC-C99-001",
+      "scenario": "motor-ordinary",
+      "expected": "290.00",
+      "difference": "10.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-002",
+      "scenario": "motor-ordinary",
+      "expected": "290.00",
+      "difference": "10.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-003",
+      "scenario": "motor-ordinary",
+      "expected": "290.00",
+      "difference": "10.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-004",
+      "scenario": "motor-ordinary",
+      "expected": "290.00",
+      "difference": "10.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-005",
+      "scenario": "motor-ordinary",
+      "expected": "290.00",
+      "difference": "10.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-006",
+      "scenario": "motor-ordinary",
+      "expected": "290.00",
+      "difference": "10.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-007",
+      "scenario": "motor-ordinary",
+      "expected": "290.00",
+      "difference": "10.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-008",
+      "scenario": "motor-ordinary",
+      "expected": "290.00",
+      "difference": "10.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-009",
+      "scenario": "motor-ordinary",
+      "expected": "290.00",
+      "difference": "10.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-010",
+      "scenario": "motor-ordinary",
+      "expected": "290.00",
+      "difference": "10.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-011",
+      "scenario": "motor-qualified-old",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-012",
+      "scenario": "motor-qualified-old",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-013",
+      "scenario": "motor-qualified-old",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-014",
+      "scenario": "motor-qualified-old",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-015",
+      "scenario": "motor-qualified-old",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-016",
+      "scenario": "motor-qualified-old",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-017",
+      "scenario": "motor-qualified-old",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-018",
+      "scenario": "motor-qualified-old",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-019",
+      "scenario": "motor-qualified-old",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-020",
+      "scenario": "motor-qualified-old",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-021",
+      "scenario": "motor-unclaimed",
+      "expected": "290.00",
+      "difference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-022",
+      "scenario": "motor-unclaimed",
+      "expected": "290.00",
+      "difference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-023",
+      "scenario": "motor-unclaimed",
+      "expected": "290.00",
+      "difference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-024",
+      "scenario": "motor-unclaimed",
+      "expected": "290.00",
+      "difference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-025",
+      "scenario": "motor-unclaimed",
+      "expected": "290.00",
+      "difference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-026",
+      "scenario": "motor-unclaimed",
+      "expected": "290.00",
+      "difference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-027",
+      "scenario": "motor-unclaimed",
+      "expected": "290.00",
+      "difference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-028",
+      "scenario": "motor-unclaimed",
+      "expected": "290.00",
+      "difference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-029",
+      "scenario": "motor-unclaimed",
+      "expected": "290.00",
+      "difference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-030",
+      "scenario": "motor-unclaimed",
+      "expected": "290.00",
+      "difference": "0.00",
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-031",
+      "scenario": "motor-qualified-new",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-032",
+      "scenario": "motor-qualified-new",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-033",
+      "scenario": "motor-qualified-new",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-034",
+      "scenario": "motor-qualified-new",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-035",
+      "scenario": "motor-qualified-new",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-036",
+      "scenario": "motor-qualified-new",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-037",
+      "scenario": "motor-qualified-new",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-038",
+      "scenario": "motor-qualified-new",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-039",
+      "scenario": "motor-qualified-new",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-040",
+      "scenario": "motor-qualified-new",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "40.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-041",
+      "scenario": "motor-expired",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-042",
+      "scenario": "motor-expired",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-043",
+      "scenario": "motor-expired",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-044",
+      "scenario": "motor-expired",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-045",
+      "scenario": "motor-expired",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-046",
+      "scenario": "motor-expired",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-047",
+      "scenario": "motor-expired",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-048",
+      "scenario": "motor-expired",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-049",
+      "scenario": "motor-expired",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-050",
+      "scenario": "motor-expired",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-051",
+      "scenario": "unknown-heading",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-052",
+      "scenario": "unknown-heading",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-053",
+      "scenario": "unknown-heading",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-054",
+      "scenario": "unknown-heading",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-055",
+      "scenario": "unknown-heading",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-056",
+      "scenario": "unknown-heading",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-057",
+      "scenario": "unknown-heading",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-058",
+      "scenario": "unknown-heading",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-059",
+      "scenario": "unknown-heading",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-060",
+      "scenario": "unknown-heading",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-061",
+      "scenario": "pulley-qualified",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "28.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-062",
+      "scenario": "pulley-qualified",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "28.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-063",
+      "scenario": "pulley-qualified",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "28.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-064",
+      "scenario": "pulley-qualified",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "28.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-065",
+      "scenario": "pulley-qualified",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "28.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-066",
+      "scenario": "pulley-qualified",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "28.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-067",
+      "scenario": "pulley-qualified",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "28.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-068",
+      "scenario": "pulley-qualified",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "28.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-069",
+      "scenario": "pulley-qualified",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "28.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-070",
+      "scenario": "pulley-qualified",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "28.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-071",
+      "scenario": "steel-stacking",
+      "expected": "325.00",
+      "difference": "-250.00",
+      "reviewedExpected": "325.00",
+      "reviewedDifference": "-250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-072",
+      "scenario": "steel-stacking",
+      "expected": "325.00",
+      "difference": "-250.00",
+      "reviewedExpected": "325.00",
+      "reviewedDifference": "-250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-073",
+      "scenario": "steel-stacking",
+      "expected": "325.00",
+      "difference": "-250.00",
+      "reviewedExpected": "325.00",
+      "reviewedDifference": "-250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-074",
+      "scenario": "steel-stacking",
+      "expected": "325.00",
+      "difference": "-250.00",
+      "reviewedExpected": "325.00",
+      "reviewedDifference": "-250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-075",
+      "scenario": "steel-stacking",
+      "expected": "325.00",
+      "difference": "-250.00",
+      "reviewedExpected": "325.00",
+      "reviewedDifference": "-250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-076",
+      "scenario": "steel-stacking",
+      "expected": "325.00",
+      "difference": "-250.00",
+      "reviewedExpected": "325.00",
+      "reviewedDifference": "-250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-077",
+      "scenario": "steel-stacking",
+      "expected": "325.00",
+      "difference": "-250.00",
+      "reviewedExpected": "325.00",
+      "reviewedDifference": "-250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-078",
+      "scenario": "steel-stacking",
+      "expected": "325.00",
+      "difference": "-250.00",
+      "reviewedExpected": "325.00",
+      "reviewedDifference": "-250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-079",
+      "scenario": "steel-stacking",
+      "expected": "325.00",
+      "difference": "-250.00",
+      "reviewedExpected": "325.00",
+      "reviewedDifference": "-250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-080",
+      "scenario": "steel-stacking",
+      "expected": "325.00",
+      "difference": "-250.00",
+      "reviewedExpected": "325.00",
+      "reviewedDifference": "-250.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-081",
+      "scenario": "aluminum-reviewed",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "190.00",
+      "reviewedDifference": "-100.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-082",
+      "scenario": "aluminum-reviewed",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "190.00",
+      "reviewedDifference": "-100.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-083",
+      "scenario": "aluminum-reviewed",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "190.00",
+      "reviewedDifference": "-100.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-084",
+      "scenario": "aluminum-reviewed",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "190.00",
+      "reviewedDifference": "-100.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-085",
+      "scenario": "aluminum-reviewed",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "190.00",
+      "reviewedDifference": "-100.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-086",
+      "scenario": "aluminum-reviewed",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "190.00",
+      "reviewedDifference": "-100.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-087",
+      "scenario": "aluminum-reviewed",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "190.00",
+      "reviewedDifference": "-100.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-088",
+      "scenario": "aluminum-reviewed",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "190.00",
+      "reviewedDifference": "-100.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-089",
+      "scenario": "aluminum-reviewed",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "190.00",
+      "reviewedDifference": "-100.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-090",
+      "scenario": "aluminum-reviewed",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": "190.00",
+      "reviewedDifference": "-100.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-091",
+      "scenario": "aluminum-unproven",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-092",
+      "scenario": "aluminum-unproven",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-093",
+      "scenario": "aluminum-unproven",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-094",
+      "scenario": "aluminum-unproven",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-095",
+      "scenario": "aluminum-unproven",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-096",
+      "scenario": "aluminum-unproven",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-097",
+      "scenario": "aluminum-unproven",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-098",
+      "scenario": "aluminum-unproven",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-099",
+      "scenario": "aluminum-unproven",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-100",
+      "scenario": "aluminum-unproven",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-101",
+      "scenario": "wrong-country-heading",
+      "expected": "290.00",
+      "difference": "0.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-102",
+      "scenario": "wrong-country-heading",
+      "expected": "290.00",
+      "difference": "0.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-103",
+      "scenario": "wrong-country-heading",
+      "expected": "290.00",
+      "difference": "0.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-104",
+      "scenario": "wrong-country-heading",
+      "expected": "290.00",
+      "difference": "0.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-105",
+      "scenario": "wrong-country-heading",
+      "expected": "290.00",
+      "difference": "0.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-106",
+      "scenario": "wrong-country-heading",
+      "expected": "290.00",
+      "difference": "0.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-107",
+      "scenario": "wrong-country-heading",
+      "expected": "290.00",
+      "difference": "0.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-108",
+      "scenario": "wrong-country-heading",
+      "expected": "290.00",
+      "difference": "0.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-109",
+      "scenario": "wrong-country-heading",
+      "expected": "290.00",
+      "difference": "0.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-110",
+      "scenario": "wrong-country-heading",
+      "expected": "290.00",
+      "difference": "0.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "SYNTHETIC-C99-111",
+      "scenario": "missing-hts",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-112",
+      "scenario": "missing-hts",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-113",
+      "scenario": "missing-hts",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-114",
+      "scenario": "missing-hts",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-115",
+      "scenario": "missing-hts",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-116",
+      "scenario": "missing-hts",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-117",
+      "scenario": "missing-hts",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-118",
+      "scenario": "missing-hts",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-119",
+      "scenario": "missing-hts",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "SYNTHETIC-C99-120",
+      "scenario": "missing-hts",
+      "expected": null,
+      "difference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    }
+  ]
+}

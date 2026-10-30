@@ -1,0 +1,4029 @@
+{
+  "label": "100 fictional declarations; independent Decimal per-component oracle and explicit artificial qualifications. Real dated public rules are separate evidence, not legal approval.",
+  "engineVersion": "historical-audit-v37",
+  "rows": [
+    {
+      "row": 1,
+      "entry": "SYN-WOOD-1",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "576.19",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "100.05",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "354.88",
+        "cv": "121.26"
+      }
+    },
+    {
+      "row": 2,
+      "entry": "SYN-WOOD-2",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "550.28",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "100.05",
+        "china301": "250.13",
+        "fentanyl": "200.10",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 3,
+      "entry": "SYN-WOOD-3",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.08",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "150.08",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 4,
+      "entry": "SYN-WOOD-4",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.08",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "150.08",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 5,
+      "entry": "SYN-WOOD-5",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "100.05",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "100.05",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 6,
+      "entry": "SYN-WOOD-6",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.08",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "150.08",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 7,
+      "entry": "SYN-WOOD-7",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.08",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "150.08",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 8,
+      "entry": "SYN-WOOD-8",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.14",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "250.14",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 9,
+      "entry": "SYN-WOOD-9",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.15",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "250.15",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 10,
+      "entry": "SYN-WOOD-10",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "350.21",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "0.00",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "350.21",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 11,
+      "entry": "SYN-WOOD-11",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.39",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "0.00",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "350.21",
+        "ad": "354.91",
+        "cv": "121.27"
+      }
+    },
+    {
+      "row": 12,
+      "entry": "SYN-WOOD-12",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "576.25",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "100.06",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "354.92",
+        "cv": "121.27"
+      }
+    },
+    {
+      "row": 13,
+      "entry": "SYN-WOOD-13",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.16",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "250.16",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 14,
+      "entry": "SYN-WOOD-14",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.09",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "150.09",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 15,
+      "entry": "SYN-WOOD-15",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.16",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "250.16",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 16,
+      "entry": "SYN-WOOD-16",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.10",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "150.10",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 17,
+      "entry": "SYN-WOOD-17",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "576.28",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "100.07",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "354.93",
+        "cv": "121.28"
+      }
+    },
+    {
+      "row": 18,
+      "entry": "SYN-WOOD-18",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "350.24",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "100.07",
+        "china301": "250.17",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 19,
+      "entry": "SYN-WOOD-19",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.10",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "150.10",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 20,
+      "entry": "SYN-WOOD-20",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.10",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "150.10",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 21,
+      "entry": "SYN-WOOD-21",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "100.07",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "100.07",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 22,
+      "entry": "SYN-WOOD-22",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.11",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "150.11",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 23,
+      "entry": "SYN-WOOD-23",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.11",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "150.11",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 24,
+      "entry": "SYN-WOOD-24",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "411.39",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "100.07",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "170.12",
+        "cv": "141.20"
+      }
+    },
+    {
+      "row": 25,
+      "entry": "SYN-WOOD-25",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.19",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "250.19",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 26,
+      "entry": "SYN-WOOD-26",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "100.08",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "100.08",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 27,
+      "entry": "SYN-WOOD-27",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.11",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "0.00",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00",
+        "reciprocal": "150.11"
+      }
+    },
+    {
+      "row": 28,
+      "entry": "SYN-WOOD-28",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.53",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "0.00",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "350.27",
+        "ad": "354.97",
+        "cv": "121.29"
+      }
+    },
+    {
+      "row": 29,
+      "entry": "SYN-WOOD-29",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "576.35",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "100.08",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "354.98",
+        "cv": "121.29"
+      }
+    },
+    {
+      "row": 30,
+      "entry": "SYN-WOOD-30",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "550.44",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "100.08",
+        "china301": "250.20",
+        "fentanyl": "200.16",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 31,
+      "entry": "SYN-WOOD-31",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.12",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "150.12",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 32,
+      "entry": "SYN-WOOD-32",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.12",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "150.12",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 33,
+      "entry": "SYN-WOOD-33",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "100.08",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "100.08",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 34,
+      "entry": "SYN-WOOD-34",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.12",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "150.12",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 35,
+      "entry": "SYN-WOOD-35",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.13",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "150.13",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 36,
+      "entry": "SYN-WOOD-36",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.21",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "250.21",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 37,
+      "entry": "SYN-WOOD-37",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.22",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "250.22",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 38,
+      "entry": "SYN-WOOD-38",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "350.30",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "0.00",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "350.30",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 39,
+      "entry": "SYN-WOOD-39",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.63",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "0.00",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "350.31",
+        "ad": "355.01",
+        "cv": "121.31"
+      }
+    },
+    {
+      "row": 40,
+      "entry": "SYN-WOOD-40",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "576.42",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "100.09",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "355.02",
+        "cv": "121.31"
+      }
+    },
+    {
+      "row": 41,
+      "entry": "SYN-WOOD-41",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.23",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "250.23",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 42,
+      "entry": "SYN-WOOD-42",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.14",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "150.14",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 43,
+      "entry": "SYN-WOOD-43",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.23",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "250.23",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 44,
+      "entry": "SYN-WOOD-44",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.14",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "150.14",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 45,
+      "entry": "SYN-WOOD-45",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "576.43",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "100.09",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "355.03",
+        "cv": "121.31"
+      }
+    },
+    {
+      "row": 46,
+      "entry": "SYN-WOOD-46",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "350.34",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "100.10",
+        "china301": "250.24",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 47,
+      "entry": "SYN-WOOD-47",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.14",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "150.14",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 48,
+      "entry": "SYN-WOOD-48",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.15",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "150.15",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 49,
+      "entry": "SYN-WOOD-49",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "100.10",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "100.10",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 50,
+      "entry": "SYN-WOOD-50",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.15",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "150.15",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 51,
+      "entry": "SYN-WOOD-51",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.15",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "150.15",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 52,
+      "entry": "SYN-WOOD-52",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "411.51",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "100.10",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "170.17",
+        "cv": "141.24"
+      }
+    },
+    {
+      "row": 53,
+      "entry": "SYN-WOOD-53",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.26",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "250.26",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 54,
+      "entry": "SYN-WOOD-54",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "100.10",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "100.10",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 55,
+      "entry": "SYN-WOOD-55",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.16",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "0.00",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00",
+        "reciprocal": "150.16"
+      }
+    },
+    {
+      "row": 56,
+      "entry": "SYN-WOOD-56",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.77",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "0.00",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "350.37",
+        "ad": "355.07",
+        "cv": "121.33"
+      }
+    },
+    {
+      "row": 57,
+      "entry": "SYN-WOOD-57",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "576.52",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "100.11",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "355.08",
+        "cv": "121.33"
+      }
+    },
+    {
+      "row": 58,
+      "entry": "SYN-WOOD-58",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "550.59",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "100.11",
+        "china301": "250.27",
+        "fentanyl": "200.21",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 59,
+      "entry": "SYN-WOOD-59",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.16",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "150.16",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 60,
+      "entry": "SYN-WOOD-60",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.16",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "150.16",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 61,
+      "entry": "SYN-WOOD-61",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "100.11",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "100.11",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 62,
+      "entry": "SYN-WOOD-62",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.17",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "150.17",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 63,
+      "entry": "SYN-WOOD-63",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.17",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "150.17",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 64,
+      "entry": "SYN-WOOD-64",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.28",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "250.28",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 65,
+      "entry": "SYN-WOOD-65",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.29",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "250.29",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 66,
+      "entry": "SYN-WOOD-66",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "350.40",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "0.00",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "350.40",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 67,
+      "entry": "SYN-WOOD-67",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "826.86",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "0.00",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "350.41",
+        "ad": "355.11",
+        "cv": "121.34"
+      }
+    },
+    {
+      "row": 68,
+      "entry": "SYN-WOOD-68",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "576.57",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "100.12",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "355.11",
+        "cv": "121.34"
+      }
+    },
+    {
+      "row": 69,
+      "entry": "SYN-WOOD-69",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.30",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "250.30",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 70,
+      "entry": "SYN-WOOD-70",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.18",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "150.18",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 71,
+      "entry": "SYN-WOOD-71",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.30",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "250.30",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 72,
+      "entry": "SYN-WOOD-72",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.18",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "150.18",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 73,
+      "entry": "SYN-WOOD-73",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "576.60",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "100.12",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "355.13",
+        "cv": "121.35"
+      }
+    },
+    {
+      "row": 74,
+      "entry": "SYN-WOOD-74",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "350.43",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "100.12",
+        "china301": "250.31",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 75,
+      "entry": "SYN-WOOD-75",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.19",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "150.19",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 76,
+      "entry": "SYN-WOOD-76",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.19",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "150.19",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 77,
+      "entry": "SYN-WOOD-77",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "100.13",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "100.13",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 78,
+      "entry": "SYN-WOOD-78",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.19",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "150.19",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 79,
+      "entry": "SYN-WOOD-79",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "150.19",
+      "reviewedDifference": "1.00",
+      "componentAmounts": {
+        "wood": "150.19",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 80,
+      "entry": "SYN-WOOD-80",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "411.63",
+      "reviewedDifference": "-1.00",
+      "componentAmounts": {
+        "wood": "100.13",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "170.22",
+        "cv": "141.28"
+      }
+    },
+    {
+      "row": 81,
+      "entry": "SYN-WOOD-81",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.33",
+      "reviewedDifference": "0.00",
+      "componentAmounts": {
+        "wood": "250.33",
+        "china301": "0.00",
+        "fentanyl": "0.00",
+        "border": "0.00",
+        "ad": "0.00",
+        "cv": "0.00"
+      }
+    },
+    {
+      "row": 82,
+      "entry": "SYN-WOOD-82",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": {}
+    },
+    {
+      "row": 83,
+      "entry": "SYN-WOOD-83",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": {}
+    },
+    {
+      "row": 84,
+      "entry": "SYN-WOOD-84",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": {}
+    },
+    {
+      "row": 85,
+      "entry": "SYN-WOOD-85",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": {}
+    },
+    {
+      "row": 86,
+      "entry": "SYN-WOOD-86",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": {}
+    },
+    {
+      "row": 87,
+      "entry": "SYN-WOOD-87",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": {}
+    },
+    {
+      "row": 88,
+      "entry": "SYN-WOOD-88",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": {}
+    },
+    {
+      "row": 89,
+      "entry": "SYN-WOOD-89",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": {}
+    },
+    {
+      "row": 90,
+      "entry": "SYN-WOOD-90",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": {}
+    },
+    {
+      "row": 91,
+      "entry": "SYN-WOOD-91",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": {}
+    },
+    {
+      "row": 92,
+      "entry": "SYN-WOOD-92",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": {}
+    },
+    {
+      "row": 93,
+      "entry": "SYN-WOOD-93",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": {}
+    },
+    {
+      "row": 94,
+      "entry": "SYN-WOOD-94",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": {}
+    },
+    {
+      "row": 95,
+      "entry": "SYN-WOOD-95",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": {}
+    },
+    {
+      "row": 96,
+      "entry": "SYN-WOOD-96",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": {}
+    },
+    {
+      "row": 97,
+      "entry": "SYN-WOOD-97",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": {}
+    },
+    {
+      "row": 98,
+      "entry": "SYN-WOOD-98",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": {}
+    },
+    {
+      "row": 99,
+      "entry": "SYN-WOOD-99",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": {}
+    },
+    {
+      "row": 100,
+      "entry": "SYN-WOOD-100",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null,
+      "componentAmounts": {}
+    }
+  ],
+  "decisions": [
+    {
+      "row": 1,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-1-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 2,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-2-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 3,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-3-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 4,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-4-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 5,
+      "kind": "confirm_facts",
+      "validFrom": "2026-01-15",
+      "validBefore": "2026-01-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-5-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 6,
+      "kind": "confirm_facts",
+      "validFrom": "2026-01-15",
+      "validBefore": "2026-01-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-6-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 7,
+      "kind": "confirm_facts",
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-08-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-7-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 8,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-8-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 9,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": true
+      },
+      "evidence": [
+        "SYN-WOOD-9-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 10,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": false
+      },
+      "evidence": [
+        "SYN-WOOD-10-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 11,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-14",
+      "validBefore": "2025-10-15",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-11-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 12,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-14",
+      "validBefore": "2025-10-15",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-12-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 13,
+      "kind": "confirm_facts",
+      "validFrom": "2025-11-14",
+      "validBefore": "2025-11-15",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-13-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 14,
+      "kind": "confirm_facts",
+      "validFrom": "2025-11-14",
+      "validBefore": "2025-11-15",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-14-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 15,
+      "kind": "confirm_facts",
+      "validFrom": "2026-05-01",
+      "validBefore": "2026-05-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-15-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 16,
+      "kind": "confirm_facts",
+      "validFrom": "2026-05-01",
+      "validBefore": "2026-05-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-16-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 17,
+      "kind": "confirm_facts",
+      "validFrom": "2026-03-01",
+      "validBefore": "2026-03-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-17-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 18,
+      "kind": "confirm_facts",
+      "validFrom": "2026-03-01",
+      "validBefore": "2026-03-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-18-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 19,
+      "kind": "confirm_facts",
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-08-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-19-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 20,
+      "kind": "confirm_facts",
+      "validFrom": "2026-03-01",
+      "validBefore": "2026-03-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": true
+      },
+      "evidence": [
+        "SYN-WOOD-20-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 21,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": true
+      },
+      "evidence": [
+        "SYN-WOOD-21-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 22,
+      "kind": "confirm_facts",
+      "validFrom": "2026-03-01",
+      "validBefore": "2026-03-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": true
+      },
+      "evidence": [
+        "SYN-WOOD-22-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 23,
+      "kind": "confirm_facts",
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-08-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": true
+      },
+      "evidence": [
+        "SYN-WOOD-23-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 24,
+      "kind": "confirm_facts",
+      "validFrom": "2026-10-20",
+      "validBefore": "2026-10-21",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-24-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 25,
+      "kind": "confirm_facts",
+      "validFrom": "2026-01-15",
+      "validBefore": "2026-01-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-25-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 26,
+      "kind": "confirm_facts",
+      "validFrom": "2026-03-01",
+      "validBefore": "2026-03-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-26-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 27,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": false
+      },
+      "evidence": [
+        "SYN-WOOD-27-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 28,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-13",
+      "validBefore": "2025-10-14",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-28-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 29,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-29-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 30,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-30-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 31,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-31-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 32,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-32-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 33,
+      "kind": "confirm_facts",
+      "validFrom": "2026-01-15",
+      "validBefore": "2026-01-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-33-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 34,
+      "kind": "confirm_facts",
+      "validFrom": "2026-01-15",
+      "validBefore": "2026-01-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-34-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 35,
+      "kind": "confirm_facts",
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-08-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-35-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 36,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-36-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 37,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": true
+      },
+      "evidence": [
+        "SYN-WOOD-37-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 38,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": false
+      },
+      "evidence": [
+        "SYN-WOOD-38-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 39,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-14",
+      "validBefore": "2025-10-15",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-39-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 40,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-14",
+      "validBefore": "2025-10-15",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-40-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 41,
+      "kind": "confirm_facts",
+      "validFrom": "2025-11-14",
+      "validBefore": "2025-11-15",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-41-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 42,
+      "kind": "confirm_facts",
+      "validFrom": "2025-11-14",
+      "validBefore": "2025-11-15",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-42-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 43,
+      "kind": "confirm_facts",
+      "validFrom": "2026-05-01",
+      "validBefore": "2026-05-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-43-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 44,
+      "kind": "confirm_facts",
+      "validFrom": "2026-05-01",
+      "validBefore": "2026-05-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-44-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 45,
+      "kind": "confirm_facts",
+      "validFrom": "2026-03-01",
+      "validBefore": "2026-03-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-45-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 46,
+      "kind": "confirm_facts",
+      "validFrom": "2026-03-01",
+      "validBefore": "2026-03-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-46-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 47,
+      "kind": "confirm_facts",
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-08-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-47-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 48,
+      "kind": "confirm_facts",
+      "validFrom": "2026-03-01",
+      "validBefore": "2026-03-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": true
+      },
+      "evidence": [
+        "SYN-WOOD-48-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 49,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": true
+      },
+      "evidence": [
+        "SYN-WOOD-49-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 50,
+      "kind": "confirm_facts",
+      "validFrom": "2026-03-01",
+      "validBefore": "2026-03-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": true
+      },
+      "evidence": [
+        "SYN-WOOD-50-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 51,
+      "kind": "confirm_facts",
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-08-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": true
+      },
+      "evidence": [
+        "SYN-WOOD-51-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 52,
+      "kind": "confirm_facts",
+      "validFrom": "2026-10-20",
+      "validBefore": "2026-10-21",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-52-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 53,
+      "kind": "confirm_facts",
+      "validFrom": "2026-01-15",
+      "validBefore": "2026-01-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-53-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 54,
+      "kind": "confirm_facts",
+      "validFrom": "2026-03-01",
+      "validBefore": "2026-03-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-54-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 55,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": false
+      },
+      "evidence": [
+        "SYN-WOOD-55-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 56,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-13",
+      "validBefore": "2025-10-14",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-56-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 57,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-57-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 58,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-58-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 59,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-59-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 60,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-60-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 61,
+      "kind": "confirm_facts",
+      "validFrom": "2026-01-15",
+      "validBefore": "2026-01-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-61-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 62,
+      "kind": "confirm_facts",
+      "validFrom": "2026-01-15",
+      "validBefore": "2026-01-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-62-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 63,
+      "kind": "confirm_facts",
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-08-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-63-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 64,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-64-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 65,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": true
+      },
+      "evidence": [
+        "SYN-WOOD-65-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 66,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": false
+      },
+      "evidence": [
+        "SYN-WOOD-66-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 67,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-14",
+      "validBefore": "2025-10-15",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-67-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 68,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-14",
+      "validBefore": "2025-10-15",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-68-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 69,
+      "kind": "confirm_facts",
+      "validFrom": "2025-11-14",
+      "validBefore": "2025-11-15",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-69-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 70,
+      "kind": "confirm_facts",
+      "validFrom": "2025-11-14",
+      "validBefore": "2025-11-15",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-70-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 71,
+      "kind": "confirm_facts",
+      "validFrom": "2026-05-01",
+      "validBefore": "2026-05-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-71-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 72,
+      "kind": "confirm_facts",
+      "validFrom": "2026-05-01",
+      "validBefore": "2026-05-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-72-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 73,
+      "kind": "confirm_facts",
+      "validFrom": "2026-03-01",
+      "validBefore": "2026-03-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-73-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 74,
+      "kind": "confirm_facts",
+      "validFrom": "2026-03-01",
+      "validBefore": "2026-03-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-74-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 75,
+      "kind": "confirm_facts",
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-08-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-75-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 76,
+      "kind": "confirm_facts",
+      "validFrom": "2026-03-01",
+      "validBefore": "2026-03-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": true
+      },
+      "evidence": [
+        "SYN-WOOD-76-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 77,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": true
+      },
+      "evidence": [
+        "SYN-WOOD-77-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 78,
+      "kind": "confirm_facts",
+      "validFrom": "2026-03-01",
+      "validBefore": "2026-03-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": true
+      },
+      "evidence": [
+        "SYN-WOOD-78-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 79,
+      "kind": "confirm_facts",
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-08-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": true
+      },
+      "evidence": [
+        "SYN-WOOD-79-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 80,
+      "kind": "confirm_facts",
+      "validFrom": "2026-10-20",
+      "validBefore": "2026-10-21",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-80-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 81,
+      "kind": "confirm_facts",
+      "validFrom": "2026-01-15",
+      "validBefore": "2026-01-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-81-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 82,
+      "kind": "confirm_facts",
+      "validFrom": "2026-03-01",
+      "validBefore": "2026-03-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-82-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 83,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": false,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": false
+      },
+      "evidence": [
+        "SYN-WOOD-83-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 84,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-13",
+      "validBefore": "2025-10-14",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": false,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-84-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 85,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-85-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 86,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-14",
+      "validBefore": "2025-10-15",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-86-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 87,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-87-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 88,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-88-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 89,
+      "kind": "confirm_facts",
+      "validFrom": "2026-01-15",
+      "validBefore": "2026-01-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-89-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 90,
+      "kind": "confirm_facts",
+      "validFrom": "2026-01-15",
+      "validBefore": "2026-01-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-90-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 91,
+      "kind": "confirm_facts",
+      "validFrom": "2026-08-01",
+      "validBefore": "2026-08-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-91-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 92,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-92-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 93,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": true
+      },
+      "evidence": [
+        "SYN-WOOD-93-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 94,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-15",
+      "validBefore": "2025-10-16",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true,
+        "wood_cabinet_use": false
+      },
+      "evidence": [
+        "SYN-WOOD-94-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 95,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-14",
+      "validBefore": "2025-10-15",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-95-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 96,
+      "kind": "confirm_facts",
+      "validFrom": "2025-10-14",
+      "validBefore": "2025-10-15",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": false,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-96-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 97,
+      "kind": "confirm_facts",
+      "validFrom": "2025-11-14",
+      "validBefore": "2025-11-15",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": false,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-97-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 98,
+      "kind": "confirm_facts",
+      "validFrom": "2025-11-14",
+      "validBefore": "2025-11-15",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-98-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 99,
+      "kind": "confirm_facts",
+      "validFrom": "2026-05-01",
+      "validBefore": "2026-05-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-99-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    },
+    {
+      "row": 100,
+      "kind": "confirm_facts",
+      "validFrom": "2026-05-01",
+      "validBefore": "2026-05-02",
+      "facts": {
+        "classification_verified": true,
+        "wood_scope_verified": true,
+        "wood_auto_overlap_clear": true,
+        "border_exceptions_clear": true,
+        "reciprocal_exceptions_clear": true,
+        "section122_exceptions_clear": true,
+        "country301_exceptions_clear": true,
+        "ieepa_exceptions_clear": true,
+        "usmca_qualified": false,
+        "adcvd_scope_verified": true,
+        "adcvd_party_verified": true,
+        "adcvd_instructions_clear": true,
+        "adcvd_cases_complete": true
+      },
+      "evidence": [
+        "SYN-WOOD-100-REVIEW"
+      ],
+      "note": "FICTIONAL functionality evidence only; no legal classification, origin, scope, agreement qualification or refund entitlement is approved."
+    }
+  ],
+  "summary": {
+    "lines": 100,
+    "calculated": 0,
+    "unresolved": 100,
+    "discrepancies": 0,
+    "overpayment": "0.00",
+    "underpayment": "0.00"
+  },
+  "reviewedSummary": {
+    "lines": 100,
+    "calculated": 81,
+    "unresolved": 19,
+    "discrepancies": 54,
+    "overpayment": "27.00",
+    "underpayment": "27.00"
+  },
+  "browserDecision": {
+    "row": 85,
+    "kind": "confirm_facts",
+    "validFrom": "2025-10-15",
+    "validBefore": "2025-10-16",
+    "facts": {
+      "wood_cabinet_use": true
+    },
+    "evidence": [
+      "SYN-WOOD-85-CABINET-USE"
+    ],
+    "note": "FICTIONAL dated product evidence confirms use as a completed kitchen cabinet; the original declaration and earlier unresolved result stay unchanged.",
+    "expected": "250.34",
+    "difference": "1.00"
+  }
+}

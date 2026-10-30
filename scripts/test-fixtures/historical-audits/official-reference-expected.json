@@ -1,0 +1,734 @@
+{
+  "disclosure": "Fictional entries and declared classification/origin; real retained historical references; not customer or broker validation.",
+  "oracle": "USD 1000 x 4% base + China-only USD 1000 x 25% legacy 301; unknown scope stays null.",
+  "edition": "2024HTSRev1",
+  "summary": {
+    "lines": 120,
+    "calculated": 100,
+    "unresolved": 20,
+    "overpayment": "2900.00",
+    "underpayment": "2700.00"
+  },
+  "rows": [
+    {
+      "row": 1,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 2,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 3,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 4,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 5,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 6,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 7,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 8,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 9,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 10,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 11,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 12,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 13,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 14,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 15,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 16,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 17,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 18,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 19,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 20,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 21,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 22,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 23,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 24,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 25,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 26,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 27,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 28,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 29,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 30,
+      "expected": "290.00",
+      "difference": "0.00",
+      "case": "correct"
+    },
+    {
+      "row": 31,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 32,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 33,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 34,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 35,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 36,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 37,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 38,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 39,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 40,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 41,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 42,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 43,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 44,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 45,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 46,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 47,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 48,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 49,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 50,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 51,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 52,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 53,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 54,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 55,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 56,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 57,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 58,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 59,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 60,
+      "expected": "290.00",
+      "difference": "10.00",
+      "case": "overpaid"
+    },
+    {
+      "row": 61,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 62,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 63,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 64,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 65,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 66,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 67,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 68,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 69,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 70,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 71,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 72,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 73,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 74,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 75,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 76,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 77,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 78,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 79,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 80,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 81,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 82,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 83,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 84,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 85,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 86,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 87,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 88,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 89,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 90,
+      "expected": "290.00",
+      "difference": "-90.00",
+      "case": "underpaid"
+    },
+    {
+      "row": 91,
+      "expected": "40.00",
+      "difference": "260.00",
+      "case": "vietnam"
+    },
+    {
+      "row": 92,
+      "expected": "40.00",
+      "difference": "260.00",
+      "case": "vietnam"
+    },
+    {
+      "row": 93,
+      "expected": "40.00",
+      "difference": "260.00",
+      "case": "vietnam"
+    },
+    {
+      "row": 94,
+      "expected": "40.00",
+      "difference": "260.00",
+      "case": "vietnam"
+    },
+    {
+      "row": 95,
+      "expected": "40.00",
+      "difference": "260.00",
+      "case": "vietnam"
+    },
+    {
+      "row": 96,
+      "expected": "40.00",
+      "difference": "260.00",
+      "case": "vietnam"
+    },
+    {
+      "row": 97,
+      "expected": "40.00",
+      "difference": "260.00",
+      "case": "vietnam"
+    },
+    {
+      "row": 98,
+      "expected": "40.00",
+      "difference": "260.00",
+      "case": "vietnam"
+    },
+    {
+      "row": 99,
+      "expected": "40.00",
+      "difference": "260.00",
+      "case": "vietnam"
+    },
+    {
+      "row": 100,
+      "expected": "40.00",
+      "difference": "260.00",
+      "case": "vietnam"
+    },
+    {
+      "row": 101,
+      "expected": null,
+      "difference": null,
+      "case": "origin_evidence_conflict"
+    },
+    {
+      "row": 102,
+      "expected": null,
+      "difference": null,
+      "case": "origin_evidence_conflict"
+    },
+    {
+      "row": 103,
+      "expected": null,
+      "difference": null,
+      "case": "origin_evidence_conflict"
+    },
+    {
+      "row": 104,
+      "expected": null,
+      "difference": null,
+      "case": "origin_evidence_conflict"
+    },
+    {
+      "row": 105,
+      "expected": null,
+      "difference": null,
+      "case": "origin_evidence_conflict"
+    },
+    {
+      "row": 106,
+      "expected": null,
+      "difference": null,
+      "case": "missing_hts"
+    },
+    {
+      "row": 107,
+      "expected": null,
+      "difference": null,
+      "case": "missing_hts"
+    },
+    {
+      "row": 108,
+      "expected": null,
+      "difference": null,
+      "case": "missing_hts"
+    },
+    {
+      "row": 109,
+      "expected": null,
+      "difference": null,
+      "case": "missing_hts"
+    },
+    {
+      "row": 110,
+      "expected": null,
+      "difference": null,
+      "case": "missing_hts"
+    },
+    {
+      "row": 111,
+      "expected": null,
+      "difference": null,
+      "case": "missing_edition"
+    },
+    {
+      "row": 112,
+      "expected": null,
+      "difference": null,
+      "case": "missing_edition"
+    },
+    {
+      "row": 113,
+      "expected": null,
+      "difference": null,
+      "case": "missing_edition"
+    },
+    {
+      "row": 114,
+      "expected": null,
+      "difference": null,
+      "case": "missing_edition"
+    },
+    {
+      "row": 115,
+      "expected": null,
+      "difference": null,
+      "case": "missing_edition"
+    },
+    {
+      "row": 116,
+      "expected": null,
+      "difference": null,
+      "case": "unverified_exclusion"
+    },
+    {
+      "row": 117,
+      "expected": null,
+      "difference": null,
+      "case": "unverified_exclusion"
+    },
+    {
+      "row": 118,
+      "expected": null,
+      "difference": null,
+      "case": "unverified_exclusion"
+    },
+    {
+      "row": 119,
+      "expected": null,
+      "difference": null,
+      "case": "unverified_exclusion"
+    },
+    {
+      "row": 120,
+      "expected": null,
+      "difference": null,
+      "case": "unverified_exclusion"
+    }
+  ]
+}

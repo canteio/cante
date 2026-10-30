@@ -86,6 +86,10 @@ export function resolveStackingRule(
     return { status: "needs_review", reason: "This measure is flagged as possibly excluded, but no confirmed rule resolves this shipment's facts." };
   }
 
+  if(matching.some(row=>row.action==="cap_at"&&(row.capRatePercent===null||!Number.isFinite(row.capRatePercent)||row.capRatePercent<0||row.capRatePercent>1))){
+    return{status:"needs_review",reason:"An applicable confirmed cap has no valid fractional rate between zero and one. Its duty cannot be inferred."};
+  }
+
   const distinctActions = new Set(matching.map((row) => `${row.action}:${row.capRatePercent ?? ""}`));
   let winner: StackingRuleRow;
   if (distinctActions.size === 1) {

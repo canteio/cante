@@ -1,0 +1,146 @@
+{
+  "label": "Fictional change-day ledger; actual law is separately pinned. Not customer data or legal validation.",
+  "rows": [
+    {
+      "entry": "SYNTHETIC-CUTOFF-WORKFLOW-1",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-CUTOFF-WORKFLOW-2",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "390.00",
+      "reviewedDifference": "610.00"
+    },
+    {
+      "entry": "SYNTHETIC-CUTOFF-WORKFLOW-3",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "390.00",
+      "reviewedDifference": "610.00"
+    },
+    {
+      "entry": "SYNTHETIC-CUTOFF-WORKFLOW-4",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-CUTOFF-WORKFLOW-5",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-CUTOFF-WORKFLOW-6",
+      "initialExpected": "390.00",
+      "initialDifference": "610.00",
+      "reviewedExpected": "390.00",
+      "reviewedDifference": "610.00"
+    },
+    {
+      "entry": "SYNTHETIC-CUTOFF-WORKFLOW-7",
+      "initialExpected": "240.00",
+      "initialDifference": "760.00",
+      "reviewedExpected": "240.00",
+      "reviewedDifference": "760.00"
+    },
+    {
+      "entry": "SYNTHETIC-CUTOFF-WORKFLOW-8",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    },
+    {
+      "entry": "SYNTHETIC-CUTOFF-WORKFLOW-9",
+      "initialExpected": "150.00",
+      "initialDifference": "850.00",
+      "reviewedExpected": "150.00",
+      "reviewedDifference": "850.00"
+    }
+  ],
+  "decisions": [
+    {
+      "row": 1,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC original entry timestamp and ordinary nonpreferential scope.",
+      "evidence": [
+        "SYNTHETIC-CUTOFF-WORKFLOW-1-DOC"
+      ],
+      "validFrom": "2025-03-04",
+      "validBefore": "2025-12-31",
+      "shipment": {
+        "entryTimestamp": "2025-03-04T05:01:00Z"
+      },
+      "facts": {
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 2,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC original entry timestamp and ordinary nonpreferential scope.",
+      "evidence": [
+        "SYNTHETIC-CUTOFF-WORKFLOW-2-DOC"
+      ],
+      "validFrom": "2025-08-01",
+      "validBefore": "2025-12-31",
+      "shipment": {
+        "entryTimestamp": "2025-08-01T04:01:00Z"
+      },
+      "facts": {
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 3,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC original entry timestamp and ordinary nonpreferential scope.",
+      "evidence": [
+        "SYNTHETIC-CUTOFF-WORKFLOW-3-DOC"
+      ],
+      "validFrom": "2025-02-04",
+      "validBefore": "2025-12-31",
+      "shipment": {
+        "entryTimestamp": "2025-02-04T05:01:00Z"
+      },
+      "facts": {}
+    },
+    {
+      "row": 4,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC original entry timestamp and ordinary nonpreferential scope.",
+      "evidence": [
+        "SYNTHETIC-CUTOFF-WORKFLOW-4-DOC"
+      ],
+      "validFrom": "2026-02-07",
+      "validBefore": "2026-12-31",
+      "shipment": {
+        "entryTimestamp": "2026-02-07T05:01:00Z"
+      },
+      "facts": {}
+    }
+  ],
+  "summary": {
+    "lines": 9,
+    "calculated": 5,
+    "unresolved": 4,
+    "discrepancies": 5,
+    "overpayment": "3780.00",
+    "underpayment": "0.00"
+  },
+  "reviewedSummary": {
+    "lines": 9,
+    "calculated": 9,
+    "unresolved": 0,
+    "discrepancies": 9,
+    "overpayment": "6420.00",
+    "underpayment": "0.00"
+  }
+}

@@ -1,0 +1,1493 @@
+{
+  "label": "120 fictional entries; independent amounts, actual official rules selected separately. Not legal validation.",
+  "rows": [
+    {
+      "entry": "SYNTHETIC-METALS-2025-001",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.00",
+      "reviewedDifference": "750.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-002",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.00",
+      "reviewedDifference": "750.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-003",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.00",
+      "reviewedDifference": "750.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-004",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.00",
+      "reviewedDifference": "750.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-005",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.00",
+      "reviewedDifference": "750.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-006",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "250.00",
+      "reviewedDifference": "750.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-007",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "700.00",
+      "reviewedDifference": "300.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-008",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "700.00",
+      "reviewedDifference": "300.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-009",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "700.00",
+      "reviewedDifference": "300.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-010",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "700.00",
+      "reviewedDifference": "300.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-011",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "700.00",
+      "reviewedDifference": "300.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-012",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "700.00",
+      "reviewedDifference": "300.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-013",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "870.00",
+      "reviewedDifference": "130.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-014",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "870.00",
+      "reviewedDifference": "130.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-015",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "870.00",
+      "reviewedDifference": "130.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-016",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "870.00",
+      "reviewedDifference": "130.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-017",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "870.00",
+      "reviewedDifference": "130.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-018",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "870.00",
+      "reviewedDifference": "130.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-019",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "770.00",
+      "reviewedDifference": "230.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-020",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "770.00",
+      "reviewedDifference": "230.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-021",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "770.00",
+      "reviewedDifference": "230.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-022",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "420.00",
+      "reviewedDifference": "580.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-023",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "420.00",
+      "reviewedDifference": "580.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-024",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "420.00",
+      "reviewedDifference": "580.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-025",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "220.00",
+      "reviewedDifference": "780.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-026",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "220.00",
+      "reviewedDifference": "780.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-027",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "220.00",
+      "reviewedDifference": "780.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-028",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.00",
+      "reviewedDifference": "600.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-029",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.00",
+      "reviewedDifference": "600.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-030",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.00",
+      "reviewedDifference": "600.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-031",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.00",
+      "reviewedDifference": "600.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-032",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.00",
+      "reviewedDifference": "600.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-033",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.00",
+      "reviewedDifference": "600.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-034",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-035",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-036",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-037",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-038",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-039",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-040",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-041",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-042",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-043",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-044",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-045",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-046",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-047",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-048",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-049",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-050",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-051",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-052",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-053",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-054",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-055",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-056",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-057",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-058",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-059",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-060",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-061",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-062",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-063",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-064",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-065",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-066",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-067",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-068",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-069",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-070",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-071",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-072",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-073",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-074",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-075",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-076",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-077",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-078",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-079",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-080",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-081",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-082",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-083",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-084",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-085",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-086",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-087",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-088",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-089",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-090",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-091",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-092",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-093",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-094",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-095",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-096",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-097",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-098",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-099",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-100",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-101",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-102",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-103",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-104",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-105",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-106",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-107",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-108",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-109",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-110",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-111",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-112",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-113",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-114",
+      "initialExpected": "290.00",
+      "initialDifference": "710.00",
+      "reviewedExpected": "290.00",
+      "reviewedDifference": "710.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-115",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "919.00",
+      "reviewedDifference": "81.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-116",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "919.00",
+      "reviewedDifference": "81.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-117",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "919.00",
+      "reviewedDifference": "81.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-118",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "2499.00",
+      "reviewedDifference": "-1499.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-119",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "2499.00",
+      "reviewedDifference": "-1499.00"
+    },
+    {
+      "entry": "SYNTHETIC-METALS-2025-120",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "2499.00",
+      "reviewedDifference": "-1499.00"
+    }
+  ],
+  "decisions": [
+    {
+      "row": 1,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-001-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 2,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-002-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 3,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-003-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 4,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-004-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 5,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-005-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 6,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-006-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 7,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-007-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 8,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-008-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 9,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-009-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 10,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-010-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 11,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-011-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 12,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-012-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 13,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-013-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 14,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-014-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 15,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-015-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 16,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-016-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 17,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-017-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 18,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-018-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 19,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-019-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 20,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-020-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 21,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-021-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 22,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-022-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 23,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-023-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 24,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-024-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 25,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-025-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 26,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-026-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 27,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-027-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 28,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-028-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 29,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-029-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 30,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-030-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 31,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-031-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 32,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-032-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 33,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated steel product definition, content values and no special claim.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-033-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "steel_derivative_covered": true,
+        "content_values_verified": true,
+        "border_exceptions_clear": true
+      }
+    },
+    {
+      "row": 115,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated aluminum definition, smelt/cast and content value evidence.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-115-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "aluminum_derivative_covered": true,
+        "content_values_verified": true,
+        "russian_aluminum_clear": true,
+        "russian_aluminum_subject": false
+      }
+    },
+    {
+      "row": 116,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated aluminum definition, smelt/cast and content value evidence.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-116-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "aluminum_derivative_covered": true,
+        "content_values_verified": true,
+        "russian_aluminum_clear": true,
+        "russian_aluminum_subject": false
+      }
+    },
+    {
+      "row": 117,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated aluminum definition, smelt/cast and content value evidence.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-117-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "aluminum_derivative_covered": true,
+        "content_values_verified": true,
+        "russian_aluminum_clear": true,
+        "russian_aluminum_subject": false
+      }
+    },
+    {
+      "row": 118,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated aluminum definition, smelt/cast and content value evidence.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-118-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "aluminum_derivative_covered": true,
+        "content_values_verified": true,
+        "russian_aluminum_clear": false,
+        "russian_aluminum_subject": true
+      }
+    },
+    {
+      "row": 119,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated aluminum definition, smelt/cast and content value evidence.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-119-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "aluminum_derivative_covered": true,
+        "content_values_verified": true,
+        "russian_aluminum_clear": false,
+        "russian_aluminum_subject": true
+      }
+    },
+    {
+      "row": 120,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC dated aluminum definition, smelt/cast and content value evidence.",
+      "evidence": [
+        "SYNTHETIC-METALS-2025-120-DOC"
+      ],
+      "validFrom": "2025-01-01",
+      "validBefore": "2026-01-01",
+      "facts": {
+        "metal_special_claim": false,
+        "aluminum_derivative_covered": true,
+        "content_values_verified": true,
+        "russian_aluminum_clear": false,
+        "russian_aluminum_subject": true
+      }
+    }
+  ],
+  "summary": {
+    "lines": 120,
+    "calculated": 81,
+    "unresolved": 39,
+    "discrepancies": 81,
+    "overpayment": "57510.00",
+    "underpayment": "0.00"
+  },
+  "reviewedSummary": {
+    "lines": 120,
+    "calculated": 120,
+    "unresolved": 0,
+    "discrepancies": 120,
+    "overpayment": "73203.00",
+    "underpayment": "4497.00"
+  }
+}

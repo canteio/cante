@@ -39,3 +39,10 @@ output/lulzbot-public-research/
 output/prusa-public-research/
 /testsomething.csv
 /output/prusa-first-scan/
+
+# Generated isolated tariff worker bundle.
+/output/check-worker/
+
+# Isolated security-probe generated bundles and synthetic-only evidence.
+/output/security-probe/
+/output/historical-coverage/

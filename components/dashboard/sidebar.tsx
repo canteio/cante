@@ -84,8 +84,8 @@ export async function Sidebar({
           <Link href="/chat" data-active={active === "chat"}><MessageSquare size={15} />Ask Cante</Link>
           {active === "chat" && <ChatNav activeId={activeConversationId} jurisdiction={jurisdiction} />}
           <Link href="/tariff" data-active={active === "tariff" || active === "catalogue"}><Calculator size={15} />Tariff dashboard</Link>
-          <Link href="/tariff/history" data-active={active === "tariff-history"}><History size={15} />Check history</Link>
-          <Link href="/tariff/audits" data-active={active === "tariff-audits"}><ClipboardCheck size={15} />Historical audits</Link>
+          <Link href="/tariff/audits" data-active={active === "tariff-audits"}><ClipboardCheck size={15}/>Audits</Link>
+          <details className="sidebar-more"><summary>More tools</summary><Link href="/tariff/history" data-active={active === "tariff-history"}><History size={15} />Check archive</Link></details>
         </nav>
       </div>
       {/* MVP: broad compliance navigation retained below, disabled.

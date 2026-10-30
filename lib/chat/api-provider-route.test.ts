@@ -18,6 +18,7 @@ for (const locked of ["true", "false"]) {
     process.env.CANTE_LLM_LOCKED = locked;
     const selected: unknown[] = [];
     const dependencies: Record<string, unknown> = {
+      "./public-research": {},
       "@/app/api/request-limits": {withRequestLimit:async(request:Request,_op:string,_max:number,handler:Function)=>handler(request)},
       "@/components/tariff/demo-scenario": demoScenario,
       "@/lib/db/queries": { resolveCustomerId: async () => "owned-workspace" },
@@ -76,6 +77,7 @@ for (const invalid of [false, true]) {
     let calls = 0, prompt = "";
     const forbidden = new Proxy({}, { get() { throw Error("Demo touched customer data or memory"); } });
     const deps: Record<string, unknown> = {
+      "./public-research": {},
       "@/app/api/request-limits": {withRequestLimit:async(r:Request,_op:string,_max:number,h:Function)=>h(r)},
       "@/components/tariff/demo-scenario": demoScenario,
       "@/lib/db/queries": new Proxy({}, { get(_target, name) { return name === "resolveCustomerId" ? async () => "demo-test" : () => { throw Error(`Demo called ${String(name)}`); }; } }),

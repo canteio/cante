@@ -112,4 +112,11 @@ create trigger tariff_impact_events_immutable_content
   before update on public.tariff_impact_events
   for each row execute function private.protect_tariff_impact_event_content();
 
+
+-- Explicit worker Data API access; do not depend on Supabase default grants.
+-- Tenant/browser privileges and RLS policies are defined separately above.
+grant select, insert, update, delete on
+  public.tariff_impact_events
+to service_role;
+
 commit;

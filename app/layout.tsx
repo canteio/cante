@@ -14,7 +14,7 @@ const garamond = EB_Garamond({
 
 export const metadata: Metadata = {
   title: "Cante",
-  description: "Indonesia export compliance monitor",
+  description: "Your products, current U.S. tariff rules, duty changes and official evidence.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

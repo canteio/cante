@@ -1,6 +1,6 @@
 # Cante — agent instructions
 
-Updated October 20, 2026. Keep this file concise and current.
+Updated October 22, 2026. Keep this file concise and current.
 `AGENTS.md` is a symlink to this file; edit this file rather than replacing that link.
 
 ## Read first
@@ -22,12 +22,15 @@ official guidance, and identify relevant regulatory changes.
 - `/chat`: Ask Cante, guided file intake, workspace context and saved conversations.
   Chat originals: 15 MiB, chunked server storage; references and bounded excerpts
   in prompts. Ambiguous table mappings require confirmation; no guessed values.
-- `/tariff`: product setup, duty calculation and manual change-check interface.
-- `/tariff/audits`: historical import audits; `/tariff/rules`: authorized rule review.
+- `/tariff`: one production workspace for saved products, upload/field editing,
+  refresh-on-click, per-product duties/changes/evidence and an embedded chat.
+  Dashboard and chat refresh the same tenant catalogue and product tariff inputs;
+  neither requires a separate demo upload or historical-impact run.
+- `/tariff/audits`: dedicated historical CSV audits, findings, evidence decisions
+  and exports. Keep original declarations and prior results; dated corrections
+  create revisions. `/tariff/rules`: authorized rule and historical-snapshot review.
 - `/tariff/history`: append-only live-check records, source versions and review notes.
-- `/tariff/demo`: live official-source and arithmetic checks with automatic archival. Force
-  fresh rates, disclose partial legal coverage, and never infer no change without
-  a comparable prior fetch. Government listings are review leads until interpreted.
+- `/tariff/demo`: compatibility redirect to `/tariff`, preserving saved-check links.
 - `/tariff/demo/simulation`: explicitly fictional CSV → simulated rule → deterministic impact
   → report → chat workflow. Demo chat uses no real workspace context or persistence.
   Recompute CSV inputs on the server; keep fixtures labelled and disable workspace
@@ -36,8 +39,9 @@ official guidance, and identify relevant regulatory changes.
 - Legacy routes and capabilities remain in the repository. Some page entry points
   redirect to `/tariff`; do not delete their implementations during cleanup.
 
-The monitoring MVP is incomplete: the hosted checking worker is not connected,
-legal coverage has gaps, and the affected-product/next-action loop needs validation.
+Tariff checks require a configured trusted worker for reusable numerical
+baselines. Legal coverage remains partial; unsupported duties and missing facts
+stay unresolved. Reference prices never silently become customs values.
 A button, a passing test or a public-data fixture is not evidence of a completed
 customer check, accurate full coverage or a working production deployment.
 
@@ -45,8 +49,9 @@ customer check, accurate full coverage or a working production deployment.
 
 - Work on `dev` and preserve unrelated uncommitted changes. Do not infer permission
   to commit, push, merge or deploy from archived release notes.
-- Do not activate Telegram, launchd, delivery or new schedules. Keep delivery
-  credentials blank during tests. Existing scheduling code is not authorization.
+- The user authorized the Cante daily workspace monitor only: owner/admin opt-in,
+  Supabase Cron, protected worker and in-app notices. Do not activate Telegram,
+  launchd, external delivery or other schedules. Keep delivery credentials blank.
 - Do not add new modules under `lib/` until a customer has paid. Existing exceptions:
   the API adapter, scripts, and fixes to code a real customer is touching.
 - Seeding and importing can write to a real workspace. Do not run them as routine
@@ -68,6 +73,9 @@ customer check, accurate full coverage or a working production deployment.
   Estimated classifications and public research remain labelled leads or demo data.
 - Keep calculations deterministic. AI may propose classifications/rules; unapproved
   drafts do not become confirmed legal rules or a refund entitlement.
+- Historical audits use pinned, explicitly human-approved rule snapshots and exact
+  arithmetic. Never substitute current rates, auto-approved extraction or a supplier
+  address for historical coverage, qualification or legal origin evidence.
 
 ## Tariff and data invariants
 
@@ -78,7 +86,9 @@ customer check, accurate full coverage or a working production deployment.
   the China reference through request-scoped caches. Supported deterministic
   compilers apply current rules; changed wording and unsupported scope remain
   pending. A compiler-contract match is not independent legal approval. Historical
-  dates retain the existing reviewed-data path. Never infer shipment qualifications.
+  dates use approved bundles or the explicitly labeled Cante-validated narrow
+  reference compiler; estimates never become human approvals. Missing scope stays
+  unresolved. Never infer shipment qualifications.
 - Shared stacking-rule approval/rejection/retry requires explicit appointment in
   `private.platform_tariff_reviewers`, managed only by database administrators.
   Tenant owner/admin roles and JWT metadata never confer global review authority.
@@ -119,6 +129,8 @@ customer check, accurate full coverage or a working production deployment.
   retries, duplicate completions or fabricated reasoning preflight calls.
 - Local CLI subprocesses must retain denied write/command tools, a scratch working
   directory and non-permissive permissions. An allowed-tools list is not a sandbox.
+- New tables require explicit, minimal per-role grants in their creating migration;
+  do not rely on Supabase automatic grants. Keep RLS and column-level restrictions.
 - Supabase is the active database; SQL migrations are authoritative. Legacy SQLite
   types, files and commands do not establish the current storage architecture.
 - Request paths use authenticated workspace identity and tenant-scoped access/RLS.

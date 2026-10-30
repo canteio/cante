@@ -1,3 +1,5 @@
+import {DUTY_CALCULATION_VERSION,combineDutyAmounts} from "@/lib/tariff/duty-expression";
+import type { DutyComparison, CheckRefresh } from "./comparison";
 import { compareHistoricalRules, type HistoricalComparison } from "./history";
 /** Read-only live verification. Official fetches and existing engine; no model or tenant writes. */
 import { createHash } from "node:crypto";
@@ -6,11 +8,11 @@ import { parseCsv } from "@/lib/catalogue/csv";
 import { normalizeCountryCode, normalizeHtsCode, parseRemedyFacts } from "@/lib/tariff/bulk";
 import { easternIsoDate, isStrictIsoDate } from "@/lib/tariff/date";
 import { lookupTariff, quoteDuty, type TariffRow } from "@/lib/tariff/rates";
-import { computeStackedDuty } from "@/lib/tariff/stack";
+import { computeStackedDuty, type UsmcaQualificationInput } from "@/lib/tariff/stack";
 import { fetchOfficialRemedySnapshot, type OfficialRemedySnapshot, type RemedyFacts } from "@/lib/tariff/section232-live";
 import { withStackingRulesCache } from "@/lib/tariff/stacking-rules";
 
-export type LiveProduct = { sku: string; hts: string; origin: string; customsValue: number; quantity: number | null; unit: string | null; fictional: boolean; remedyFacts?: RemedyFacts; history?: { entries: Record<string, string>[]; startDate: string; endDate: string; paidDuty: number | null } };
+export type LiveProduct = { sku: string; hts: string; origin: string; customsValue: number | null; inputBasis?: "catalogue"; valueBasis?: "annual" | "historical"; quantity: number | null; unit: string | null; fictional: boolean; usmcaQualification?: UsmcaQualificationInput; remedyFacts?: RemedyFacts; history?: { entries: Record<string, string>[]; startDate: string; endDate: string; paidDuty: number | null } };
 export type LiveSource = { name: string; url: string; fetchedAt: string; status: "fetched" | "failed"; sha256: string | null; error: string | null; body: string | null; bodyEncoding?: "utf8" | "base64"; compression?: "gzip"; originalSha256?: string };
 export const LIVE_MAX_BYTES = 15 * 1024 * 1024;
 const cents = (raw: string, name: string) => {
@@ -37,28 +39,38 @@ export function parseLiveProducts(csv: string): LiveProduct[] {
     const sku = (r.sku ?? "").trim(); const hts = normalizeHtsCode(r.hts_code ?? r.hts ?? ""); const origin = normalizeCountryCode(r.origin_country ?? r.country_of_origin ?? "");
     if (!sku || seen.has(sku) || sku.length > 100) throw Error(`${label}: provide a unique SKU (maximum 100 characters).`);
     seen.add(sku);
-    if (hts.replace(/\D/g, "").length !== 10 || !/^\d{4}\.\d{2}\.\d{2}\.\d{2}$/.test(hts)) throw Error(`${label}: provide an exact 10-digit HTS code.`);
-    if (!origin || !/^[A-Z]{2}$/.test(origin)) throw Error(`${label}: provide a two-letter origin country.`);
-    let value: bigint;
-    if (r.annual_customs_value_usd !== undefined) value = cents(r.annual_customs_value_usd, label);
+    const catalogue = r.input_basis === "catalogue";
+    if (!catalogue && (hts.replace(/\D/g, "").length !== 10 || !/^\d{4}\.\d{2}\.\d{2}\.\d{2}$/.test(hts))) throw Error(`${label}: provide an exact 10-digit HTS code.`);
+    if (!catalogue && (!origin || !/^[A-Z]{2}$/.test(origin))) throw Error(`${label}: provide a two-letter origin country.`);
+    let value: bigint | null;
+    if (catalogue && !r.annual_customs_value_usd?.trim()) value = null;
+    else if (r.annual_customs_value_usd !== undefined) value = cents(r.annual_customs_value_usd, label);
     else {
       if (!/^[1-9]\d{0,7}$/.test(r.annual_import_units ?? "")) throw Error(`${label}: provide annual_customs_value_usd, or unit_customs_value_usd and annual_import_units.`);
       value = cents(r.unit_customs_value_usd ?? "", label) * BigInt(r.annual_import_units);
     }
-    if (value > 9_000_000_000_000n) throw Error(`${label}: annual value exceeds the supported range.`);
-    const quantityText = r.annual_quantity?.trim();
+    if (value !== null && value > 9_000_000_000_000n) throw Error(`${label}: annual value exceeds the supported range.`);
+    const quantityText = (r.annual_quantity ?? r.quantity)?.trim();
     if (quantityText && (!/^\d{1,10}(?:\.\d{1,4})?$/.test(quantityText) || Number(quantityText) <= 0)) throw Error(`${label}: annual_quantity must be positive.`);
-    const unit = r.quantity_unit?.trim() || null;
+    const unit = (r.quantity_unit ?? r.unit)?.trim() || null;
     if (unit && unit.length > 32) throw Error(`${label}: quantity_unit must be under 32 characters.`);
+    for (const field of ["chapter99_codes", "exclusion_id", "special_program_claim", "claimed_programme"]) if (r[field]?.trim()) throw Error(`${label}: ${field} requires supported applicability review; this live-file check cannot silently apply or ignore the claim.`);
+    const qualificationFields = ["usmca_verified", "usmca_decision", "usmca_details"];
+    let usmcaQualification: UsmcaQualificationInput | undefined;
+    if (qualificationFields.some(key => r[key]?.trim())) {
+      if (!["true", "yes"].includes(r.usmca_verified?.trim().toLowerCase()) || !["qualifies", "does_not_qualify"].includes(r.usmca_decision?.trim()) || !r.usmca_details?.trim()) throw Error(`${label}: provide usmca_verified=true, usmca_decision=qualifies or does_not_qualify, and usmca_details from reviewed records. Origin alone does not establish USMCA qualification.`);
+      if (!["MX", "CA"].includes(origin)) throw Error(`${label}: USMCA declarations require Mexican or Canadian origin.`);
+      usmcaQualification = { verified: true, decision: r.usmca_decision.trim() as UsmcaQualificationInput["decision"], details: r.usmca_details.trim() };
+    }
     const remedyFacts = parseRemedyFacts(r);
-    return { sku, hts, origin, customsValue: Number(value) / 100, quantity: quantityText ? Number(quantityText) : null, unit, fictional: /synthetic|fictional|demo/i.test(r.dataset_label ?? "") || sku.startsWith("DEMO-"), ...(remedyFacts?{remedyFacts}:{}) };
+    return { sku, hts, origin, customsValue: value === null ? null : Number(value) / 100, ...(catalogue ? {inputBasis: "catalogue" as const, ...(["annual","historical"].includes(r.value_basis) ? {valueBasis:r.value_basis as "annual" | "historical"} : {})} : {}), quantity: quantityText ? Number(quantityText) : null, unit, fictional: /synthetic|fictional|demo/i.test(r.dataset_label ?? "") || sku.startsWith("DEMO-"), ...(remedyFacts?{remedyFacts}:{}), ...(usmcaQualification?{usmcaQualification}:{}) };
   });
 }
 
 /** Preserve entry identity and paid amounts; current-rate repricing is never an annual forecast or refund audit. */
 function aggregateHistory(rows: Record<string, string>[]): LiveProduct[] {
   const entries = new Set<string>();
-  const groups = new Map<string, { product: LiveProduct; value: bigint; paid: bigint | null }>();
+  const groups = new Map<string, { product: LiveProduct; value: bigint; paid: bigint | null; quantity: bigint | null }>();
   for (const [index, r] of rows.entries()) {
     const label = `Import row ${index + 2}`;
     if (!r.entry_id?.trim() || !/^[1-9]\d{0,8}$/.test(r.line_number ?? "") || !isStrictIsoDate(r.entry_date ?? "")) throw Error(`${label}: provide an entry ID, positive line number and valid entry date.`);
@@ -67,13 +79,17 @@ function aggregateHistory(rows: Record<string, string>[]): LiveProduct[] {
     entries.add(entryKey);
     // Reuse the same exact-code, origin, SKU and money validation as product CSVs.
     const escaped = (v: string) => '"' + v.replaceAll('"', '""') + '"';
-    const fields=["standard_commercial","metal_weight_percent","us_metal_qualification","uk_metal_qualification","special_232_claim","equipment_use","motorcycle_use","other_232_heading"];
-    const product = parseLiveProducts("sku,hts_code,origin_country,annual_customs_value_usd,dataset_label,"+fields.join(",")+"\n" + [r.sku ?? "", r.hts_code ?? r.hts ?? "", r.origin_country ?? r.country_of_origin ?? "", r.customs_value_usd ?? "", r.dataset_label ?? "",...fields.map(f=>r[f]??"")].map(escaped).join(","))[0];
+    const fields=["standard_commercial","metal_weight_percent","us_metal_qualification","uk_metal_qualification","special_232_claim","equipment_use","motorcycle_use","other_232_heading","usmca_verified","usmca_decision","usmca_details","chapter99_codes","exclusion_id","special_program_claim","claimed_programme","quantity","quantity_unit"];
+    const product = parseLiveProducts("sku,hts_code,origin_country,annual_customs_value_usd,dataset_label,"+fields.join(",")+"\n" + [r.sku ?? "", r.hts_code ?? r.hts ?? "", r.origin_country ?? r.country_of_origin ?? "", r.customs_value_usd ?? "", r.dataset_label ?? "",...fields.map(f=>f==="quantity_unit"?(r.quantity_unit??r.unit??""):(r[f]??""))].map(escaped).join(","))[0];
     const key = JSON.stringify([product.sku, product.hts, product.origin]);
     const value = cents(r.customs_value_usd, label); const paid = r.paid_duty_usd?.trim() ? cents(r.paid_duty_usd, label) : null;
     let group = groups.get(key);
-    if (!group) { group = { product: { ...product, history: { entries: [], startDate: r.entry_date, endDate: r.entry_date, paidDuty: null } }, value: 0n, paid: 0n }; groups.set(key, group); }
+    if (!group) { group = { product: { ...product, history: { entries: [], startDate: r.entry_date, endDate: r.entry_date, paidDuty: null } }, value: 0n, paid: 0n, quantity: 0n }; groups.set(key, group); }
     if(JSON.stringify(group.product.remedyFacts??{})!==JSON.stringify(product.remedyFacts??{}))throw Error(`${label}: qualification facts differ within the same SKU / HTS / origin group. Split the file by qualification basis.`);
+    if (JSON.stringify(group.product.usmcaQualification??null)!==JSON.stringify(product.usmcaQualification??null)) throw Error(`${label}: USMCA qualifications differ within the same SKU / HTS / origin group. Split the file by qualification basis.`);
+    if (group.product.unit !== product.unit) throw Error(`${label}: quantity units differ within the same SKU / HTS / origin group.`);
+    group.quantity = group.quantity === null || product.quantity === null ? null : group.quantity + BigInt(Math.round(product.quantity * 10000));
+    if (group.quantity !== null && group.quantity > 100000000000000n) throw Error(`${label}: grouped quantity exceeds the supported range.`);
     group.value += value;
     if (group.value > 9_000_000_000_000n) throw Error(`${label}: grouped customs value exceeds the supported range.`);
     group.paid = group.paid === null || paid === null ? null : group.paid + paid;
@@ -84,7 +100,7 @@ function aggregateHistory(rows: Record<string, string>[]): LiveProduct[] {
     if (r.entry_date > history.endDate) history.endDate = r.entry_date;
   }
   if (groups.size > 100) throw Error("Import history supports up to 100 distinct SKU / HTS / origin groups per live check.");
-  return [...groups.values()].map(({ product, value, paid }) => ({ ...product, customsValue: Number(value) / 100, history: { ...product.history!, paidDuty: paid === null ? null : Number(paid) / 100 } }));
+  return [...groups.values()].map(({ product, value, paid, quantity }) => ({ ...product, customsValue: Number(value) / 100, quantity: quantity === null ? null : Number(quantity) / 10000, history: { ...product.history!, paidDuty: paid === null ? null : Number(paid) / 100 } }));
 }
 
 /** Independent integer-decimal check of the plain published base rate only. */
@@ -93,10 +109,14 @@ export function verifyBaseMath(raw: string, value: number, engineAmount: number 
   if (!/^free$/i.test(rate) && !match) return { status: "not_checked" as const, expectedAmount: null, formula: "Specific/compound rates need a separate quantity-and-unit verification; no independent pass is claimed." };
   const decimal = match?.[1] ?? "0"; const [whole, fraction = ""] = decimal.split(".");
   const numerator = BigInt(whole + fraction); const denominator = 100n * 10n ** BigInt(fraction.length);
-  const valueCents = BigInt(Math.round(value * 100));
+  const valueText=Number.isFinite(value)&&value>=0?value.toFixed(2):"";
+  if(!/^\d+\.\d{2}$/.test(valueText)||Number(valueText)!==value)return{status:"not_checked" as const,expectedAmount:null,formula:"The supplied customs value is not an exact nonnegative cent amount; no independent pass is claimed."};
+  const valueCents = BigInt(valueText.replace(".",""));
   const resultCents = (valueCents * numerator * 2n + denominator) / (2n * denominator);
   const expectedAmount = Number(resultCents) / 100;
-  return { status: engineAmount !== null && Math.round(engineAmount * 100) === Number(resultCents) ? "passed" as const : "failed" as const, expectedAmount, formula: `$${value.toFixed(2)} × ${decimal}% = $${expectedAmount.toFixed(2)} (rounded to cents)` };
+  const expectedText=`${resultCents/100n}.${String(resultCents%100n).padStart(2,"0")}`;
+  if(resultCents>BigInt(Number.MAX_SAFE_INTEGER)||expectedAmount.toFixed(2)!==expectedText)return{status:"not_checked" as const,expectedAmount:null,formula:"The result exceeds exact-cent numeric output bounds; no independent pass is claimed."};
+  return { status: engineAmount !== null && Number.isFinite(engineAmount)&&engineAmount===Number(engineAmount.toFixed(2))&&engineAmount.toFixed(2)===expectedText ? "passed" as const : "failed" as const, expectedAmount, formula: `$${valueText} × ${decimal}% = $${expectedText} (rounded to cents)` };
 }
 
 async function boundedText(response: Response) {
@@ -123,7 +143,7 @@ export async function runLiveCheck(products: LiveProduct[], signal?: AbortSignal
     try { const x = JSON.parse(text); const name = typeof x === "string" ? x : x?.name; if (typeof name !== "string" || !name.trim()) throw Error(); return name.trim(); } catch { sources.at(-1)!.status = "failed"; sources.at(-1)!.error = "Unrecognized revision response."; return null; }
   };
   progress("Fetching the current USITC revision…"); const revisionBefore = await revision();
-  const uniqueCodes = [...new Set(products.map(p => p.hts))];
+  const uniqueCodes = [...new Set(products.filter(p => /^\d{4}\.\d{2}\.\d{2}\.\d{2}$/.test(p.hts) && /^[A-Z]{2}$/.test(p.origin)).map(p => p.hts))];
   const schedules = new Map<string, { row: TariffRow | null; error: string | null }>(); let next = 0;
   await Promise.all(Array.from({ length: Math.min(3, uniqueCodes.length) }, async () => {
     while (next < uniqueCodes.length) {
@@ -149,12 +169,14 @@ export async function runLiveCheck(products: LiveProduct[], signal?: AbortSignal
   const rows = await withStackingRulesCache(async () => {
     const results = []; // Serial engine calls avoid repeated unbounded database queries.
     for (const product of products) {
-      signal?.throwIfAborted(); const schedule = schedules.get(product.hts)!; const published = schedule.row;
+      signal?.throwIfAborted();
+      if (!/^\d{4}\.\d{2}\.\d{2}\.\d{2}$/.test(product.hts) || !/^[A-Z]{2}$/.test(product.origin)) { results.push({product, published:null,quote:null,stack:null,verification:null,error:"Add one exact 10-digit HTS code and a country of origin to check this product."}); continue; }
+      const schedule = schedules.get(product.hts)!; const published = schedule.row;
       if (!published) { results.push({ product, published: null, quote: null, stack: null, verification: null, error: schedule.error }); continue; }
-      const quote = await quoteDuty({ htsCode: product.hts, countryOfOrigin: product.origin, value: product.customsValue, quantity: product.quantity, unit: product.unit }, published);
+      const quote = await quoteDuty({ htsCode: product.hts, countryOfOrigin: product.origin, value: product.customsValue, quantity: product.quantity, unit: product.unit, claimedProgramme: product.usmcaQualification?.decision === "qualifies" ? "S" : null }, published);
       let stack: Awaited<ReturnType<typeof computeStackedDuty>> = null; let error: string | null = null;
-      try { stack = await computeStackedDuty({ htsCode: product.hts, countryOfOrigin: product.origin, value: product.customsValue, quantity: product.quantity, unit: product.unit, importDate: entryDate, signal, remedyFacts: product.remedyFacts }, undefined, undefined, undefined, published, remedySnapshot); } catch { error = "Full-duty evaluation failed; no complete total is available."; }
-      results.push({ product, published, quote, stack, verification: quote ? verifyBaseMath(quote.rate.raw, product.customsValue, quote.computation.amount) : null, error });
+      try { stack = await computeStackedDuty({ htsCode: product.hts, countryOfOrigin: product.origin, value: product.customsValue, quantity: product.quantity, unit: product.unit, usmcaQualification: product.usmcaQualification, importDate: entryDate, signal, remedyFacts: product.remedyFacts }, undefined, undefined, undefined, published, remedySnapshot); } catch { error = "Full-duty evaluation failed; no complete total is available."; }
+      results.push({ product, published, quote, stack, verification: quote && product.customsValue !== null ? verifyBaseMath(quote.rate.raw, product.customsValue, quote.computation.amount) : null, error });
       progress(`Calculated ${results.length} of ${products.length} products…`);
     }
     return results;
@@ -164,18 +186,29 @@ export async function runLiveCheck(products: LiveProduct[], signal?: AbortSignal
   const since = new Date(`${entryDate}T12:00:00Z`); since.setUTCDate(since.getUTCDate() - 30);
   const frUrl = new URL("https://www.federalregister.gov/api/v1/documents.json");
   frUrl.search = new URLSearchParams({ "conditions[term]": "tariff", "conditions[publication_date][gte]": since.toISOString().slice(0,10), "conditions[publication_date][lte]": entryDate, order: "newest", per_page: "100" }).toString();
-  const [fr, cbp] = await Promise.all([capture("Federal Register: tariff publications, last 30 days (first 100)", frUrl.toString()), capture("CBP CSMS: current rolling feed", "https://content.govdelivery.com/accounts/USDHSCBP/widgets/USDHSCBP_WIDGET_2.rss")]);
+  const [fr, cbp, whitehouse] = await Promise.all([capture("Federal Register: tariff publications, last 30 days (first 100)", frUrl.toString()), capture("CBP CSMS: current rolling feed", "https://content.govdelivery.com/accounts/USDHSCBP/widgets/USDHSCBP_WIDGET_2.rss"), capture("White House: recent presidential actions (first page)", "https://www.whitehouse.gov/presidential-actions/")]);
   const notices: { title: string; url: string; date: string | null; source: string }[] = []; const coverageNotes: string[] = [];
   if (fr) { try { const x = JSON.parse(fr); if (!Array.isArray(x.results)) throw Error(); for (const d of x.results) if (typeof d.title === "string" && typeof d.html_url === "string" && d.html_url.startsWith("https://www.federalregister.gov/")) notices.push({ title: d.title, url: d.html_url, date: d.publication_date ?? null, source: "Federal Register" }); if (x.total_pages > 1) coverageNotes.push(`Federal Register returned ${x.count} publications; only the first 100 were fetched.`); } catch { const source = sources.find(s => s.url === frUrl.toString())!; source.status = "failed"; source.error = "Unrecognized Federal Register response."; } }
   if (cbp) { const $ = load(cbp, { xmlMode: true }); const items = $("item"); if (!items.length) { const source = sources.find(s => s.name.startsWith("CBP"))!; source.status = "failed"; source.error = "Feed contained no recognizable items."; } items.each((_, item) => { const url = $(item).find("link").text(); if (url.startsWith("https://content.govdelivery.com/")) notices.push({ title: $(item).find("title").text(), url, date: $(item).find("pubDate").text() || null, source: "CBP CSMS" }); }); }
+  if (whitehouse) {
+    const $ = load(whitehouse); const posts = $(".wp-block-post-template .wp-block-post");
+    if (!posts.length) { const source=sources.find(s=>s.name.startsWith("White House"))!; source.status="failed";source.error="Presidential actions page contained no recognizable posts."; }
+    posts.each((_,post)=>{ const a=$(post).find(".wp-block-post-title a").first();const url=a.attr("href")??"",title=a.text().trim(),date=$(post).find("time").attr("datetime")?.slice(0,10)??null;
+      if(url.startsWith("https://www.whitehouse.gov/presidential-actions/")&&title&&/tariff|import|customs|trade|dut(?:y|ies)|section 232|section 301/i.test(title)&&date&&date>=since.toISOString().slice(0,10)&&date<=entryDate)notices.push({title,url,date,source:"White House"});
+    });
+    coverageNotes.push("White House coverage checks the first presidential-actions page and tariff-related titles only. Older or indirectly titled actions can be outside this scan; listings are review leads, not applied law.");
+  }
   progress("Confirming the schedule did not change during the check…"); const revisionAfter = await revision();
   const consistentRevision = revisionBefore !== null && revisionBefore === revisionAfter && entryDate === easternIsoDate();
-  coverageNotes.push("Published notices were fetched as review leads; their legal scope, annexes and rate changes have not been automatically applied.", "Full-duty results also depend on stored reviewed rules. Fresh USITC base rates do not establish complete Chapter 99, Section 232, AD/CVD, exclusions or qualification coverage.", products.some(p => p.history) ? "Import history is repriced using today's rules on the historical values, grouped by SKU / HTS / origin. This is not an annual forecast, historical liability calculation, refund claim or comparison with duty paid. Original entry dates and payments are retained; historical quantities are preserved but not applied to quantity-based rates in this grouped check. Rounding is per group, not per entry line." : "Annual values and classifications come from the uploaded file. Duty uses today's entry-date rules with those values held constant; it does not predict future law or verify classifications.");
+  coverageNotes.push("Published notices were fetched as review leads; their legal scope, annexes and rate changes have not been automatically applied.", "Full-duty results also depend on stored reviewed rules. Fresh USITC base rates do not establish complete Chapter 99, Section 232, AD/CVD, exclusions or qualification coverage.", products.some(p => p.history) ? "Import history is repriced using today's rules on the historical values, grouped by SKU / HTS / origin. This is not an annual forecast, historical liability calculation, refund claim or comparison with duty paid. Original entry dates and payments are retained. Quantities are summed only when every entry supplies a quantity in the same unit; missing quantities withhold quantity-based duties. Rounding is per group, not per entry line." : "Annual values and classifications come from the uploaded file. Duty uses today's entry-date rules with those values held constant; it does not predict future law or verify classifications.");
   if(!consistentRevision){historicalComparison.status="unavailable";historicalComparison.issues.push("The current release changed or could not be confirmed; no consistent historical comparison is claimed.");}
   if (!consistentRevision) coverageNotes.push("A stable USITC revision could not be established across this check. These rows must not be treated as a consistent release.");
   const complete = rows.every(r => r.stack?.totalAmount !== null && r.stack?.totalAmount !== undefined && !r.error && r.verification?.status !== "failed");
-  const basis = products.some(p => p.history) ? "historical" as const : "annual" as const;
-  const totalDuty = complete && consistentRevision ? Math.round(rows.reduce((sum,r) => sum + Math.round(r.stack!.totalAmount! * 100),0)) / 100 : null;
-  return { historicalComparison, remedyUpdate: {revision:remedySnapshot?.revision??null,status:remedySnapshot?.status??"failed",issues:remedyError?[remedyError]:remedySnapshot?.issues??[],scopeCounts:remedySnapshot?Object.fromEntries(Object.entries(remedySnapshot.notes).map(([n,v])=>[n,Object.fromEntries(Object.entries(v.lists).map(([k,c])=>[k,c.length]))])):{}}, basis, totalDuty, importRows: products.reduce((sum,p) => sum + (p.history?.entries.length ?? 0),0), startedAt, checkedAt: new Date().toISOString(), entryDate, revisionBefore, revisionAfter, consistentRevision, products: products.length, rows, sources, notices, coverageNotes, totalAnnualDuty: basis === "annual" ? totalDuty : null, independentBaseChecks: rows.filter(r => r.verification?.status === "passed").length, unresolvedProducts: rows.filter(r => r.error || !r.stack || r.stack.totalAmount === null).length };
+  const basis = products.some(p => p.inputBasis === "catalogue") ? "catalogue" as const : products.some(p => p.history) ? "historical" as const : "annual" as const;
+  if (basis === "catalogue") coverageNotes.push("This checks saved catalogue products. Reference prices are not customs values. Products without declared customs values or shipment facts retain rates where supported; dollar exposure stays unresolved. Values of different bases are not added.");
+  const valueBases = [...new Set(products.map(p=>p.valueBasis ?? (p.history ? "historical" : p.inputBasis ? null : "annual")))];
+  const valuationBasis = valueBases.length===1 ? valueBases[0] : null;
+  const totalDuty = valuationBasis !== null && complete && consistentRevision ? combineDutyAmounts(rows.map(r=>r.stack!.totalAmount!)) : null;
+  return { calculationVersion:DUTY_CALCULATION_VERSION, chatRecheck: null as CheckRefresh | null, baselineCheckId: null as string | null, comparison: null as DutyComparison | null, historicalComparison, remedyUpdate: {revision:remedySnapshot?.revision??null,status:remedySnapshot?.status??"failed",issues:remedyError?[remedyError]:remedySnapshot?.issues??[],scopeCounts:remedySnapshot?Object.fromEntries(Object.entries(remedySnapshot.notes).map(([n,v])=>[n,Object.fromEntries(Object.entries(v.lists).map(([k,c])=>[k,c.length]))])):{}}, basis, valuationBasis, totalDuty, importRows: products.reduce((sum,p) => sum + (p.history?.entries.length ?? 0),0), startedAt, checkedAt: new Date().toISOString(), entryDate, revisionBefore, revisionAfter, consistentRevision, products: products.length, rows, sources, notices, coverageNotes, totalAnnualDuty: basis === "annual" ? totalDuty : null, independentBaseChecks: rows.filter(r => r.verification?.status === "passed").length, unresolvedProducts: rows.filter(r => r.error || !r.stack || r.stack.totalAmount === null || r.verification?.status === "failed" || !consistentRevision).length };
 }
-export type LiveCheckResult = Awaited<ReturnType<typeof runLiveCheck>>;
+export type LiveCheckResult = Omit<Awaited<ReturnType<typeof runLiveCheck>>,"calculationVersion"> & {calculationVersion?:string};

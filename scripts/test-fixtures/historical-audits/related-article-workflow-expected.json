@@ -1,0 +1,2098 @@
+{
+  "label": "100 fictional accessory declarations; independent Python Decimal half-up oracle. Evidence decisions are fictional and approve no laws.",
+  "engineVersion": "historical-audit-v37",
+  "rows": [
+    {
+      "row": 1,
+      "entry": "SYN-RELATED-1",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "600.30",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 2,
+      "entry": "SYN-RELATED-2",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.20",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 3,
+      "entry": "SYN-RELATED-3",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.21",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 4,
+      "entry": "SYN-RELATED-4",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 5,
+      "entry": "SYN-RELATED-5",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "600.32",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 6,
+      "entry": "SYN-RELATED-6",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.22",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 7,
+      "entry": "SYN-RELATED-7",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.22",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 8,
+      "entry": "SYN-RELATED-8",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 9,
+      "entry": "SYN-RELATED-9",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "600.35",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 10,
+      "entry": "SYN-RELATED-10",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.24",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 11,
+      "entry": "SYN-RELATED-11",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.24",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 12,
+      "entry": "SYN-RELATED-12",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 13,
+      "entry": "SYN-RELATED-13",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "600.37",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 14,
+      "entry": "SYN-RELATED-14",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.25",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 15,
+      "entry": "SYN-RELATED-15",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.26",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 16,
+      "entry": "SYN-RELATED-16",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 17,
+      "entry": "SYN-RELATED-17",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "600.40",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 18,
+      "entry": "SYN-RELATED-18",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.27",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 19,
+      "entry": "SYN-RELATED-19",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.27",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 20,
+      "entry": "SYN-RELATED-20",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 21,
+      "entry": "SYN-RELATED-21",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "600.42",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 22,
+      "entry": "SYN-RELATED-22",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.28",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 23,
+      "entry": "SYN-RELATED-23",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.29",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 24,
+      "entry": "SYN-RELATED-24",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 25,
+      "entry": "SYN-RELATED-25",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "600.44",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 26,
+      "entry": "SYN-RELATED-26",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.30",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 27,
+      "entry": "SYN-RELATED-27",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.30",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 28,
+      "entry": "SYN-RELATED-28",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 29,
+      "entry": "SYN-RELATED-29",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "600.47",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 30,
+      "entry": "SYN-RELATED-30",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.32",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 31,
+      "entry": "SYN-RELATED-31",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.32",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 32,
+      "entry": "SYN-RELATED-32",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 33,
+      "entry": "SYN-RELATED-33",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "600.49",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 34,
+      "entry": "SYN-RELATED-34",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.33",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 35,
+      "entry": "SYN-RELATED-35",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.34",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 36,
+      "entry": "SYN-RELATED-36",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 37,
+      "entry": "SYN-RELATED-37",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "600.52",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 38,
+      "entry": "SYN-RELATED-38",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.35",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 39,
+      "entry": "SYN-RELATED-39",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.35",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 40,
+      "entry": "SYN-RELATED-40",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 41,
+      "entry": "SYN-RELATED-41",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "600.54",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 42,
+      "entry": "SYN-RELATED-42",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.36",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 43,
+      "entry": "SYN-RELATED-43",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.37",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 44,
+      "entry": "SYN-RELATED-44",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 45,
+      "entry": "SYN-RELATED-45",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "600.56",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 46,
+      "entry": "SYN-RELATED-46",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.38",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 47,
+      "entry": "SYN-RELATED-47",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.38",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 48,
+      "entry": "SYN-RELATED-48",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 49,
+      "entry": "SYN-RELATED-49",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "600.59",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 50,
+      "entry": "SYN-RELATED-50",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.40",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 51,
+      "entry": "SYN-RELATED-51",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.40",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 52,
+      "entry": "SYN-RELATED-52",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 53,
+      "entry": "SYN-RELATED-53",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "600.61",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 54,
+      "entry": "SYN-RELATED-54",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.41",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 55,
+      "entry": "SYN-RELATED-55",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.42",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 56,
+      "entry": "SYN-RELATED-56",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 57,
+      "entry": "SYN-RELATED-57",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "600.64",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 58,
+      "entry": "SYN-RELATED-58",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.43",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 59,
+      "entry": "SYN-RELATED-59",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.43",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 60,
+      "entry": "SYN-RELATED-60",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 61,
+      "entry": "SYN-RELATED-61",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "600.66",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 62,
+      "entry": "SYN-RELATED-62",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.44",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 63,
+      "entry": "SYN-RELATED-63",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.45",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 64,
+      "entry": "SYN-RELATED-64",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 65,
+      "entry": "SYN-RELATED-65",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "600.68",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 66,
+      "entry": "SYN-RELATED-66",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.46",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 67,
+      "entry": "SYN-RELATED-67",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.46",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 68,
+      "entry": "SYN-RELATED-68",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 69,
+      "entry": "SYN-RELATED-69",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "600.71",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 70,
+      "entry": "SYN-RELATED-70",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.48",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 71,
+      "entry": "SYN-RELATED-71",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.48",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 72,
+      "entry": "SYN-RELATED-72",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 73,
+      "entry": "SYN-RELATED-73",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "600.73",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 74,
+      "entry": "SYN-RELATED-74",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.49",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 75,
+      "entry": "SYN-RELATED-75",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.50",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 76,
+      "entry": "SYN-RELATED-76",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 77,
+      "entry": "SYN-RELATED-77",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "600.76",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 78,
+      "entry": "SYN-RELATED-78",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.51",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 79,
+      "entry": "SYN-RELATED-79",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.51",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 80,
+      "entry": "SYN-RELATED-80",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 81,
+      "entry": "SYN-RELATED-81",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "600.78",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 82,
+      "entry": "SYN-RELATED-82",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.52",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 83,
+      "entry": "SYN-RELATED-83",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "400.53",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 84,
+      "entry": "SYN-RELATED-84",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 85,
+      "entry": "SYN-RELATED-85",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 86,
+      "entry": "SYN-RELATED-86",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 87,
+      "entry": "SYN-RELATED-87",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 88,
+      "entry": "SYN-RELATED-88",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 89,
+      "entry": "SYN-RELATED-89",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 90,
+      "entry": "SYN-RELATED-90",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 91,
+      "entry": "SYN-RELATED-91",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 92,
+      "entry": "SYN-RELATED-92",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 93,
+      "entry": "SYN-RELATED-93",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 94,
+      "entry": "SYN-RELATED-94",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 95,
+      "entry": "SYN-RELATED-95",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 96,
+      "entry": "SYN-RELATED-96",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 97,
+      "entry": "SYN-RELATED-97",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 98,
+      "entry": "SYN-RELATED-98",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 99,
+      "entry": "SYN-RELATED-99",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 100,
+      "entry": "SYN-RELATED-100",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    }
+  ],
+  "decisions": [
+    {
+      "row": 1,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-1-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 2,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-2-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 3,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-3-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 4,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-4-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 5,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-5-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 6,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-6-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 7,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-7-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 8,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-8-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 9,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-9-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 10,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-10-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 11,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-11-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 12,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-12-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 13,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-13-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 14,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-14-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 15,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-15-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 16,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-16-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 17,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-17-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 18,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-18-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 19,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-19-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 20,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-20-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 21,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-21-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 22,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-22-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 23,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-23-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 24,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-24-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 25,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-25-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 26,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-26-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 27,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-27-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 28,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-28-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 29,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-29-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 30,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-30-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 31,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-31-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 32,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-32-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 33,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-33-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 34,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-34-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 35,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-35-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 36,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-36-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 37,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-37-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 38,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-38-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 39,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-39-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 40,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-40-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 41,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-41-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 42,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-42-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 43,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-43-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 44,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-44-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 45,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-45-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 46,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-46-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 47,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-47-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 48,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-48-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 49,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-49-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 50,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-50-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 51,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-51-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 52,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-52-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 53,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-53-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 54,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-54-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 55,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-55-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 56,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-56-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 57,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-57-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 58,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-58-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 59,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-59-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 60,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-60-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 61,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-61-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 62,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-62-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 63,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-63-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 64,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-64-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 65,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-65-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 66,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-66-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 67,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-67-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 68,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-68-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 69,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-69-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 70,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-70-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 71,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-71-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 72,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-72-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 73,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-73-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 74,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-74-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 75,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-75-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 76,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-76-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 77,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-77-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 78,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-78-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 79,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-79-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 80,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-80-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 81,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-81-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 82,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-82-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 83,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-83-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 84,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-84-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 85,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-85-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 86,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-86-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 87,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-87-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 88,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-88-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 90,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-NOT-ESTABLISHED"
+      ],
+      "note": "FICTIONAL supporting documents do not establish the related article relationship.",
+      "facts": {
+        "related_article_verified": false
+      }
+    },
+    {
+      "row": 91,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2017-06-15",
+      "evidence": [
+        "SYN-RELATED-OLD-RECORD"
+      ],
+      "note": "FICTIONAL relationship supported only before this entry date.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 93,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-93-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 94,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-94-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 95,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-95-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 96,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-96-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 97,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-97-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 98,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-98-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 99,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-99-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    },
+    {
+      "row": 100,
+      "kind": "confirm_facts",
+      "validFrom": "2017-01-01",
+      "validBefore": "2018-01-01",
+      "evidence": [
+        "SYN-RELATED-100-CLASSIFICATION"
+      ],
+      "note": "FICTIONAL classification record establishes the complete article classification and its accessory relationship; no shared legal rule is approved.",
+      "facts": {
+        "related_article_verified": true
+      }
+    }
+  ],
+  "summary": {
+    "lines": 100,
+    "calculated": 0,
+    "unresolved": 100,
+    "discrepancies": 0,
+    "overpayment": "0.00",
+    "underpayment": "0.00"
+  },
+  "reviewedSummary": {
+    "lines": 100,
+    "calculated": 84,
+    "unresolved": 16,
+    "discrepancies": 49,
+    "overpayment": "28.00",
+    "underpayment": "21.00"
+  }
+}

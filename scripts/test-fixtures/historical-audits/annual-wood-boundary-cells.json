@@ -1,0 +1,334 @@
+{
+  "label": "Public USITC table excerpt for parser tests; test source identities are fictional. Captured original hashes establish content integrity, not legal approval.",
+  "sourceId": "2cb070a4-c1a5-44e3-a899-f3dbd935a91f",
+  "url": "https://hts.usitc.gov/reststop/file?release=basicCorrections2&filename=Chapter%2044",
+  "sha256": "9f58f85a3f4729dc0740da916f1c3b28e9fa4884a04f08638ef319576527e339",
+  "page": 25,
+  "cells": [
+    {
+      "text": "Rates of Duty",
+      "x": 457.237,
+      "y": 719.212
+    },
+    {
+      "text": "Unit",
+      "x": 350.897,
+      "y": 718.712
+    },
+    {
+      "text": "of",
+      "x": 354.201,
+      "y": 710.313
+    },
+    {
+      "text": "Quantity",
+      "x": 344.086,
+      "y": 701.914
+    },
+    {
+      "text": "Article Description",
+      "x": 193.728,
+      "y": 710.313
+    },
+    {
+      "text": "Stat.",
+      "x": 93.24,
+      "y": 718.712
+    },
+    {
+      "text": "Suf-",
+      "x": 94.021,
+      "y": 710.313
+    },
+    {
+      "text": "fix",
+      "x": 96.94,
+      "y": 701.914
+    },
+    {
+      "text": "Heading/",
+      "x": 55.473,
+      "y": 718.212
+    },
+    {
+      "text": "Subheading",
+      "x": 50.8,
+      "y": 709.813
+    },
+    {
+      "text": "2",
+      "x": 548.134,
+      "y": 710.313
+    },
+    {
+      "text": "1",
+      "x": 448.414,
+      "y": 710.313
+    },
+    {
+      "text": "Special",
+      "x": 471.283,
+      "y": 701.414
+    },
+    {
+      "text": "General",
+      "x": 398.705,
+      "y": 701.414
+    },
+    {
+      "text": "Plywood, veneered panels and similar laminated wood: (con.)",
+      "x": 110.72,
+      "y": 689.353
+    },
+    {
+      "text": "4412 (con.)",
+      "x": 47.8,
+      "y": 689.353
+    },
+    {
+      "text": "Other plywood consisting solely of sheets of wood (other",
+      "x": 125.12,
+      "y": 679.153
+    },
+    {
+      "text": "than bamboo), each ply not exceeding 6 mm in thickness:",
+      "x": 125.12,
+      "y": 668.953
+    },
+    {
+      "text": "(con.)",
+      "x": 125.12,
+      "y": 658.753
+    },
+    {
+      "text": "With at least one outer ply of tropical wood: (con.)",
+      "x": 139.52,
+      "y": 648.553
+    },
+    {
+      "text": "4412.31",
+      "x": 47.8,
+      "y": 648.553
+    },
+    {
+      "text": "(con.)",
+      "x": 47.8,
+      "y": 638.353
+    },
+    {
+      "text": "Other:",
+      "x": 153.92,
+      "y": 628.153
+    },
+    {
+      "text": "With at least one outer ply of the following",
+      "x": 168.32,
+      "y": 617.953
+    },
+    {
+      "text": "tropical woods: Dark Red Meranti, Light Red",
+      "x": 168.32,
+      "y": 607.753
+    },
+    {
+      "text": "Meranti, White Lauan, Sipo, Limba, Okoum\u00e9,",
+      "x": 168.32,
+      "y": 597.553
+    },
+    {
+      "text": "Obeche, Acajou d'Afrique, Sapelli, Virola,",
+      "x": 168.32,
+      "y": 587.353
+    },
+    {
+      "text": "Mahogany, Palissandre de Para, Palissandre",
+      "x": 168.32,
+      "y": 577.153
+    },
+    {
+      "text": "de Rio or Palissandre de Rose.........................",
+      "x": 168.32,
+      "y": 566.953
+    },
+    {
+      "text": "00",
+      "x": 95.714,
+      "y": 617.953
+    },
+    {
+      "text": "4412.31.61",
+      "x": 47.8,
+      "y": 617.953
+    },
+    {
+      "text": "40%",
+      "x": 524,
+      "y": 568.753
+    },
+    {
+      "text": "Free (A*, AU, BH,",
+      "x": 445.52,
+      "y": 568.753
+    },
+    {
+      "text": "CA, CL, CO, D, E,",
+      "x": 450.52,
+      "y": 558.553
+    },
+    {
+      "text": "IL, JO, MA, MX,",
+      "x": 450.52,
+      "y": 548.353
+    },
+    {
+      "text": "OM, P, PA, PE,",
+      "x": 450.52,
+      "y": 538.153
+    },
+    {
+      "text": "SG)",
+      "x": 450.52,
+      "y": 527.953
+    },
+    {
+      "text": "3.2% (KR)",
+      "x": 445.52,
+      "y": 517.753
+    },
+    {
+      "text": "8%",
+      "x": 380.72,
+      "y": 568.753
+    },
+    {
+      "text": "m",
+      "x": 337.52,
+      "y": 567.019
+    },
+    {
+      "text": "3",
+      "x": 344.778,
+      "y": 571.473
+    },
+    {
+      "text": "..............",
+      "x": 347.97,
+      "y": 567.019
+    },
+    {
+      "text": "Other...................................................................",
+      "x": 168.32,
+      "y": 503.553
+    },
+    {
+      "text": "00",
+      "x": 95.714,
+      "y": 503.553
+    },
+    {
+      "text": "4412.31.92",
+      "x": 47.8,
+      "y": 503.553
+    },
+    {
+      "text": "40%",
+      "x": 524,
+      "y": 505.353
+    },
+    {
+      "text": "Free (A*, AU, BH,",
+      "x": 445.52,
+      "y": 505.353
+    },
+    {
+      "text": "CA, CL, CO, D, E,",
+      "x": 450.52,
+      "y": 495.153
+    },
+    {
+      "text": "IL, JO, MA, MX,",
+      "x": 450.52,
+      "y": 484.953
+    },
+    {
+      "text": "OM, P, PA, PE,",
+      "x": 450.52,
+      "y": 474.753
+    },
+    {
+      "text": "SG)",
+      "x": 450.52,
+      "y": 464.553
+    },
+    {
+      "text": "3.2% (KR)",
+      "x": 445.52,
+      "y": 454.353
+    },
+    {
+      "text": "8%",
+      "x": 380.72,
+      "y": 505.353
+    },
+    {
+      "text": "m",
+      "x": 337.52,
+      "y": 503.619
+    },
+    {
+      "text": "3",
+      "x": 344.778,
+      "y": 508.073
+    },
+    {
+      "text": "..............",
+      "x": 347.97,
+      "y": 503.619
+    },
+    {
+      "text": "Other, with at least one outer ply of nonconiferous",
+      "x": 139.52,
+      "y": 444.153
+    },
+    {
+      "text": "wood:",
+      "x": 139.52,
+      "y": 433.953
+    },
+    {
+      "text": "4412.32",
+      "x": 47.8,
+      "y": 444.153
+    },
+    {
+      "text": "Rates of Duty",
+      "x": 457.237,
+      "y": 718.332
+    },
+    {
+      "text": "1",
+      "x": 448.054,
+      "y": 709.836
+    },
+    {
+      "text": "Harmonized Tariff Schedule of the United States (2017)",
+      "x": 170.314,
+      "y": 757.39
+    },
+    {
+      "text": "Annotated for Statistical Reporting Purposes",
+      "x": 243.654,
+      "y": 747.613
+    },
+    {
+      "text": "IX",
+      "x": 572.985,
+      "y": 739.214
+    },
+    {
+      "text": "44-23",
+      "x": 561.701,
+      "y": 730.815
+    }
+  ]
+}

@@ -1,0 +1,1869 @@
+{
+  "label": "120 fictional entries. Expected values use hand-entered dated rates and independent integer arithmetic. Actual-source verification is not broker review, legal approval or proof of universal coverage.",
+  "assumptions": "Declared ordinary consumption, customs value, HTS and origin; no unsupported additional duty or product-specific program exception. Positive exclusion qualification decisions are explicitly synthetic.",
+  "rows": [
+    {
+      "entry": "FICTIONAL-HISTORY-001",
+      "cohort": "2019-standard",
+      "date": "2019-11-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "290.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-002",
+      "cohort": "2019-standard",
+      "date": "2019-11-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "290.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-003",
+      "cohort": "2019-standard",
+      "date": "2019-11-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "290.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-004",
+      "cohort": "2019-standard",
+      "date": "2019-11-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "290.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-005",
+      "cohort": "2019-standard",
+      "date": "2019-11-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "290.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-006",
+      "cohort": "2019-exclusion",
+      "date": "2019-11-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-007",
+      "cohort": "2019-exclusion",
+      "date": "2019-11-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "260.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-008",
+      "cohort": "2019-exclusion",
+      "date": "2019-11-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "240.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-009",
+      "cohort": "2019-exclusion",
+      "date": "2019-11-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "270.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-010",
+      "cohort": "2019-exclusion",
+      "date": "2019-11-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "230.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-011",
+      "cohort": "2020-exclusion",
+      "date": "2020-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-012",
+      "cohort": "2020-exclusion",
+      "date": "2020-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "260.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-013",
+      "cohort": "2020-exclusion",
+      "date": "2020-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "240.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-014",
+      "cohort": "2020-exclusion",
+      "date": "2020-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "270.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-015",
+      "cohort": "2020-exclusion",
+      "date": "2020-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "230.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-016",
+      "cohort": "2021-standard",
+      "date": "2021-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "290.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-017",
+      "cohort": "2021-standard",
+      "date": "2021-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "290.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-018",
+      "cohort": "2021-standard",
+      "date": "2021-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "290.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-019",
+      "cohort": "2021-standard",
+      "date": "2021-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "290.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-020",
+      "cohort": "2021-standard",
+      "date": "2021-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "290.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-021",
+      "cohort": "2022-exclusion",
+      "date": "2022-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-022",
+      "cohort": "2022-exclusion",
+      "date": "2022-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "260.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-023",
+      "cohort": "2022-exclusion",
+      "date": "2022-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "240.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-024",
+      "cohort": "2022-exclusion",
+      "date": "2022-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "270.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-025",
+      "cohort": "2022-exclusion",
+      "date": "2022-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "230.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-026",
+      "cohort": "2023-exclusion",
+      "date": "2023-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-027",
+      "cohort": "2023-exclusion",
+      "date": "2023-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "260.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-028",
+      "cohort": "2023-exclusion",
+      "date": "2023-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "240.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-029",
+      "cohort": "2023-exclusion",
+      "date": "2023-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "270.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-030",
+      "cohort": "2023-exclusion",
+      "date": "2023-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "230.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-031",
+      "cohort": "2024-exclusion",
+      "date": "2024-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-032",
+      "cohort": "2024-exclusion",
+      "date": "2024-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "260.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-033",
+      "cohort": "2024-exclusion",
+      "date": "2024-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "240.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-034",
+      "cohort": "2024-exclusion",
+      "date": "2024-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "270.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-035",
+      "cohort": "2024-exclusion",
+      "date": "2024-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "230.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-036",
+      "cohort": "2025-jan-exclusion",
+      "date": "2025-01-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-037",
+      "cohort": "2025-jan-exclusion",
+      "date": "2025-01-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "260.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-038",
+      "cohort": "2025-jan-exclusion",
+      "date": "2025-01-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "240.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-039",
+      "cohort": "2025-jan-exclusion",
+      "date": "2025-01-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "270.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-040",
+      "cohort": "2025-jan-exclusion",
+      "date": "2025-01-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "290.00",
+      "reviewedExpected": "40.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "230.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-041",
+      "cohort": "2025-feb",
+      "date": "2025-02-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "390.00",
+      "reviewedExpected": "390.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-042",
+      "cohort": "2025-feb",
+      "date": "2025-02-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "390.00",
+      "reviewedExpected": "390.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-043",
+      "cohort": "2025-feb",
+      "date": "2025-02-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "390.00",
+      "reviewedExpected": "390.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-044",
+      "cohort": "2025-feb",
+      "date": "2025-02-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "390.00",
+      "reviewedExpected": "390.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-045",
+      "cohort": "2025-feb",
+      "date": "2025-02-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "390.00",
+      "reviewedExpected": "390.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-046",
+      "cohort": "2025-mar",
+      "date": "2025-03-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "490.00",
+      "reviewedExpected": "490.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-047",
+      "cohort": "2025-mar",
+      "date": "2025-03-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "490.00",
+      "reviewedExpected": "490.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-048",
+      "cohort": "2025-mar",
+      "date": "2025-03-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "490.00",
+      "reviewedExpected": "490.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-049",
+      "cohort": "2025-mar",
+      "date": "2025-03-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "490.00",
+      "reviewedExpected": "490.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-050",
+      "cohort": "2025-mar",
+      "date": "2025-03-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "490.00",
+      "reviewedExpected": "490.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-051",
+      "cohort": "2025-apr",
+      "date": "2025-04-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "1740.00",
+      "reviewedExpected": "1740.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-052",
+      "cohort": "2025-apr",
+      "date": "2025-04-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "1740.00",
+      "reviewedExpected": "1740.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-053",
+      "cohort": "2025-apr",
+      "date": "2025-04-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "1740.00",
+      "reviewedExpected": "1740.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-054",
+      "cohort": "2025-apr",
+      "date": "2025-04-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "1740.00",
+      "reviewedExpected": "1740.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-055",
+      "cohort": "2025-apr",
+      "date": "2025-04-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "1740.00",
+      "reviewedExpected": "1740.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-056",
+      "cohort": "2025-jun",
+      "date": "2025-06-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "590.00",
+      "reviewedExpected": "590.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-057",
+      "cohort": "2025-jun",
+      "date": "2025-06-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "590.00",
+      "reviewedExpected": "590.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-058",
+      "cohort": "2025-jun",
+      "date": "2025-06-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "590.00",
+      "reviewedExpected": "590.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-059",
+      "cohort": "2025-jun",
+      "date": "2025-06-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "590.00",
+      "reviewedExpected": "590.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-060",
+      "cohort": "2025-jun",
+      "date": "2025-06-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "590.00",
+      "reviewedExpected": "590.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-061",
+      "cohort": "2025-sep",
+      "date": "2025-09-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "590.00",
+      "reviewedExpected": "590.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-062",
+      "cohort": "2025-sep",
+      "date": "2025-09-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "590.00",
+      "reviewedExpected": "590.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-063",
+      "cohort": "2025-sep",
+      "date": "2025-09-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "590.00",
+      "reviewedExpected": "590.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-064",
+      "cohort": "2025-sep",
+      "date": "2025-09-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "590.00",
+      "reviewedExpected": "590.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-065",
+      "cohort": "2025-sep",
+      "date": "2025-09-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "590.00",
+      "reviewedExpected": "590.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-066",
+      "cohort": "2025-nov",
+      "date": "2025-11-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "490.00",
+      "reviewedExpected": "490.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-067",
+      "cohort": "2025-nov",
+      "date": "2025-11-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "490.00",
+      "reviewedExpected": "490.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-068",
+      "cohort": "2025-nov",
+      "date": "2025-11-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "490.00",
+      "reviewedExpected": "490.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-069",
+      "cohort": "2025-nov",
+      "date": "2025-11-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "490.00",
+      "reviewedExpected": "490.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-070",
+      "cohort": "2025-nov",
+      "date": "2025-11-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "490.00",
+      "reviewedExpected": "490.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-071",
+      "cohort": "2026-jan",
+      "date": "2026-01-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "490.00",
+      "reviewedExpected": "490.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-072",
+      "cohort": "2026-jan",
+      "date": "2026-01-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "490.00",
+      "reviewedExpected": "490.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-073",
+      "cohort": "2026-jan",
+      "date": "2026-01-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "490.00",
+      "reviewedExpected": "490.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-074",
+      "cohort": "2026-jan",
+      "date": "2026-01-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "490.00",
+      "reviewedExpected": "490.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-075",
+      "cohort": "2026-jan",
+      "date": "2026-01-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "490.00",
+      "reviewedExpected": "490.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-076",
+      "cohort": "2026-mar",
+      "date": "2026-03-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "390.00",
+      "reviewedExpected": "390.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-077",
+      "cohort": "2026-mar",
+      "date": "2026-03-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "390.00",
+      "reviewedExpected": "390.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-078",
+      "cohort": "2026-mar",
+      "date": "2026-03-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "390.00",
+      "reviewedExpected": "390.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-079",
+      "cohort": "2026-mar",
+      "date": "2026-03-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "390.00",
+      "reviewedExpected": "390.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-080",
+      "cohort": "2026-mar",
+      "date": "2026-03-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "390.00",
+      "reviewedExpected": "390.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-081",
+      "cohort": "2026-aug",
+      "date": "2026-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "415.00",
+      "reviewedExpected": "415.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-082",
+      "cohort": "2026-aug",
+      "date": "2026-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "415.00",
+      "reviewedExpected": "415.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-083",
+      "cohort": "2026-aug",
+      "date": "2026-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "415.00",
+      "reviewedExpected": "415.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-084",
+      "cohort": "2026-aug",
+      "date": "2026-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "415.00",
+      "reviewedExpected": "415.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-085",
+      "cohort": "2026-aug",
+      "date": "2026-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "415.00",
+      "reviewedExpected": "415.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-086",
+      "cohort": "2026-aug-exclusion",
+      "date": "2026-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "415.00",
+      "reviewedExpected": "165.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "250.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-087",
+      "cohort": "2026-aug-exclusion",
+      "date": "2026-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "415.00",
+      "reviewedExpected": "165.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "260.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-088",
+      "cohort": "2026-aug-exclusion",
+      "date": "2026-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "415.00",
+      "reviewedExpected": "165.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "240.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-089",
+      "cohort": "2026-aug-exclusion",
+      "date": "2026-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "415.00",
+      "reviewedExpected": "165.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "270.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-090",
+      "cohort": "2026-aug-exclusion",
+      "date": "2026-08-15",
+      "origin": "CN",
+      "hts": "8501314000",
+      "initialExpected": "415.00",
+      "reviewedExpected": "165.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "230.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-091",
+      "cohort": "2026-vietnam",
+      "date": "2026-08-15",
+      "origin": "VN",
+      "hts": "8501314000",
+      "initialExpected": "165.00",
+      "reviewedExpected": "165.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-092",
+      "cohort": "2026-vietnam",
+      "date": "2026-08-15",
+      "origin": "VN",
+      "hts": "8501314000",
+      "initialExpected": "165.00",
+      "reviewedExpected": "165.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-093",
+      "cohort": "2026-vietnam",
+      "date": "2026-08-15",
+      "origin": "VN",
+      "hts": "8501314000",
+      "initialExpected": "165.00",
+      "reviewedExpected": "165.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-094",
+      "cohort": "2026-vietnam",
+      "date": "2026-08-15",
+      "origin": "VN",
+      "hts": "8501314000",
+      "initialExpected": "165.00",
+      "reviewedExpected": "165.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-095",
+      "cohort": "2026-vietnam",
+      "date": "2026-08-15",
+      "origin": "VN",
+      "hts": "8501314000",
+      "initialExpected": "165.00",
+      "reviewedExpected": "165.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-096",
+      "cohort": "2025-vietnam-jun",
+      "date": "2025-06-15",
+      "origin": "VN",
+      "hts": "8501314000",
+      "initialExpected": "140.00",
+      "reviewedExpected": "140.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-097",
+      "cohort": "2025-vietnam-jun",
+      "date": "2025-06-15",
+      "origin": "VN",
+      "hts": "8501314000",
+      "initialExpected": "140.00",
+      "reviewedExpected": "140.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-098",
+      "cohort": "2025-vietnam-jun",
+      "date": "2025-06-15",
+      "origin": "VN",
+      "hts": "8501314000",
+      "initialExpected": "140.00",
+      "reviewedExpected": "140.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-099",
+      "cohort": "2025-vietnam-jun",
+      "date": "2025-06-15",
+      "origin": "VN",
+      "hts": "8501314000",
+      "initialExpected": "140.00",
+      "reviewedExpected": "140.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-100",
+      "cohort": "2025-vietnam-jun",
+      "date": "2025-06-15",
+      "origin": "VN",
+      "hts": "8501314000",
+      "initialExpected": "140.00",
+      "reviewedExpected": "140.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-101",
+      "cohort": "2025-vietnam-sep",
+      "date": "2025-09-15",
+      "origin": "VN",
+      "hts": "8501314000",
+      "initialExpected": "240.00",
+      "reviewedExpected": "240.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-102",
+      "cohort": "2025-vietnam-sep",
+      "date": "2025-09-15",
+      "origin": "VN",
+      "hts": "8501314000",
+      "initialExpected": "240.00",
+      "reviewedExpected": "240.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-103",
+      "cohort": "2025-vietnam-sep",
+      "date": "2025-09-15",
+      "origin": "VN",
+      "hts": "8501314000",
+      "initialExpected": "240.00",
+      "reviewedExpected": "240.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-104",
+      "cohort": "2025-vietnam-sep",
+      "date": "2025-09-15",
+      "origin": "VN",
+      "hts": "8501314000",
+      "initialExpected": "240.00",
+      "reviewedExpected": "240.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-105",
+      "cohort": "2025-vietnam-sep",
+      "date": "2025-09-15",
+      "origin": "VN",
+      "hts": "8501314000",
+      "initialExpected": "240.00",
+      "reviewedExpected": "240.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-106",
+      "cohort": "2026-vietnam-mar",
+      "date": "2026-03-15",
+      "origin": "VN",
+      "hts": "8501314000",
+      "initialExpected": "140.00",
+      "reviewedExpected": "140.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-107",
+      "cohort": "2026-vietnam-mar",
+      "date": "2026-03-15",
+      "origin": "VN",
+      "hts": "8501314000",
+      "initialExpected": "140.00",
+      "reviewedExpected": "140.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-108",
+      "cohort": "2026-vietnam-mar",
+      "date": "2026-03-15",
+      "origin": "VN",
+      "hts": "8501314000",
+      "initialExpected": "140.00",
+      "reviewedExpected": "140.00",
+      "initialDifference": "-10.00",
+      "reviewedDifference": "-10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-109",
+      "cohort": "2026-vietnam-mar",
+      "date": "2026-03-15",
+      "origin": "VN",
+      "hts": "8501314000",
+      "initialExpected": "140.00",
+      "reviewedExpected": "140.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-110",
+      "cohort": "2026-vietnam-mar",
+      "date": "2026-03-15",
+      "origin": "VN",
+      "hts": "8501314000",
+      "initialExpected": "140.00",
+      "reviewedExpected": "140.00",
+      "initialDifference": "-20.00",
+      "reviewedDifference": "-20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-111",
+      "cohort": "2026-vietnam-phone-exempt",
+      "date": "2026-08-15",
+      "origin": "VN",
+      "hts": "8517130000",
+      "initialExpected": "0.00",
+      "reviewedExpected": "0.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-112",
+      "cohort": "2026-vietnam-phone-exempt",
+      "date": "2026-08-15",
+      "origin": "VN",
+      "hts": "8517130000",
+      "initialExpected": "0.00",
+      "reviewedExpected": "0.00",
+      "initialDifference": "10.00",
+      "reviewedDifference": "10.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-113",
+      "cohort": "2026-vietnam-phone-exempt",
+      "date": "2026-08-15",
+      "origin": "VN",
+      "hts": "8517130000",
+      "initialExpected": "0.00",
+      "reviewedExpected": "0.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-114",
+      "cohort": "2026-vietnam-phone-exempt",
+      "date": "2026-08-15",
+      "origin": "VN",
+      "hts": "8517130000",
+      "initialExpected": "0.00",
+      "reviewedExpected": "0.00",
+      "initialDifference": "20.00",
+      "reviewedDifference": "20.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-115",
+      "cohort": "2026-vietnam-phone-exempt",
+      "date": "2026-08-15",
+      "origin": "VN",
+      "hts": "8517130000",
+      "initialExpected": "0.00",
+      "reviewedExpected": "0.00",
+      "initialDifference": "0.00",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-116",
+      "cohort": "unpublished-code",
+      "date": "2026-08-15",
+      "origin": "CN",
+      "hts": "8501314099",
+      "initialExpected": null,
+      "reviewedExpected": null,
+      "initialDifference": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-117",
+      "cohort": "unpublished-code",
+      "date": "2026-08-15",
+      "origin": "CN",
+      "hts": "8501314099",
+      "initialExpected": null,
+      "reviewedExpected": null,
+      "initialDifference": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-118",
+      "cohort": "unpublished-code",
+      "date": "2026-08-15",
+      "origin": "CN",
+      "hts": "8501314099",
+      "initialExpected": null,
+      "reviewedExpected": null,
+      "initialDifference": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-119",
+      "cohort": "unpublished-code",
+      "date": "2026-08-15",
+      "origin": "CN",
+      "hts": "8501314099",
+      "initialExpected": null,
+      "reviewedExpected": null,
+      "initialDifference": null,
+      "reviewedDifference": null
+    },
+    {
+      "entry": "FICTIONAL-HISTORY-120",
+      "cohort": "unpublished-code",
+      "date": "2026-08-15",
+      "origin": "CN",
+      "hts": "8501314099",
+      "initialExpected": null,
+      "reviewedExpected": null,
+      "initialDifference": null,
+      "reviewedDifference": null
+    }
+  ],
+  "decisions": [
+    {
+      "row": 6,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-6"
+      ],
+      "validFrom": "2019-11-15",
+      "validBefore": "2019-11-16",
+      "exclusion": "9903.88.20",
+      "exclusionScope": "20(y)(33)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 7,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-7"
+      ],
+      "validFrom": "2019-11-15",
+      "validBefore": "2019-11-16",
+      "exclusion": "9903.88.20",
+      "exclusionScope": "20(y)(33)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 8,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-8"
+      ],
+      "validFrom": "2019-11-15",
+      "validBefore": "2019-11-16",
+      "exclusion": "9903.88.20",
+      "exclusionScope": "20(y)(33)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 9,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-9"
+      ],
+      "validFrom": "2019-11-15",
+      "validBefore": "2019-11-16",
+      "exclusion": "9903.88.20",
+      "exclusionScope": "20(y)(33)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 10,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-10"
+      ],
+      "validFrom": "2019-11-15",
+      "validBefore": "2019-11-16",
+      "exclusion": "9903.88.20",
+      "exclusionScope": "20(y)(33)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 11,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-11"
+      ],
+      "validFrom": "2020-08-15",
+      "validBefore": "2020-08-16",
+      "exclusion": "9903.88.20",
+      "exclusionScope": "20(y)(33)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 12,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-12"
+      ],
+      "validFrom": "2020-08-15",
+      "validBefore": "2020-08-16",
+      "exclusion": "9903.88.20",
+      "exclusionScope": "20(y)(33)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 13,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-13"
+      ],
+      "validFrom": "2020-08-15",
+      "validBefore": "2020-08-16",
+      "exclusion": "9903.88.20",
+      "exclusionScope": "20(y)(33)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 14,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-14"
+      ],
+      "validFrom": "2020-08-15",
+      "validBefore": "2020-08-16",
+      "exclusion": "9903.88.20",
+      "exclusionScope": "20(y)(33)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 15,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-15"
+      ],
+      "validFrom": "2020-08-15",
+      "validBefore": "2020-08-16",
+      "exclusion": "9903.88.20",
+      "exclusionScope": "20(y)(33)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 21,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-21"
+      ],
+      "validFrom": "2022-08-15",
+      "validBefore": "2022-08-16",
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(15)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 22,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-22"
+      ],
+      "validFrom": "2022-08-15",
+      "validBefore": "2022-08-16",
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(15)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 23,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-23"
+      ],
+      "validFrom": "2022-08-15",
+      "validBefore": "2022-08-16",
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(15)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 24,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-24"
+      ],
+      "validFrom": "2022-08-15",
+      "validBefore": "2022-08-16",
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(15)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 25,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-25"
+      ],
+      "validFrom": "2022-08-15",
+      "validBefore": "2022-08-16",
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(15)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 26,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-26"
+      ],
+      "validFrom": "2023-08-15",
+      "validBefore": "2023-08-16",
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(15)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 27,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-27"
+      ],
+      "validFrom": "2023-08-15",
+      "validBefore": "2023-08-16",
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(15)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 28,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-28"
+      ],
+      "validFrom": "2023-08-15",
+      "validBefore": "2023-08-16",
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(15)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 29,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-29"
+      ],
+      "validFrom": "2023-08-15",
+      "validBefore": "2023-08-16",
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(15)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 30,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-30"
+      ],
+      "validFrom": "2023-08-15",
+      "validBefore": "2023-08-16",
+      "exclusion": "9903.88.67",
+      "exclusionScope": "20(ttt)(ii)(15)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 31,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-31"
+      ],
+      "validFrom": "2024-08-15",
+      "validBefore": "2024-08-16",
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 32,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-32"
+      ],
+      "validFrom": "2024-08-15",
+      "validBefore": "2024-08-16",
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 33,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-33"
+      ],
+      "validFrom": "2024-08-15",
+      "validBefore": "2024-08-16",
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 34,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-34"
+      ],
+      "validFrom": "2024-08-15",
+      "validBefore": "2024-08-16",
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 35,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-35"
+      ],
+      "validFrom": "2024-08-15",
+      "validBefore": "2024-08-16",
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 36,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-36"
+      ],
+      "validFrom": "2025-01-15",
+      "validBefore": "2025-01-16",
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 37,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-37"
+      ],
+      "validFrom": "2025-01-15",
+      "validBefore": "2025-01-16",
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 38,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-38"
+      ],
+      "validFrom": "2025-01-15",
+      "validBefore": "2025-01-16",
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 39,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-39"
+      ],
+      "validFrom": "2025-01-15",
+      "validBefore": "2025-01-16",
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 40,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-40"
+      ],
+      "validFrom": "2025-01-15",
+      "validBefore": "2025-01-16",
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 86,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-86"
+      ],
+      "validFrom": "2026-08-15",
+      "validBefore": "2026-08-16",
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 87,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-87"
+      ],
+      "validFrom": "2026-08-15",
+      "validBefore": "2026-08-16",
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 88,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-88"
+      ],
+      "validFrom": "2026-08-15",
+      "validBefore": "2026-08-16",
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 89,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-89"
+      ],
+      "validFrom": "2026-08-15",
+      "validBefore": "2026-08-16",
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    },
+    {
+      "row": 90,
+      "kind": "confirm_facts",
+      "note": "SYNTHETIC: fictional product and dated qualification evidence; no real legal approval.",
+      "evidence": [
+        "SYNTHETIC-DOC-90"
+      ],
+      "validFrom": "2026-08-15",
+      "validBefore": "2026-08-16",
+      "exclusion": "9903.88.69",
+      "exclusionScope": "20(vvv)(ii)(14)",
+      "facts": {
+        "exclusion_qualified": true
+      }
+    }
+  ],
+  "summary": {
+    "lines": 120,
+    "calculated": 115,
+    "unresolved": 5,
+    "discrepancies": 90,
+    "overpayment": "690.00",
+    "underpayment": "660.00"
+  },
+  "reviewedSummary": {
+    "lines": 120,
+    "calculated": 115,
+    "unresolved": 5,
+    "discrepancies": 97,
+    "overpayment": "9230.00",
+    "underpayment": "450.00"
+  }
+}

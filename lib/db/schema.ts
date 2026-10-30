@@ -431,6 +431,7 @@ export const products = sqliteTable(
     unitOfMeasure: text("unit_of_measure"),
     /** Declared unit value and its currency, used only for disclosed-estimate exposure maths. */
     unitValue: real("unit_value"),
+    tariffInputs: text("tariff_inputs", { mode: "json" }).$type<Record<string, unknown>>(),
     currency: text("currency").notNull().default("USD"),
     /** consumer | industrial | component | unknown — gates consumer-product source packs. */
     productClass: text("product_class").notNull().default("unknown"),

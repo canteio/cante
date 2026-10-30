@@ -39,6 +39,47 @@ const AD_VALOREM = /(\d+(?:\.\d+)?)\s*%/;
 /** Cents or dollars per unit: 2.5¢/kg, 1.2 cents/kg, $1.50/kg, 0.5c/liter. */
 const SPECIFIC = /(?:\$\s*(\d+(?:\.\d+)?)|(\d+(?:\.\d+)?)\s*(?:¢|c\b|cents?))\s*(?:\/|\s+per\s+)\s*([a-z0-9²³]+)/i;
 
+export const DUTY_CALCULATION_VERSION = "exact-duty-arithmetic-v2";
+
+/** Expand the supplied numeric value's own decimal representation without
+ * rounding or converting units. Decimal precision limits are checked by callers. */
+function numberDecimal(value:number):string|null {
+  if(!Number.isFinite(value)||value<0)return null;
+  const [coefficient,exponent="0"]=value.toString().toLowerCase().split("e"),[whole,fraction=""]=coefficient.split("."),digits=whole+fraction,position=whole.length+Number(exponent);
+  if(position< -320||position>320)return null;
+  return position<=0?"0."+"0".repeat(-position)+digits:position>=digits.length?digits+"0".repeat(position-digits.length):digits.slice(0,position)+"."+digits.slice(position);
+}
+
+/** Only pure ad valorem charges can use this cap. It supplies no legal rule,
+ * qualification or combined/specific-duty equivalence. Compare exact rationals. */
+export function capAdValoremRate(raw:string,capFraction:string|number):string|null {
+  const cap=typeof capFraction==="number"?numberDecimal(capFraction):capFraction;
+  const decimal=(s:string)=>{if(s.length>30||!/^\d+(?:\.\d{1,12})?$/.test(s))return null;const[a,b=""]=s.split(".");return{n:BigInt(a+b),d:10n**BigInt(b.length)};};
+  if(cap===null||raw.length>100)return null;const limit=decimal(cap);if(!limit||limit.n>limit.d)return null;
+  const text=raw.trim();if(FREE.test(text))return raw;
+  const pct=/^(\d+(?:\.\d{1,12})?)\s*%$/.exec(text),mixed=/^(\d{1,9}) (\d{1,9})\/(\d{1,9})%$/.exec(text);
+  let rate:{n:bigint;d:bigint}|null=null;
+  if(pct){const p=decimal(pct[1]);if(p)rate={n:p.n,d:p.d*100n};}
+  else if(mixed){const[a,b,c]=mixed.slice(1).map(BigInt);if(c>0n&&b>0n&&b<c)rate={n:a*c+b,d:c*100n};}
+  if(!rate)return null;if(rate.n*limit.d<=limit.n*rate.d)return raw;
+  const numerator=limit.n*100n,whole=numerator/limit.d,scale=cap.split(".")[1]?.length??0,remainder=(numerator%limit.d).toString().padStart(scale,"0").replace(/0+$/,"");
+  return whole.toString()+(remainder?"."+remainder:"")+"%";
+}
+
+function currencyNumber(cents:bigint):number|null {
+  if(cents>BigInt(Number.MAX_SAFE_INTEGER)||cents< -BigInt(Number.MAX_SAFE_INTEGER))return null;
+  const absolute=cents<0n?-cents:cents,text=(cents<0n?"-":"")+`${absolute/100n}.${String(absolute%100n).padStart(2,"0")}`,amount=Number(cents)/100;
+  return Number.isFinite(amount)&&amount.toFixed(2)===text?amount:null;
+}
+
+/** Combine already-rounded monetary components using integer cents, preserving
+ * the existing per-measure rounding policy. Optional subtraction is exact too. */
+export function combineDutyAmounts(add:number[],subtract:number[]=[]):number|null {
+  if(add.length+subtract.length>256)return null;
+  let total=0n;for(const[values,sign]of [[add,1n],[subtract,-1n]] as const)for(const value of values){if(!Number.isFinite(value)||value<0)return null;const text=value.toFixed(2);if(!/^\d+\.\d{2}$/.test(text)||Number(text)!==value)return null;total+=BigInt(text.replace(".",""))*sign;}
+  return currencyNumber(total);
+}
+
 /** Strip the trailing FTA country list: "Free (AU,BH,CL)" → "Free". */
 function stripCountryList(value: string): string {
   return value.replace(/\([^)]*\)/g, "").trim();
@@ -129,62 +170,22 @@ export function computeDuty(
   rate: DutyRate,
   input: { value: number | null; quantity?: number | null; unit?: string | null },
 ): DutyComputation {
-  const basis: string[] = [];
-
-  if (!rate.parsed) {
-    return {
-      amount: null,
-      currency: "USD",
-      basis: [rate.note ?? `Duty rate "${rate.raw}" could not be parsed, so no duty was computed.`],
-    };
-  }
-
-  if (rate.free) {
-    basis.push(`Rate is Free (${rate.raw}), so the duty is 0.`);
-    return { amount: 0, currency: "USD", basis };
-  }
-
-  let total = 0;
-
-  if (rate.adValorem !== null) {
-    if (input.value === null) {
-      return {
-        amount: null,
-        currency: "USD",
-        basis: [
-          `Rate ${rate.raw} is ad valorem but no shipment value is on file, so the duty cannot be computed.`,
-        ],
-      };
-    }
-    const part = rate.specificAmount === null ? computeAdValoremAmount(input.value, rate.adValorem) ?? Number.NaN : input.value * rate.adValorem;
-    total += part;
-    basis.push(
-      `Ad valorem: ${(rate.adValorem * 100).toFixed(2)}% × USD ${input.value.toLocaleString()} = USD ${part.toFixed(2)}.`,
-    );
-  }
-
-  if (rate.specificAmount !== null) {
-    const unitMatches =
-      input.unit && rate.specificUnit && input.unit.toLowerCase() === rate.specificUnit;
-    if (!unitMatches || input.quantity === null || input.quantity === undefined) {
-      return {
-        amount: null,
-        currency: "USD",
-        basis: [
-          `Rate ${rate.raw} includes a per-${rate.specificUnit} charge, and no quantity in ${rate.specificUnit} is on file. ` +
-            "Reporting only the ad valorem part would under-state the duty, so no figure is given.",
-        ],
-      };
-    }
-    const part = input.quantity * rate.specificAmount;
-    total += part;
-    basis.push(
-      `Specific: USD ${rate.specificAmount.toFixed(4)}/${rate.specificUnit} × ${input.quantity.toLocaleString()} ${rate.specificUnit} = USD ${part.toFixed(2)}.`,
-    );
-  }
-
-  if (!Number.isFinite(total)) return { amount: null, currency: "USD", basis: ["Duty arithmetic overflow; amount withheld."] };
-  return { amount: Number(total.toFixed(2)), currency: "USD", basis };
+  if(!rate.parsed)return{amount:null,currency:"USD",basis:[rate.note??`Duty rate "${rate.raw}" could not be parsed, so no duty was computed.`]};
+  if(rate.free)return{amount:0,currency:"USD",basis:[`Rate is Free (${rate.raw}), so the duty is 0.`]};
+  const value=input.value===null?null:numberDecimal(input.value),quantity=input.quantity==null?null:numberDecimal(input.quantity);
+  if(rate.adValorem!==null&&value===null)return{amount:null,currency:"USD",basis:[`Rate ${rate.raw} is ad valorem but no valid shipment value is on file, so the duty cannot be computed.`]};
+  if(rate.specificAmount!==null&&(!input.unit||input.unit.toLowerCase()!==rate.specificUnit||quantity===null))return{amount:null,currency:"USD",basis:[`Rate ${rate.raw} includes a per-${rate.specificUnit} charge, and no quantity in ${rate.specificUnit} is on file. Reporting only the ad valorem part would under-state the duty, so no figure is given.`]};
+  // Column/qualification selection precedes this numeric adapter. Preserve its
+  // existing programme-list syntax; the historical string API stays stricter.
+  const raw=stripCountryList(rate.raw),exact=computeExactDuty(raw,{value,quantity,unit:input.unit});
+  if(exact===null)return{amount:null,currency:"USD",basis:["The complete duty expression and supplied quantities could not be evaluated exactly; no partial amount is reported."]};
+  const amount=currencyNumber(BigInt(exact.replace(".","")));
+  if(amount===null)return{amount:null,currency:"USD",basis:["Duty arithmetic exceeds exact-cent numeric output bounds; amount withheld."]};
+  const basis:string[]=[],av=raw.match(AD_VALOREM),sp=raw.match(SPECIFIC);
+  if(av){const part=computeExactDuty(av[0],{value});basis.push(`Ad valorem: ${av[0]} × USD ${input.value!.toLocaleString()} = USD ${part}.`);}
+  if(sp){const part=computeExactDuty(sp[0],{value,quantity,unit:input.unit});basis.push(`Specific: ${sp[0]} × ${input.quantity!.toLocaleString()} ${rate.specificUnit} = USD ${part}.`);}
+  if(av&&sp)basis.push("Displayed parts are rounded; the complete compound duty is added exactly before one final cent rounding.");
+  return{amount,currency:"USD",basis};
 }
 
 /**
@@ -210,6 +211,40 @@ export function computeAdValoremAmount(value:number,rate:number):number|null {
   if(!Number.isFinite(value)||!Number.isFinite(rate)||value<0||rate<0)return null;
   const decimal=(n:number)=>{const [coefficient,exponent="0"]=n.toString().toLowerCase().split("e");const [whole,fraction=""]=coefficient.split(".");const scale=fraction.length-Number(exponent);const numerator=BigInt(whole+fraction);return scale<0?{n:numerator*10n**BigInt(-scale),d:1n}:{n:numerator,d:10n**BigInt(scale)};};
   const a=decimal(value),b=decimal(rate);const numerator=a.n*b.n*100n,denominator=a.d*b.d;
-  const rounded=(numerator*2n+denominator)/(denominator*2n);const cents=Number(rounded);
-  return Number.isSafeInteger(cents)?cents/100:null;
+  const rounded=(numerator*2n+denominator)/(denominator*2n);
+  return currencyNumber(rounded);
+}
+
+/** Historical execution keeps decimal strings until the final cent. No network,
+ * current-rate lookup or binary-float multiplication is used here. */
+export function computeExactDuty(raw: string, input: { value: string | null; quantity?: string | null; unit?: string | null }): string | null {
+  return computeExactDutySum([{raw,input}]);
+}
+
+/** Sum complete terms before rounding once. Distinct quantity units retain
+ * their own inputs; a missing or unparsed term withholds the entire amount. */
+export function computeExactDutySum(terms: {raw:string;input:{value:string|null;quantity?:string|null;unit?:string|null}}[]):string|null {
+  if(!terms.length||terms.length>3)return null;
+  const decimal = (s: string) => {
+    if (!/^\d+(?:\.\d{1,12})?$/.test(s) || s.length > 30) throw Error("Invalid decimal");
+    const [a,b=""] = s.split("."); return {n:BigInt(a+b),d:10n**BigInt(b.length)};
+  };
+  try {
+    let n=0n,d=1n;
+    const add = (a:bigint,b:bigint) => { n=n*b+a*d; d*=b; };
+    for(const {raw,input}of terms){
+    if(raw.length>100||/[()]/.test(raw))return null;
+    // Published mixed fractional percentages retain their rational value. Never
+    // turn 33 1/3% into a rounded decimal before calculating shipment money.
+    const mixed=/^(\d{1,9}) (\d{1,9})\/(\d{1,9})%$/.exec(raw);
+    if(mixed){if(input.value===null)return null;const whole=BigInt(mixed[1]),numerator=BigInt(mixed[2]),denominator=BigInt(mixed[3]);if(denominator<=0n||numerator<=0n||numerator>=denominator)return null;const v=decimal(input.value);add(v.n*(whole*denominator+numerator),v.d*denominator*100n);continue;}
+    if(!parseDutyRate(raw).parsed)return null;
+    const cleaned = stripCountryList(raw).trim(); if (FREE.test(cleaned)) continue;
+    const av=cleaned.match(AD_VALOREM),sp=cleaned.match(SPECIFIC);
+    if (av) { if(input.value===null)return null; const v=decimal(input.value),r=decimal(av[1]); add(v.n*r.n,v.d*r.d*100n); }
+    if (sp) { if(!input.quantity||input.unit?.toLowerCase()!==sp[3].toLowerCase())return null; const q=decimal(input.quantity),r=decimal(sp[1]??sp[2]);add(q.n*r.n,q.d*r.d*(sp[1]?1n:100n)); }
+    }
+    const cents=(n*200n+d)/(d*2n); if(cents>100_000_000_000_000_000n)return null;
+    return `${cents/100n}.${String(cents%100n).padStart(2,"0")}`;
+  } catch { return null; }
 }

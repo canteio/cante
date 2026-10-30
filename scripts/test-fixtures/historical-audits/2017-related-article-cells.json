@@ -1,0 +1,6203 @@
+{
+  "label": "Public original 2017 rate evidence. Fictional declarations in tests do not establish classification, origin, legal scope or refunds.",
+  "annual": [
+    {
+      "record": 10293,
+      "hts8": "90051000",
+      "description": "Binoculars",
+      "from": "1989-01-01",
+      "through": "2050-12-31",
+      "rateType": "0",
+      "adValorem": "0.00",
+      "specific": "0.00",
+      "other": "0.00",
+      "textRate": "Free",
+      "textRateAvailable": true,
+      "special": "",
+      "column2": "60%",
+      "column2Data": {
+        "rateType": "7",
+        "adValorem": "0.60",
+        "specific": "0.00",
+        "other": "0.00",
+        "fieldsComplete": true,
+        "textRateAvailable": true
+      },
+      "units": [
+        "NO"
+      ],
+      "quantityCodes": [
+        "NO",
+        ""
+      ],
+      "footnote": "",
+      "additional": ""
+    },
+    {
+      "record": 10468,
+      "hts8": "90151040",
+      "description": "Electrical rangefinders",
+      "from": "1999-01-01",
+      "through": "2050-12-31",
+      "rateType": "0",
+      "adValorem": "0.00",
+      "specific": "0.00",
+      "other": "0.00",
+      "textRate": "Free",
+      "textRateAvailable": true,
+      "special": "",
+      "column2": "40%",
+      "column2Data": {
+        "rateType": "7",
+        "adValorem": "0.40",
+        "specific": "0.00",
+        "other": "0.00",
+        "fieldsComplete": true,
+        "textRateAvailable": true
+      },
+      "units": [
+        "NO"
+      ],
+      "quantityCodes": [
+        "NO",
+        ""
+      ],
+      "footnote": "",
+      "additional": ""
+    },
+    {
+      "record": 10483,
+      "hts8": "90159001",
+      "description": "Parts and accessories of 9015",
+      "from": "2017-01-01",
+      "through": "2050-12-31",
+      "rateType": "0",
+      "adValorem": "0.00",
+      "specific": "0.00",
+      "other": "0.00",
+      "textRate": "Free",
+      "textRateAvailable": true,
+      "special": "",
+      "column2": "The rate applicable to the article of which it is a part or accessory",
+      "column2Data": {
+        "rateType": "",
+        "adValorem": "",
+        "specific": "",
+        "other": "",
+        "fieldsComplete": true,
+        "textRateAvailable": true
+      },
+      "units": [
+        "X"
+      ],
+      "quantityCodes": [
+        "X",
+        ""
+      ],
+      "footnote": "",
+      "additional": ""
+    },
+    {
+      "record": 11242,
+      "hts8": "96200015",
+      "description": "Monopods, bipods, tripods and similar articles, accessories of heading 9005",
+      "from": "2017-01-01",
+      "through": "2050-12-31",
+      "rateType": "9",
+      "adValorem": "9999.99",
+      "specific": "9999.99",
+      "other": "9999.99",
+      "textRate": "The rate applicable to the article of which it is an accessory",
+      "textRateAvailable": true,
+      "special": "Free (A,AU,BH,CA,CL,CO,D,E,IL,JO,KR,MA,MX,OM,P,PA,PE,SG)",
+      "column2": "The rate applicable to the article of which it is an accessory",
+      "column2Data": {
+        "rateType": "",
+        "adValorem": "",
+        "specific": "",
+        "other": "",
+        "fieldsComplete": true,
+        "textRateAvailable": true
+      },
+      "units": [
+        "X"
+      ],
+      "quantityCodes": [
+        "X",
+        ""
+      ],
+      "footnote": "",
+      "additional": ""
+    },
+    {
+      "record": 11245,
+      "hts8": "96200030",
+      "description": "Monopods, bipods, tripods and similar articles, accessories of heading 9015, including rangefinders",
+      "from": "2017-01-01",
+      "through": "2050-12-31",
+      "rateType": "9",
+      "adValorem": "9999.99",
+      "specific": "9999.99",
+      "other": "9999.99",
+      "textRate": "The rate applicable to the article of which it is an accessory",
+      "textRateAvailable": true,
+      "special": "Free (A,AU,BH,CA,CL,CO,D,E,IL,JO,KR,MA,MX,OM,P,PA,PE,SG)",
+      "column2": "The rate applicable to the article of which it is an accessory",
+      "column2Data": {
+        "rateType": "",
+        "adValorem": "",
+        "specific": "",
+        "other": "",
+        "fieldsComplete": true,
+        "textRateAvailable": true
+      },
+      "units": [
+        "X"
+      ],
+      "quantityCodes": [
+        "X",
+        ""
+      ],
+      "footnote": "",
+      "additional": ""
+    }
+  ],
+  "originals": [
+    {
+      "sourceId": "f362e6f4-ed1b-493a-976f-2b03e56c8847",
+      "url": "https://hts.usitc.gov/reststop/file?release=NTE&filename=Chapter%2096",
+      "page": 18,
+      "cells": [
+        {
+          "text": "Rates of Duty",
+          "x": 457.237,
+          "y": 719.212,
+          "width": 42.406000000000056
+        },
+        {
+          "text": "Unit",
+          "x": 350.897,
+          "y": 718.712,
+          "width": 12.446
+        },
+        {
+          "text": "of",
+          "x": 354.201,
+          "y": 710.313,
+          "width": 5.838
+        },
+        {
+          "text": "Quantity",
+          "x": 344.086,
+          "y": 701.914,
+          "width": 26.068
+        },
+        {
+          "text": "Article Description",
+          "x": 193.728,
+          "y": 710.313,
+          "width": 56.78400000000003
+        },
+        {
+          "text": "Stat.",
+          "x": 93.24,
+          "y": 718.712,
+          "width": 14.399
+        },
+        {
+          "text": "Suf-",
+          "x": 94.021,
+          "y": 710.313,
+          "width": 12.838
+        },
+        {
+          "text": "fix",
+          "x": 96.94,
+          "y": 701.914,
+          "width": 7
+        },
+        {
+          "text": "Heading/",
+          "x": 55.473,
+          "y": 718.212,
+          "width": 28.014
+        },
+        {
+          "text": "Subheading",
+          "x": 50.8,
+          "y": 709.813,
+          "width": 37.359
+        },
+        {
+          "text": "",
+          "x": 88.15899999999998,
+          "y": 709.813,
+          "width": 459.975
+        },
+        {
+          "text": "2",
+          "x": 548.134,
+          "y": 710.313,
+          "width": 3.892
+        },
+        {
+          "text": "1",
+          "x": 448.414,
+          "y": 710.313,
+          "width": 3.892
+        },
+        {
+          "text": "Special",
+          "x": 471.283,
+          "y": 701.414,
+          "width": 22.952999999999996
+        },
+        {
+          "text": "General",
+          "x": 398.705,
+          "y": 701.414,
+          "width": 24.829000000000004
+        },
+        {
+          "text": "",
+          "x": 110.72,
+          "y": 689.353,
+          "width": 0
+        },
+        {
+          "text": "Monopods, bipods, tripods and similar articles:",
+          "x": 110.72,
+          "y": 689.353,
+          "width": 171.33550000000008
+        },
+        {
+          "text": "9620.00",
+          "x": 47.8,
+          "y": 689.353,
+          "width": 30.480999999999998
+        },
+        {
+          "text": "Accessories suitable for use solely or principally with the",
+          "x": 125.12,
+          "y": 679.153,
+          "width": 205.93950000000004
+        },
+        {
+          "text": "apparatus of heading 8519 or 8521.....................................",
+          "x": 125.12,
+          "y": 668.953,
+          "width": 208.40000000000006
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 679.153,
+          "width": 9.452
+        },
+        {
+          "text": "9620.00.10",
+          "x": 47.8,
+          "y": 679.153,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "35%",
+          "x": 524,
+          "y": 668.753,
+          "width": 17.0085
+        },
+        {
+          "text": "Free (A, AU, B, BH,",
+          "x": 445.52,
+          "y": 668.753,
+          "width": 72.61649999999997
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 658.553,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 648.353,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 638.153,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 627.953,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "2%",
+          "x": 380.72,
+          "y": 668.753,
+          "width": 12.2825
+        },
+        {
+          "text": "X................",
+          "x": 337.52,
+          "y": 668.753,
+          "width": 40.20000000000005
+        },
+        {
+          "text": "Accessories for the articles of heading 9005......................",
+          "x": 125.12,
+          "y": 613.753,
+          "width": 208.39500000000012
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 613.753,
+          "width": 9.452
+        },
+        {
+          "text": "9620.00.15",
+          "x": 47.8,
+          "y": 613.753,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 613.753,
+          "width": 434.142
+        },
+        {
+          "text": "The rate",
+          "x": 524,
+          "y": 613.553,
+          "width": 30.931999999999988
+        },
+        {
+          "text": "applicable to",
+          "x": 529,
+          "y": 603.353,
+          "width": 46.88600000000023
+        },
+        {
+          "text": "the article of",
+          "x": 529,
+          "y": 593.153,
+          "width": 44.991000000000106
+        },
+        {
+          "text": "which it is an",
+          "x": 529,
+          "y": 582.953,
+          "width": 47.3370000000001
+        },
+        {
+          "text": "accessory",
+          "x": 529,
+          "y": 572.753,
+          "width": 37.553000000000004
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 613.553,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 603.353,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 593.153,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 582.953,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 572.753,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "The rate",
+          "x": 380.72,
+          "y": 613.553,
+          "width": 30.93199999999993
+        },
+        {
+          "text": "applicable to",
+          "x": 385.72,
+          "y": 603.353,
+          "width": 46.88599999999989
+        },
+        {
+          "text": "the article of",
+          "x": 385.72,
+          "y": 593.153,
+          "width": 44.990999999999936
+        },
+        {
+          "text": "which it is an",
+          "x": 385.72,
+          "y": 582.953,
+          "width": 47.337000000000046
+        },
+        {
+          "text": "accessory",
+          "x": 385.72,
+          "y": 572.753,
+          "width": 37.553000000000004
+        },
+        {
+          "text": "X................",
+          "x": 337.52,
+          "y": 613.553,
+          "width": 40.20000000000005
+        },
+        {
+          "text": "Accessories for photographic (other than cinematographic)",
+          "x": 125.12,
+          "y": 558.553,
+          "width": 208.45100000000042
+        },
+        {
+          "text": "cameras of heading 9006.....................................................",
+          "x": 125.12,
+          "y": 548.353,
+          "width": 208.399
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 558.553,
+          "width": 9.452
+        },
+        {
+          "text": "9620.00.20",
+          "x": 47.8,
+          "y": 558.553,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "20%",
+          "x": 524,
+          "y": 548.153,
+          "width": 17.0085
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 548.153,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 537.953,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 527.753,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 517.553,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 507.353,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "5.8%",
+          "x": 380.72,
+          "y": 548.153,
+          "width": 19.1335
+        },
+        {
+          "text": "X................",
+          "x": 337.52,
+          "y": 548.153,
+          "width": 40.20000000000005
+        },
+        {
+          "text": "Accessories for cinematographic cameras of heading",
+          "x": 125.12,
+          "y": 493.153,
+          "width": 195.31400000000005
+        },
+        {
+          "text": "9007.........................................................................................",
+          "x": 125.12,
+          "y": 482.953,
+          "width": 208.397
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 493.153,
+          "width": 9.452
+        },
+        {
+          "text": "9620.00.25",
+          "x": 47.8,
+          "y": 493.153,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "45%",
+          "x": 524,
+          "y": 482.753,
+          "width": 17.0085
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 482.753,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 472.553,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 462.353,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 452.153,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 441.953,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "3.9%",
+          "x": 380.72,
+          "y": 482.753,
+          "width": 19.1335
+        },
+        {
+          "text": "X................",
+          "x": 337.52,
+          "y": 482.753,
+          "width": 40.20000000000005
+        },
+        {
+          "text": "Accessories for the instruments and appliances, including",
+          "x": 125.12,
+          "y": 427.753,
+          "width": 208.40199999999993
+        },
+        {
+          "text": "rangefinders, of heading 9015..............................................",
+          "x": 125.12,
+          "y": 417.553,
+          "width": 208.399
+        },
+        {
+          "text": "9620.00.30",
+          "x": 47.8,
+          "y": 427.753,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "The rate",
+          "x": 524,
+          "y": 417.353,
+          "width": 30.931999999999988
+        },
+        {
+          "text": "applicable to",
+          "x": 529,
+          "y": 407.153,
+          "width": 46.88600000000023
+        },
+        {
+          "text": "the article of",
+          "x": 529,
+          "y": 396.953,
+          "width": 44.991000000000106
+        },
+        {
+          "text": "which it is an",
+          "x": 529,
+          "y": 386.753,
+          "width": 47.3370000000001
+        },
+        {
+          "text": "accessory",
+          "x": 529,
+          "y": 376.553,
+          "width": 37.553000000000004
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 417.353,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 407.153,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 396.953,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 386.753,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 376.553,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "The rate",
+          "x": 380.72,
+          "y": 417.353,
+          "width": 30.93199999999993
+        },
+        {
+          "text": "applicable to",
+          "x": 385.72,
+          "y": 407.153,
+          "width": 46.88599999999989
+        },
+        {
+          "text": "the article of",
+          "x": 385.72,
+          "y": 396.953,
+          "width": 44.990999999999936
+        },
+        {
+          "text": "which it is an",
+          "x": 385.72,
+          "y": 386.753,
+          "width": 47.337000000000046
+        },
+        {
+          "text": "accessory",
+          "x": 385.72,
+          "y": 376.553,
+          "width": 37.553000000000004
+        },
+        {
+          "text": "..................",
+          "x": 337.52,
+          "y": 417.353,
+          "width": 38.25
+        },
+        {
+          "text": "Of rangefinders................................................................",
+          "x": 139.52,
+          "y": 366.353,
+          "width": 194.00000000000006
+        },
+        {
+          "text": "10",
+          "x": 95.714,
+          "y": 366.353,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 366.353,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 366.153,
+          "width": 5.5845
+        },
+        {
+          "text": "Of theodolites and tachymeters.....................................",
+          "x": 139.52,
+          "y": 351.953,
+          "width": 193.99800000000013
+        },
+        {
+          "text": "20",
+          "x": 95.714,
+          "y": 351.953,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 351.953,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 351.753,
+          "width": 5.5845
+        },
+        {
+          "text": "Of levels............................................................................",
+          "x": 139.52,
+          "y": 337.553,
+          "width": 194.00000000000006
+        },
+        {
+          "text": "30",
+          "x": 95.714,
+          "y": 337.553,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 337.553,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 337.353,
+          "width": 5.5845
+        },
+        {
+          "text": "Of photogrammetrical surveying instruments and",
+          "x": 139.52,
+          "y": 323.153,
+          "width": 179.00150000000005
+        },
+        {
+          "text": "apparatus.........................................................................",
+          "x": 139.52,
+          "y": 312.953,
+          "width": 193.998
+        },
+        {
+          "text": "40",
+          "x": 95.714,
+          "y": 323.153,
+          "width": 9.452
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 312.753,
+          "width": 5.5845
+        },
+        {
+          "text": "Of seismographs.............................................................",
+          "x": 139.52,
+          "y": 298.553,
+          "width": 194.00000000000003
+        },
+        {
+          "text": "50",
+          "x": 95.714,
+          "y": 298.553,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 298.553,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 298.353,
+          "width": 5.5845
+        },
+        {
+          "text": "Of other geophysical instruments and apparatus........",
+          "x": 139.52,
+          "y": 284.153,
+          "width": 193.99999999999994
+        },
+        {
+          "text": "60",
+          "x": 95.714,
+          "y": 284.153,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 284.153,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 283.953,
+          "width": 5.5845
+        },
+        {
+          "text": "Other.................................................................................",
+          "x": 139.52,
+          "y": 269.753,
+          "width": 193.998
+        },
+        {
+          "text": "90",
+          "x": 95.714,
+          "y": 269.753,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 269.753,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 269.553,
+          "width": 5.5845
+        },
+        {
+          "text": "",
+          "x": 457.237,
+          "y": 718.332,
+          "width": 0
+        },
+        {
+          "text": "Rates of Duty",
+          "x": 457.237,
+          "y": 718.332,
+          "width": 42.406000000000056
+        },
+        {
+          "text": "1",
+          "x": 448.054,
+          "y": 709.836,
+          "width": 3.892
+        },
+        {
+          "text": "",
+          "x": 137.996,
+          "y": 757.39,
+          "width": 0
+        },
+        {
+          "text": "Harmonized Tariff Schedule of the United States (2017) - Revision 1",
+          "x": 137.996,
+          "y": 757.39,
+          "width": 349.3269999999999
+        },
+        {
+          "text": "",
+          "x": 243.654,
+          "y": 747.613,
+          "width": 0
+        },
+        {
+          "text": "Annotated for Statistical Reporting Purposes",
+          "x": 243.654,
+          "y": 747.613,
+          "width": 138.01199999999994
+        },
+        {
+          "text": "XX",
+          "x": 45.72,
+          "y": 739.214,
+          "width": 9.338000000000001
+        },
+        {
+          "text": "96-18",
+          "x": 45.72,
+          "y": 730.815,
+          "width": 17.898999999999994
+        }
+      ],
+      "rates": [
+        {
+          "source_id": "f362e6f4-ed1b-493a-976f-2b03e56c8847",
+          "hts": "9620001500",
+          "description": "Accessories for the articles of heading 9005",
+          "general": "The rate applicable to the article of which it is an accessory",
+          "special": "Free (A, AU, BH, CA, CL, CO, D, E, IL, JO, KR, MA, MX, OM, P, PA, PE, SG)",
+          "column2": "The rate applicable to the article of which it is an accessory",
+          "additional_duties": "",
+          "units": [
+            "X"
+          ],
+          "footnotes": [],
+          "pdfPage": 18,
+          "projection": "official-pdf-table-v1"
+        },
+        {
+          "source_id": "f362e6f4-ed1b-493a-976f-2b03e56c8847",
+          "hts": "9620003010",
+          "description": "Of rangefinders Of theodolites and tachymeters",
+          "general": "The rate applicable to the article of which it is an accessory",
+          "special": "Free (A, AU, BH, CA, CL, CO, D, E, IL, JO, KR, MA, MX, OM, P, PA, PE, SG)",
+          "column2": "The rate applicable to the article of which it is an accessory",
+          "additional_duties": "",
+          "units": [
+            "X"
+          ],
+          "footnotes": [],
+          "pdfPage": 18,
+          "projection": "official-pdf-table-v1"
+        }
+      ]
+    },
+    {
+      "sourceId": "20e99798-e58b-40e6-91e8-373f7ff05bde",
+      "url": "https://hts.usitc.gov/reststop/file?release=basicCorrections2&filename=Chapter%2096",
+      "page": 18,
+      "cells": [
+        {
+          "text": "Rates of Duty",
+          "x": 457.237,
+          "y": 719.212,
+          "width": 42.406000000000056
+        },
+        {
+          "text": "Unit",
+          "x": 350.897,
+          "y": 718.712,
+          "width": 12.446
+        },
+        {
+          "text": "of",
+          "x": 354.201,
+          "y": 710.313,
+          "width": 5.838
+        },
+        {
+          "text": "Quantity",
+          "x": 344.086,
+          "y": 701.914,
+          "width": 26.068
+        },
+        {
+          "text": "Article Description",
+          "x": 193.728,
+          "y": 710.313,
+          "width": 56.78400000000003
+        },
+        {
+          "text": "Stat.",
+          "x": 93.24,
+          "y": 718.712,
+          "width": 14.399
+        },
+        {
+          "text": "Suf-",
+          "x": 94.021,
+          "y": 710.313,
+          "width": 12.838
+        },
+        {
+          "text": "fix",
+          "x": 96.94,
+          "y": 701.914,
+          "width": 7
+        },
+        {
+          "text": "Heading/",
+          "x": 55.473,
+          "y": 718.212,
+          "width": 28.014
+        },
+        {
+          "text": "Subheading",
+          "x": 50.8,
+          "y": 709.813,
+          "width": 37.359
+        },
+        {
+          "text": "",
+          "x": 88.15899999999998,
+          "y": 709.813,
+          "width": 459.975
+        },
+        {
+          "text": "2",
+          "x": 548.134,
+          "y": 710.313,
+          "width": 3.892
+        },
+        {
+          "text": "1",
+          "x": 448.414,
+          "y": 710.313,
+          "width": 3.892
+        },
+        {
+          "text": "Special",
+          "x": 471.283,
+          "y": 701.414,
+          "width": 22.952999999999996
+        },
+        {
+          "text": "General",
+          "x": 398.705,
+          "y": 701.414,
+          "width": 24.829000000000004
+        },
+        {
+          "text": "",
+          "x": 110.72,
+          "y": 689.353,
+          "width": 0
+        },
+        {
+          "text": "Monopods, bipods, tripods and similar articles:",
+          "x": 110.72,
+          "y": 689.353,
+          "width": 171.33550000000008
+        },
+        {
+          "text": "9620.00",
+          "x": 47.8,
+          "y": 689.353,
+          "width": 30.480999999999998
+        },
+        {
+          "text": "Accessories suitable for use solely or principally with the",
+          "x": 125.12,
+          "y": 679.153,
+          "width": 205.93950000000004
+        },
+        {
+          "text": "apparatus of heading 8519 or 8521.....................................",
+          "x": 125.12,
+          "y": 668.953,
+          "width": 208.40000000000006
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 679.153,
+          "width": 9.452
+        },
+        {
+          "text": "9620.00.10",
+          "x": 47.8,
+          "y": 679.153,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "35%",
+          "x": 524,
+          "y": 668.753,
+          "width": 17.0085
+        },
+        {
+          "text": "Free (A, AU, B, BH,",
+          "x": 445.52,
+          "y": 668.753,
+          "width": 72.61649999999997
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 658.553,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 648.353,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 638.153,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 627.953,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "2%",
+          "x": 380.72,
+          "y": 668.753,
+          "width": 12.2825
+        },
+        {
+          "text": "X................",
+          "x": 337.52,
+          "y": 668.753,
+          "width": 40.20000000000005
+        },
+        {
+          "text": "Accessories for the articles of heading 9005......................",
+          "x": 125.12,
+          "y": 613.753,
+          "width": 208.39500000000012
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 613.753,
+          "width": 9.452
+        },
+        {
+          "text": "9620.00.15",
+          "x": 47.8,
+          "y": 613.753,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 613.753,
+          "width": 434.142
+        },
+        {
+          "text": "The rate",
+          "x": 524,
+          "y": 613.553,
+          "width": 30.931999999999988
+        },
+        {
+          "text": "applicable to",
+          "x": 529,
+          "y": 603.353,
+          "width": 46.88600000000023
+        },
+        {
+          "text": "the article of",
+          "x": 529,
+          "y": 593.153,
+          "width": 44.991000000000106
+        },
+        {
+          "text": "which it is an",
+          "x": 529,
+          "y": 582.953,
+          "width": 47.3370000000001
+        },
+        {
+          "text": "accessory",
+          "x": 529,
+          "y": 572.753,
+          "width": 37.553000000000004
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 613.553,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 603.353,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 593.153,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 582.953,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 572.753,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "The rate",
+          "x": 380.72,
+          "y": 613.553,
+          "width": 30.93199999999993
+        },
+        {
+          "text": "applicable to",
+          "x": 385.72,
+          "y": 603.353,
+          "width": 46.88599999999989
+        },
+        {
+          "text": "the article of",
+          "x": 385.72,
+          "y": 593.153,
+          "width": 44.990999999999936
+        },
+        {
+          "text": "which it is an",
+          "x": 385.72,
+          "y": 582.953,
+          "width": 47.337000000000046
+        },
+        {
+          "text": "accessory",
+          "x": 385.72,
+          "y": 572.753,
+          "width": 37.553000000000004
+        },
+        {
+          "text": "X................",
+          "x": 337.52,
+          "y": 613.553,
+          "width": 40.20000000000005
+        },
+        {
+          "text": "Accessories for photographic (other than cinematographic)",
+          "x": 125.12,
+          "y": 558.553,
+          "width": 208.45100000000042
+        },
+        {
+          "text": "cameras of heading 9006.....................................................",
+          "x": 125.12,
+          "y": 548.353,
+          "width": 208.399
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 558.553,
+          "width": 9.452
+        },
+        {
+          "text": "9620.00.20",
+          "x": 47.8,
+          "y": 558.553,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "20%",
+          "x": 524,
+          "y": 548.153,
+          "width": 17.0085
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 548.153,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 537.953,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 527.753,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 517.553,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 507.353,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "5.8%",
+          "x": 380.72,
+          "y": 548.153,
+          "width": 19.1335
+        },
+        {
+          "text": "X................",
+          "x": 337.52,
+          "y": 548.153,
+          "width": 40.20000000000005
+        },
+        {
+          "text": "Accessories for cinematographic cameras of heading",
+          "x": 125.12,
+          "y": 493.153,
+          "width": 195.31400000000005
+        },
+        {
+          "text": "9007.........................................................................................",
+          "x": 125.12,
+          "y": 482.953,
+          "width": 208.397
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 493.153,
+          "width": 9.452
+        },
+        {
+          "text": "9620.00.25",
+          "x": 47.8,
+          "y": 493.153,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "45%",
+          "x": 524,
+          "y": 482.753,
+          "width": 17.0085
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 482.753,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 472.553,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 462.353,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 452.153,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 441.953,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "3.9%",
+          "x": 380.72,
+          "y": 482.753,
+          "width": 19.1335
+        },
+        {
+          "text": "X................",
+          "x": 337.52,
+          "y": 482.753,
+          "width": 40.20000000000005
+        },
+        {
+          "text": "Accessories for the instruments and appliances, including",
+          "x": 125.12,
+          "y": 427.753,
+          "width": 208.40199999999993
+        },
+        {
+          "text": "rangefinders, of heading 9015..............................................",
+          "x": 125.12,
+          "y": 417.553,
+          "width": 208.399
+        },
+        {
+          "text": "9620.00.30",
+          "x": 47.8,
+          "y": 427.753,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "The rate",
+          "x": 524,
+          "y": 417.353,
+          "width": 30.931999999999988
+        },
+        {
+          "text": "applicable to",
+          "x": 529,
+          "y": 407.153,
+          "width": 46.88600000000023
+        },
+        {
+          "text": "the article of",
+          "x": 529,
+          "y": 396.953,
+          "width": 44.991000000000106
+        },
+        {
+          "text": "which it is an",
+          "x": 529,
+          "y": 386.753,
+          "width": 47.3370000000001
+        },
+        {
+          "text": "accessory",
+          "x": 529,
+          "y": 376.553,
+          "width": 37.553000000000004
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 417.353,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 407.153,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 396.953,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 386.753,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 376.553,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "The rate",
+          "x": 380.72,
+          "y": 417.353,
+          "width": 30.93199999999993
+        },
+        {
+          "text": "applicable to",
+          "x": 385.72,
+          "y": 407.153,
+          "width": 46.88599999999989
+        },
+        {
+          "text": "the article of",
+          "x": 385.72,
+          "y": 396.953,
+          "width": 44.990999999999936
+        },
+        {
+          "text": "which it is an",
+          "x": 385.72,
+          "y": 386.753,
+          "width": 47.337000000000046
+        },
+        {
+          "text": "accessory",
+          "x": 385.72,
+          "y": 376.553,
+          "width": 37.553000000000004
+        },
+        {
+          "text": "..................",
+          "x": 337.52,
+          "y": 417.353,
+          "width": 38.25
+        },
+        {
+          "text": "Of rangefinders................................................................",
+          "x": 139.52,
+          "y": 366.353,
+          "width": 194.00000000000006
+        },
+        {
+          "text": "10",
+          "x": 95.714,
+          "y": 366.353,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 366.353,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 366.153,
+          "width": 5.5845
+        },
+        {
+          "text": "Of theodolites and tachymeters.....................................",
+          "x": 139.52,
+          "y": 351.953,
+          "width": 193.99800000000013
+        },
+        {
+          "text": "20",
+          "x": 95.714,
+          "y": 351.953,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 351.953,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 351.753,
+          "width": 5.5845
+        },
+        {
+          "text": "Of levels............................................................................",
+          "x": 139.52,
+          "y": 337.553,
+          "width": 194.00000000000006
+        },
+        {
+          "text": "30",
+          "x": 95.714,
+          "y": 337.553,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 337.553,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 337.353,
+          "width": 5.5845
+        },
+        {
+          "text": "Of photogrammetrical surveying instruments and",
+          "x": 139.52,
+          "y": 323.153,
+          "width": 179.00150000000005
+        },
+        {
+          "text": "apparatus.........................................................................",
+          "x": 139.52,
+          "y": 312.953,
+          "width": 193.998
+        },
+        {
+          "text": "40",
+          "x": 95.714,
+          "y": 323.153,
+          "width": 9.452
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 312.753,
+          "width": 5.5845
+        },
+        {
+          "text": "Of seismographs.............................................................",
+          "x": 139.52,
+          "y": 298.553,
+          "width": 194.00000000000003
+        },
+        {
+          "text": "50",
+          "x": 95.714,
+          "y": 298.553,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 298.553,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 298.353,
+          "width": 5.5845
+        },
+        {
+          "text": "Of other geophysical instruments and apparatus........",
+          "x": 139.52,
+          "y": 284.153,
+          "width": 193.99999999999994
+        },
+        {
+          "text": "60",
+          "x": 95.714,
+          "y": 284.153,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 284.153,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 283.953,
+          "width": 5.5845
+        },
+        {
+          "text": "Other.................................................................................",
+          "x": 139.52,
+          "y": 269.753,
+          "width": 193.998
+        },
+        {
+          "text": "90",
+          "x": 95.714,
+          "y": 269.753,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 269.753,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 269.553,
+          "width": 5.5845
+        },
+        {
+          "text": "",
+          "x": 457.237,
+          "y": 718.332,
+          "width": 0
+        },
+        {
+          "text": "Rates of Duty",
+          "x": 457.237,
+          "y": 718.332,
+          "width": 42.406000000000056
+        },
+        {
+          "text": "1",
+          "x": 448.054,
+          "y": 709.836,
+          "width": 3.892
+        },
+        {
+          "text": "",
+          "x": 170.314,
+          "y": 757.39,
+          "width": 0
+        },
+        {
+          "text": "Harmonized Tariff Schedule of the United States (2017)",
+          "x": 170.314,
+          "y": 757.39,
+          "width": 284.69099999999986
+        },
+        {
+          "text": "",
+          "x": 243.654,
+          "y": 747.613,
+          "width": 0
+        },
+        {
+          "text": "Annotated for Statistical Reporting Purposes",
+          "x": 243.654,
+          "y": 747.613,
+          "width": 138.01199999999994
+        },
+        {
+          "text": "XX",
+          "x": 45.72,
+          "y": 739.214,
+          "width": 9.338000000000001
+        },
+        {
+          "text": "96-18",
+          "x": 45.72,
+          "y": 730.815,
+          "width": 17.898999999999994
+        }
+      ],
+      "rates": [
+        {
+          "source_id": "20e99798-e58b-40e6-91e8-373f7ff05bde",
+          "hts": "9620001500",
+          "description": "Accessories for the articles of heading 9005",
+          "general": "The rate applicable to the article of which it is an accessory",
+          "special": "Free (A, AU, BH, CA, CL, CO, D, E, IL, JO, KR, MA, MX, OM, P, PA, PE, SG)",
+          "column2": "The rate applicable to the article of which it is an accessory",
+          "additional_duties": "",
+          "units": [
+            "X"
+          ],
+          "footnotes": [],
+          "pdfPage": 18,
+          "projection": "official-pdf-table-v1"
+        },
+        {
+          "source_id": "20e99798-e58b-40e6-91e8-373f7ff05bde",
+          "hts": "9620003010",
+          "description": "Of rangefinders Of theodolites and tachymeters",
+          "general": "The rate applicable to the article of which it is an accessory",
+          "special": "Free (A, AU, BH, CA, CL, CO, D, E, IL, JO, KR, MA, MX, OM, P, PA, PE, SG)",
+          "column2": "The rate applicable to the article of which it is an accessory",
+          "additional_duties": "",
+          "units": [
+            "X"
+          ],
+          "footnotes": [],
+          "pdfPage": 18,
+          "projection": "official-pdf-table-v1"
+        }
+      ]
+    },
+    {
+      "sourceId": "5a6430ec-2426-4462-868b-845453aab15b",
+      "url": "https://hts.usitc.gov/reststop/file?release=NTE&filename=Chapter%2090",
+      "page": 7,
+      "cells": [
+        {
+          "text": "Rates of Duty",
+          "x": 457.237,
+          "y": 719.212,
+          "width": 42.406000000000056
+        },
+        {
+          "text": "Unit",
+          "x": 350.897,
+          "y": 718.712,
+          "width": 12.446
+        },
+        {
+          "text": "of",
+          "x": 354.201,
+          "y": 710.313,
+          "width": 5.838
+        },
+        {
+          "text": "Quantity",
+          "x": 344.086,
+          "y": 701.914,
+          "width": 26.068
+        },
+        {
+          "text": "Article Description",
+          "x": 193.728,
+          "y": 710.313,
+          "width": 56.78400000000003
+        },
+        {
+          "text": "Stat.",
+          "x": 93.24,
+          "y": 718.712,
+          "width": 14.399
+        },
+        {
+          "text": "Suf-",
+          "x": 94.021,
+          "y": 710.313,
+          "width": 12.838
+        },
+        {
+          "text": "fix",
+          "x": 96.94,
+          "y": 701.914,
+          "width": 7
+        },
+        {
+          "text": "Heading/",
+          "x": 55.473,
+          "y": 718.212,
+          "width": 28.014
+        },
+        {
+          "text": "Subheading",
+          "x": 50.8,
+          "y": 709.813,
+          "width": 37.359
+        },
+        {
+          "text": "",
+          "x": 88.15899999999998,
+          "y": 709.813,
+          "width": 459.975
+        },
+        {
+          "text": "2",
+          "x": 548.134,
+          "y": 710.313,
+          "width": 3.892
+        },
+        {
+          "text": "1",
+          "x": 448.414,
+          "y": 710.313,
+          "width": 3.892
+        },
+        {
+          "text": "Special",
+          "x": 471.283,
+          "y": 701.414,
+          "width": 22.952999999999996
+        },
+        {
+          "text": "General",
+          "x": 398.705,
+          "y": 701.414,
+          "width": 24.829000000000004
+        },
+        {
+          "text": "",
+          "x": 110.72,
+          "y": 689.353,
+          "width": 0
+        },
+        {
+          "text": "Frames and mountings for spectacles, goggles or the like, and",
+          "x": 110.72,
+          "y": 689.353,
+          "width": 222.8025
+        },
+        {
+          "text": "parts thereof:",
+          "x": 110.72,
+          "y": 679.153,
+          "width": 48.748000000000026
+        },
+        {
+          "text": "9003",
+          "x": 47.8,
+          "y": 689.353,
+          "width": 18.904
+        },
+        {
+          "text": "Frames and mountings:",
+          "x": 125.12,
+          "y": 668.953,
+          "width": 86.72600000000001
+        },
+        {
+          "text": "Of plastics........................................................................",
+          "x": 139.52,
+          "y": 658.753,
+          "width": 194.00000000000009
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 658.753,
+          "width": 9.452
+        },
+        {
+          "text": "9003.11.00",
+          "x": 47.8,
+          "y": 658.753,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 658.753,
+          "width": 434.142
+        },
+        {
+          "text": "50%",
+          "x": 524,
+          "y": 658.553,
+          "width": 17.0085
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 658.553,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 648.353,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 638.153,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 627.953,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 617.753,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "2.5%",
+          "x": 380.72,
+          "y": 658.553,
+          "width": 19.1335
+        },
+        {
+          "text": "Doz............",
+          "x": 337.52,
+          "y": 658.553,
+          "width": 40.19900000000006
+        },
+        {
+          "text": "Of other materials............................................................",
+          "x": 139.52,
+          "y": 603.553,
+          "width": 194.00000000000006
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 603.553,
+          "width": 9.452
+        },
+        {
+          "text": "9003.19.00",
+          "x": 47.8,
+          "y": 603.553,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 603.553,
+          "width": 434.142
+        },
+        {
+          "text": "50%",
+          "x": 524,
+          "y": 603.353,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 603.353,
+          "width": 16.9745
+        },
+        {
+          "text": "Doz............",
+          "x": 337.52,
+          "y": 603.353,
+          "width": 40.19900000000006
+        },
+        {
+          "text": "Parts........................................................................................",
+          "x": 125.12,
+          "y": 593.153,
+          "width": 208.399
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 593.153,
+          "width": 9.452
+        },
+        {
+          "text": "9003.90.00",
+          "x": 47.8,
+          "y": 593.153,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 593.153,
+          "width": 434.142
+        },
+        {
+          "text": "50%",
+          "x": 524,
+          "y": 592.953,
+          "width": 17.0085
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 592.953,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 582.753,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 572.553,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 562.353,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 552.153,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "2.5%",
+          "x": 380.72,
+          "y": 592.953,
+          "width": 19.1335
+        },
+        {
+          "text": "X................",
+          "x": 337.52,
+          "y": 592.953,
+          "width": 40.20000000000005
+        },
+        {
+          "text": "Spectacles, goggles and the like, corrective, protective or other:",
+          "x": 110.72,
+          "y": 537.953,
+          "width": 222.94449999999986
+        },
+        {
+          "text": "9004",
+          "x": 47.8,
+          "y": 537.953,
+          "width": 18.904
+        },
+        {
+          "text": "Sunglasses.............................................................................",
+          "x": 125.12,
+          "y": 527.753,
+          "width": 208.39499999999998
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 527.753,
+          "width": 9.452
+        },
+        {
+          "text": "9004.10.00",
+          "x": 47.8,
+          "y": 527.753,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 527.753,
+          "width": 434.142
+        },
+        {
+          "text": "40%",
+          "x": 524,
+          "y": 527.553,
+          "width": 17.0085
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 527.553,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 517.353,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 507.153,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 496.953,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 486.753,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "2%",
+          "x": 380.72,
+          "y": 527.553,
+          "width": 12.2825
+        },
+        {
+          "text": "Doz............",
+          "x": 337.52,
+          "y": 527.553,
+          "width": 40.19900000000006
+        },
+        {
+          "text": "Other........................................................................................",
+          "x": 125.12,
+          "y": 472.553,
+          "width": 208.39800000000002
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 472.553,
+          "width": 9.452
+        },
+        {
+          "text": "9004.90.00",
+          "x": 47.8,
+          "y": 472.553,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 472.553,
+          "width": 434.142
+        },
+        {
+          "text": "40%",
+          "x": 524,
+          "y": 472.353,
+          "width": 17.0085
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 472.353,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 462.153,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 451.953,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 441.753,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 431.553,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "2.5%",
+          "x": 380.72,
+          "y": 472.353,
+          "width": 19.1335
+        },
+        {
+          "text": "Doz............",
+          "x": 337.52,
+          "y": 472.353,
+          "width": 40.19900000000006
+        },
+        {
+          "text": "Binoculars, monoculars, other optical telescopes, and",
+          "x": 110.72,
+          "y": 417.353,
+          "width": 196.33350000000004
+        },
+        {
+          "text": "mountings therefor; other astronomical instruments and",
+          "x": 110.72,
+          "y": 407.153,
+          "width": 202.4875000000001
+        },
+        {
+          "text": "mountings therefor, but not including instruments for",
+          "x": 110.72,
+          "y": 396.953,
+          "width": 190.85099999999994
+        },
+        {
+          "text": "radio-astronomy; parts and accessories thereof:",
+          "x": 110.72,
+          "y": 386.753,
+          "width": 175.33900000000008
+        },
+        {
+          "text": "9005",
+          "x": 47.8,
+          "y": 417.353,
+          "width": 18.904
+        },
+        {
+          "text": "Binoculars...............................................................................",
+          "x": 125.12,
+          "y": 376.553,
+          "width": 208.39200000000002
+        },
+        {
+          "text": "9005.10.00",
+          "x": 47.8,
+          "y": 376.553,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 376.553,
+          "width": 434.142
+        },
+        {
+          "text": "60%",
+          "x": 524,
+          "y": 376.353,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 376.353,
+          "width": 16.9745
+        },
+        {
+          "text": "..................",
+          "x": 337.52,
+          "y": 376.353,
+          "width": 38.25
+        },
+        {
+          "text": "Prism binoculars for use with infrared light..................",
+          "x": 139.52,
+          "y": 366.153,
+          "width": 193.99999999999997
+        },
+        {
+          "text": "20",
+          "x": 95.714,
+          "y": 366.153,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 366.153,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "No.",
+          "x": 337.52,
+          "y": 365.953,
+          "width": 12.869
+        },
+        {
+          "text": "Other prism binoculars...................................................",
+          "x": 139.52,
+          "y": 351.753,
+          "width": 194.00000000000003
+        },
+        {
+          "text": "40",
+          "x": 95.714,
+          "y": 351.753,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 351.753,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "No.",
+          "x": 337.52,
+          "y": 351.553,
+          "width": 12.869
+        },
+        {
+          "text": "Other.................................................................................",
+          "x": 139.52,
+          "y": 337.353,
+          "width": 193.998
+        },
+        {
+          "text": "80",
+          "x": 95.714,
+          "y": 337.353,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 337.353,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "No.",
+          "x": 337.52,
+          "y": 337.153,
+          "width": 12.869
+        },
+        {
+          "text": "Other instruments:",
+          "x": 125.12,
+          "y": 326.953,
+          "width": 68.17900000000003
+        },
+        {
+          "text": "9005.80",
+          "x": 47.8,
+          "y": 326.953,
+          "width": 30.480999999999998
+        },
+        {
+          "text": "Optical telescopes...........................................................",
+          "x": 139.52,
+          "y": 316.753,
+          "width": 194.00000000000014
+        },
+        {
+          "text": "9005.80.40",
+          "x": 47.8,
+          "y": 316.753,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 316.753,
+          "width": 434.142
+        },
+        {
+          "text": "45%",
+          "x": 524,
+          "y": 316.553,
+          "width": 17.0085
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 316.553,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 306.353,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 296.153,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 285.953,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 275.753,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "8% 1/",
+          "x": 380.72,
+          "y": 316.553,
+          "width": 24.37199999999993
+        },
+        {
+          "text": "..................",
+          "x": 337.52,
+          "y": 316.553,
+          "width": 38.25
+        },
+        {
+          "text": "For use with infrared light........................................",
+          "x": 153.92,
+          "y": 265.553,
+          "width": 179.59700000000004
+        },
+        {
+          "text": "20",
+          "x": 95.714,
+          "y": 265.553,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 265.553,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "No.",
+          "x": 337.52,
+          "y": 265.353,
+          "width": 12.869
+        },
+        {
+          "text": "Other..........................................................................",
+          "x": 153.92,
+          "y": 251.153,
+          "width": 179.598
+        },
+        {
+          "text": "40",
+          "x": 95.714,
+          "y": 251.153,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 251.153,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "No.",
+          "x": 337.52,
+          "y": 250.953,
+          "width": 12.869
+        },
+        {
+          "text": "Other.................................................................................",
+          "x": 139.52,
+          "y": 240.753,
+          "width": 193.998
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 240.753,
+          "width": 9.452
+        },
+        {
+          "text": "9005.80.60",
+          "x": 47.8,
+          "y": 240.753,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 240.753,
+          "width": 434.142
+        },
+        {
+          "text": "45%",
+          "x": 524,
+          "y": 240.553,
+          "width": 17.0085
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 240.553,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 230.353,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 220.153,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 209.953,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 199.753,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "6%",
+          "x": 380.72,
+          "y": 240.553,
+          "width": 12.2825
+        },
+        {
+          "text": "No.............",
+          "x": 337.52,
+          "y": 240.553,
+          "width": 40.19900000000004
+        },
+        {
+          "text": "Parts and accessories (including mountings):",
+          "x": 125.12,
+          "y": 189.553,
+          "width": 165.18150000000006
+        },
+        {
+          "text": "9005.90",
+          "x": 47.8,
+          "y": 189.553,
+          "width": 30.480999999999998
+        },
+        {
+          "text": "Incorporating goods of heading 9001 or 9002.............",
+          "x": 139.52,
+          "y": 179.353,
+          "width": 194.00000000000003
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 179.353,
+          "width": 9.452
+        },
+        {
+          "text": "9005.90.40",
+          "x": 47.8,
+          "y": 179.353,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 179.353,
+          "width": 434.142
+        },
+        {
+          "text": "The rate",
+          "x": 524,
+          "y": 179.153,
+          "width": 30.931999999999988
+        },
+        {
+          "text": "applicable to",
+          "x": 529,
+          "y": 168.953,
+          "width": 46.88600000000023
+        },
+        {
+          "text": "the article of",
+          "x": 529,
+          "y": 158.753,
+          "width": 44.991000000000106
+        },
+        {
+          "text": "which it is a",
+          "x": 529,
+          "y": 148.553,
+          "width": 42.7725000000001
+        },
+        {
+          "text": "part or",
+          "x": 529,
+          "y": 138.353,
+          "width": 24.055000000000003
+        },
+        {
+          "text": "accessory",
+          "x": 529,
+          "y": 128.153,
+          "width": 37.553000000000004
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 179.153,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 168.953,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 158.753,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 148.553,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 138.353,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "The rate",
+          "x": 380.72,
+          "y": 179.153,
+          "width": 30.93199999999993
+        },
+        {
+          "text": "applicable to",
+          "x": 385.72,
+          "y": 168.953,
+          "width": 46.88599999999989
+        },
+        {
+          "text": "the article of",
+          "x": 385.72,
+          "y": 158.753,
+          "width": 44.990999999999936
+        },
+        {
+          "text": "which it is a part",
+          "x": 385.72,
+          "y": 148.553,
+          "width": 56.81300000000004
+        },
+        {
+          "text": "or accessory",
+          "x": 385.72,
+          "y": 138.353,
+          "width": 47.039000000000016
+        },
+        {
+          "text": "X................",
+          "x": 337.52,
+          "y": 179.153,
+          "width": 40.20000000000005
+        },
+        {
+          "text": "Other.................................................................................",
+          "x": 139.52,
+          "y": 113.953,
+          "width": 193.998
+        },
+        {
+          "text": "01",
+          "x": 95.714,
+          "y": 113.953,
+          "width": 9.452
+        },
+        {
+          "text": "9005.90.80",
+          "x": 47.8,
+          "y": 113.953,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 113.953,
+          "width": 434.142
+        },
+        {
+          "text": "The rate",
+          "x": 524,
+          "y": 113.753,
+          "width": 30.931999999999988
+        },
+        {
+          "text": "applicable to",
+          "x": 529,
+          "y": 103.553,
+          "width": 46.88600000000023
+        },
+        {
+          "text": "the article of",
+          "x": 529,
+          "y": 93.353,
+          "width": 44.991000000000106
+        },
+        {
+          "text": "which it is a",
+          "x": 529,
+          "y": 83.153,
+          "width": 42.7725000000001
+        },
+        {
+          "text": "part or",
+          "x": 529,
+          "y": 72.953,
+          "width": 24.055000000000003
+        },
+        {
+          "text": "accessory",
+          "x": 529,
+          "y": 62.753,
+          "width": 37.553000000000004
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 113.753,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 103.553,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 93.353,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 83.153,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 72.953,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "The rate",
+          "x": 380.72,
+          "y": 113.753,
+          "width": 30.93199999999993
+        },
+        {
+          "text": "applicable to",
+          "x": 385.72,
+          "y": 103.553,
+          "width": 46.88599999999989
+        },
+        {
+          "text": "the article of",
+          "x": 385.72,
+          "y": 93.353,
+          "width": 44.990999999999936
+        },
+        {
+          "text": "which it is a part",
+          "x": 385.72,
+          "y": 83.153,
+          "width": 56.81300000000004
+        },
+        {
+          "text": "or accessory 1/",
+          "x": 385.72,
+          "y": 72.953,
+          "width": 56.93100000000007
+        },
+        {
+          "text": "X................",
+          "x": 337.52,
+          "y": 113.753,
+          "width": 40.20000000000005
+        },
+        {
+          "text": "1/ See subheading 9902.13.86.",
+          "x": 41.8,
+          "y": 17.05,
+          "width": 115.46500000000002
+        },
+        {
+          "text": "",
+          "x": 457.237,
+          "y": 718.332,
+          "width": 0
+        },
+        {
+          "text": "Rates of Duty",
+          "x": 457.237,
+          "y": 718.332,
+          "width": 42.406000000000056
+        },
+        {
+          "text": "1",
+          "x": 448.054,
+          "y": 709.836,
+          "width": 3.892
+        },
+        {
+          "text": "",
+          "x": 137.996,
+          "y": 757.39,
+          "width": 0
+        },
+        {
+          "text": "Harmonized Tariff Schedule of the United States (2017) - Revision 1",
+          "x": 137.996,
+          "y": 757.39,
+          "width": 349.3269999999999
+        },
+        {
+          "text": "",
+          "x": 243.654,
+          "y": 747.613,
+          "width": 0
+        },
+        {
+          "text": "Annotated for Statistical Reporting Purposes",
+          "x": 243.654,
+          "y": 747.613,
+          "width": 138.01199999999994
+        },
+        {
+          "text": "XVIII",
+          "x": 564.424,
+          "y": 739.214,
+          "width": 15.176
+        },
+        {
+          "text": "90-5",
+          "x": 565.593,
+          "y": 730.815,
+          "width": 14.006999999999886
+        }
+      ],
+      "rates": [
+        {
+          "source_id": "5a6430ec-2426-4462-868b-845453aab15b",
+          "hts": "9005100040",
+          "description": "Other prism binoculars Other",
+          "general": "Free",
+          "special": "",
+          "column2": "60%",
+          "additional_duties": "",
+          "units": [
+            "No"
+          ],
+          "footnotes": [],
+          "pdfPage": 7,
+          "projection": "official-pdf-table-v1"
+        }
+      ]
+    },
+    {
+      "sourceId": "5a6430ec-2426-4462-868b-845453aab15b",
+      "url": "https://hts.usitc.gov/reststop/file?release=NTE&filename=Chapter%2090",
+      "page": 17,
+      "cells": [
+        {
+          "text": "Rates of Duty",
+          "x": 457.237,
+          "y": 719.212,
+          "width": 42.406000000000056
+        },
+        {
+          "text": "Unit",
+          "x": 350.897,
+          "y": 718.712,
+          "width": 12.446
+        },
+        {
+          "text": "of",
+          "x": 354.201,
+          "y": 710.313,
+          "width": 5.838
+        },
+        {
+          "text": "Quantity",
+          "x": 344.086,
+          "y": 701.914,
+          "width": 26.068
+        },
+        {
+          "text": "Article Description",
+          "x": 193.728,
+          "y": 710.313,
+          "width": 56.78400000000003
+        },
+        {
+          "text": "Stat.",
+          "x": 93.24,
+          "y": 718.712,
+          "width": 14.399
+        },
+        {
+          "text": "Suf-",
+          "x": 94.021,
+          "y": 710.313,
+          "width": 12.838
+        },
+        {
+          "text": "fix",
+          "x": 96.94,
+          "y": 701.914,
+          "width": 7
+        },
+        {
+          "text": "Heading/",
+          "x": 55.473,
+          "y": 718.212,
+          "width": 28.014
+        },
+        {
+          "text": "Subheading",
+          "x": 50.8,
+          "y": 709.813,
+          "width": 37.359
+        },
+        {
+          "text": "",
+          "x": 88.15899999999998,
+          "y": 709.813,
+          "width": 459.975
+        },
+        {
+          "text": "2",
+          "x": 548.134,
+          "y": 710.313,
+          "width": 3.892
+        },
+        {
+          "text": "1",
+          "x": 448.414,
+          "y": 710.313,
+          "width": 3.892
+        },
+        {
+          "text": "Special",
+          "x": 471.283,
+          "y": 701.414,
+          "width": 22.952999999999996
+        },
+        {
+          "text": "General",
+          "x": 398.705,
+          "y": 701.414,
+          "width": 24.829000000000004
+        },
+        {
+          "text": "",
+          "x": 110.72,
+          "y": 689.353,
+          "width": 0
+        },
+        {
+          "text": "Surveying (including photogrammetrical surveying),",
+          "x": 110.72,
+          "y": 689.353,
+          "width": 188.95550000000003
+        },
+        {
+          "text": "hydrographic, oceanographic, hydrological, meteorological or",
+          "x": 110.72,
+          "y": 679.153,
+          "width": 222.80199999999988
+        },
+        {
+          "text": "geophysical instruments and appliances, excluding compasses;",
+          "x": 110.72,
+          "y": 668.953,
+          "width": 222.824
+        },
+        {
+          "text": "rangefinders; parts and accessories thereof:",
+          "x": 110.72,
+          "y": 658.753,
+          "width": 161.61200000000008
+        },
+        {
+          "text": "9015",
+          "x": 47.8,
+          "y": 689.353,
+          "width": 18.904
+        },
+        {
+          "text": "Rangefinders:",
+          "x": 125.12,
+          "y": 648.553,
+          "width": 51.66300000000001
+        },
+        {
+          "text": "9015.10",
+          "x": 47.8,
+          "y": 648.553,
+          "width": 30.480999999999998
+        },
+        {
+          "text": "Electrical...........................................................................",
+          "x": 139.52,
+          "y": 638.353,
+          "width": 193.99100000000004
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 638.353,
+          "width": 9.452
+        },
+        {
+          "text": "9015.10.40",
+          "x": 47.8,
+          "y": 638.353,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 638.353,
+          "width": 434.142
+        },
+        {
+          "text": "40%",
+          "x": 524,
+          "y": 638.153,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 638.153,
+          "width": 16.9745
+        },
+        {
+          "text": "No.............",
+          "x": 337.52,
+          "y": 638.153,
+          "width": 40.19900000000004
+        },
+        {
+          "text": "Other.................................................................................",
+          "x": 139.52,
+          "y": 623.953,
+          "width": 193.998
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 623.953,
+          "width": 9.452
+        },
+        {
+          "text": "9015.10.80",
+          "x": 47.8,
+          "y": 623.953,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 623.953,
+          "width": 434.142
+        },
+        {
+          "text": "45%",
+          "x": 524,
+          "y": 623.753,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 623.753,
+          "width": 16.9745
+        },
+        {
+          "text": "No.............",
+          "x": 337.52,
+          "y": 623.753,
+          "width": 40.19900000000004
+        },
+        {
+          "text": "Theodolites and tachymeters (tacheometers):",
+          "x": 125.12,
+          "y": 613.553,
+          "width": 166.7365
+        },
+        {
+          "text": "9015.20",
+          "x": 47.8,
+          "y": 613.553,
+          "width": 30.480999999999998
+        },
+        {
+          "text": "Electrical...........................................................................",
+          "x": 139.52,
+          "y": 603.353,
+          "width": 193.99100000000004
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 603.353,
+          "width": 9.452
+        },
+        {
+          "text": "9015.20.40",
+          "x": 47.8,
+          "y": 603.353,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 603.353,
+          "width": 434.142
+        },
+        {
+          "text": "40%",
+          "x": 524,
+          "y": 603.153,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 603.153,
+          "width": 16.9745
+        },
+        {
+          "text": "No.............",
+          "x": 337.52,
+          "y": 603.153,
+          "width": 40.19900000000004
+        },
+        {
+          "text": "Other.................................................................................",
+          "x": 139.52,
+          "y": 588.953,
+          "width": 193.998
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 588.953,
+          "width": 9.452
+        },
+        {
+          "text": "9015.20.80",
+          "x": 47.8,
+          "y": 588.953,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 588.953,
+          "width": 434.142
+        },
+        {
+          "text": "45%",
+          "x": 524,
+          "y": 588.753,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 588.753,
+          "width": 16.9745
+        },
+        {
+          "text": "No.............",
+          "x": 337.52,
+          "y": 588.753,
+          "width": 40.19900000000004
+        },
+        {
+          "text": "Levels:",
+          "x": 125.12,
+          "y": 578.553,
+          "width": 26.197
+        },
+        {
+          "text": "9015.30",
+          "x": 47.8,
+          "y": 578.553,
+          "width": 30.480999999999998
+        },
+        {
+          "text": "Electrical...........................................................................",
+          "x": 139.52,
+          "y": 568.353,
+          "width": 193.99100000000004
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 568.353,
+          "width": 9.452
+        },
+        {
+          "text": "9015.30.40",
+          "x": 47.8,
+          "y": 568.353,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 568.353,
+          "width": 434.142
+        },
+        {
+          "text": "40%",
+          "x": 524,
+          "y": 568.153,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 568.153,
+          "width": 16.9745
+        },
+        {
+          "text": "No.............",
+          "x": 337.52,
+          "y": 568.153,
+          "width": 40.19900000000004
+        },
+        {
+          "text": "Other.................................................................................",
+          "x": 139.52,
+          "y": 553.953,
+          "width": 193.998
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 553.953,
+          "width": 9.452
+        },
+        {
+          "text": "9015.30.80",
+          "x": 47.8,
+          "y": 553.953,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 553.953,
+          "width": 434.142
+        },
+        {
+          "text": "45%",
+          "x": 524,
+          "y": 553.753,
+          "width": 17.0085
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 553.753,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 543.553,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 533.353,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 523.153,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 512.953,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "2.8%",
+          "x": 380.72,
+          "y": 553.753,
+          "width": 19.1335
+        },
+        {
+          "text": "No.............",
+          "x": 337.52,
+          "y": 553.753,
+          "width": 40.19900000000004
+        },
+        {
+          "text": "Photogrammetrical surveying instruments and appliances:",
+          "x": 125.12,
+          "y": 502.753,
+          "width": 208.45049999999992
+        },
+        {
+          "text": "9015.40",
+          "x": 47.8,
+          "y": 502.753,
+          "width": 30.480999999999998
+        },
+        {
+          "text": "Electrical...........................................................................",
+          "x": 139.52,
+          "y": 492.553,
+          "width": 193.99100000000004
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 492.553,
+          "width": 9.452
+        },
+        {
+          "text": "9015.40.40",
+          "x": 47.8,
+          "y": 492.553,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 492.553,
+          "width": 434.142
+        },
+        {
+          "text": "40%",
+          "x": 524,
+          "y": 492.353,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 492.353,
+          "width": 16.9745
+        },
+        {
+          "text": "X................",
+          "x": 337.52,
+          "y": 492.353,
+          "width": 40.20000000000005
+        },
+        {
+          "text": "Other.................................................................................",
+          "x": 139.52,
+          "y": 478.153,
+          "width": 193.998
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 478.153,
+          "width": 9.452
+        },
+        {
+          "text": "9015.40.80",
+          "x": 47.8,
+          "y": 478.153,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 478.153,
+          "width": 434.142
+        },
+        {
+          "text": "40%",
+          "x": 524,
+          "y": 477.953,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 477.953,
+          "width": 16.9745
+        },
+        {
+          "text": "X................",
+          "x": 337.52,
+          "y": 477.953,
+          "width": 40.20000000000005
+        },
+        {
+          "text": "Other instruments and appliances:",
+          "x": 125.12,
+          "y": 467.753,
+          "width": 126.38749999999997
+        },
+        {
+          "text": "9015.80",
+          "x": 47.8,
+          "y": 467.753,
+          "width": 30.480999999999998
+        },
+        {
+          "text": "Optical instruments and appliances..............................",
+          "x": 139.52,
+          "y": 457.553,
+          "width": 194.00000000000006
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 457.553,
+          "width": 9.452
+        },
+        {
+          "text": "9015.80.20",
+          "x": 47.8,
+          "y": 457.553,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 457.553,
+          "width": 434.142
+        },
+        {
+          "text": "45%",
+          "x": 524,
+          "y": 457.353,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 457.353,
+          "width": 16.9745
+        },
+        {
+          "text": "X................",
+          "x": 337.52,
+          "y": 457.353,
+          "width": 40.20000000000005
+        },
+        {
+          "text": "Other:",
+          "x": 139.52,
+          "y": 443.153,
+          "width": 23.0775
+        },
+        {
+          "text": "Seismographs...........................................................",
+          "x": 153.92,
+          "y": 432.953,
+          "width": 179.59200000000004
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 432.953,
+          "width": 9.452
+        },
+        {
+          "text": "9015.80.60",
+          "x": 47.8,
+          "y": 432.953,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 432.953,
+          "width": 434.142
+        },
+        {
+          "text": "40%",
+          "x": 524,
+          "y": 432.753,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 432.753,
+          "width": 16.9745
+        },
+        {
+          "text": "No.............",
+          "x": 337.52,
+          "y": 432.753,
+          "width": 40.19900000000004
+        },
+        {
+          "text": "Other..........................................................................",
+          "x": 153.92,
+          "y": 418.553,
+          "width": 179.598
+        },
+        {
+          "text": "9015.80.80",
+          "x": 47.8,
+          "y": 418.553,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 418.553,
+          "width": 434.142
+        },
+        {
+          "text": "40%",
+          "x": 524,
+          "y": 418.353,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 418.353,
+          "width": 16.9745
+        },
+        {
+          "text": "..................",
+          "x": 337.52,
+          "y": 418.353,
+          "width": 38.25
+        },
+        {
+          "text": "Geophysical instruments and appliances.......",
+          "x": 168.32,
+          "y": 408.153,
+          "width": 165.19799999999987
+        },
+        {
+          "text": "40",
+          "x": 95.714,
+          "y": 408.153,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 408.153,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 407.953,
+          "width": 5.5845
+        },
+        {
+          "text": "Other...................................................................",
+          "x": 168.32,
+          "y": 393.753,
+          "width": 165.19800000000004
+        },
+        {
+          "text": "80",
+          "x": 95.714,
+          "y": 393.753,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 393.753,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 393.553,
+          "width": 5.5845
+        },
+        {
+          "text": "Parts and accessories...........................................................",
+          "x": 125.12,
+          "y": 383.353,
+          "width": 208.39900000000006
+        },
+        {
+          "text": "9015.90.01",
+          "x": 47.8,
+          "y": 383.353,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 383.353,
+          "width": 434.142
+        },
+        {
+          "text": "The rate",
+          "x": 524,
+          "y": 383.153,
+          "width": 30.931999999999988
+        },
+        {
+          "text": "applicable to",
+          "x": 529,
+          "y": 372.953,
+          "width": 46.88600000000023
+        },
+        {
+          "text": "the article of",
+          "x": 529,
+          "y": 362.753,
+          "width": 44.991000000000106
+        },
+        {
+          "text": "which it is a",
+          "x": 529,
+          "y": 352.553,
+          "width": 42.7725000000001
+        },
+        {
+          "text": "part or",
+          "x": 529,
+          "y": 342.353,
+          "width": 24.055000000000003
+        },
+        {
+          "text": "accessory",
+          "x": 529,
+          "y": 332.153,
+          "width": 37.553000000000004
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 383.153,
+          "width": 16.9745
+        },
+        {
+          "text": "..................",
+          "x": 337.52,
+          "y": 383.153,
+          "width": 38.25
+        },
+        {
+          "text": "Of rangefinders................................................................",
+          "x": 139.52,
+          "y": 321.953,
+          "width": 194.00000000000006
+        },
+        {
+          "text": "10",
+          "x": 95.714,
+          "y": 321.953,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 321.953,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 321.753,
+          "width": 5.5845
+        },
+        {
+          "text": "Of theodolites and tachymeters.....................................",
+          "x": 139.52,
+          "y": 307.553,
+          "width": 193.99800000000013
+        },
+        {
+          "text": "20",
+          "x": 95.714,
+          "y": 307.553,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 307.553,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 307.353,
+          "width": 5.5845
+        },
+        {
+          "text": "Of levels............................................................................",
+          "x": 139.52,
+          "y": 293.153,
+          "width": 194.00000000000006
+        },
+        {
+          "text": "30",
+          "x": 95.714,
+          "y": 293.153,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 293.153,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 292.953,
+          "width": 5.5845
+        },
+        {
+          "text": "Of photogrammetrical surveying instruments and",
+          "x": 139.52,
+          "y": 278.753,
+          "width": 179.00150000000005
+        },
+        {
+          "text": "apparatus.........................................................................",
+          "x": 139.52,
+          "y": 268.553,
+          "width": 193.998
+        },
+        {
+          "text": "40",
+          "x": 95.714,
+          "y": 278.753,
+          "width": 9.452
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 268.353,
+          "width": 5.5845
+        },
+        {
+          "text": "Of seismographs.............................................................",
+          "x": 139.52,
+          "y": 254.153,
+          "width": 194.00000000000003
+        },
+        {
+          "text": "50",
+          "x": 95.714,
+          "y": 254.153,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 254.153,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 253.953,
+          "width": 5.5845
+        },
+        {
+          "text": "Of other geophysical instruments and appliances......",
+          "x": 139.52,
+          "y": 239.753,
+          "width": 193.99999999999994
+        },
+        {
+          "text": "60",
+          "x": 95.714,
+          "y": 239.753,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 239.753,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 239.553,
+          "width": 5.5845
+        },
+        {
+          "text": "Other.................................................................................",
+          "x": 139.52,
+          "y": 225.353,
+          "width": 193.998
+        },
+        {
+          "text": "90",
+          "x": 95.714,
+          "y": 225.353,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 225.353,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 225.153,
+          "width": 5.5845
+        },
+        {
+          "text": "",
+          "x": 457.237,
+          "y": 718.332,
+          "width": 0
+        },
+        {
+          "text": "Rates of Duty",
+          "x": 457.237,
+          "y": 718.332,
+          "width": 42.406000000000056
+        },
+        {
+          "text": "1",
+          "x": 448.054,
+          "y": 709.836,
+          "width": 3.892
+        },
+        {
+          "text": "",
+          "x": 137.996,
+          "y": 757.39,
+          "width": 0
+        },
+        {
+          "text": "Harmonized Tariff Schedule of the United States (2017) - Revision 1",
+          "x": 137.996,
+          "y": 757.39,
+          "width": 349.3269999999999
+        },
+        {
+          "text": "",
+          "x": 243.654,
+          "y": 747.613,
+          "width": 0
+        },
+        {
+          "text": "Annotated for Statistical Reporting Purposes",
+          "x": 243.654,
+          "y": 747.613,
+          "width": 138.01199999999994
+        },
+        {
+          "text": "XVIII",
+          "x": 564.424,
+          "y": 739.214,
+          "width": 15.176
+        },
+        {
+          "text": "90-15",
+          "x": 561.701,
+          "y": 730.815,
+          "width": 17.898999999999887
+        }
+      ],
+      "rates": [
+        {
+          "source_id": "5a6430ec-2426-4462-868b-845453aab15b",
+          "hts": "9015104000",
+          "description": "Electrical",
+          "general": "Free",
+          "special": "",
+          "column2": "40%",
+          "additional_duties": "",
+          "units": [
+            "No"
+          ],
+          "footnotes": [],
+          "pdfPage": 17,
+          "projection": "official-pdf-table-v1"
+        },
+        {
+          "source_id": "5a6430ec-2426-4462-868b-845453aab15b",
+          "hts": "9015900110",
+          "description": "Of rangefinders Of theodolites and tachymeters",
+          "general": "Free",
+          "special": "",
+          "column2": "The rate applicable to the article of which it is a part or accessory",
+          "additional_duties": "",
+          "units": [
+            "X"
+          ],
+          "footnotes": [],
+          "pdfPage": 17,
+          "projection": "official-pdf-table-v1"
+        }
+      ]
+    },
+    {
+      "sourceId": "a2498d07-4579-4599-bbe1-366a833b7bb3",
+      "url": "https://hts.usitc.gov/reststop/file?release=basicCorrections2&filename=Chapter%2090",
+      "page": 7,
+      "cells": [
+        {
+          "text": "Rates of Duty",
+          "x": 457.237,
+          "y": 719.212,
+          "width": 42.406000000000056
+        },
+        {
+          "text": "Unit",
+          "x": 350.897,
+          "y": 718.712,
+          "width": 12.446
+        },
+        {
+          "text": "of",
+          "x": 354.201,
+          "y": 710.313,
+          "width": 5.838
+        },
+        {
+          "text": "Quantity",
+          "x": 344.086,
+          "y": 701.914,
+          "width": 26.068
+        },
+        {
+          "text": "Article Description",
+          "x": 193.728,
+          "y": 710.313,
+          "width": 56.78400000000003
+        },
+        {
+          "text": "Stat.",
+          "x": 93.24,
+          "y": 718.712,
+          "width": 14.399
+        },
+        {
+          "text": "Suf-",
+          "x": 94.021,
+          "y": 710.313,
+          "width": 12.838
+        },
+        {
+          "text": "fix",
+          "x": 96.94,
+          "y": 701.914,
+          "width": 7
+        },
+        {
+          "text": "Heading/",
+          "x": 55.473,
+          "y": 718.212,
+          "width": 28.014
+        },
+        {
+          "text": "Subheading",
+          "x": 50.8,
+          "y": 709.813,
+          "width": 37.359
+        },
+        {
+          "text": "",
+          "x": 88.15899999999998,
+          "y": 709.813,
+          "width": 459.975
+        },
+        {
+          "text": "2",
+          "x": 548.134,
+          "y": 710.313,
+          "width": 3.892
+        },
+        {
+          "text": "1",
+          "x": 448.414,
+          "y": 710.313,
+          "width": 3.892
+        },
+        {
+          "text": "Special",
+          "x": 471.283,
+          "y": 701.414,
+          "width": 22.952999999999996
+        },
+        {
+          "text": "General",
+          "x": 398.705,
+          "y": 701.414,
+          "width": 24.829000000000004
+        },
+        {
+          "text": "",
+          "x": 110.72,
+          "y": 689.353,
+          "width": 0
+        },
+        {
+          "text": "Frames and mountings for spectacles, goggles or the like, and",
+          "x": 110.72,
+          "y": 689.353,
+          "width": 222.8025
+        },
+        {
+          "text": "parts thereof:",
+          "x": 110.72,
+          "y": 679.153,
+          "width": 48.748000000000026
+        },
+        {
+          "text": "9003",
+          "x": 47.8,
+          "y": 689.353,
+          "width": 18.904
+        },
+        {
+          "text": "Frames and mountings:",
+          "x": 125.12,
+          "y": 668.953,
+          "width": 86.72600000000001
+        },
+        {
+          "text": "Of plastics........................................................................",
+          "x": 139.52,
+          "y": 658.753,
+          "width": 194.00000000000009
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 658.753,
+          "width": 9.452
+        },
+        {
+          "text": "9003.11.00",
+          "x": 47.8,
+          "y": 658.753,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 658.753,
+          "width": 434.142
+        },
+        {
+          "text": "50%",
+          "x": 524,
+          "y": 658.553,
+          "width": 17.0085
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 658.553,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 648.353,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 638.153,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 627.953,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 617.753,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "2.5%",
+          "x": 380.72,
+          "y": 658.553,
+          "width": 19.1335
+        },
+        {
+          "text": "Doz............",
+          "x": 337.52,
+          "y": 658.553,
+          "width": 40.19900000000006
+        },
+        {
+          "text": "Of other materials............................................................",
+          "x": 139.52,
+          "y": 603.553,
+          "width": 194.00000000000006
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 603.553,
+          "width": 9.452
+        },
+        {
+          "text": "9003.19.00",
+          "x": 47.8,
+          "y": 603.553,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 603.553,
+          "width": 434.142
+        },
+        {
+          "text": "50%",
+          "x": 524,
+          "y": 603.353,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 603.353,
+          "width": 16.9745
+        },
+        {
+          "text": "Doz............",
+          "x": 337.52,
+          "y": 603.353,
+          "width": 40.19900000000006
+        },
+        {
+          "text": "Parts........................................................................................",
+          "x": 125.12,
+          "y": 593.153,
+          "width": 208.399
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 593.153,
+          "width": 9.452
+        },
+        {
+          "text": "9003.90.00",
+          "x": 47.8,
+          "y": 593.153,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 593.153,
+          "width": 434.142
+        },
+        {
+          "text": "50%",
+          "x": 524,
+          "y": 592.953,
+          "width": 17.0085
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 592.953,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 582.753,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 572.553,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 562.353,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 552.153,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "2.5%",
+          "x": 380.72,
+          "y": 592.953,
+          "width": 19.1335
+        },
+        {
+          "text": "X................",
+          "x": 337.52,
+          "y": 592.953,
+          "width": 40.20000000000005
+        },
+        {
+          "text": "Spectacles, goggles and the like, corrective, protective or other:",
+          "x": 110.72,
+          "y": 537.953,
+          "width": 222.94449999999986
+        },
+        {
+          "text": "9004",
+          "x": 47.8,
+          "y": 537.953,
+          "width": 18.904
+        },
+        {
+          "text": "Sunglasses.............................................................................",
+          "x": 125.12,
+          "y": 527.753,
+          "width": 208.39499999999998
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 527.753,
+          "width": 9.452
+        },
+        {
+          "text": "9004.10.00",
+          "x": 47.8,
+          "y": 527.753,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 527.753,
+          "width": 434.142
+        },
+        {
+          "text": "40%",
+          "x": 524,
+          "y": 527.553,
+          "width": 17.0085
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 527.553,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 517.353,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 507.153,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 496.953,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 486.753,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "2%",
+          "x": 380.72,
+          "y": 527.553,
+          "width": 12.2825
+        },
+        {
+          "text": "Doz............",
+          "x": 337.52,
+          "y": 527.553,
+          "width": 40.19900000000006
+        },
+        {
+          "text": "Other........................................................................................",
+          "x": 125.12,
+          "y": 472.553,
+          "width": 208.39800000000002
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 472.553,
+          "width": 9.452
+        },
+        {
+          "text": "9004.90.00",
+          "x": 47.8,
+          "y": 472.553,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 472.553,
+          "width": 434.142
+        },
+        {
+          "text": "40%",
+          "x": 524,
+          "y": 472.353,
+          "width": 17.0085
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 472.353,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 462.153,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 451.953,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 441.753,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 431.553,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "2.5%",
+          "x": 380.72,
+          "y": 472.353,
+          "width": 19.1335
+        },
+        {
+          "text": "Doz............",
+          "x": 337.52,
+          "y": 472.353,
+          "width": 40.19900000000006
+        },
+        {
+          "text": "Binoculars, monoculars, other optical telescopes, and",
+          "x": 110.72,
+          "y": 417.353,
+          "width": 196.33350000000004
+        },
+        {
+          "text": "mountings therefor; other astronomical instruments and",
+          "x": 110.72,
+          "y": 407.153,
+          "width": 202.4875000000001
+        },
+        {
+          "text": "mountings therefor, but not including instruments for",
+          "x": 110.72,
+          "y": 396.953,
+          "width": 190.85099999999994
+        },
+        {
+          "text": "radio-astronomy; parts and accessories thereof:",
+          "x": 110.72,
+          "y": 386.753,
+          "width": 175.33900000000008
+        },
+        {
+          "text": "9005",
+          "x": 47.8,
+          "y": 417.353,
+          "width": 18.904
+        },
+        {
+          "text": "Binoculars...............................................................................",
+          "x": 125.12,
+          "y": 376.553,
+          "width": 208.39200000000002
+        },
+        {
+          "text": "9005.10.00",
+          "x": 47.8,
+          "y": 376.553,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 376.553,
+          "width": 434.142
+        },
+        {
+          "text": "60%",
+          "x": 524,
+          "y": 376.353,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 376.353,
+          "width": 16.9745
+        },
+        {
+          "text": "..................",
+          "x": 337.52,
+          "y": 376.353,
+          "width": 38.25
+        },
+        {
+          "text": "Prism binoculars for use with infrared light..................",
+          "x": 139.52,
+          "y": 366.153,
+          "width": 193.99999999999997
+        },
+        {
+          "text": "20",
+          "x": 95.714,
+          "y": 366.153,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 366.153,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "No.",
+          "x": 337.52,
+          "y": 365.953,
+          "width": 12.869
+        },
+        {
+          "text": "Other prism binoculars...................................................",
+          "x": 139.52,
+          "y": 351.753,
+          "width": 194.00000000000003
+        },
+        {
+          "text": "40",
+          "x": 95.714,
+          "y": 351.753,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 351.753,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "No.",
+          "x": 337.52,
+          "y": 351.553,
+          "width": 12.869
+        },
+        {
+          "text": "Other.................................................................................",
+          "x": 139.52,
+          "y": 337.353,
+          "width": 193.998
+        },
+        {
+          "text": "80",
+          "x": 95.714,
+          "y": 337.353,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 337.353,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "No.",
+          "x": 337.52,
+          "y": 337.153,
+          "width": 12.869
+        },
+        {
+          "text": "Other instruments:",
+          "x": 125.12,
+          "y": 326.953,
+          "width": 68.17900000000003
+        },
+        {
+          "text": "9005.80",
+          "x": 47.8,
+          "y": 326.953,
+          "width": 30.480999999999998
+        },
+        {
+          "text": "Optical telescopes...........................................................",
+          "x": 139.52,
+          "y": 316.753,
+          "width": 194.00000000000014
+        },
+        {
+          "text": "9005.80.40",
+          "x": 47.8,
+          "y": 316.753,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 316.753,
+          "width": 434.142
+        },
+        {
+          "text": "45%",
+          "x": 524,
+          "y": 316.553,
+          "width": 17.0085
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 316.553,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 306.353,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 296.153,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 285.953,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 275.753,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "8% 1/",
+          "x": 380.72,
+          "y": 316.553,
+          "width": 24.37199999999993
+        },
+        {
+          "text": "..................",
+          "x": 337.52,
+          "y": 316.553,
+          "width": 38.25
+        },
+        {
+          "text": "For use with infrared light........................................",
+          "x": 153.92,
+          "y": 265.553,
+          "width": 179.59700000000004
+        },
+        {
+          "text": "20",
+          "x": 95.714,
+          "y": 265.553,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 265.553,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "No.",
+          "x": 337.52,
+          "y": 265.353,
+          "width": 12.869
+        },
+        {
+          "text": "Other..........................................................................",
+          "x": 153.92,
+          "y": 251.153,
+          "width": 179.598
+        },
+        {
+          "text": "40",
+          "x": 95.714,
+          "y": 251.153,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 251.153,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "No.",
+          "x": 337.52,
+          "y": 250.953,
+          "width": 12.869
+        },
+        {
+          "text": "Other.................................................................................",
+          "x": 139.52,
+          "y": 240.753,
+          "width": 193.998
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 240.753,
+          "width": 9.452
+        },
+        {
+          "text": "9005.80.60",
+          "x": 47.8,
+          "y": 240.753,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 240.753,
+          "width": 434.142
+        },
+        {
+          "text": "45%",
+          "x": 524,
+          "y": 240.553,
+          "width": 17.0085
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 240.553,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 230.353,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 220.153,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 209.953,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 199.753,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "6%",
+          "x": 380.72,
+          "y": 240.553,
+          "width": 12.2825
+        },
+        {
+          "text": "No.............",
+          "x": 337.52,
+          "y": 240.553,
+          "width": 40.19900000000004
+        },
+        {
+          "text": "Parts and accessories (including mountings):",
+          "x": 125.12,
+          "y": 189.553,
+          "width": 165.18150000000006
+        },
+        {
+          "text": "9005.90",
+          "x": 47.8,
+          "y": 189.553,
+          "width": 30.480999999999998
+        },
+        {
+          "text": "Incorporating goods of heading 9001 or 9002.............",
+          "x": 139.52,
+          "y": 179.353,
+          "width": 194.00000000000003
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 179.353,
+          "width": 9.452
+        },
+        {
+          "text": "9005.90.40",
+          "x": 47.8,
+          "y": 179.353,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 179.353,
+          "width": 434.142
+        },
+        {
+          "text": "The rate",
+          "x": 524,
+          "y": 179.153,
+          "width": 30.931999999999988
+        },
+        {
+          "text": "applicable to",
+          "x": 529,
+          "y": 168.953,
+          "width": 46.88600000000023
+        },
+        {
+          "text": "the article of",
+          "x": 529,
+          "y": 158.753,
+          "width": 44.991000000000106
+        },
+        {
+          "text": "which it is a",
+          "x": 529,
+          "y": 148.553,
+          "width": 42.7725000000001
+        },
+        {
+          "text": "part or",
+          "x": 529,
+          "y": 138.353,
+          "width": 24.055000000000003
+        },
+        {
+          "text": "accessory",
+          "x": 529,
+          "y": 128.153,
+          "width": 37.553000000000004
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 179.153,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 168.953,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 158.753,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 148.553,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 138.353,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "The rate",
+          "x": 380.72,
+          "y": 179.153,
+          "width": 30.93199999999993
+        },
+        {
+          "text": "applicable to",
+          "x": 385.72,
+          "y": 168.953,
+          "width": 46.88599999999989
+        },
+        {
+          "text": "the article of",
+          "x": 385.72,
+          "y": 158.753,
+          "width": 44.990999999999936
+        },
+        {
+          "text": "which it is a part",
+          "x": 385.72,
+          "y": 148.553,
+          "width": 56.81300000000004
+        },
+        {
+          "text": "or accessory",
+          "x": 385.72,
+          "y": 138.353,
+          "width": 47.039000000000016
+        },
+        {
+          "text": "X................",
+          "x": 337.52,
+          "y": 179.153,
+          "width": 40.20000000000005
+        },
+        {
+          "text": "Other.................................................................................",
+          "x": 139.52,
+          "y": 113.953,
+          "width": 193.998
+        },
+        {
+          "text": "01",
+          "x": 95.714,
+          "y": 113.953,
+          "width": 9.452
+        },
+        {
+          "text": "9005.90.80",
+          "x": 47.8,
+          "y": 113.953,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 113.953,
+          "width": 434.142
+        },
+        {
+          "text": "The rate",
+          "x": 524,
+          "y": 113.753,
+          "width": 30.931999999999988
+        },
+        {
+          "text": "applicable to",
+          "x": 529,
+          "y": 103.553,
+          "width": 46.88600000000023
+        },
+        {
+          "text": "the article of",
+          "x": 529,
+          "y": 93.353,
+          "width": 44.991000000000106
+        },
+        {
+          "text": "which it is a",
+          "x": 529,
+          "y": 83.153,
+          "width": 42.7725000000001
+        },
+        {
+          "text": "part or",
+          "x": 529,
+          "y": 72.953,
+          "width": 24.055000000000003
+        },
+        {
+          "text": "accessory",
+          "x": 529,
+          "y": 62.753,
+          "width": 37.553000000000004
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 113.753,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 103.553,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 93.353,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 83.153,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 72.953,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "The rate",
+          "x": 380.72,
+          "y": 113.753,
+          "width": 30.93199999999993
+        },
+        {
+          "text": "applicable to",
+          "x": 385.72,
+          "y": 103.553,
+          "width": 46.88599999999989
+        },
+        {
+          "text": "the article of",
+          "x": 385.72,
+          "y": 93.353,
+          "width": 44.990999999999936
+        },
+        {
+          "text": "which it is a part",
+          "x": 385.72,
+          "y": 83.153,
+          "width": 56.81300000000004
+        },
+        {
+          "text": "or accessory 1/",
+          "x": 385.72,
+          "y": 72.953,
+          "width": 56.93100000000007
+        },
+        {
+          "text": "X................",
+          "x": 337.52,
+          "y": 113.753,
+          "width": 40.20000000000005
+        },
+        {
+          "text": "1/ See subheading 9902.13.86.",
+          "x": 41.8,
+          "y": 17.05,
+          "width": 115.46500000000002
+        },
+        {
+          "text": "",
+          "x": 457.237,
+          "y": 718.332,
+          "width": 0
+        },
+        {
+          "text": "Rates of Duty",
+          "x": 457.237,
+          "y": 718.332,
+          "width": 42.406000000000056
+        },
+        {
+          "text": "1",
+          "x": 448.054,
+          "y": 709.836,
+          "width": 3.892
+        },
+        {
+          "text": "",
+          "x": 170.314,
+          "y": 757.39,
+          "width": 0
+        },
+        {
+          "text": "Harmonized Tariff Schedule of the United States (2017)",
+          "x": 170.314,
+          "y": 757.39,
+          "width": 284.69099999999986
+        },
+        {
+          "text": "",
+          "x": 243.654,
+          "y": 747.613,
+          "width": 0
+        },
+        {
+          "text": "Annotated for Statistical Reporting Purposes",
+          "x": 243.654,
+          "y": 747.613,
+          "width": 138.01199999999994
+        },
+        {
+          "text": "XVIII",
+          "x": 564.424,
+          "y": 739.214,
+          "width": 15.176
+        },
+        {
+          "text": "90-5",
+          "x": 565.593,
+          "y": 730.815,
+          "width": 14.006999999999886
+        }
+      ],
+      "rates": [
+        {
+          "source_id": "a2498d07-4579-4599-bbe1-366a833b7bb3",
+          "hts": "9005100040",
+          "description": "Other prism binoculars Other",
+          "general": "Free",
+          "special": "",
+          "column2": "60%",
+          "additional_duties": "",
+          "units": [
+            "No"
+          ],
+          "footnotes": [],
+          "pdfPage": 7,
+          "projection": "official-pdf-table-v1"
+        }
+      ]
+    },
+    {
+      "sourceId": "a2498d07-4579-4599-bbe1-366a833b7bb3",
+      "url": "https://hts.usitc.gov/reststop/file?release=basicCorrections2&filename=Chapter%2090",
+      "page": 17,
+      "cells": [
+        {
+          "text": "Rates of Duty",
+          "x": 457.237,
+          "y": 719.212,
+          "width": 42.406000000000056
+        },
+        {
+          "text": "Unit",
+          "x": 350.897,
+          "y": 718.712,
+          "width": 12.446
+        },
+        {
+          "text": "of",
+          "x": 354.201,
+          "y": 710.313,
+          "width": 5.838
+        },
+        {
+          "text": "Quantity",
+          "x": 344.086,
+          "y": 701.914,
+          "width": 26.068
+        },
+        {
+          "text": "Article Description",
+          "x": 193.728,
+          "y": 710.313,
+          "width": 56.78400000000003
+        },
+        {
+          "text": "Stat.",
+          "x": 93.24,
+          "y": 718.712,
+          "width": 14.399
+        },
+        {
+          "text": "Suf-",
+          "x": 94.021,
+          "y": 710.313,
+          "width": 12.838
+        },
+        {
+          "text": "fix",
+          "x": 96.94,
+          "y": 701.914,
+          "width": 7
+        },
+        {
+          "text": "Heading/",
+          "x": 55.473,
+          "y": 718.212,
+          "width": 28.014
+        },
+        {
+          "text": "Subheading",
+          "x": 50.8,
+          "y": 709.813,
+          "width": 37.359
+        },
+        {
+          "text": "",
+          "x": 88.15899999999998,
+          "y": 709.813,
+          "width": 459.975
+        },
+        {
+          "text": "2",
+          "x": 548.134,
+          "y": 710.313,
+          "width": 3.892
+        },
+        {
+          "text": "1",
+          "x": 448.414,
+          "y": 710.313,
+          "width": 3.892
+        },
+        {
+          "text": "Special",
+          "x": 471.283,
+          "y": 701.414,
+          "width": 22.952999999999996
+        },
+        {
+          "text": "General",
+          "x": 398.705,
+          "y": 701.414,
+          "width": 24.829000000000004
+        },
+        {
+          "text": "",
+          "x": 110.72,
+          "y": 689.353,
+          "width": 0
+        },
+        {
+          "text": "Surveying (including photogrammetrical surveying),",
+          "x": 110.72,
+          "y": 689.353,
+          "width": 188.95550000000003
+        },
+        {
+          "text": "hydrographic, oceanographic, hydrological, meteorological or",
+          "x": 110.72,
+          "y": 679.153,
+          "width": 222.80199999999988
+        },
+        {
+          "text": "geophysical instruments and appliances, excluding compasses;",
+          "x": 110.72,
+          "y": 668.953,
+          "width": 222.824
+        },
+        {
+          "text": "rangefinders; parts and accessories thereof:",
+          "x": 110.72,
+          "y": 658.753,
+          "width": 161.61200000000008
+        },
+        {
+          "text": "9015",
+          "x": 47.8,
+          "y": 689.353,
+          "width": 18.904
+        },
+        {
+          "text": "Rangefinders:",
+          "x": 125.12,
+          "y": 648.553,
+          "width": 51.66300000000001
+        },
+        {
+          "text": "9015.10",
+          "x": 47.8,
+          "y": 648.553,
+          "width": 30.480999999999998
+        },
+        {
+          "text": "Electrical...........................................................................",
+          "x": 139.52,
+          "y": 638.353,
+          "width": 193.99100000000004
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 638.353,
+          "width": 9.452
+        },
+        {
+          "text": "9015.10.40",
+          "x": 47.8,
+          "y": 638.353,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 638.353,
+          "width": 434.142
+        },
+        {
+          "text": "40%",
+          "x": 524,
+          "y": 638.153,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 638.153,
+          "width": 16.9745
+        },
+        {
+          "text": "No.............",
+          "x": 337.52,
+          "y": 638.153,
+          "width": 40.19900000000004
+        },
+        {
+          "text": "Other.................................................................................",
+          "x": 139.52,
+          "y": 623.953,
+          "width": 193.998
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 623.953,
+          "width": 9.452
+        },
+        {
+          "text": "9015.10.80",
+          "x": 47.8,
+          "y": 623.953,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 623.953,
+          "width": 434.142
+        },
+        {
+          "text": "45%",
+          "x": 524,
+          "y": 623.753,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 623.753,
+          "width": 16.9745
+        },
+        {
+          "text": "No.............",
+          "x": 337.52,
+          "y": 623.753,
+          "width": 40.19900000000004
+        },
+        {
+          "text": "Theodolites and tachymeters (tacheometers):",
+          "x": 125.12,
+          "y": 613.553,
+          "width": 166.7365
+        },
+        {
+          "text": "9015.20",
+          "x": 47.8,
+          "y": 613.553,
+          "width": 30.480999999999998
+        },
+        {
+          "text": "Electrical...........................................................................",
+          "x": 139.52,
+          "y": 603.353,
+          "width": 193.99100000000004
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 603.353,
+          "width": 9.452
+        },
+        {
+          "text": "9015.20.40",
+          "x": 47.8,
+          "y": 603.353,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 603.353,
+          "width": 434.142
+        },
+        {
+          "text": "40%",
+          "x": 524,
+          "y": 603.153,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 603.153,
+          "width": 16.9745
+        },
+        {
+          "text": "No.............",
+          "x": 337.52,
+          "y": 603.153,
+          "width": 40.19900000000004
+        },
+        {
+          "text": "Other.................................................................................",
+          "x": 139.52,
+          "y": 588.953,
+          "width": 193.998
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 588.953,
+          "width": 9.452
+        },
+        {
+          "text": "9015.20.80",
+          "x": 47.8,
+          "y": 588.953,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 588.953,
+          "width": 434.142
+        },
+        {
+          "text": "45%",
+          "x": 524,
+          "y": 588.753,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 588.753,
+          "width": 16.9745
+        },
+        {
+          "text": "No.............",
+          "x": 337.52,
+          "y": 588.753,
+          "width": 40.19900000000004
+        },
+        {
+          "text": "Levels:",
+          "x": 125.12,
+          "y": 578.553,
+          "width": 26.197
+        },
+        {
+          "text": "9015.30",
+          "x": 47.8,
+          "y": 578.553,
+          "width": 30.480999999999998
+        },
+        {
+          "text": "Electrical...........................................................................",
+          "x": 139.52,
+          "y": 568.353,
+          "width": 193.99100000000004
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 568.353,
+          "width": 9.452
+        },
+        {
+          "text": "9015.30.40",
+          "x": 47.8,
+          "y": 568.353,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 568.353,
+          "width": 434.142
+        },
+        {
+          "text": "40%",
+          "x": 524,
+          "y": 568.153,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 568.153,
+          "width": 16.9745
+        },
+        {
+          "text": "No.............",
+          "x": 337.52,
+          "y": 568.153,
+          "width": 40.19900000000004
+        },
+        {
+          "text": "Other.................................................................................",
+          "x": 139.52,
+          "y": 553.953,
+          "width": 193.998
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 553.953,
+          "width": 9.452
+        },
+        {
+          "text": "9015.30.80",
+          "x": 47.8,
+          "y": 553.953,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 553.953,
+          "width": 434.142
+        },
+        {
+          "text": "45%",
+          "x": 524,
+          "y": 553.753,
+          "width": 17.0085
+        },
+        {
+          "text": "Free (A, AU, BH,",
+          "x": 445.52,
+          "y": 553.753,
+          "width": 62.48450000000003
+        },
+        {
+          "text": "CA, CL, CO, D, E,",
+          "x": 450.52,
+          "y": 543.553,
+          "width": 66.81950000000003
+        },
+        {
+          "text": "IL, JO, KR, MA,",
+          "x": 450.52,
+          "y": 533.353,
+          "width": 58.73600000000004
+        },
+        {
+          "text": "MX, OM, P, PA,",
+          "x": 450.52,
+          "y": 523.153,
+          "width": 59.27100000000005
+        },
+        {
+          "text": "PE, SG)",
+          "x": 450.52,
+          "y": 512.953,
+          "width": 30.44749999999999
+        },
+        {
+          "text": "2.8%",
+          "x": 380.72,
+          "y": 553.753,
+          "width": 19.1335
+        },
+        {
+          "text": "No.............",
+          "x": 337.52,
+          "y": 553.753,
+          "width": 40.19900000000004
+        },
+        {
+          "text": "Photogrammetrical surveying instruments and appliances:",
+          "x": 125.12,
+          "y": 502.753,
+          "width": 208.45049999999992
+        },
+        {
+          "text": "9015.40",
+          "x": 47.8,
+          "y": 502.753,
+          "width": 30.480999999999998
+        },
+        {
+          "text": "Electrical...........................................................................",
+          "x": 139.52,
+          "y": 492.553,
+          "width": 193.99100000000004
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 492.553,
+          "width": 9.452
+        },
+        {
+          "text": "9015.40.40",
+          "x": 47.8,
+          "y": 492.553,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 492.553,
+          "width": 434.142
+        },
+        {
+          "text": "40%",
+          "x": 524,
+          "y": 492.353,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 492.353,
+          "width": 16.9745
+        },
+        {
+          "text": "X................",
+          "x": 337.52,
+          "y": 492.353,
+          "width": 40.20000000000005
+        },
+        {
+          "text": "Other.................................................................................",
+          "x": 139.52,
+          "y": 478.153,
+          "width": 193.998
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 478.153,
+          "width": 9.452
+        },
+        {
+          "text": "9015.40.80",
+          "x": 47.8,
+          "y": 478.153,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 478.153,
+          "width": 434.142
+        },
+        {
+          "text": "40%",
+          "x": 524,
+          "y": 477.953,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 477.953,
+          "width": 16.9745
+        },
+        {
+          "text": "X................",
+          "x": 337.52,
+          "y": 477.953,
+          "width": 40.20000000000005
+        },
+        {
+          "text": "Other instruments and appliances:",
+          "x": 125.12,
+          "y": 467.753,
+          "width": 126.38749999999997
+        },
+        {
+          "text": "9015.80",
+          "x": 47.8,
+          "y": 467.753,
+          "width": 30.480999999999998
+        },
+        {
+          "text": "Optical instruments and appliances..............................",
+          "x": 139.52,
+          "y": 457.553,
+          "width": 194.00000000000006
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 457.553,
+          "width": 9.452
+        },
+        {
+          "text": "9015.80.20",
+          "x": 47.8,
+          "y": 457.553,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 457.553,
+          "width": 434.142
+        },
+        {
+          "text": "45%",
+          "x": 524,
+          "y": 457.353,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 457.353,
+          "width": 16.9745
+        },
+        {
+          "text": "X................",
+          "x": 337.52,
+          "y": 457.353,
+          "width": 40.20000000000005
+        },
+        {
+          "text": "Other:",
+          "x": 139.52,
+          "y": 443.153,
+          "width": 23.0775
+        },
+        {
+          "text": "Seismographs...........................................................",
+          "x": 153.92,
+          "y": 432.953,
+          "width": 179.59200000000004
+        },
+        {
+          "text": "00",
+          "x": 95.714,
+          "y": 432.953,
+          "width": 9.452
+        },
+        {
+          "text": "9015.80.60",
+          "x": 47.8,
+          "y": 432.953,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 432.953,
+          "width": 434.142
+        },
+        {
+          "text": "40%",
+          "x": 524,
+          "y": 432.753,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 432.753,
+          "width": 16.9745
+        },
+        {
+          "text": "No.............",
+          "x": 337.52,
+          "y": 432.753,
+          "width": 40.19900000000004
+        },
+        {
+          "text": "Other..........................................................................",
+          "x": 153.92,
+          "y": 418.553,
+          "width": 179.598
+        },
+        {
+          "text": "9015.80.80",
+          "x": 47.8,
+          "y": 418.553,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 418.553,
+          "width": 434.142
+        },
+        {
+          "text": "40%",
+          "x": 524,
+          "y": 418.353,
+          "width": 17.0085
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 418.353,
+          "width": 16.9745
+        },
+        {
+          "text": "..................",
+          "x": 337.52,
+          "y": 418.353,
+          "width": 38.25
+        },
+        {
+          "text": "Geophysical instruments and appliances.......",
+          "x": 168.32,
+          "y": 408.153,
+          "width": 165.19799999999987
+        },
+        {
+          "text": "40",
+          "x": 95.714,
+          "y": 408.153,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 408.153,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 407.953,
+          "width": 5.5845
+        },
+        {
+          "text": "Other...................................................................",
+          "x": 168.32,
+          "y": 393.753,
+          "width": 165.19800000000004
+        },
+        {
+          "text": "80",
+          "x": 95.714,
+          "y": 393.753,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 393.753,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 393.553,
+          "width": 5.5845
+        },
+        {
+          "text": "Parts and accessories...........................................................",
+          "x": 125.12,
+          "y": 383.353,
+          "width": 208.39900000000006
+        },
+        {
+          "text": "9015.90.01",
+          "x": 47.8,
+          "y": 383.353,
+          "width": 42.05799999999999
+        },
+        {
+          "text": "",
+          "x": 89.85799999999999,
+          "y": 383.353,
+          "width": 434.142
+        },
+        {
+          "text": "The rate",
+          "x": 524,
+          "y": 383.153,
+          "width": 30.931999999999988
+        },
+        {
+          "text": "applicable to",
+          "x": 529,
+          "y": 372.953,
+          "width": 46.88600000000023
+        },
+        {
+          "text": "the article of",
+          "x": 529,
+          "y": 362.753,
+          "width": 44.991000000000106
+        },
+        {
+          "text": "which it is a",
+          "x": 529,
+          "y": 352.553,
+          "width": 42.7725000000001
+        },
+        {
+          "text": "part or",
+          "x": 529,
+          "y": 342.353,
+          "width": 24.055000000000003
+        },
+        {
+          "text": "accessory",
+          "x": 529,
+          "y": 332.153,
+          "width": 37.553000000000004
+        },
+        {
+          "text": "Free",
+          "x": 380.72,
+          "y": 383.153,
+          "width": 16.9745
+        },
+        {
+          "text": "..................",
+          "x": 337.52,
+          "y": 383.153,
+          "width": 38.25
+        },
+        {
+          "text": "Of rangefinders................................................................",
+          "x": 139.52,
+          "y": 321.953,
+          "width": 194.00000000000006
+        },
+        {
+          "text": "10",
+          "x": 95.714,
+          "y": 321.953,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 321.953,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 321.753,
+          "width": 5.5845
+        },
+        {
+          "text": "Of theodolites and tachymeters.....................................",
+          "x": 139.52,
+          "y": 307.553,
+          "width": 193.99800000000013
+        },
+        {
+          "text": "20",
+          "x": 95.714,
+          "y": 307.553,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 307.553,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 307.353,
+          "width": 5.5845
+        },
+        {
+          "text": "Of levels............................................................................",
+          "x": 139.52,
+          "y": 293.153,
+          "width": 194.00000000000006
+        },
+        {
+          "text": "30",
+          "x": 95.714,
+          "y": 293.153,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 293.153,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 292.953,
+          "width": 5.5845
+        },
+        {
+          "text": "Of photogrammetrical surveying instruments and",
+          "x": 139.52,
+          "y": 278.753,
+          "width": 179.00150000000005
+        },
+        {
+          "text": "apparatus.........................................................................",
+          "x": 139.52,
+          "y": 268.553,
+          "width": 193.998
+        },
+        {
+          "text": "40",
+          "x": 95.714,
+          "y": 278.753,
+          "width": 9.452
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 268.353,
+          "width": 5.5845
+        },
+        {
+          "text": "Of seismographs.............................................................",
+          "x": 139.52,
+          "y": 254.153,
+          "width": 194.00000000000003
+        },
+        {
+          "text": "50",
+          "x": 95.714,
+          "y": 254.153,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 254.153,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 253.953,
+          "width": 5.5845
+        },
+        {
+          "text": "Of other geophysical instruments and appliances......",
+          "x": 139.52,
+          "y": 239.753,
+          "width": 193.99999999999994
+        },
+        {
+          "text": "60",
+          "x": 95.714,
+          "y": 239.753,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 239.753,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 239.553,
+          "width": 5.5845
+        },
+        {
+          "text": "Other.................................................................................",
+          "x": 139.52,
+          "y": 225.353,
+          "width": 193.998
+        },
+        {
+          "text": "90",
+          "x": 95.714,
+          "y": 225.353,
+          "width": 9.452
+        },
+        {
+          "text": "",
+          "x": 105.166,
+          "y": 225.353,
+          "width": 232.35399999999998
+        },
+        {
+          "text": "X",
+          "x": 337.52,
+          "y": 225.153,
+          "width": 5.5845
+        },
+        {
+          "text": "",
+          "x": 457.237,
+          "y": 718.332,
+          "width": 0
+        },
+        {
+          "text": "Rates of Duty",
+          "x": 457.237,
+          "y": 718.332,
+          "width": 42.406000000000056
+        },
+        {
+          "text": "1",
+          "x": 448.054,
+          "y": 709.836,
+          "width": 3.892
+        },
+        {
+          "text": "",
+          "x": 170.314,
+          "y": 757.39,
+          "width": 0
+        },
+        {
+          "text": "Harmonized Tariff Schedule of the United States (2017)",
+          "x": 170.314,
+          "y": 757.39,
+          "width": 284.69099999999986
+        },
+        {
+          "text": "",
+          "x": 243.654,
+          "y": 747.613,
+          "width": 0
+        },
+        {
+          "text": "Annotated for Statistical Reporting Purposes",
+          "x": 243.654,
+          "y": 747.613,
+          "width": 138.01199999999994
+        },
+        {
+          "text": "XVIII",
+          "x": 564.424,
+          "y": 739.214,
+          "width": 15.176
+        },
+        {
+          "text": "90-15",
+          "x": 561.701,
+          "y": 730.815,
+          "width": 17.898999999999887
+        }
+      ],
+      "rates": [
+        {
+          "source_id": "a2498d07-4579-4599-bbe1-366a833b7bb3",
+          "hts": "9015104000",
+          "description": "Electrical",
+          "general": "Free",
+          "special": "",
+          "column2": "40%",
+          "additional_duties": "",
+          "units": [
+            "No"
+          ],
+          "footnotes": [],
+          "pdfPage": 17,
+          "projection": "official-pdf-table-v1"
+        },
+        {
+          "source_id": "a2498d07-4579-4599-bbe1-366a833b7bb3",
+          "hts": "9015900110",
+          "description": "Of rangefinders Of theodolites and tachymeters",
+          "general": "Free",
+          "special": "",
+          "column2": "The rate applicable to the article of which it is a part or accessory",
+          "additional_duties": "",
+          "units": [
+            "X"
+          ],
+          "footnotes": [],
+          "pdfPage": 17,
+          "projection": "official-pdf-table-v1"
+        }
+      ]
+    }
+  ]
+}

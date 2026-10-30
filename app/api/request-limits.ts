@@ -27,7 +27,12 @@ export async function withRequestLimit(request: Request, operation: RequestOpera
   let release: Awaited<ReturnType<typeof reserveRequest>> | undefined;
   try {
     release = await reserveRequest(operation);
-    request = new Request(request, {signal: AbortSignal.any([request.signal, AbortSignal.timeout(operation === "upload" ? 55_000 : 280_000)])});
+    // Hosted runtimes may wrap Request. Copying that object into the native
+    // constructor can access incompatible private fields; copy public fields and
+    // transfer the still-unread stream instead. The byte guard remains first.
+    request = new Request(request.url, {method: request.method, headers: request.headers,
+      ...(request.body ? {body: request.body, duplex: "half"} : {}),
+      signal: AbortSignal.any([request.signal, AbortSignal.timeout(operation === "upload" ? 55_000 : 280_000)])} as RequestInit);
     const bounded = await boundedRequest(request, limit);
     // Resolve customer selectors through verified membership too. A user belonging
     // to several workspaces must not charge one workspace while operating in another.

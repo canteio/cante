@@ -1,0 +1,846 @@
+{
+  "label": "100 fictional declarations; restored 2017 Column 2 rate from actual official originals; independent Python Decimal half-up amounts, no legal-origin/classification/admissibility or refund determination",
+  "engineVersion": "historical-audit-v37",
+  "rows": [
+    {
+      "row": 1,
+      "entry": "SYN-RESTORE-1",
+      "initialExpected": "550.28",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.28",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 2,
+      "entry": "SYN-RESTORE-2",
+      "initialExpected": "550.28",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.28",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 3,
+      "entry": "SYN-RESTORE-3",
+      "initialExpected": "550.29",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.29",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 4,
+      "entry": "SYN-RESTORE-4",
+      "initialExpected": "550.29",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.29",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 5,
+      "entry": "SYN-RESTORE-5",
+      "initialExpected": "550.30",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.30",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 6,
+      "entry": "SYN-RESTORE-6",
+      "initialExpected": "550.30",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.30",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 7,
+      "entry": "SYN-RESTORE-7",
+      "initialExpected": "550.31",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.31",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 8,
+      "entry": "SYN-RESTORE-8",
+      "initialExpected": "550.31",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.31",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 9,
+      "entry": "SYN-RESTORE-9",
+      "initialExpected": "550.32",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.32",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 10,
+      "entry": "SYN-RESTORE-10",
+      "initialExpected": "550.32",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.32",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 11,
+      "entry": "SYN-RESTORE-11",
+      "initialExpected": "550.33",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.33",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 12,
+      "entry": "SYN-RESTORE-12",
+      "initialExpected": "550.34",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.34",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 13,
+      "entry": "SYN-RESTORE-13",
+      "initialExpected": "550.34",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.34",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 14,
+      "entry": "SYN-RESTORE-14",
+      "initialExpected": "550.35",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.35",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 15,
+      "entry": "SYN-RESTORE-15",
+      "initialExpected": "550.35",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.35",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 16,
+      "entry": "SYN-RESTORE-16",
+      "initialExpected": "550.36",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.36",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 17,
+      "entry": "SYN-RESTORE-17",
+      "initialExpected": "550.36",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.36",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 18,
+      "entry": "SYN-RESTORE-18",
+      "initialExpected": "550.37",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.37",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 19,
+      "entry": "SYN-RESTORE-19",
+      "initialExpected": "550.37",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.37",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 20,
+      "entry": "SYN-RESTORE-20",
+      "initialExpected": "550.38",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.38",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 21,
+      "entry": "SYN-RESTORE-21",
+      "initialExpected": "550.39",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.39",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 22,
+      "entry": "SYN-RESTORE-22",
+      "initialExpected": "550.39",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.39",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 23,
+      "entry": "SYN-RESTORE-23",
+      "initialExpected": "550.40",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.40",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 24,
+      "entry": "SYN-RESTORE-24",
+      "initialExpected": "550.40",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.40",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 25,
+      "entry": "SYN-RESTORE-25",
+      "initialExpected": "550.41",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.41",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 26,
+      "entry": "SYN-RESTORE-26",
+      "initialExpected": "550.41",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.41",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 27,
+      "entry": "SYN-RESTORE-27",
+      "initialExpected": "550.42",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.42",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 28,
+      "entry": "SYN-RESTORE-28",
+      "initialExpected": "550.42",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.42",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 29,
+      "entry": "SYN-RESTORE-29",
+      "initialExpected": "550.43",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.43",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 30,
+      "entry": "SYN-RESTORE-30",
+      "initialExpected": "550.43",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.43",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 31,
+      "entry": "SYN-RESTORE-31",
+      "initialExpected": "550.44",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.44",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 32,
+      "entry": "SYN-RESTORE-32",
+      "initialExpected": "550.45",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.45",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 33,
+      "entry": "SYN-RESTORE-33",
+      "initialExpected": "550.45",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.45",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 34,
+      "entry": "SYN-RESTORE-34",
+      "initialExpected": "550.46",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.46",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 35,
+      "entry": "SYN-RESTORE-35",
+      "initialExpected": "550.46",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.46",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 36,
+      "entry": "SYN-RESTORE-36",
+      "initialExpected": "550.47",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.47",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 37,
+      "entry": "SYN-RESTORE-37",
+      "initialExpected": "550.47",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.47",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 38,
+      "entry": "SYN-RESTORE-38",
+      "initialExpected": "550.48",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.48",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 39,
+      "entry": "SYN-RESTORE-39",
+      "initialExpected": "550.48",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.48",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 40,
+      "entry": "SYN-RESTORE-40",
+      "initialExpected": "550.49",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.49",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 41,
+      "entry": "SYN-RESTORE-41",
+      "initialExpected": "550.50",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.50",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 42,
+      "entry": "SYN-RESTORE-42",
+      "initialExpected": "550.50",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.50",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 43,
+      "entry": "SYN-RESTORE-43",
+      "initialExpected": "550.51",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.51",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 44,
+      "entry": "SYN-RESTORE-44",
+      "initialExpected": "550.51",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.51",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 45,
+      "entry": "SYN-RESTORE-45",
+      "initialExpected": "550.52",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.52",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 46,
+      "entry": "SYN-RESTORE-46",
+      "initialExpected": "550.52",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.52",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 47,
+      "entry": "SYN-RESTORE-47",
+      "initialExpected": "550.53",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.53",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 48,
+      "entry": "SYN-RESTORE-48",
+      "initialExpected": "550.53",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.53",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 49,
+      "entry": "SYN-RESTORE-49",
+      "initialExpected": "550.54",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.54",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 50,
+      "entry": "SYN-RESTORE-50",
+      "initialExpected": "550.54",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.54",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 51,
+      "entry": "SYN-RESTORE-51",
+      "initialExpected": "550.55",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.55",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 52,
+      "entry": "SYN-RESTORE-52",
+      "initialExpected": "550.56",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.56",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 53,
+      "entry": "SYN-RESTORE-53",
+      "initialExpected": "550.56",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.56",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 54,
+      "entry": "SYN-RESTORE-54",
+      "initialExpected": "550.57",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.57",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 55,
+      "entry": "SYN-RESTORE-55",
+      "initialExpected": "550.57",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.57",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 56,
+      "entry": "SYN-RESTORE-56",
+      "initialExpected": "550.58",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.58",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 57,
+      "entry": "SYN-RESTORE-57",
+      "initialExpected": "550.58",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.58",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 58,
+      "entry": "SYN-RESTORE-58",
+      "initialExpected": "550.59",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.59",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 59,
+      "entry": "SYN-RESTORE-59",
+      "initialExpected": "550.59",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.59",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 60,
+      "entry": "SYN-RESTORE-60",
+      "initialExpected": "550.60",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.60",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 61,
+      "entry": "SYN-RESTORE-61",
+      "initialExpected": "550.61",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.61",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 62,
+      "entry": "SYN-RESTORE-62",
+      "initialExpected": "550.61",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.61",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 63,
+      "entry": "SYN-RESTORE-63",
+      "initialExpected": "550.62",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.62",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 64,
+      "entry": "SYN-RESTORE-64",
+      "initialExpected": "550.62",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.62",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 65,
+      "entry": "SYN-RESTORE-65",
+      "initialExpected": "550.63",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.63",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 66,
+      "entry": "SYN-RESTORE-66",
+      "initialExpected": "550.63",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.63",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 67,
+      "entry": "SYN-RESTORE-67",
+      "initialExpected": "550.64",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.64",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 68,
+      "entry": "SYN-RESTORE-68",
+      "initialExpected": "550.64",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.64",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 69,
+      "entry": "SYN-RESTORE-69",
+      "initialExpected": "550.65",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.65",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 70,
+      "entry": "SYN-RESTORE-70",
+      "initialExpected": "550.65",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.65",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 71,
+      "entry": "SYN-RESTORE-71",
+      "initialExpected": "550.66",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.66",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 72,
+      "entry": "SYN-RESTORE-72",
+      "initialExpected": "550.67",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.67",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 73,
+      "entry": "SYN-RESTORE-73",
+      "initialExpected": "550.67",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.67",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 74,
+      "entry": "SYN-RESTORE-74",
+      "initialExpected": "550.68",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.68",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 75,
+      "entry": "SYN-RESTORE-75",
+      "initialExpected": "550.68",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.68",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 76,
+      "entry": "SYN-RESTORE-76",
+      "initialExpected": "550.69",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.69",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 77,
+      "entry": "SYN-RESTORE-77",
+      "initialExpected": "550.69",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.69",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 78,
+      "entry": "SYN-RESTORE-78",
+      "initialExpected": "550.70",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.70",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 79,
+      "entry": "SYN-RESTORE-79",
+      "initialExpected": "550.70",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.70",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 80,
+      "entry": "SYN-RESTORE-80",
+      "initialExpected": "550.71",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.71",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 81,
+      "entry": "SYN-RESTORE-81",
+      "initialExpected": "550.72",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.72",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 82,
+      "entry": "SYN-RESTORE-82",
+      "initialExpected": "550.72",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.72",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 83,
+      "entry": "SYN-RESTORE-83",
+      "initialExpected": "550.73",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.73",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 84,
+      "entry": "SYN-RESTORE-84",
+      "initialExpected": "550.73",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.73",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 85,
+      "entry": "SYN-RESTORE-85",
+      "initialExpected": "550.74",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.74",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 86,
+      "entry": "SYN-RESTORE-86",
+      "initialExpected": "550.74",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.74",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 87,
+      "entry": "SYN-RESTORE-87",
+      "initialExpected": "550.75",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.75",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 88,
+      "entry": "SYN-RESTORE-88",
+      "initialExpected": "550.75",
+      "initialDifference": "1.00",
+      "reviewedExpected": "550.75",
+      "reviewedDifference": "1.00"
+    },
+    {
+      "row": 89,
+      "entry": "SYN-RESTORE-89",
+      "initialExpected": "550.76",
+      "initialDifference": "-1.00",
+      "reviewedExpected": "550.76",
+      "reviewedDifference": "-1.00"
+    },
+    {
+      "row": 90,
+      "entry": "SYN-RESTORE-90",
+      "initialExpected": "550.76",
+      "initialDifference": "0.00",
+      "reviewedExpected": "550.76",
+      "reviewedDifference": "0.00"
+    },
+    {
+      "row": 91,
+      "entry": "SYN-RESTORE-91",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 92,
+      "entry": "SYN-RESTORE-92",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 93,
+      "entry": "SYN-RESTORE-93",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 94,
+      "entry": "SYN-RESTORE-94",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 95,
+      "entry": "SYN-RESTORE-95",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 96,
+      "entry": "SYN-RESTORE-96",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 97,
+      "entry": "SYN-RESTORE-97",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 98,
+      "entry": "SYN-RESTORE-98",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 99,
+      "entry": "SYN-RESTORE-99",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    },
+    {
+      "row": 100,
+      "entry": "SYN-RESTORE-100",
+      "initialExpected": null,
+      "initialDifference": null,
+      "reviewedExpected": null,
+      "reviewedDifference": null
+    }
+  ],
+  "summary": {
+    "lines": 100,
+    "calculated": 90,
+    "unresolved": 10,
+    "discrepancies": 60,
+    "overpayment": "30.00",
+    "underpayment": "30.00"
+  },
+  "browserSummary": {
+    "lines": 100,
+    "calculated": 90,
+    "unresolved": 10,
+    "discrepancies": 60,
+    "overpayment": "30.00",
+    "underpayment": "30.00"
+  },
+  "upgradeProbe": {
+    "row": 1,
+    "oldVersion": "historical-audit-v27",
+    "oldExpected": null,
+    "newExpected": "550.28"
+  },
+  "browserDecision": {
+    "row": 1,
+    "kind": "confirm_facts",
+    "hts": "6907301011",
+    "validFrom": "2017-01-01",
+    "validBefore": "2017-01-02",
+    "facts": {
+      "classification_verified": true
+    },
+    "evidence": [
+      "SYN-RESTORE-1-CLASSIFICATION-RECORD"
+    ],
+    "note": "FICTIONAL classification decision for this test line only. Supporting synthetic product dimensions select suffix 11. The declared suffix remains unchanged; this approves no shared rule or refund entitlement.",
+    "expected": "550.28",
+    "difference": "1.00",
+    "originalHts": "6907301005",
+    "usedHts": "6907301011"
+  }
+}

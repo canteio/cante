@@ -1,0 +1,84 @@
+{
+  "label": "Published USITC clauses only; no shipment facts, approvals or claims of complete legal coverage.",
+  "records": [
+    {
+      "release": "2025HTSRev14",
+      "clauses": [
+        "(vii) The additional duties imposed by headings 9903.01.25, 9903.01.35, 9903.01.39, and 9903.01.43-9903.01.76 shall not apply to derivative iron or steel products provided for in headings 9903.81.89, 9903.81.90, 9903.81.91, 9903.81.92 and 9903.81.93.",
+        "(ix) The additional duties imposed by headings 9903.01.25, 9903.01.35, 9903.01.39, and 9903.01.43-9903.01.76 shall not apply to derivative aluminum products provided for in headings 9903.85.04, 9903.85.07, 9903.85.08 and 9903.85.09."
+      ],
+      "hashes": [
+        "d1f6b9726c690ee438e6e748af5a9fe3a26930daa5bcb27875267d25163bee87",
+        "59a1a707b9648d6b14b0b892a65bd6f1affb8d78ead58d134aa8070d664cf68f"
+      ]
+    },
+    {
+      "release": "2025HTSRev18",
+      "clauses": [
+        "(vii) The additional duties imposed by headings 9903.01.25, 9903.01.35, 9903.01.39, 9903.01.63, and 9903.02.01-9903.02.71 shall not apply to derivative iron or steel products provided for in headings 9903.81.89, 9903.81.90, 9903.81.91, 9903.81.92 and 9903.81.93.",
+        "(ix) The additional duties imposed by headings 9903.01.25, 9903.01.35, 9903.01.39, 9903.01.63, and 9903.02.01-9903.02.71 shall not apply to derivative aluminum products provided for in headings 9903.85.04, 9903.85.07, 9903.85.08 and 9903.85.09."
+      ],
+      "hashes": [
+        "2b7f83bffe5d5b7ca2f93297d8f8dd64d25df2e7a262c99ca235366ded9e23d2",
+        "d8e22599f2b0fb56c8afed3c07aee3772db2bf43dd84e2b22dd7b64145eb5f1d"
+      ]
+    },
+    {
+      "release": "2025HTSRev19",
+      "clauses": [
+        "(vii) The additional duties imposed by headings 9903.01.25, 9903.01.35, 9903.01.39, 9903.01.63, The additional duties imposed by headings 9903.01.25, 9903.01.35, 9903.01.39, 9903.01.63, and 9903.02.01-9903.02.71 shall not apply to the declared value of the steel content of the derivative iron or steel products provided for in headings 9903.81.89, 9903.81.90, 9903.81.91, 9903.81.92 and 9903.81.93, but such additional duties shall apply to the non-steel content.",
+        "(ix) The additional duties imposed by headings 9903.01.25, 9903.01.35, 9903.01.39, 9903.01.63, and 9903.02.01-9903.02.71 shall not apply to the declared value of the aluminum content of the derivative aluminum products provided for in headings 9903.85.04, 9903.85.07, 9903.85.08 and 9903.85.09, but such additional duties shall apply to the non-aluminum content."
+      ],
+      "hashes": [
+        "179a9b8565307fc97bf6a9d64c2cb0758ec3b9a34905ee87abad96f949aeaa7c",
+        "5ef613b74875166699d3a9cb1e7157006629781df3775911c8362d0ff2bbb41d"
+      ]
+    },
+    {
+      "release": "2025HTSRev23",
+      "clauses": [
+        "(vii) The additional duties imposed by headings 9903.01.25, 9903.01.35, 9903.01.39, 9903.01.63, and 9903.02.01-9903.02.73 shall not apply to the declared value of the steel content of the derivative iron or steel products provided for in headings 9903.81.89, 9903.81.90, 9903.81.91, 9903.81.92 and 9903.81.93, but such additional duties shall apply to the non-steel content.",
+        "(ix) The additional duties imposed by headings 9903.01.25, 9903.01.35, 9903.01.39, 9903.01.63, and 9903.02.01-9903.02.73 shall not apply to the declared value of the aluminum content of the derivative aluminum products provided for in headings 9903.85.04, 9903.85.07, 9903.85.08 and 9903.85.09, but such additional duties shall apply to the non-aluminum content."
+      ],
+      "hashes": [
+        "efac0ecdf538ab2a98ba019020265be57a15f3d1add156881849c893c7875d29",
+        "41986d6060d64818a009fef83e66f554a0dd7efb2148704904f31541c34bdfd5"
+      ]
+    },
+    {
+      "release": "2025HTSRev32",
+      "clauses": [
+        "(vii) The additional duties imposed by headings 9903.01.25, 9903.01.35, 9903.01.39, 9903.01.63, and 9903.02.01\u20139903.02.73 and 9903.02.79\u20139903.02.80 shall not apply to the declared value of the steel content of the derivative iron or steel products provided for in headings 9903.81.89, 9903.81.90, 9903.81.91, 9903.81.92 and 9903.81.93, but such additional duties shall apply to the non-steel content.",
+        "(ix) The additional duties imposed by headings 9903.01.25, 9903.01.35, 9903.01.39, 9903.01.63, and 9903.02.01\u20139903.02.73 and 9903.02.79\u20139903.02.80 shall not apply to the declared value of the aluminum content of the derivative aluminum products provided for in headings 9903.85.04, 9903.85.07, 9903.85.08 and 9903.85.09, but such additional duties shall apply to the non-aluminum content."
+      ],
+      "hashes": [
+        "bb9dccfc2a16043cc87f98bfbc62ff6d2eaab7ec885dbd7dca444012d776b618",
+        "1e8f9c9dddfd51d273eedb8f958298617056e887d5eb4e69f411423769907e76"
+      ]
+    },
+    {
+      "release": "2026HTSBasic",
+      "clauses": [
+        "(vii) The additional duties imposed by headings 9903.01.25, 9903.01.35, 9903.01.39, 9903.01.63, 9903.02.01\u20139903.02.73, 9903.02.79\u20139903.02.80, 9903.02.82\u20139903.02.83, and 9903.02.87\u20139903.02.88 shall not apply to the declared value of the steel content of the derivative iron or steel products provided for in headings 9903.81.89, 9903.81.90, 9903.81.91, 9903.81.92 and 9903.81.93, but such additional duties shall apply to the non-steel content.",
+        "(ix) The additional duties imposed by headings 9903.01.25, 9903.01.35, 9903.01.39, 9903.01.63, 9903.02.01\u20139903.02.73, 9903.02.79\u20139903.02.80, 9903.02.82\u20139903.02.83, and 9903.02.87\u20139903.02.88 shall not apply to the declared value of the aluminum content of the derivative aluminum products provided for in headings 9903.85.04, 9903.85.07, 9903.85.08 and 9903.85.09, but such additional duties shall apply to the non-aluminum content."
+      ],
+      "hashes": [
+        "ae98a9414e6fc4f9ca6b81dc3cc38215723d8e64fc63122117ab7833311c6272",
+        "56b537670447653669196e008c976a26c8fd8ddf36b448a78da1e02287847009"
+      ]
+    },
+    {
+      "release": "2026HTSRev4",
+      "clauses": [
+        "(vii) The additional duties imposed by headings 9903.01.25, 9903.01.35, 9903.01.39, 9903.01.63, 9903.02.01\u20139903.02.73, 9903.02.79\u20139903.02.80, 9903.02.82\u20139903.02.83, and 9903.02.87\u20139903.02.88 shall not apply to the declared value of the steel content of the derivative iron or steel products provided for in headings 9903.81.89, 9903.81.90, 9903.81.91, 9903.81.92 and 9903.81.93, but such additional duties shall apply to the non-steel content.",
+        "(ix) The additional duties imposed by headings 9903.01.25, 9903.01.35, 9903.01.39, 9903.01.63, 9903.02.01\u20139903.02.73, 9903.02.79\u20139903.02.80, 9903.02.82\u20139903.02.83, and 9903.02.87\u20139903.02.88 shall not apply to the declared value of the aluminum content of the derivative aluminum products provided for in headings 9903.85.04, 9903.85.07, 9903.85.08 and 9903.85.09, but such additional duties shall apply to the non-aluminum content.",
+        "(v) As provided in heading 9903.03.06, the additional duty imposed by heading 9903.03.01 shall not apply to: (a) products of iron or steel provided for in headings 9903.81.87, 9903.81.88, 9903.81.94 and 9903.81.95, but such additional duty shall apply to the non-steel content of such products of iron or steel; (b) the declared value of the steel content of the derivative iron or steel products provided for in headings 9903.81.89, 9903.81.90, 9903.81.91, 9903.81.92, 9903.81.93, 9903.81.96, 9903.81.97, 9903.81.98 and 9903.81.99, but such additional duty shall apply to the non-steel content; (c) products of aluminum provided for in headings 9903.85.02 and 9903.85.12, but such additional duty shall apply to the non-aluminum content of such products of aluminum; (d) the declared value of the aluminum content of the derivative aluminum products provided for in headings 9903.85.04, 9903.85.07, 9903.85.08, 9903.85.09, 9903.85.13, 9903.85.14 and 9903.85.15, but such additional duty shall apply to the non-aluminum content;"
+      ],
+      "hashes": [
+        "ae98a9414e6fc4f9ca6b81dc3cc38215723d8e64fc63122117ab7833311c6272",
+        "56b537670447653669196e008c976a26c8fd8ddf36b448a78da1e02287847009",
+        "84fb7aa5a17dd999ef8568398db016bf940ace6fbab8026951e751598ec2ef36"
+      ]
+    }
+  ]
+}

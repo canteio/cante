@@ -150,4 +150,12 @@ $validate_snapshot$;
 revoke all on function private.validate_tariff_impact_snapshot() from public;
 create constraint trigger tariff_impact_snapshot_complete after insert on public.tariff_impact_runs
   deferrable initially deferred for each row execute function private.validate_tariff_impact_snapshot();
+
+-- Explicit worker Data API access; do not depend on Supabase default grants.
+-- Tenant/browser privileges and RLS policies are defined separately above.
+grant select, insert, update, delete on
+  public.tariff_impact_runs,
+  public.tariff_impact_rows
+to service_role;
+
 commit;

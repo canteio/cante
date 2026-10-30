@@ -1035,6 +1035,45 @@ test("flagged measure with no confirmed rule and registry failure both withhold 
   } finally { restore(); }
 });
 
+test("fictional caps use exact cents and invalid caps never retain an included duty",async()=>{
+  const restore=stubFetch([{htsno:"8544.42.90.00",general:"2.6%",other:"35%",additionalDuties:"See 9903.88.03"}]);
+  try {
+    for(const cap of [0.15,null,-0.1,1.01,NaN,Infinity]) {
+      const result=await realComputeStackedDuty({htsCode:"8544.42.90.00",countryOfOrigin:"CN",value:1000.50,importDate:"2026-07-23"},noLiveSection232,
+        async()=>({status:"resolved",match:{ruleId:"synthetic-cap",action:"cap_at",capRatePercent:cap,citation:"SYNTHETIC ONLY",explanation:"Fictional cap arithmetic fixture"}}),async()=>new Set(["9903.88.03"]));
+      assert.ok(result);
+      assert.equal(result.components[0].amount,26.01);
+      if(cap===0.15){assert.equal(result.totalAmount,176.09);assert.equal(result.components[1].amount,150.08);}
+      else {assert.equal(result.totalAmount,null);assert.ok(result.unresolvedMeasures.length);}
+    }
+  } finally {restore();}
+});
+
+test("a fictional combined-rate remainder subtracts the rounded base from the rounded target",async()=>{
+ const restore=stubFetch([{htsno:"7208.10.15.00",general:"17%",other:"35%"}]);
+ try {
+  const result=await realComputeStackedDuty({htsCode:"7208.10.15.00",countryOfOrigin:"JP",value:1000.50,importDate:"2026-04-07"},
+   async()=>({annex:"Annex III",ratePercent:0.5,ukRatePercent:null,usContentRatePercent:null,effectiveDate:"2026-04-06",sourceDocumentNumber:"SYNTHETIC",sourceTitle:"Fictional combined-rate fixture",sourcePdfUrl:"https://synthetic.invalid/combined"}),undefined,async()=>new Set());
+  assert.ok(result);assert.equal(result.components[0].amount,170.09);
+  assert.equal(result.components.find(c=>c.type==="section232")?.amount,330.16);
+  assert.equal(result.totalAmount,500.25);
+ } finally {restore();}
+});
+
+test("a missing alcohol/232 overlap cap cannot fall back to including the full alcohol duty",async()=>{
+ const restore=stubFetch([{htsno:"2203.00.00.00",general:"Free",other:"35%"}]);
+ try {
+  for(const cap of [null,NaN,-0.1,1.01,0.15]){
+   const result=await realComputeStackedDuty({htsCode:"2203.00.00.00",countryOfOrigin:"CA",value:1000.50,importDate:"2026-09-20"},
+    async()=>({annex:"Annex I",ratePercent:0.5,ukRatePercent:null,usContentRatePercent:null,effectiveDate:"2026-04-06",sourceDocumentNumber:"SYNTHETIC",sourceTitle:"Fictional overlap fixture",sourcePdfUrl:"https://synthetic.invalid/overlap"}),
+    async()=>({status:"resolved",match:{ruleId:"synthetic-overlap",action:"cap_at",capRatePercent:cap,citation:"SYNTHETIC ONLY",explanation:"Fictional overlap cap"}}),async()=>new Set());
+   assert.ok(result);const alcohol=result.components.find(c=>c.type==="section338");assert.ok(alcohol);
+   assert.equal(alcohol.amount,cap===0.15?150.08:null);
+   if(cap!==0.15)assert.equal(result.totalAmount,null);
+  }
+ } finally {restore();}
+});
+
 test("confirmed forced-labor inclusion cannot invent that measure's missing rate", async () => {
   const restore = stubFetch([{ htsno: "8544.42.90.00", general: "2.6%", other: "35%" }]);
   try {

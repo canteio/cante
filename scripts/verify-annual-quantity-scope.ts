@@ -1,0 +1,27 @@
+/** Read-only inventory of retained annual originals; records, not shipment
+ * outcomes. A formula contract does not prove classification/qualification. */
+import assert from 'node:assert/strict';
+import {writeFile} from 'node:fs/promises';
+import {loadEnvConfig} from '@next/env';
+import {createServiceClient} from '../lib/supabase/service';
+import {readReferenceBytes} from '../app/api/tariff/references/store';
+import {historicalOriginalText} from '../app/api/tariff/references/historical-contract';
+import {annualRows,annualQuantityCodeContract,hasAnnualQuantityFieldsContract,annualQuantityComputation,annualDutyFootnoteSupported} from '../app/api/tariff/references/annual-data';
+loadEnvConfig(process.cwd());
+async function main(){
+ const db=createServiceClient(),{data,error}=await db.from('tariff_reference_sources').select('id,url,metadata').or('metadata->>annualTariffYear.in.(2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017),metadata->>role.in.(annual_tariff_code_key,annual_tariff_fields)').limit(501);if(error)throw error;assert((data?.length??0)<=500,'Reference pagination bound reached.');
+ const keys=data?.filter(s=>s.metadata.role==='annual_tariff_code_key')??[],fields=data?.filter(s=>s.metadata.role==='annual_tariff_fields')??[];assert.equal(keys.length,1);assert.equal(fields.length,1);
+ const units=annualQuantityCodeContract(await historicalOriginalText((await readReferenceBytes(db,keys[0].id)).bytes));assert(units.includes('KG')&&units.includes('NO')&&units.includes('CKG'));assert(hasAnnualQuantityFieldsContract(await historicalOriginalText((await readReferenceBytes(db,fields[0].id)).bytes)));
+ let checked=0,supported=0,total=0;const quality={sourceRecords:0,ordinaryRecords:0,specialChapterRecords:0,invalidDateRecords:0,outsideCapturedYearRecords:0,unknownMethods:{} as Record<string,number>};const gaps:Record<string,number>={},procedures:{year:number;sourceId:string;record:number;hts8:string;description:string;from:string;through:string;method:string;printedRate:string;quantityCodes:string[];footnote:string;additional:string;issue?:string}[]=[];
+ for(let year=2000;year<=2017;year++){
+  const versions:{id:string;url:string;metadata:Record<string,unknown>}[]=data?.filter(s=>s.metadata.annualTariffYear===year)??[];assert.equal(versions.length,1,'Unique annual original required for '+year);
+  const original=await readReferenceBytes(db,versions[0].id),allRows=annualRows(original.bytes,year);quality.sourceRecords+=allRows.length;for(const r of allRows){if(Number(r.hts8.slice(0,2))>=98){quality.specialChapterRecords++;continue;}quality.ordinaryRecords++;if(r.issue)quality.invalidDateRecords++;else if(r.from>year+'-12-31'||r.through<year+'-01-01')quality.outsideCapturedYearRecords++;if(!['0','1','2','3','4','5','6','7','9','K','X','T'].includes(r.rateType))quality.unknownMethods[r.rateType||'(blank)']=(quality.unknownMethods[r.rateType||'(blank)']??0)+1;}for(const r of allRows.filter(r=>Number(r.hts8.slice(0,2))<98&&(r.issue||r.from<=year+'-12-31'&&r.through>=year+'-01-01')&&['T','9','K','X'].includes(r.rateType)))procedures.push({year,sourceId:versions[0].id,record:r.record,hts8:r.hts8,description:r.description,from:r.from,through:r.through,method:r.rateType,printedRate:r.textRate,quantityCodes:r.quantityCodes??[],footnote:r.footnote,additional:r.additional,...(r.issue?{issue:r.issue}:{})});const rows=allRows.filter(r=>Number(r.hts8.slice(0,2))<98&&r.from<=year+'-12-31'&&r.through>=year+'-01-01'&&['1','2','3','4','5','6'].includes(r.rateType)),counts:Record<string,number>={},remaining:Record<string,number>={};
+  for(const row of rows){const formula=annualQuantityComputation(row,units,fields[0].id),reason=row.issue?'invalid source date':!annualDutyFootnoteSupported(row.footnote)?'other footnote':!['','No'].includes(row.additional)?'additional duty scope':!formula?'unsupported printed formula or quantity unit':null;
+   if(reason){remaining[reason]=(remaining[reason]??0)+1;gaps[reason]=(gaps[reason]??0)+1;}else{counts[row.rateType]=(counts[row.rateType]??0)+1;supported++;}total++;
+  }
+  checked++;console.log(JSON.stringify({year,sourceId:versions[0].id,quantityRecords:rows.length,supportedFormulaRecords:counts,remainingRecords:remaining}));
+ }
+ const methodCounts:Record<string,number>={},chapters:Record<string,number>={};for(const r of procedures){methodCounts[r.method]=(methodCounts[r.method]??0)+1;const k=r.method+':'+r.hts8.slice(0,2);chapters[k]=(chapters[k]??0)+1;}await writeFile('/tmp/cante-annual-procedure-inventory.json',JSON.stringify({label:'Read-only retained USITC source-record inventory. Methods identify required procedures, not shipment coverage, legal approvals or expected-rate goldens.',years:checked,quality,methodCounts,chapters,records:procedures},null,2));console.log(JSON.stringify({procedureRecords:procedures.length,quality,methods:methodCounts,chapters,writes:0,models:0,approvals:0}));
+ console.log(JSON.stringify({years:checked,quantitySourceRecords:total,supportedFormulaRecords:supported,remainingRecords:gaps,unitMeanings:units.length,writes:0,models:0,approvals:0,limitation:'Numeric-fields-only baseline; later original-schedule corroboration is not run by this scan. Formula/data contracts only. Declared countries, exact statistical classifications, exclusions, special entries and complete duties still need their separate coverage.'}));
+}
+main().catch(e=>{console.error(e);process.exitCode=1});
